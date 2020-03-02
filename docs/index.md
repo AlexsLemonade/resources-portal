@@ -22,3 +22,9 @@ Create a superuser to login to the admin:
 ```bash
 docker-compose run --rm web ./manage.py createsuperuser
 ```
+
+# Making migrations
+
+```bash
+docker-compose run --rm web ./manage.py makemigrations resources_portal
+```
