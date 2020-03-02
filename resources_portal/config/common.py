@@ -22,7 +22,7 @@ class Common(Configuration):
         "rest_framework.authtoken",  # token authentication
         "django_filters",  # for filtering rest endpoints
         # Your apps
-        "resources-portal.users",
+        "resources_portal",
     )
 
     # https://docs.djangoproject.com/en/2.0/topics/http/middleware/
@@ -37,9 +37,9 @@ class Common(Configuration):
     )
 
     ALLOWED_HOSTS = ["*"]
-    ROOT_URLCONF = "resources-portal.urls"
+    ROOT_URLCONF = "resources_portal.urls"
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
-    WSGI_APPLICATION = "resources-portal.wsgi.application"
+    WSGI_APPLICATION = "resources_portal.wsgi.application"
 
     # Email
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -145,7 +145,7 @@ class Common(Configuration):
     }
 
     # Custom user app
-    AUTH_USER_MODEL = "users.User"
+    AUTH_USER_MODEL = "resources_portal.User"
 
     # Django Rest Framework
     REST_FRAMEWORK = {

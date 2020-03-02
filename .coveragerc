@@ -5,6 +5,6 @@ omit = *migrations*,
        *test*,
        *admin*,
        ./manage.py,
-       ./resources-portal/config/*,
-       ./resources-portal/wsgi.py,
+       ./resources_portal/config/*,
+       ./resources_portal/wsgi.py,
        *__init__*

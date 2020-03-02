@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resources-portal.config")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resources_portal.config")
     os.environ.setdefault("DJANGO_CONFIGURATION", "Local")
 
     try:

@@ -56,7 +56,7 @@ coverage.xml
 .media/
 local_settings.py
 
-volumes_postgress/
+volumes_postgres/
 
 # Flask stuff:
 instance/

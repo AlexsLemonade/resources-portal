@@ -18,7 +18,7 @@ class Local(Common):
         "--nologcapture",
         "--with-coverage",
         "--with-progressive",
-        "--cover-package=resources-portal",
+        "--cover-package=resources_portal",
     ]
 
     # Mail

@@ -3,6 +3,8 @@ version: '2'
 services:
   postgres:
     image: postgres:11.6
+    volumes:
+      - ./volumes_postgres/volumes_postgres:/var/lib/postgresql/data
   web:
     restart: always
     environment:
