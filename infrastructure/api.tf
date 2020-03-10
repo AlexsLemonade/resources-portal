@@ -30,6 +30,7 @@ data "template_file" "api_server_script_smusher" {
     dockerhub_repo = "${var.dockerhub_repo}"
     system_version = "${var.system_version}"
     database_host = "${aws_db_instance.postgres_db.address}"
+    database_port = "${var.database_port}"
     database_user = "${var.database_user}"
     database_password = "${var.database_password}"
     database_name = "${aws_db_instance.postgres_db.name}"

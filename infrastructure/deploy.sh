@@ -76,4 +76,4 @@ if [[ -z $TF_VAR_system_version ]]; then
     exit 1
 fi
 
-terraform apply -var-file=environments/$env.tfvars
+terraform apply -var-file=environments/$env.tfvars -auto-approve

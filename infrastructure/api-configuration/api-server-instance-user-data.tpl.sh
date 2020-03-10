@@ -111,6 +111,7 @@ docker pull $api_docker_image
 docker run \
        --env-file environment \
        -e DATABASE_HOST=${database_host} \
+       -e DATABASE_PORT=${database_port} \
        -e DATABASE_NAME=${database_name} \
        -e DATABASE_USER=${database_user} \
        -e DATABASE_PASSWORD=${database_password} \
