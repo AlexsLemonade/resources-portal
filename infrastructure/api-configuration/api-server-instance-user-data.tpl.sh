@@ -101,15 +101,35 @@ STATIC_VOLUMES=/tmp/volumes_static
 mkdir -p /tmp/volumes_static
 chmod a+rwx /tmp/volumes_static
 
-# TODO
 # Pull the API image.
 api_docker_image=${dockerhub_repo}/resources_portal_api:${system_version}
 docker pull $api_docker_image
 
+# Migrate first.
 # These database values are created after TF
 # is run, so we have to pass them in programatically
 docker run \
        --env-file environment \
+       -e DJANGO_CONFIGURATION=Production \
+       -e DATABASE_HOST=${database_host} \
+       -e DATABASE_PORT=${database_port} \
+       -e DATABASE_NAME=${database_name} \
+       -e DATABASE_USER=${database_user} \
+       -e DATABASE_PASSWORD=${database_password} \
+       -e PORT=8081 \
+       -v "$STATIC_VOLUMES":/tmp/www/static \
+       --log-driver=awslogs \
+       --log-opt awslogs-region=${region} \
+       --log-opt awslogs-group=${log_group} \
+       --log-opt awslogs-stream=${log_stream} \
+       -p 8081:8081 \
+       --name=resources_portal_migrations \
+       -it $api_docker_image python3 manage.py migrate
+
+# Start the API image.
+docker run \
+       --env-file environment \
+       -e DJANGO_CONFIGURATION=Production \
        -e DATABASE_HOST=${database_host} \
        -e DATABASE_PORT=${database_port} \
        -e DATABASE_NAME=${database_name} \
@@ -123,7 +143,7 @@ docker run \
        --log-opt awslogs-stream=${log_stream} \
        -p 8081:8081 \
        --name=resources_portal_api \
-       -it -d $api_docker_image
+       -it -d $api_docker_image /home/user/collect_and_run_uwsgi.sh
 
 # # Nuke and rebuild the search index. It shouldn't take too long.
 # sleep 30

@@ -30,5 +30,4 @@ VOLUME /tmp/www/static
 EXPOSE 8081
 
 # Run the production server
-# CMD ["/home/user/collect_and_run_uwsgi.sh"]
 CMD newrelic-admin run-program gunicorn --bind 0.0.0.0:$PORT --access-logfile - resources_portal.wsgi:application

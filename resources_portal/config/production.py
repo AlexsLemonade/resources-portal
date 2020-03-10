@@ -2,9 +2,6 @@ import os
 
 from .common import Common
 
-# from resources_portal.utils import get_env_variable
-
-
 
 class Production(Common):
     INSTALLED_APPS = Common.INSTALLED_APPS
@@ -43,10 +40,5 @@ class Production(Common):
             "PASSWORD": os.getenv("DATABASE_PASSWORD"),
             "HOST": os.getenv("DATABASE_HOST"),
             "PORT": os.getenv("DATABASE_PORT"),
-            # "NAME": get_env_variable("DATABASE_NAME"),
-            # "USER": get_env_variable("DATABASE_USER"),
-            # "PASSWORD": get_env_variable("DATABASE_PASSWORD"),
-            # "HOST": get_env_variable("DATABASE_HOST"),
-            # "PORT": get_env_variable("DATABASE_PORT"),
         }
     }
