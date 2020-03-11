@@ -124,7 +124,7 @@ docker run \
        --log-opt awslogs-stream=${log_stream} \
        -p 8081:8081 \
        --name=resources_portal_migrations \
-       -it $api_docker_image python3 manage.py migrate
+       $api_docker_image python3 manage.py migrate
 
 # Start the API image.
 docker run \
@@ -143,7 +143,7 @@ docker run \
        --log-opt awslogs-stream=${log_stream} \
        -p 8081:8081 \
        --name=resources_portal_api \
-       -it -d $api_docker_image /home/user/collect_and_run_uwsgi.sh
+       -d $api_docker_image /home/user/collect_and_run_uwsgi.sh
 
 # # Nuke and rebuild the search index. It shouldn't take too long.
 # sleep 30
