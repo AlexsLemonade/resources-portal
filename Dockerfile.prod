@@ -18,7 +18,7 @@ RUN mkdir -p /tmp/www/static
 RUN chown user /tmp/www/static
 
 ARG SYSTEM_VERSION
-ARG PORT
+ARG HTTP_PORT
 
 ENV SYSTEM_VERSION $SYSTEM_VERSION
 ENV HTTP_PORT $HTTP_PORT

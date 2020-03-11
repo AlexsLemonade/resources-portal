@@ -85,7 +85,14 @@ HTTP_PORT=8081
 
 image_name=$TF_VAR_dockerhub_repo/resources_portal_api:$TF_VAR_system_version
 
-docker build -t $image_name --build-arg SYSTEM_VERSION=$TF_VAR_system_version --build-arg HTTP_PORT=$HTTP_PORT .
+cd ..
+
+docker build -t $image_name \
+       --build-arg SYSTEM_VERSION=$TF_VAR_system_version \
+       --build-arg HTTP_PORT=$HTTP_PORT \
+       -f Dockerfile.prod .
+
+cd -
 
 docker push $image_name
 
