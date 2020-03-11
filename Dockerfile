@@ -21,6 +21,7 @@ ARG SYSTEM_VERSION
 ARG PORT
 
 ENV SYSTEM_VERSION $SYSTEM_VERSION
+ENV HTTP_PORT $HTTP_PORT
 
 USER user
 
@@ -28,7 +29,7 @@ USER user
 # as a volume so that Nginx can serve them directly.
 VOLUME /tmp/www/static
 
-EXPOSE $PORT
+EXPOSE $HTTP_PORT
 
 # Run the production server
-CMD newrelic-admin run-program gunicorn --bind 0.0.0.0:$PORT --access-logfile - resources_portal.wsgi:application
+CMD ./collect_and_run_uwsgi.sh

@@ -76,4 +76,17 @@ if [[ -z $TF_VAR_system_version ]]; then
     exit 1
 fi
 
+if [[ -z $TF_VAR_dockerhub_repo ]]; then
+    TF_VAR_dockerhub_repo=resources_portal_staging
+fi
+
+# This could be configurable, but there isn't much point.
+HTTP_PORT=8081
+
+image_name=$TF_VAR_dockerhub_repo/resources_portal_api:$TF_VAR_system_version
+
+docker build -t $image_name --build-arg SYSTEM_VERSION=$TF_VAR_system_version --build-arg HTTP_PORT=$HTTP_PORT .
+
+docker push $image_name
+
 terraform apply -var-file=environments/$env.tfvars -auto-approve

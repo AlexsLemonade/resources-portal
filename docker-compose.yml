@@ -12,26 +12,28 @@ services:
     image: web
     build:
       context: ./
+      dockerfile: Dockerfile.local
       args:
-        - PORT
+        PORT: "${HTTP_PORT}"
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
-               ./manage.py runserver 0.0.0.0:${PORT}"
+               ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
     volumes:
-      - ./:/code
+      - ./:/home/user/code
     ports:
-      - "${PORT}:${PORT}"
+      - "${HTTP_PORT}:${HTTP_PORT}"
     depends_on:
       - postgres
   documentation:
     restart: always
     build:
       context: ./
+      dockerfile: Dockerfile.local
       args:
         PORT: "${DOCS_PORT}"
     command: "mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}"
     volumes:
-      - ./:/code
+      - ./:/home/user/code
     ports:
       - "${DOCS_PORT}:${DOCS_PORT}"
