@@ -18,6 +18,7 @@ RUN mkdir -p /tmp/www/static
 RUN chown user /tmp/www/static
 
 ARG SYSTEM_VERSION
+ARG PORT
 
 ENV SYSTEM_VERSION $SYSTEM_VERSION
 
@@ -27,7 +28,7 @@ USER user
 # as a volume so that Nginx can serve them directly.
 VOLUME /tmp/www/static
 
-EXPOSE 8081
+EXPOSE $PORT
 
 # Run the production server
 CMD newrelic-admin run-program gunicorn --bind 0.0.0.0:$PORT --access-logfile - resources_portal.wsgi:application

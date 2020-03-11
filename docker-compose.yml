@@ -10,22 +10,28 @@ services:
     environment:
       - DJANGO_SECRET_KEY=local
     image: web
-    build: ./
+    build:
+      context: ./
+      args:
+        - PORT
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
-               ./manage.py runserver 0.0.0.0:8000"
+               ./manage.py runserver 0.0.0.0:${PORT}"
     volumes:
       - ./:/code
     ports:
-      - '8000:8000'
+      - "${PORT}:${PORT}"
     depends_on:
       - postgres
   documentation:
     restart: always
-    build: ./
-    command: 'mkdocs serve'
+    build:
+      context: ./
+      args:
+        PORT: "${DOCS_PORT}"
+    command: "mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}"
     volumes:
       - ./:/code
     ports:
-      - '8001:8001'
+      - "${DOCS_PORT}:${DOCS_PORT}"
