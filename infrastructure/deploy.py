@@ -1,0 +1,69 @@
+import argparse
+
+import docker
+
+parser = argparse.ArgumentParser(
+    description="""
+This script can be used to deploy and update a `resources portal` instance stack.
+It will create all of the AWS infrasctructure (roles/instances/db/network/etc),
+open an ingress, perform a database migration, and close the
+ingress. This can be run from a CI/CD machine or a local dev box.
+This script must be run from /infrastructure!"""
+)
+
+# This should probably use some kind of options feature. I bet they have that.
+parser.add_argument(
+    "-e",
+    "--env",
+    help="""Specify the environment you would like to deploy to. Not optional. Valid values are:
+    prod, staging, and dev
+    `prod` and `staging` will deploy the production stack. These should only be used from a deployment machine.
+    `dev` will deploy a dev stack which is appropriate for a single developer to use to test.""",
+    required=True,
+)
+
+parser.add_argument(
+    "-u",
+    "--user",
+    help="""
+    Specify the username of the deployer.
+    Should be the developer's name in development stacks.""",
+    required=True,
+)
+
+parser.add_argument(
+    "-d",
+    "--dockerhub-repo",
+    help="""Specify the dockerhub repo from which to pull the docker image.
+    Can be useful for using your own dockerhub repo for a development stack.""",
+    required=True,
+)
+
+parser.add_argument(
+    "-v",
+    "--system-version",
+    help="Specify the version of the system that is being deployed.",
+    required=True,
+)
+
+parser.add_argument(
+    "-r",
+    "--region",
+    help="Specify the AWS region to deploy the stack to. Default is us-east-1.",
+    default="us-east-1",
+)
+
+args = parser.parse_args()
+
+# This could be configurable, but there isn't much point.
+HTTP_PORT = 8081
+
+image_name = f"{args.dockerhub_repo}/resources_portal_api:{args.system_version}"
+
+client = docker.DockerClient(base_url="unix://var/run/docker.sock", version="auto")
+# client = docker.from_env(version="auto")
+client.images.build(
+    path="../",
+    tag=image_name,
+    buildargs={"SYSTEM_VERSION": args.system_version, "HTTP_PORT": HTTP_PORT},
+)
