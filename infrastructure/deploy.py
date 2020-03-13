@@ -10,57 +10,37 @@ import subprocess
 
 import docker
 
-parser = argparse.ArgumentParser(
-    description="""
-This script can be used to deploy and update a `resources portal` instance stack.
+description = """This script can be used to deploy and update a `resources portal` instance stack.
 It will create all of the AWS infrasctructure (roles/instances/db/network/etc),
 open an ingress, perform a database migration, and close the
 ingress. This can be run from a CI/CD machine or a local dev box.
 This script must be run from /infrastructure!"""
+parser = argparse.ArgumentParser(description=description)
+
+env_help_text = """Specify the environment you would like to deploy to. Not optional. Valid values
+are: prod, staging, and dev `prod` and `staging` will deploy the production stack. These should
+only be used from a deployment machine. `dev` will deploy a dev stack which is appropriate for a
+single developer to use to test."""
+parser.add_argument(
+    "-e", "--env", help=env_help_text, required=True, choices=["dev", "staging", "prod"],
 )
 
-# This should probably use some kind of options feature. I bet they have that.
-parser.add_argument(
-    "-e",
-    "--env",
-    help="""Specify the environment you would like to deploy to. Not optional. Valid values are:
-    prod, staging, and dev
-    `prod` and `staging` will deploy the production stack.
-    These should only be used from a deployment machine.
-    `dev` will deploy a dev stack which is appropriate for a single developer to use to test.""",
-    required=True,
+user_help_text = (
+    "Specify the username of the deployer. Should be the developer's name in development stacks."
 )
+parser.add_argument("-u", "--user", help=user_help_text, required=True)
 
-parser.add_argument(
-    "-u",
-    "--user",
-    help="""
-    Specify the username of the deployer.
-    Should be the developer's name in development stacks.""",
-    required=True,
+dockerhub_help_text = (
+    "Specify the dockerhub repo from which to pull the docker image."
+    " Can be useful for using your own dockerhub repo for a development stack."
 )
+parser.add_argument("-d", "--dockerhub-repo", help=dockerhub_help_text, required=True)
 
-parser.add_argument(
-    "-d",
-    "--dockerhub-repo",
-    help="""Specify the dockerhub repo from which to pull the docker image.
-    Can be useful for using your own dockerhub repo for a development stack.""",
-    required=True,
-)
+version_help_text = "Specify the version of the system that is being deployed."
+parser.add_argument("-v", "--system-version", help=version_help_text, required=True)
 
-parser.add_argument(
-    "-v",
-    "--system-version",
-    help="Specify the version of the system that is being deployed.",
-    required=True,
-)
-
-parser.add_argument(
-    "-r",
-    "--region",
-    help="Specify the AWS region to deploy the stack to. Default is us-east-1.",
-    default="us-east-1",
-)
+region_help_text = "Specify the AWS region to deploy the stack to. Default is us-east-1."
+parser.add_argument("-r", "--region", help=region_help_text, default="us-east-1")
 
 args = parser.parse_args()
 
