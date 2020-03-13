@@ -1,6 +1,5 @@
-##
-# Database
-##
+# This terraform file hosts the resources directly related to the
+# postgres RDS instance.
 
 resource "aws_db_parameter_group" "postgres_parameters" {
   name = "postgres-parameters-${var.user}-${var.stage}"

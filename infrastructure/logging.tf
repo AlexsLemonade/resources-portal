@@ -1,3 +1,6 @@
+# This terraform file hosts the resources directly related to logging.
+
+
 # This is the group. All of the streams belong to this.
 resource "aws_cloudwatch_log_group" "resources_portal_log_group" {
   name = "resources-portal-log-group-${var.user}-${var.stage}"
@@ -7,10 +10,7 @@ resource "aws_cloudwatch_log_group" "resources_portal_log_group" {
   }
 }
 
-##
 # Streams
-##
-
 resource "aws_cloudwatch_log_stream" "log_stream_api" {
   name           = "log-stream-api-${var.user}-${var.stage}"
   log_group_name = "${aws_cloudwatch_log_group.resources_portal_log_group.name}"

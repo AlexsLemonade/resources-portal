@@ -1,3 +1,6 @@
+# This terraform file hosts the terraform variables used throughout
+# the project.
+
 variable "region" {
   default = "us-east-1"
 }

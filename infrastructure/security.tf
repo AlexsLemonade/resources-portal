@@ -1,3 +1,6 @@
+# This terraform file hosts the resources directly related to security.
+
+
 # This is the SSH key that can be used to ssh onto instances for
 # debugging. Long term we may want to remove this entirely.
 resource "aws_key_pair" "resources_portal" {

@@ -1,6 +1,5 @@
-##
-# API Webserver
-##
+# This terraform file hosts the resources directly related to the EC2
+# instance used by the API.
 
 data "local_file" "api_nginx_config" {
   filename = "api-configuration/nginx_config.conf"
