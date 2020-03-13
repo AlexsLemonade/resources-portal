@@ -1,32 +1,22 @@
 import argparse
 import subprocess
 
-parser = argparse.ArgumentParser(
-    description="""
-This script can be used to destroy an infrastructure stack that was created with deploy.py.
-This script must be run from /infrastructure!"""
+description = """This script can be used to destroy an infrastructure stack that was created with
+deploy.py. This script must be run from /infrastructure!"""
+parser = argparse.ArgumentParser(description=description)
+
+env_help_text = """Specify the environment you would like to deploy to. Not optional. Valid values
+are: prod, staging, and dev `prod` and `staging` will deploy the production stack. These should
+only be used from a deployment machine. `dev` will deploy a dev stack which is appropriate for a
+single developer to use to test."""
+parser.add_argument(
+    "-e", "--env", help=env_help_text, required=True, choices=["dev", "staging", "prod"],
 )
 
-# This should probably use some kind of options feature. I bet they have that.
-parser.add_argument(
-    "-e",
-    "--env",
-    help="""Specify the environment you would like to deploy to. Not optional. Valid values are:
-    prod, staging, and dev
-    `prod` and `staging` will deploy the production stack.
-    These should only be used from a deployment machine.
-    `dev` will deploy a dev stack which is appropriate for a single developer to use to test.""",
-    required=True,
+user_help_text = (
+    "Specify the username of the deployer. Should be the developer's name in development stacks."
 )
-
-parser.add_argument(
-    "-u",
-    "--user",
-    help="""
-    Specify the username of the deployer.
-    Should be the developer's name in development stacks.""",
-    required=True,
-)
+parser.add_argument("-u", "--user", help=user_help_text, required=True)
 
 
 args = parser.parse_args()
