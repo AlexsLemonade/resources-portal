@@ -1,4 +1,6 @@
 import argparse
+import os
+import subprocess
 
 import docker
 
@@ -17,7 +19,8 @@ parser.add_argument(
     "--env",
     help="""Specify the environment you would like to deploy to. Not optional. Valid values are:
     prod, staging, and dev
-    `prod` and `staging` will deploy the production stack. These should only be used from a deployment machine.
+    `prod` and `staging` will deploy the production stack.
+    These should only be used from a deployment machine.
     `dev` will deploy a dev stack which is appropriate for a single developer to use to test.""",
     required=True,
 )
@@ -60,10 +63,45 @@ HTTP_PORT = 8081
 
 image_name = f"{args.dockerhub_repo}/resources_portal_api:{args.system_version}"
 
-client = docker.DockerClient(base_url="unix://var/run/docker.sock", version="auto")
-# client = docker.from_env(version="auto")
-client.images.build(
-    path="../",
-    tag=image_name,
-    buildargs={"SYSTEM_VERSION": args.system_version, "HTTP_PORT": HTTP_PORT},
+# Hopefully this gets answered and we can use docker-py:
+# https://github.com/docker/docker-py/issues/2526
+#  client = docker.DockerClient(base_url="unix://var/run/docker.sock", version="auto")
+# # client = docker.from_env(version="auto")
+# client.images.build(
+#     path="../",
+#     dockerfile="Dockerfile.prod",
+#     tag=image_name,
+#     buildargs={"SYSTEM_VERSION": args.system_version, "HTTP_PORT": HTTP_PORT},
+# )
+
+# Until then, use subprocess to call docker :(
+# Change dir so docker can see the code.
+os.chdir("../")
+
+system_version_build_arg = "SYSTEM_VERSION={}".format(args.system_version)
+http_port_build_arg = "HTTP_PORT={}".format(HTTP_PORT)
+
+# check_call() will raise an exception for us if this fails.
+completed_command = subprocess.check_call(
+    [
+        "docker",
+        "build",
+        "--tag",
+        image_name,
+        "--build-arg",
+        system_version_build_arg,
+        "--build-arg",
+        http_port_build_arg,
+        "-f",
+        "Dockerfile.prod",
+        ".",
+    ],
 )
+
+# Change dir back so terraform is run from the correct location:
+os.chdir("infrastructure")
+
+completed_command = subprocess.check_call(["docker", "push", image_name])
+
+var_file_arg = "-var-file=environments/{}.tfvars".format(args.env)
+completed_command = subprocess.check_call(["terraform", "apply", var_file_arg, "-auto-approve"])
