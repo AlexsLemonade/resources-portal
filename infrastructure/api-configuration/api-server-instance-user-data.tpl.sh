@@ -21,35 +21,6 @@ apt-get install nginx -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
-# if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
-#     # Create and install SSL Certificate for the API.
-#     # Only necessary on staging and prod.
-#     # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
-#     apt-get install -y software-properties-common
-#     add-apt-repository ppa:certbot/certbot
-#     apt-get update
-#     apt-get install -y python-certbot-nginx
-
-#     # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
-#     # have configured to forward mail to the #teamcontact channel in
-#     # slack. Certbot will use it for "important account
-#     # notifications".
-#     # In the future, if we ever hit the 5-deploy-a-week limit, changing one of these lines to:
-#     # certbot --nginx -d api.staging.refine.bio -d api2.staging.refine.bio -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-#     # will circumvent certbot's limit because the 5-a-week limit only applies to the
-#     # "same set of domains", so by changing that set we get to use the 20-a-week limit.
-#     if [[ ${stage} == "staging" ]]; then
-#         # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
-#         sleep 180
-#         certbot --nginx -d api.staging.refine.bio -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-#     elif [[ ${stage} == "prod" ]]; then
-#         # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
-#         sleep 180
-#         RANDOM_API=$(( ( RANDOM % 8 ) + 2 )) # 2 to 9
-#         certbot --nginx -d api.refine.bio -d api$RANDOM_API.refine.bio -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-#     fi
-# fi
-
 # Install, configure and launch our CloudWatch Logs agent
 cat <<EOF >awslogs.conf
 [general]
@@ -144,22 +115,6 @@ docker run \
        -p 8081:8081 \
        --name=resources_portal_api \
        -d $api_docker_image /home/user/collect_and_run_uwsgi.sh
-
-# # Nuke and rebuild the search index. It shouldn't take too long.
-# sleep 30
-# docker exec dr_api python3 manage.py search_index --delete -f;
-# docker exec dr_api python3 manage.py search_index --rebuild -f;
-# docker exec dr_api python3 manage.py search_index --populate -f;
-
-# # Let's use this instance to call the populate command every twenty minutes.
-# crontab -l > tempcron
-# # echo new cron into cron file
-# # TODO: stop logging this to api_cron.log once we figure out why it
-# # hasn't been working.
-# echo -e "SHELL=/bin/bash\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n*/20 * * * * docker exec dr_api python3 manage.py update_es_index >> /var/log/api_cron.log 2>&1" >> tempcron
-# # install new cron file
-# crontab tempcron
-# rm tempcron
 
 # Don't leave secrets lying around.
 rm -f environment
