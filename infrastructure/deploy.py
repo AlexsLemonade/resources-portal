@@ -1,3 +1,9 @@
+"""This script is a bit of a work-in-progress. I'd like to use
+docker-py to interact with Docker's API directly in python, but can't
+get it to work. I have an issue open to track this TODO:
+https://github.com/AlexsLemonade/resources-portal/issues/33
+"""
+
 import argparse
 import os
 import subprocess
