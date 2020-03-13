@@ -106,3 +106,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Terraform
+infrastructure/*.tfstate*
+infrastructure/.terraform/
+.circleci/s3_tfstate/.terraform
