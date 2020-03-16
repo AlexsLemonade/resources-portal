@@ -54,7 +54,6 @@ resource "aws_security_group" "resources_portal_api" {
   }
 }
 
-# XXX: THIS DEFINITELY NEEDS TO BE REMOVED LONG TERM!!!!!!!!!!
 resource "aws_security_group_rule" "resources_portal_api_ssh" {
   type = "ingress"
   from_port = 22

@@ -7,6 +7,9 @@ from configurations import Configuration
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resources_portal.config")
+os.environ.setdefault("DJANGO_CONFIGURATION", "Local")
+
 
 class Common(Configuration):
 
