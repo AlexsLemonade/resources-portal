@@ -18,6 +18,7 @@ class Common(Configuration):
         "django.contrib.messages",
         "django.contrib.staticfiles",
         # Third party apps
+        "django_extensions",
         "rest_framework",  # utilities for rest apis
         "rest_framework.authtoken",  # token authentication
         "django_filters",  # for filtering rest endpoints

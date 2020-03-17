@@ -25,3 +25,8 @@ class Local(Common):
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+    GRAPH_MODELS = {
+        "all_applications": True,
+        "group_models": True,
+    }
