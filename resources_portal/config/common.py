@@ -118,9 +118,9 @@ class Common(Configuration):
                 "format": "[%(server_time)s] %(message)s",
             },
             "verbose": {
-                "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
+                "format": "%(asctime)s %(levelname)s %(module)s %(process)d %(thread)d %(message)s"
             },
-            "simple": {"format": "%(levelname)s %(message)s"},
+            "simple": {"format": "%(asctime)s %(levelname)s %(message)s"},
         },
         "filters": {"require_debug_true": {"()": "django.utils.log.RequireDebugTrue",},},
         "handlers": {
