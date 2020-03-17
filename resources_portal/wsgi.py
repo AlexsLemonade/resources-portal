@@ -6,6 +6,13 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/gunicorn/
 """
 import os
 
+
+# Needs to be above import because importing get_wsgi_application will
+# look for this environment variable.
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "resources_portal.config")
+os.environ.setdefault("DJANGO_CONFIGURATION", "Local")
+
+
 from configurations.wsgi import get_wsgi_application  # noqa
 
 application = get_wsgi_application()

@@ -11,9 +11,6 @@ RUN pip install -r requirements.txt
 # Adds our application code to the image
 COPY . .
 
-# uWSGI
-RUN chmod +x /home/user/collect_and_run_uwsgi.sh
-
 RUN mkdir -p /tmp/www/static
 RUN chown user /tmp/www/static
 

@@ -114,7 +114,7 @@ docker run \
        --log-opt awslogs-stream=${log_stream} \
        -p 8081:8081 \
        --name=resources_portal_api \
-       -d $api_docker_image /home/user/collect_and_run_uwsgi.sh
+       -d $api_docker_image
 
 # Don't leave secrets lying around.
 rm -f environment
