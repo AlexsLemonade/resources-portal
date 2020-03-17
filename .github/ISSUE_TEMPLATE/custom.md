@@ -1,6 +1,6 @@
 ---
 name: Custom issue template
-about: Use this template to file issues
+about: Template to test if this is still working
 title: ''
 labels: ''
 assignees: ''
