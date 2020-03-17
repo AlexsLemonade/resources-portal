@@ -90,6 +90,10 @@ resource "aws_eip" "resources_portal_api_ip" {
   }
 }
 
+output "elastic_ip_address" {
+  value = "${aws_eip.resources_portal_api_ip.public_ip}"
+}
+
 
 # As per https://aws.amazon.com/elasticloadbalancing/details/:
 #
