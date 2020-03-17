@@ -24,4 +24,4 @@ jobs:
       - name: Build the stack
         run: docker-compose build
       - name: Test
-        run: docker-compose run --rm web bash -c "flake8 . && python wait_for_postgres.py && ./manage.py test"
+        run: docker-compose run --rm web bash -c "python wait_for_postgres.py && ./manage.py test"
