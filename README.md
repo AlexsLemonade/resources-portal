@@ -23,3 +23,9 @@ Run a command inside the docker container:
 ```bash
 docker-compose run --rm web [command]
 ```
+
+The dev server runs by default on port 8000 with the docs being served at 8001.
+If these ports are already in use on your local machine, you can run them at different ports with:
+```bash
+PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
+```

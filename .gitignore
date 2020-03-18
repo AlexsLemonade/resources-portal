@@ -84,7 +84,6 @@ celerybeat-schedule
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -107,6 +106,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# Terraform
+infrastructure/*.tfstate*
+infrastructure/.terraform/
+.circleci/s3_tfstate/.terraform
 
 # CLIENT
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
