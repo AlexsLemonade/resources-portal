@@ -8,7 +8,7 @@ import argparse
 import os
 import subprocess
 
-import docker
+# import docker
 
 description = """This script can be used to deploy and update a `resources portal` instance stack.
 It will create all of the AWS infrasctructure (roles/instances/db/network/etc),
