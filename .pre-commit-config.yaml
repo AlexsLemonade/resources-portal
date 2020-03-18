@@ -17,7 +17,7 @@ repos:
     rev: v4.3.21
     hooks:
       - id: isort
-      - exclude: ^wsgi.py$
+        exclude: ^wsgi.py$
 
   - repo: https://github.com/psf/black
     rev: 19.10b0
