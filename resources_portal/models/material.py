@@ -6,6 +6,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+from .grant import Grant
 from .user import User
 
 
@@ -15,13 +16,23 @@ class Material(models.Model):
         get_latest_by = "created_at"
 
     objects = models.Manager()
-
-    url = models.TextField(blank=True)
-    pubmed_id = models.CharField(max_length=32, blank=True)
-
-    metadata = JSONField(default=dict)
-
-    primary_contact = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    material_type = models.CharField(max_length=32)
+    url = models.TextField(blank=True)
+    pubmed_id = models.CharField(max_length=32, blank=True)
+    url = models.CharField(max_length=255, blank=True, null=True)
+
+    additional_metadata = JSONField(default=dict)
+
+    mta = models.CharField(
+        max_length=255, blank=True, null=True, help_text="Contains an url to download the MTA."
+    )
+    needs_mta = models.BooleanField(default=False)
+    needs_irb = models.BooleanField(default=False)
+
+    contact_user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
+    organization = models.ForeignKey(
+        "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
+    )
