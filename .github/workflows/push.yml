@@ -24,4 +24,4 @@ jobs:
       - name: Build the stack
         run: cd api && docker-compose build
       - name: Test
-        run: cd api && docker-compose run --rm web bash -c "python wait_for_postgres.py && ./manage.py test"
+        run: cd api && ./run_tests.sh
