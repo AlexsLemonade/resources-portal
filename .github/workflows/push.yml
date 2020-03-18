@@ -22,6 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build the stack
-        run: docker-compose build
+        run: cd api && docker-compose build
       - name: Test
-        run: docker-compose run --rm web bash -c "python wait_for_postgres.py && ./manage.py test"
+        run: cd api && docker-compose run --rm web bash -c "python wait_for_postgres.py && ./manage.py test"
