@@ -2,4 +2,4 @@
 
 python wait_for_postgres.py
 ./manage.py test
-coverage report -m
+COVERAGE_STORAGE=json coverage report -m
