@@ -28,3 +28,13 @@ docker-compose run --rm web ./manage.py createsuperuser
 ```bash
 docker-compose run --rm web ./manage.py makemigrations resources_portal
 ```
+
+# Visualizing the data model
+
+This project includes [django-extensions graph_models command](https://django-extensions.readthedocs.io/en/latest/graph_models.html).
+
+```bash
+docker-compose run --rm web ./manage.py graph_models -a -g > model.dot
+```
+
+At the moment png exports are not setup but these can be generated them from the `.dot` file.
