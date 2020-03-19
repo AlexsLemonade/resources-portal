@@ -21,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build the stack
-        run: cd api && docker-compose build
       - name: Set perms
         run: chmod -R a+rw api
+      - name: Build the stack
+        run: cd api && docker-compose build
       - name: Print perms after setting
         run: ls -lah api
       - name: Test
