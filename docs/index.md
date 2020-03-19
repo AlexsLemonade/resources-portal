@@ -37,4 +37,5 @@ This project includes [django-extensions graph_models command](https://django-ex
 docker-compose run --rm web ./manage.py graph_models -a -g > model.dot
 ```
 
-At the moment png exports are not setup but these can be generated them from the `.dot` file.
+At the moment png exports are not setup but these can be generated from the `.dot` file.
+(Either with `dot -Tpng model.dot -o database_diagram.png` or https://convertio.co/dot-png/)

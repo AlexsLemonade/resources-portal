@@ -9,20 +9,26 @@ class Material(models.Model):
         db_table = "materials"
         get_latest_by = "created_at"
 
+    MATERIAL_TYPE_CHOICES = (
+        ("CELL_LINE", "CELL_LINE"),
+        ("PLASMID", "PLASMID"),
+        ("PROTOCOL", "PROTOCOL"),
+        ("DATASET", "DATASET"),
+        ("MOUSE_MODEL", "MOUSE_MODEL"),
+        ("ZEBRAFISH_MODEL", "ZEBRAFISH_MODEL"),
+    )
+
     objects = models.Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    material_type = models.CharField(max_length=32)
-    url = models.TextField(blank=True)
+    material_type = models.CharField(max_length=32, choices=MATERIAL_TYPE_CHOICES)
+    url = models.TextField(blank=True, null=True)
     pubmed_id = models.CharField(max_length=32, blank=True)
-    url = models.CharField(max_length=255, blank=True, null=True)
 
     additional_metadata = JSONField(default=dict)
 
-    mta = models.CharField(
-        max_length=255, blank=True, null=True, help_text="Contains an url to download the MTA."
-    )
+    mta = models.TextField(blank=True, null=True, help_text="Contains an url to download the MTA.")
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)
 

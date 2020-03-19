@@ -23,7 +23,7 @@ class MaterialShareEvent(models.Model):
 
     time = models.DateTimeField()
 
-    user = models.ForeignKey(
+    created_by = models.ForeignKey(
         User,
         blank=False,
         null=False,
@@ -36,5 +36,5 @@ class MaterialShareEvent(models.Model):
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name="material_share_assigned_to_set",
+        related_name="material_share_assignments",
     )

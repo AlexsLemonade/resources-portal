@@ -13,5 +13,6 @@ class Organization(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    owner = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
-    members = models.ManyToManyField(User, related_name="organizations")
+    owner = models.ForeignKey(
+        User, blank=False, null=False, on_delete=models.CASCADE, related_name="owned_organizations"
+    )

@@ -15,7 +15,7 @@ class Grant(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     title = models.TextField()
-    founder_id = models.CharField(max_length=80)
+    funder_id = models.CharField(max_length=80)
 
     organizations = models.ManyToManyField(Organization, related_name="grants")
     materials = models.ManyToManyField("Material", related_name="grants")

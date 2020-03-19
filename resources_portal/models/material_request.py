@@ -23,14 +23,14 @@ class MaterialRequest(models.Model):
     )
 
     assigned_to = models.ForeignKey(
-        User, blank=False, null=False, on_delete=models.CASCADE, related_name="assigned_to_set"
+        User, blank=False, null=False, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    mta = models.CharField(max_length=255, blank=True, null=True)
+    # TODO: Update types if these are Files or Urls
+    requester_signed_mta = models.CharField(max_length=255, blank=True, null=True)
     irb = models.CharField(max_length=255, blank=True, null=True)
 
-    # TODO: check type of this field
-    executed_mta = models.BooleanField(default=False)
+    executed_mta = models.CharField(max_length=255, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
 
