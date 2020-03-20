@@ -6,7 +6,6 @@ printenv
 echo "#############################"
 ls /tmp
 echo "#############################"
-touch .coverage
 ./manage.py test
 echo "#############################"
 ls -lah resources_portal
