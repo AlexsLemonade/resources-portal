@@ -25,7 +25,5 @@ jobs:
         run: chmod -R a+rw api
       - name: Build the stack
         run: cd api && docker-compose build
-      - name: Print perms after setting
-        run: ls -lah api
       - name: Test
-        run: cd api && sudo docker-compose run --rm web ./run_tests.sh
+        run: cd api && docker-compose run --rm web ./run_tests.sh
