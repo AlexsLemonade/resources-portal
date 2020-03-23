@@ -54,7 +54,7 @@ image_name = f"{args.dockerhub_repo}/resources_portal_api:{args.system_version}"
 #  client = docker.DockerClient(base_url="unix://var/run/docker.sock", version="auto")
 # # client = docker.from_env(version="auto")
 # client.images.build(
-#     path="../",
+#     path="../api",
 #     dockerfile="Dockerfile.prod",
 #     tag=image_name,
 #     buildargs={"SYSTEM_VERSION": args.system_version, "HTTP_PORT": HTTP_PORT},
@@ -62,7 +62,7 @@ image_name = f"{args.dockerhub_repo}/resources_portal_api:{args.system_version}"
 
 # Until then, use subprocess to call docker :(
 # Change dir so docker can see the code.
-os.chdir("../")
+os.chdir("../api")
 
 system_version_build_arg = "SYSTEM_VERSION={}".format(args.system_version)
 http_port_build_arg = "HTTP_PORT={}".format(HTTP_PORT)
@@ -87,7 +87,7 @@ completed_command = subprocess.check_call(
 completed_command = subprocess.check_call(["docker", "push", image_name])
 
 # Change dir back so terraform is run from the correct location:
-os.chdir("infrastructure")
+os.chdir("../infrastructure")
 
 os.environ["TF_VAR_user"] = args.user
 os.environ["TF_VAR_stage"] = args.env

@@ -21,7 +21,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set perms
+        run: chmod -R a+rw api
       - name: Build the stack
-        run: docker-compose build
+        run: cd api && docker-compose build
       - name: Test
-        run: docker-compose run --rm web bash -c "python wait_for_postgres.py && ./manage.py test"
+        run: cd api && docker-compose run --rm web ./run_tests.sh
