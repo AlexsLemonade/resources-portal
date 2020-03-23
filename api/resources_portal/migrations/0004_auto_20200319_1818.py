@@ -256,4 +256,20 @@ class Migration(migrations.Migration):
             ),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name="organization",
+            name="members",
+            field=models.ManyToManyField(related_name="organizations", to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name="usernotification",
+            name="organization",
+            field=models.ForeignKey(
+                default=None,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="user_notifications",
+                to="resources_portal.Organization",
+            ),
+            preserve_default=False,
+        ),
     ]

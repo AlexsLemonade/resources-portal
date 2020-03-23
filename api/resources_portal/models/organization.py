@@ -16,3 +16,5 @@ class Organization(models.Model):
     owner = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="owned_organizations"
     )
+
+    members = models.ManyToManyField(User, related_name="organizations")

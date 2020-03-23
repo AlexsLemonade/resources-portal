@@ -1,5 +1,6 @@
 from django.db import models
 
+from .organization import Organization
 from .user import User
 
 
@@ -15,6 +16,14 @@ class UserNotification(models.Model):
 
     user = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="notifications"
+    )
+
+    organization = models.ForeignKey(
+        Organization,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="user_notifications",
     )
 
     # TODO: add possible choices
