@@ -4,9 +4,11 @@ from .organization import Organization
 from .user import User
 
 
-class UserNotification(models.Model):
+class OrganizationUserSetting(models.Model):
+    """ This model will store individual settings for each user and organization """
+
     class Meta:
-        db_table = "user_notifications"
+        db_table = "organization_user_setting"
         get_latest_by = "created_at"
 
     objects = models.Manager()
@@ -15,7 +17,11 @@ class UserNotification(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     user = models.ForeignKey(
-        User, blank=False, null=False, on_delete=models.CASCADE, related_name="notifications"
+        User,
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="organization_settings",
     )
 
     organization = models.ForeignKey(
@@ -23,10 +29,8 @@ class UserNotification(models.Model):
         blank=False,
         null=False,
         on_delete=models.CASCADE,
-        related_name="user_notifications",
+        related_name="user_settings",
     )
 
-    # TODO: add possible choices
-    event_type = models.CharField(max_length=255, blank=True, null=True)
-    # TODO: check type of this field
-    assigned_only = models.BooleanField()
+    # TODO: Add individual settings here
+    # new_resource_request = models.BooleanField(default=True)
