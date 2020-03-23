@@ -26,11 +26,13 @@ class MaterialRequest(models.Model):
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    # TODO: Update types if these are Files or Urls
-    requester_signed_mta = models.CharField(max_length=255, blank=True, null=True)
-    irb = models.CharField(max_length=255, blank=True, null=True)
-
-    executed_mta = models.CharField(max_length=255, blank=True, null=True)
+    requester_signed_mta_s3_url = models.TextField(
+        help_text="Url to download the MTA after it was signed by the requester"
+    )
+    irb_s3_url = models.TextField(help_text="Url to download the IRB")
+    executed_mta_s3_url = models.TextField(
+        help_text="Url to download the MTA after it has been signed by all parties."
+    )
 
     is_active = models.BooleanField(default=True)
 

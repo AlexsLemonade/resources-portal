@@ -28,7 +28,9 @@ class Material(models.Model):
 
     additional_metadata = JSONField(default=dict)
 
-    mta = models.TextField(blank=True, null=True, help_text="Contains an url to download the MTA.")
+    mta_s3_url = models.TextField(
+        blank=True, null=True, help_text="Contains an url to download the MTA."
+    )
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)
 
