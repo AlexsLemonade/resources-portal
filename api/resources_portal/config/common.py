@@ -22,6 +22,7 @@ class Common(Configuration):
         "rest_framework",  # utilities for rest apis
         "rest_framework.authtoken",  # token authentication
         "django_filters",  # for filtering rest endpoints
+        "guardian",  # extended permissions to individual objects
         # Your apps
         "resources_portal",
     )
@@ -165,3 +166,9 @@ class Common(Configuration):
             "rest_framework.authentication.TokenAuthentication",
         ),
     }
+
+    # Custom permissions with django-guard
+    AUTHENTICATION_BACKENDS = (
+        "django.contrib.auth.backends.ModelBackend",  # default
+        "guardian.backends.ObjectPermissionBackend",
+    )
