@@ -78,7 +78,7 @@ resource "aws_instance" "api_server_1" {
   key_name = "${aws_key_pair.resources_portal.key_name}"
 
   tags = {
-    Name = "API Server 1 ${var.user}-${var.stage}"
+    Name = "Resources Portal API ${var.user}-${var.stage}"
   }
 
   # I think these are the defaults provided in terraform examples.
