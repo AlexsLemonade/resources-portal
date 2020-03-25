@@ -16,3 +16,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.Faker("last_name")
     is_active = True
     is_staff = False
+
+
+class OrganizationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Organization"
+
+    owner = factory.SubFactory(UserFactory)
