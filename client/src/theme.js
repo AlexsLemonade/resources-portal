@@ -1,5 +1,5 @@
 // This file is the theme config for the grommet theme provider
-const theme = 
+const theme =
 {
   "button": {
     "border": {
