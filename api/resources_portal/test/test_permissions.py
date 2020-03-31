@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from .factories import OrganizationFactory, UserFactory
+from resources_portal.test.factories import OrganizationFactory, UserFactory
 
 
 class TestUserPermission(TestCase):

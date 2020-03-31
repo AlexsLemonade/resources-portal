@@ -4,7 +4,7 @@ from django.dispatch import receiver
 
 from guardian.shortcuts import assign_perm
 
-from .user import User
+from resources_portal.models.user import User
 
 
 class Organization(models.Model):

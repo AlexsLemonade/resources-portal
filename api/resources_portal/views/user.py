@@ -1,8 +1,8 @@
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.permissions import AllowAny
 
-from ..models import User
-from ..permissions import IsUserOrReadOnly
+from resources_portal.models import User
+from resources_portal.permissions import IsUserOrReadOnly
 
 
 class UserSerializer(serializers.ModelSerializer):
