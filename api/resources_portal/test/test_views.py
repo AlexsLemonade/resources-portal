@@ -7,8 +7,8 @@ import factory
 from faker import Faker
 from nose.tools import eq_, ok_
 
-from ..models import User
-from .factories import UserFactory
+from resources_portal.models import User
+from resources_portal.test.factories import UserFactory
 
 fake = Faker()
 

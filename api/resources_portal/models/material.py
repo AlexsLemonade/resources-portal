@@ -1,7 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
-from .user import User
+from resources_portal.models.user import User
 
 
 class Material(models.Model):

@@ -1,2 +1,2 @@
-from .material import MaterialSerializer
-from .user import CreateUserSerializer, UserSerializer
+from resources_portal.serializers.material import MaterialSerializer
+from resources_portal.serializers.user import CreateUserSerializer, UserSerializer

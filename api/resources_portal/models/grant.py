@@ -1,7 +1,7 @@
 from django.db import models
 
-from .organization import Organization
-from .user import User
+from resources_portal.models.organization import Organization
+from resources_portal.models.user import User
 
 
 class Grant(models.Model):
