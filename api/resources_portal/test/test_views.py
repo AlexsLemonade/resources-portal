@@ -7,7 +7,7 @@ import factory
 from faker import Faker
 from nose.tools import eq_, ok_
 
-from resources_portal.models import User
+from resources_portal.models import Organization, User
 from resources_portal.test.factories import UserFactory
 
 fake = Faker()
@@ -33,6 +33,8 @@ class TestUserListTestCase(APITestCase):
         user = User.objects.get(pk=response.data.get("id"))
         eq_(user.username, self.user_data.get("username"))
         ok_(check_password(self.user_data.get("password"), user.password))
+
+        ok_(Organization.objects.get(owner=user))
 
 
 class TestUserDetailTestCase(APITestCase):
