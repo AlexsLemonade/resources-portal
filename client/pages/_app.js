@@ -1,9 +1,10 @@
 import { Grommet } from 'grommet';
 import theme from '../src/theme';
 import Head from 'next/head';
+import Layout from '../src/components/Layout';
 
 // global styles
-import '../src/styles/app.scss'
+import '../src/styles/app.scss';
 
 export default ({ Component, pageProps }) => {
   return (
@@ -16,8 +17,10 @@ export default ({ Component, pageProps }) => {
         />
       </Head>
       <Grommet theme={theme}>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </Grommet>
     </>
-  )
-}
+  );
+};
