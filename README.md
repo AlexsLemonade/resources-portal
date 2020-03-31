@@ -12,22 +12,24 @@ Resources Portal. Check out the project's [documentation](http://ccdl.github.io/
 
 ## Local Development
 
+(from the `api` directory)
+
 Start the dev server for local development:
 
 ```bash
-cd api && docker-compose up
+docker-compose up
 ```
 
 Run a command inside the docker container:
 
 ```bash
-cd api && docker-compose run --rm web [command]
+docker-compose run --rm web [command]
 ```
 
 i.e. the tests:
 
 ```
-cd api && docker-compose run --rm web ./run_tests.sh
+docker-compose run --rm web ./run_tests.sh
 ```
 
 The dev server runs by default on port 8000 with the docs being served at 8001.
@@ -38,10 +40,12 @@ cd api && PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
 
 ## Cloud Development
 
+(from the `infrastructure` directory)
+
 Currently we do not have a staging or production stack, but a development stack can be deployed with:
 
 ```
-cd infrastructure && python3 deploy.py -d [dockerhub-repo] -e dev -u [username] -v v0.0.0
+python3 deploy.py -d [dockerhub-repo] -e dev -u [username] -v v0.0.0
 ```
 
 You will need an `resources-portal-api:v0.0.0` image in the dockerhub-repo you supply. Run `python3 infrastructure/deploy.py -h` for more options.
@@ -56,7 +60,7 @@ Subsequent deploys to the same stack will use the same elastic IP address.
 
 You can destroy an existing stack with:
 ```
-cd infrastructure && python3 destroy_terraform.py -e dev -u [username]
+python3 destroy_terraform.py -e dev -u [username]
 ```
 
 The username you use to destroy should match the one you supplied to `deploy.py`.
