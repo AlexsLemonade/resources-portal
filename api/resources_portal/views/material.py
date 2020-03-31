@@ -10,8 +10,8 @@ class MaterialSerializer(serializers.ModelSerializer):
             "id",
             "url",
             "pubmed_id",
-            "metadata",
-            "primary_contact",
+            "additional_metadata",
+            "contact_user",
             "created_at",
             "updated_at",
         )

@@ -23,3 +23,14 @@ class OrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     owner = factory.SubFactory(UserFactory)
+
+
+class MaterialFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Material"
+
+    material_type = "CELL_LINE"
+    url = "https://www.atcc.org/products/all/HTB-38.aspx"
+
+    contact_user = factory.SubFactory(UserFactory)
+    organization = factory.SubFactory(OrganizationFactory)
