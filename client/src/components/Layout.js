@@ -23,4 +23,6 @@ const LayoutContent = styled.div`
   padding: 0;
   width: 100%;
   flex: 1;
+
+  margin: 1rem auto;
 `;
