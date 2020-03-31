@@ -1,7 +1,7 @@
 from django.db import models
 
-from .material import Material
-from .user import User
+from resources_portal.models.material import Material
+from resources_portal.models.user import User
 
 
 class MaterialShareEvent(models.Model):

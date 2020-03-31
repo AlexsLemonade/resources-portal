@@ -1,6 +1,6 @@
 import os
 
-from .common import Common
+from resources_portal.config.common import Common
 
 
 class Production(Common):

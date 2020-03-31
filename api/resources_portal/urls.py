@@ -6,7 +6,7 @@ from django.views.generic.base import RedirectView
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
-from .views import MaterialViewSet, UserCreateViewSet, UserViewSet
+from resources_portal.views import MaterialViewSet, UserCreateViewSet, UserViewSet
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r"users", UserViewSet)
