@@ -12,7 +12,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
-        return self.username
+        return self.id
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

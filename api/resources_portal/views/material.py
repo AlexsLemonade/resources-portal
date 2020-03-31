@@ -8,7 +8,9 @@ class MaterialSerializer(serializers.ModelSerializer):
         model = Material
         fields = (
             "id",
+            "category",
             "url",
+            "organization",
             "pubmed_id",
             "additional_metadata",
             "contact_user",
@@ -18,6 +20,6 @@ class MaterialSerializer(serializers.ModelSerializer):
         read_only_fields = ()
 
 
-class MaterialViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer

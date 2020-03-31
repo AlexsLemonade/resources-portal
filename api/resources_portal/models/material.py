@@ -9,7 +9,7 @@ class Material(models.Model):
         db_table = "materials"
         get_latest_by = "created_at"
 
-    MATERIAL_TYPE_CHOICES = (
+    CATEGORY_CHOICES = (
         ("CELL_LINE", "CELL_LINE"),
         ("PLASMID", "PLASMID"),
         ("PROTOCOL", "PROTOCOL"),
@@ -22,7 +22,7 @@ class Material(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    material_type = models.CharField(max_length=32, choices=MATERIAL_TYPE_CHOICES)
+    category = models.CharField(max_length=32, choices=CATEGORY_CHOICES)
     url = models.TextField(blank=True, null=True)
     pubmed_id = models.CharField(max_length=32, blank=True)
 

@@ -29,7 +29,7 @@ class MaterialFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Material"
 
-    material_type = "CELL_LINE"
+    category = "CELL_LINE"
     url = "https://www.atcc.org/products/all/HTB-38.aspx"
 
     contact_user = factory.SubFactory(UserFactory)
