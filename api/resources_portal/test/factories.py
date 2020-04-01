@@ -31,6 +31,7 @@ class MaterialFactory(factory.django.DjangoModelFactory):
 
     category = "CELL_LINE"
     url = "https://www.atcc.org/products/all/HTB-38.aspx"
+    title = "HT-29 (ATCC® HTB-38™)"
 
     contact_user = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)

@@ -9,6 +9,7 @@ class MaterialSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "category",
+            "title",
             "url",
             "organization",
             "pubmed_id",
