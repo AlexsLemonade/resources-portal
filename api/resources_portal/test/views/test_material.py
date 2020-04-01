@@ -48,10 +48,13 @@ class TestSingleMaterialTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_request_updates_a_material(self):
-        # TODO: this should require authentication.
         material_json = self.client.get(self.url).json()
+
         new_url = fake.url()
         material_json["url"] = new_url
+        material_json["contact_user"] = material_json["contact_user"]["id"]
+
+        # TODO: this should require authentication
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
