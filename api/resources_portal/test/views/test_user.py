@@ -20,6 +20,9 @@ class TestUserListTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("user-list")
         self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
+        # Don't post created_at and updated_at.
+        self.user_data.pop("created_at")
+        self.user_data.pop("updated_at")
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
