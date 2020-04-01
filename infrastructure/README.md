@@ -1,6 +1,4 @@
-# Resources Portal Infrstructure.
-
-## Introduction
+# Resources Portal Infrstructure
 
 The Resources Portal is configured to run in AWS.
 You will need to have your AWS credentials configured or make them available as environment variables.
