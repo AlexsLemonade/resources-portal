@@ -43,5 +43,3 @@ The following notifcation settings are in place:
 - SecondaryProf: all notifcations on for SecondaryProfOrg
 
 The protocol was requested by SecondaryProf and transferred to him by PostDoc.
-
-
