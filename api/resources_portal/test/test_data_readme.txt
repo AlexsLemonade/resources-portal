@@ -23,7 +23,7 @@ There are eight materials:
 	- A Model Organism (mouse)
 
 	Four contributed by SecondaryProf:
-    - A Stone Tablet (using the "other" template)
+	- A Stone Tablet (using the "other" template)
 	- A Cell Line
 	- A Dataset
 	- A PDX
