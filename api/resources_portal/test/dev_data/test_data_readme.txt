@@ -42,4 +42,4 @@ The following notifcation settings are in place:
 - PostDoc: all notifications on for PrimaryLab, all notifcations except reminders on for PostDocOrg
 - SecondaryProf: all notifcations on for SecondaryProfOrg
 
-The protocol was requested by SecondaryProf and transferred to him by PostDoc.
+The Protocol was requested by SecondaryProf and transferred to him by PostDoc.
