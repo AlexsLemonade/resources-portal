@@ -1,4 +1,4 @@
-from rest_framework import mixins, serializers, viewsets
+from rest_framework import serializers, viewsets
 
 from resources_portal.models import Material
 
