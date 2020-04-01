@@ -1,34 +1,36 @@
 # Resources Portal API
 
+All commands from this README should be run from the `api/` directory.
+
 ## Local Development
 
 Start the dev server for local development:
 
 ```bash
- && docker-compose up
+docker-compose up
 ```
 
 Run a command inside the docker container:
 
 ```bash
-cd api && docker-compose run --rm web [command]
+docker-compose run --rm web [command]
 ```
 
 i.e. the tests:
 
 ```
-cd api && docker-compose run --rm web ./run_tests.sh
+docker-compose run --rm web ./run_tests.sh
 ```
 
 The dev server runs by default on port 8000 with the docs being served at 8001.
 If these ports are already in use on your local machine, you can run them at different ports with:
 ```bash
-cd api && PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
+PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
 ```
 
 A postgres commmand line client can be started by running:
 ```
-cd api && ./run_psql_client.sh
+./run_psql_client.sh
 ```
 
 
@@ -55,6 +57,6 @@ docker build -t <DOCKER_REPO>/resources_portal_api:v0.0.0 --build-arg SYSTEM_VER
 ```
 
 That command needs to be run from the `api/` directory, but the rest of the deployment should be run from `infrastructure/` directory.
-The directions for doing so are in the [infrastructure README](../infrastructure/README.md).
+Therefore the directions for doing so are in the [infrastructure README](../infrastructure/README.md).
 
 Once you have completed a deploy you can replace with `0.0.0.0:8000` in the requests above with the `elastic_ip_address` output by terraform.

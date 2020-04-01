@@ -8,12 +8,14 @@ You will need to have your AWS credentials configured or make them available as 
 The configuration is written in [terraform](https://learn.hashicorp.com/terraform/getting-started/install.html).
 You will need to have it installed to be able to deploy.
 
+All commands from this README should be run from the `infrastructure/` directory.
+
 ## Deployment
 
 Currently we do not have a staging or production stack, but a development stack can be deployed with:
 
 ```
-cd infrastructure && python3 deploy.py -d [dockerhub-repo] -e dev -u [username] -v v0.0.0
+python3 deploy.py -d [dockerhub-repo] -e dev -u [username] -v v0.0.0
 ```
 
 You will need an `resources-portal-api:v0.0.0` image in the dockerhub-repo you supply. Run `python3 infrastructure/deploy.py -h` for more options.
