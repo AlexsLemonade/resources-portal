@@ -1,2 +1,2 @@
-from .material import MaterialViewSet
-from .user import UserCreateViewSet, UserViewSet
+from resources_portal.views.material import MaterialViewSet
+from resources_portal.views.user import UserCreateViewSet, UserViewSet

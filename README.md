@@ -36,6 +36,11 @@ If these ports are already in use on your local machine, you can run them at dif
 cd api && PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
 ```
 
+A postgres commmand line client can be started by running:
+```
+cd api && ./run_psql_client.sh
+```
+
 ## Cloud Development
 
 Currently we do not have a staging or production stack, but a development stack can be deployed with:
