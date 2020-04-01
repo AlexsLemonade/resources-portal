@@ -1,854 +1,701 @@
 {
-	"auth_group":
-	{
-		"0":
-		{
-			"id":"1",
-			"name":"Admins"
-		},
-		"1":
-		{
-			"id":"2",
-			"name":"Users"
-		}
-	},
-
-	"auth_group_permissions":
-	{
-		"0":
-		{
-			"id":"1",
-			"group_id":"1",
-			"permission_id":"1"
-		},
-		
-		"1":
-		{
-			"id":"2",
-			"group_id":"2",
-			"permission_id":"2"
-		}
-	},
-
-	"auth_permission":
-	{
-		"0":
-		{
-			"id":"1",
-			"name":"Permission to all materials",
-			"content_type_id":"1",
-			"codename":"univ_1"
-		},
-
-		"1":
-		{
-			"id":"2",
-			"name":"Read-only permission",
-			"content_type_id":"2",
-			"codename":"read_1"
-		}
-	},
-
-	"authtoken_token":
-	{
-		"key":"",
-		"created":"",
-		"user_id":""
-	},
-
-	"grants":
-	{
-		"0":
-		{
-			"id":"1",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-03-30 16:12:25-07",
-			"title":"Grant for Research in Melanoma Treatment",
-			"funder_id":"1"
-		},
-		"1":
-		{
-			"id":"2",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-03-30 16:12:25-07",
-			"title":"Grant for Research in Tumor Growth",
-			"funder_id":"3"
-		}
-	},
-
-	"grants_materials":
-	{
-		"0":
-		{
-			"id":"1",
-			"grant_id":"1",
-			"material_id":"1"
-		},
-
-		"1":
-		{
-			"id":"2",
-			"grant_id":"1",
-			"material_id":"2"
-		},
-		"2":
-		{
-			"id":"3",
-			"grant_id":"1",
-			"material_id":"3"
-		},
-		"3":
-		{
-			"id":"4",
-			"grant_id":"1",
-			"material_id":"4"
-		},
-		"4":
-		{
-			"id":"5",
-			"grant_id":"2",
-			"material_id":"5"
-		},
-		"5":
-		{
-			"id":"6",
-			"grant_id":"2",
-			"material_id":"6"
-		},
-		"6":
-		{
-			"id":"7",
-			"grant_id":"2",
-			"material_id":"7"
-		},
-		"7":
-		{
-			"id":"7",
-			"grant_id":"2",
-			"material_id":"8"
-		}
-	},
-
-	"grants_organizations":
-	{
-		"0":
-		{
-			"id":"1",
-			"grant_id":"1",
-			"organization_id":"1"
-		},
-
-		"1":
-		{
-			"id":"2",
-			"grant_id":"2",
-			"organization_id":"4"
-		}
-	},
-
-	"grants_users":
-	{
-		"0":
-		{
-			"id":"1",
-			"grant_id":"1",
-			"user_id":"1"
-		},
-
-		"1":
-		{
-			"id":"1",
-			"grant_id":"1",
-			"user_id":"2"
-		},
-
-		"2":
-		{
-			"id":"1",
-			"grant_id":"2",
-			"user_id":"3"
-		}
-	},
-
-	"guardian_groupobjectpermissions":
-	{
-		"id":"",
-		"object_pk":"",
-		"content_type_id":"",
-		"group_id":"",
-		"permission_id":""
-	},
-
-	"guardian_userobjectpermissions":
-	{
-		"id":"",
-		"object_pk":"",
-		"content_type_id":"",
-		"user_id":"",
-		"permission_id":""
-	},
-
-	"materials_requests":
-	{
-		"0":
-		{
-			"id":"1",
-			"created_at":"20-01-30 14:12:25-07",
-			"updated_at":"20-01-30 14:12:25-07",
-			"requester_signed_mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"irb_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"executed_mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"is_active":"false",
-			"status":"closed",
-			"assigned_to_id":"2",
-			"material_id":"2",
-			"requester_id":"3"
-		}
-	},
-
-	"materials_share_events":
-	{
-		"0":
-		{
-			"id":"1",
-			"created_at":"20-01-30 16:12:25-07",
-			"updated_at":"20-01-30 16:12:25-07",
-			"event_type":"shared",
-			"time":"20-01-30 16:12:25-07",
-			"assigned_to_id":"2",
-			"created_by_id":"1",
-			"material_id":"2"
-		}
-	},
-
-	"materials":
-	{
-		"0":
-		{
-			"title":"Melanoma Reduction Plasmid",
-			"material_type":"plasmid",
-			"id":"1",
-			"url":"https://www.addgene.org/53246/",
-			"contact_user":"1",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"basic_info":
-				{
-					"plasmid_name":"pGP1871",
-					"plasmid_type":"Encodes one insert",
-					"purpose":"Reduces melanoma growth rate",
-					"organism":"Danio rerio",
-					"Number of Availible Samples":"20",
-					"biosafety_level":"2"
-				},
-
-				"gene_insert":
-				{
-					"gene_insert_name":
-					{
-						"1":"Danio rerio",
-						"2":"Dani devrito"
-					},
-					"relevant_mutations":"Skin regrowth sequence modified",
-					"plasmid_backbone_name":"pSB1A30",
-					"primary_vector_type":"Bacterial Expression",
-					"cloning_method":"Unknown",
-					"sequence_maps":
-					{
-						"1":"https://bucket-name.s3.region.amazonaws.com/keyname"
-					}
-				},
-				"growth_in_bacteria":
-				{
-					"bacterial_resistance":"Kanamycin",
-					"copy_number":"High",
-					"growth_temp_celsius":"32.0",
-					"growth_strain":"Escherichia coli"
-				},
-				"additional_details":
-				{
-					"contact_name":"Prim Proffer",
-					"contact_email":"pprof@harvard.edu",
-					"publication_title":"Expression Analysis of Zebrafish Melanoma",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Initial Research on Zebrafish Melanoma",
-					"citation":"Proffer, Prim. \"Expression Analysis of Zebrafish Melanoma\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Postworth Docktor."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"false",
-			"needs_mta":"true",
-			"pubmed_id":"32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"1":
-		{
-			"title":"Allele Extraction Protocol",
-			"material_type":"protocol",
-			"id":"2",
-			"url":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"contact_user":"2",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"resource_details":
-				{
-					"protocol_name":"Extraction of t-type alleles from zebrafish samples",
-					"description":"A protocol to retrieve t-type alleles relibably and without damage."
-				},
-				"additional_details":
-				{
-					"contact_name":"Postworth Docktor",
-					"contact_email":"pdoc@harvard.edu",
-					"publication_title":"Extraction of t-type alleles from zebrafish samples",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Initial Research on Zebrafish Extraction",
-					"citation":"Docktor, Postworth. \"Initial Research on Zebrafish Extraction\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Prim Proffer."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"2":
-		{
-			"title":"Zebrafish Model Organism",
-			"material_type":"model_organism",
-			"id":"3",
-			"url":"",
-			"contact_user":"2",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"resource_details":
-				{
-					"strain_name":"Domestica salvis",
-					"organism":"Danio rerio",
-					"description":"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.",
-					"genetic_background":"TTdDss",
-					"genotype":"TTdDsS",
-					"zygosity":"Heterozygous",
-					"number_availible_models":"20",
-					"construct_details":"The dominant gene is represented in this sample."
-				},
-				"additional_details":
-				{
-					"contact_name":"Postworth Docktor",
-					"contact_email":"pdoc@harvard.edu",
-					"publication_title":"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Initial Research on Zebrafish Morphology",
-					"citation":"Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Prim Proffer."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"3":
-		{
-			"title":"Mouse Model Organism",
-			"material_type":"model_organism",
-			"id":"4",
-			"url":"",
-			"contact_user":"2",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"resource_details":
-				{
-					"strain_name":"Sylvaticus",
-					"organism":"Mus musculus",
-					"description":"Investigation of expression differences between skin and melanomas from a house mouse.",
-					"genetic_background":"TTdDss",
-					"genotype":"TTdDsS",
-					"zygosity":"Heterozygous",
-					"number_availible_models":"20",
-					"construct_details":"The dominant gene is represented in this sample."
-				},
-				"additional_details":
-				{
-					"contact_name":"Postworth Docktor",
-					"contact_email":"pdoc@harvard.edu",
-					"publication_title":"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Initial Research on Zebrafish Morphology",
-					"citation":"Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Prim Proffer."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"4":
-		{
-			"title":"Stone Tablet (Other)",
-			"material_type":"other",
-			"id":"5",
-			"url":"",
-			"contact_user":"1",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"resource_details":
-				{
-					"resource_type":"Stone Tablet",
-					"title":"The Ten Commandments",
-					"description":"Given to me by an old man who said to \"Let my research go\". He then parted my hair by raising his staff and left."
-				},
-				"additional_details":
-				{
-					"contact_name":"Prim Proffer",
-					"contact_email":"pprof@harvard.edu",
-					"publication_title":"The Ten Commandments",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"The Six and a Half Commandments",
-					"citation":"Proffer, Prim. \"The Old Testament\". March 15, 2020.",
-					"additional_info":"This tablet was co-authored by Postworth Docktor."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"5":
-		{
-			"title":"Zebrafish Cell Line",
-			"material_type":"cell_line",
-			"id":"6",
-			"url":"",
-			"contact_user":"3",
-			"organization_id":"4",
-			"additional_metadata":
-			{
-				"basic_info":
-				{
-					"cell_line_name":"A549",
-					"organism":"Danio rerio",
-					"tissue":"15",
-					"cell_type":"Microarray",
-					"disease":"Affymetrix Zebrafish Genome Array",
-					"number_availible_cell_lines":"20",
-					"age":"Four Months",
-					"sex":"Male",
-					"Ethnicity":"N/A",
-					"biosafety_level":"3",
-					"population_doubling_time":"20 Hours"
-				},
-				"culture":
-				{
-				"storage_medium":"Liquid nitrogen vapor phase",
-				"growth_medium":"Ethanol",
-				"subculturing":"Methanol",
-				"Cryopreservation":"Liquid nitrogen",
-				"culture_conditions":"Reproducing at a swift rate"
-				},
-				"quality":
-				{
-					"str":"An str profile",
-					"passage_number":"21430780"
-				},
-				"additional_details":
-				{
-					"contact_name":"Secundus Profarius",
-					"contact_email":"secprof@harvard.edu",
-					"publication_title":"Cell Line from Zebrafish Sample",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Preliminary Research",
-					"citation":"Proffer, Prim. \"Cell Line from Zebrafish Sample\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Postworth Docktor."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"6":
-		{
-			"title":"Zebrafish Dataset",
-			"material_type":"dataset",
-			"id":"7",
-			"url":"",
-			"contact_user":"1",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"resource_details":
-				{
-					"title":"Zebrafish Analyis",
-					"accession":"GSE24528",
-					"description":"Data collected from genetically modified zebrafish.",
-					"organism":"Danio rerio",
-					"number_samples":"15",
-					"technology":"R-readable array",
-					"platform":"Amazon s3 Database"
-				},
-				"additional_details":
-				{
-					"contact_name":"Prim Proffer",
-					"contact_email":"pprof@harvard.edu",
-					"publication_title":"Data collected from genetically modified zebrafish",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Proposal for Data Collection from Zebrafish",
-					"citation":"Proffer, Prim. \"Data collected from genetically modified zebrafish\". March 15, 2020.",
-					"additional_info":"This paper was co-authored by Postworth Docktor."
-				}
-			},
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"7":
-		{
-			"title":"Zebrafish PDX",
-			"material_type":"PDX",
-			"id":"8",
-			"url":"",
-			"contact_user":"1",
-			"organization_id":"1",
-			"additional_metadata":
-			{
-				"patient_info":
-				{
-					"patient_id":"18849839",
-					"organism":"Danio rerio",
-					"gender":"Male",
-					"age":"15",
-					"diagnosis":"Stage 4 Lymphoma",
-					"consent_to_share":"false",
-					"Ethnicity":"Hispanic",
-					"treatment_drug":"Anastrozole",
-					"treatment_protocol":"30 mg twice daily",
-					"response_to_treatment":"No response",
-					"virology_status":"Malignant tumor"
-				},
-				"tumor_info":
-				{
-					"submitter_tumor_id":"92739492",
-					"tissue_of_origin":"Lung",
-					"tumor_type":"Malignant",
-					"specimen_tumor_tissue":"Lung",
-					"histology":"Cancerous",
-					"tumor_grade":"2",
-					"disease_stage":"1",
-					"specific_markers":"Circulating marker",
-					"is_from_untreated_patient":"No",
-					"tumor_sample_type":"Biopsy",
-					"existing_model_explaination":"Sublining to do further analysis"
-				},
-				"model_creation":
-				{
-					"pdx_id":"81983924",
-					"model_organism":"Danio rerio",
-					"model_strain_and_source":"Strain 2, from Croatia",
-					"is_strain_immunized":"Yes",
-					"type_of_humanization":"Chimeric",
-					"tumor_preparation":"Removed and preserved",
-					"injection_type_and_site":"Immediate, left thigh",
-					"treatment_for_engraftment":"Sedation",
-					"engraftment_time":"Four days"
-				},
-				"model_quality_assurance":
-				{
-					"tumor_characterization_technology":"Centrifuge",
-					"is_not_of_EVB_origin":"Yes",
-					"is_passage_QA_performed":"Yes",
-					"response_to_standard_of_care":"Positive",
-					"animal_health_status":"Good"
-				},
-				"model_study":
-				{
-					"treatment_passage":"Daily glass of milk",
-					"treatment_protocol":"30 mg Anastrozole daily",
-					"treatment_response":"Positive",
-					"tumor_omics":"Sample #194982984, mouse",
-					"metastases_in_strain":"Yes",
-					"lag_time":"Three months"
-				},
-				"associated_metadata":
-				{
-					"number_availible_models":"20",
-					"pdx_model_availability":"Availible",
-					"goverance_restriction":"None"
-				},
-				"additional_details":
-				{
-					"contact_name":"Prim Proffer",
-					"contact_email":"pprof@harvard.edu",
-					"publication_title":"Grafting to Zebrafish",
-					"pre_print_doi":"10.1109/5.771073",
-					"pre_print_title":"Preliminary research on Grafting to Zebrafish",
-					"citation":"Proffer, Prim. \"Grafting to Zebrafish\". March 15, 2020.",
-					"additional_info":"This tablet was co-authored by Postworth Docktor."
-				}
-			},
-			
-			"created_at":"2020-01-30 16:12:25-07",
-			"mta_s3_url":"https://bucket-name.s3.region.amazonaws.com/keyname",
-			"needs_irb":"true",
-			"needs_mta":"true",
-			"pubmed_id":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
-			"updated_at":"2020-01-30 16:12:25-07"
-		}
-	},
-
-	"organization_user_setting":
-	{
-		"0":
-		{
-			"id":"1",
-			"organization_id":"1",
-			"user_id":"1",
-			"new_request_notif":"true",
-			"change_in_request_status_notif":"false",
-			"request_approval_determined_notif":"false",
-			"request_assigned_notif":"false",
-			"reminder_notif": "false",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"1":
-		{
-			"id":"2",
-			"organization_id":"2",
-			"user_id":"1",
-			"new_request_notif":"true",
-			"change_in_request_status_notif":"true",
-			"request_approval_determined_notif":"true",
-			"request_assigned_notif":"true",
-			"reminder_notif":"true",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"2":
-		{
-			"id":"3",
-			"organization_id":"1",
-			"user_id":"2",
-			"new_request_notif":"true",
-			"change_in_request_status_notif":"true",
-			"request_approval_determined_notif":"true",
-			"request_assigned_notif":"true",
-			"reminder_notif":"true",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"3":
-		{
-			"id":"4",
-			"organization_id":"3",
-			"user_id":"2",
-			"new_request_notif":"true",
-			"change_in_request_status_notif":"true",
-			"request_approval_determined_notif":"true",
-			"request_assigned_notif":"true",
-			"reminder_notif":"false",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-01-30 16:12:25-07"
-		},
-
-		"4":
-		{
-			"id":"5",
-			"organization_id":"4",
-			"user_id":"4",
-			"new_request_notif":"true",
-			"change_in_request_status_notif":"true",
-			"request_approval_determined_notif":"true",
-			"request_assigned_notif":"true",
-			"reminder_notif":"true",
-			"created_at":"2020-03-30 16:12:25-07",
-			"updated_at":"2020-03-30 16:12:25-07"
-		}
-	},
-
-	"organizations":
-	{
-		"0":
-		{
-			"name":"PrimaryLab",
-			"id":"1",
-			"owner_id":"1",
-			"created_at":"2020-01-30 16:12:25-07",
-			"updated_at":"2020-03-21 10:11:25-07"
-		},
-
-		"1":
-		{
-			"name":"PrimaryProfPersonalOrg",
-			"id":"2",
-			"owner_id":"1",
-			"created_at":"2020-02-13 18:12:25-07",
-			"updated_at":"2020-02-10 10:12:25-07"
-		},
-
-		"2":
-		{
-			"name":"PostDocOrg",
-			"id":"3",
-			"owner_id":"2",
-			"created_at":"2020-01-02 15:02:25-07",
-			"updated_at":"2020-03-24 10:12:25-07"
-		},
-
-		"3":
-		{
-			"name":"SecondaryProfOrg",
-			"id":"4",
-			"owner_id":"3",
-			"created_at":"2020-03-27 09:12:25-07",
-			"updated_at":"2020-03-29 11:13:25-07"
-		}
-	},
-
-	"organizations_members":
-	{
-		"0":
-		{
-			"id":"1",
-			"organization_id":"1",
-			"user_id":"1"
-		},
-
-		"1":
-		{
-			"id":"2",
-			"organization_id":"2",
-			"user_id":"1"
-		},
-
-		"2":
-		{
-			"id":"3",
-			"organization_id":"1",
-			"user_id":"2"
-		},
-
-		"3":
-		{
-			"id":"4",
-			"organization_id":"3",
-			"user_id":"2"
-		},
-
-		"4":
-		{
-			"id":"5",
-			"organization_id":"4",
-			"user_id":"3"
-		}
-	},
-
-	"resources_portal_user":
-	{
-		"0":
-		{
-			"username":"PrimaryProf",
-			"first_name":"Prim",
-			"last_name":"Proffer",
-			"password":"App1eB0ttomGene$",
-			"last_login":"2020-02-19 17:15:25-07",
-			"is_superuser":"false",
-			"email":"pprof@havard.edu",
-			"is_staff":"false",
-			"is_active":"true",
-			"date_joined":"2020-01-22 19:10:25-07",
-			"id":"1"
-		},
-
-		"1":
-		{
-			"username":"PostDoc",
-			"first_name":"Postsworth",
-			"last_name":"Doktor",
-			"password":"Malc0mInPlasmiddle!",
-			"last_login":"2020-03-12 04:15:25-07",
-			"is_superuser":"false",
-			"email":"pdoc@harvard.edu",
-			"is_staff":"false",
-			"is_active":"true",
-			"date_joined":"2020-01-01 16:15:25-07",
-			"id":"2"
-		},
-
-		"2":
-		{
-			"username":"SecondaryProf",
-			"first_name":"Secundus",
-			"last_name":"Profarius",
-			"password":"PDXG0nG!veItToYa",
-			"last_login":"2020-03-31 09:11:25-07",
-			"is_superuser":"false",
-			"email":"secprof@harvard.edu",
-			"is_staff":"false",
-			"is_active":"true",
-			"date_joined":"2020-03-26 04:12:25-07",
-			"id":"3"
-		}
-
-	},
-
-	"resources_portal_user_groups":
-	{
-		"0":
-		{
-			"id":"1",
-			"user_id":"1",
-			"group_id":"1"
-		},
-		"1":
-		{
-			"id":"2",
-			"user_id":"2",
-			"group_id":"2"
-		},
-		"2":
-		{
-			"id":"3",
-			"user_id":"3",
-			"group_id":"1"
-		}
-
-	},
-
-	"resources_portal_user_user_permissions":
-	{
-		"id":"",
-		"user_id":"",
-		"permission_id":""
-	}
+  "auth_group": {
+    "0": {
+      "id": "1",
+      "name": "Admins"
+    },
+    "1": {
+      "id": "2",
+      "name": "Users"
+    }
+  },
+  "auth_group_permissions": {
+    "0": {
+      "id": "1",
+      "group_id": "1",
+      "permission_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "group_id": "2",
+      "permission_id": "2"
+    }
+  },
+  "auth_permission": {
+    "0": {
+      "id": "1",
+      "name": "Permission to all materials",
+      "content_type_id": "1",
+      "codename": "univ_1"
+    },
+    "1": {
+      "id": "2",
+      "name": "Read-only permission",
+      "content_type_id": "2",
+      "codename": "read_1"
+    }
+  },
+  "authtoken_token": {
+    "key": "",
+    "created": "",
+    "user_id": ""
+  },
+  "grants": {
+    "0": {
+      "id": "1",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07",
+      "title": "Grant for Research in Melanoma Treatment",
+      "funder_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07",
+      "title": "Grant for Research in Tumor Growth",
+      "funder_id": "3"
+    }
+  },
+  "grants_materials": {
+    "0": {
+      "id": "1",
+      "grant_id": "1",
+      "material_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "grant_id": "1",
+      "material_id": "2"
+    },
+    "2": {
+      "id": "3",
+      "grant_id": "1",
+      "material_id": "3"
+    },
+    "3": {
+      "id": "4",
+      "grant_id": "1",
+      "material_id": "4"
+    },
+    "4": {
+      "id": "5",
+      "grant_id": "2",
+      "material_id": "5"
+    },
+    "5": {
+      "id": "6",
+      "grant_id": "2",
+      "material_id": "6"
+    },
+    "6": {
+      "id": "7",
+      "grant_id": "2",
+      "material_id": "7"
+    },
+    "7": {
+      "id": "7",
+      "grant_id": "2",
+      "material_id": "8"
+    }
+  },
+  "grants_organizations": {
+    "0": {
+      "id": "1",
+      "grant_id": "1",
+      "organization_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "grant_id": "2",
+      "organization_id": "4"
+    }
+  },
+  "grants_users": {
+    "0": {
+      "id": "1",
+      "grant_id": "1",
+      "user_id": "1"
+    },
+    "1": {
+      "id": "1",
+      "grant_id": "1",
+      "user_id": "2"
+    },
+    "2": {
+      "id": "1",
+      "grant_id": "2",
+      "user_id": "3"
+    }
+  },
+  "guardian_groupobjectpermissions": {
+    "id": "",
+    "object_pk": "",
+    "content_type_id": "",
+    "group_id": "",
+    "permission_id": ""
+  },
+  "guardian_userobjectpermissions": {
+    "id": "",
+    "object_pk": "",
+    "content_type_id": "",
+    "user_id": "",
+    "permission_id": ""
+  },
+  "materials_requests": {
+    "0": {
+      "id": "1",
+      "created_at": "20-01-30 14:12:25-07",
+      "updated_at": "20-01-30 14:12:25-07",
+      "requester_signed_mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "irb_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "executed_mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "is_active": "false",
+      "status": "closed",
+      "assigned_to_id": "2",
+      "material_id": "2",
+      "requester_id": "3"
+    }
+  },
+  "materials_share_events": {
+    "0": {
+      "id": "1",
+      "created_at": "20-01-30 16:12:25-07",
+      "updated_at": "20-01-30 16:12:25-07",
+      "event_type": "shared",
+      "time": "20-01-30 16:12:25-07",
+      "assigned_to_id": "2",
+      "created_by_id": "1",
+      "material_id": "2"
+    }
+  },
+  "materials": {
+    "0": {
+      "title": "Melanoma Reduction Plasmid",
+      "material_type": "plasmid",
+      "id": "1",
+      "url": "https://www.addgene.org/53246/",
+      "contact_user": "1",
+      "organization_id": "1",
+      "additional_metadata": {
+        "basic_info": {
+          "plasmid_name": "pGP1871",
+          "plasmid_type": "Encodes one insert",
+          "purpose": "Reduces melanoma growth rate",
+          "organism": "Danio rerio",
+          "Number of Availible Samples": "20",
+          "biosafety_level": "2"
+        },
+        "gene_insert": {
+          "gene_insert_name": {
+            "1": "Danio rerio",
+            "2": "Dani devrito"
+          },
+          "relevant_mutations": "Skin regrowth sequence modified",
+          "plasmid_backbone_name": "pSB1A30",
+          "primary_vector_type": "Bacterial Expression",
+          "cloning_method": "Unknown",
+          "sequence_maps": {
+            "1": "https://bucket-name.s3.region.amazonaws.com/keyname"
+          }
+        },
+        "growth_in_bacteria": {
+          "bacterial_resistance": "Kanamycin",
+          "copy_number": "High",
+          "growth_temp_celsius": "32.0",
+          "growth_strain": "Escherichia coli"
+        },
+        "additional_details": {
+          "contact_name": "Prim Proffer",
+          "contact_email": "pprof@harvard.edu",
+          "publication_title": "Expression Analysis of Zebrafish Melanoma",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Initial Research on Zebrafish Melanoma",
+          "citation": "Proffer, Prim. \"Expression Analysis of Zebrafish Melanoma\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Postworth Docktor."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "false",
+      "needs_mta": "true",
+      "pubmed_id": "32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "1": {
+      "title": "Allele Extraction Protocol",
+      "material_type": "protocol",
+      "id": "2",
+      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "contact_user": "2",
+      "organization_id": "1",
+      "additional_metadata": {
+        "resource_details": {
+          "protocol_name": "Extraction of t-type alleles from zebrafish samples",
+          "description": "A protocol to retrieve t-type alleles relibably and without damage."
+        },
+        "additional_details": {
+          "contact_name": "Postworth Docktor",
+          "contact_email": "pdoc@harvard.edu",
+          "publication_title": "Extraction of t-type alleles from zebrafish samples",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Initial Research on Zebrafish Extraction",
+          "citation": "Docktor, Postworth. \"Initial Research on Zebrafish Extraction\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Prim Proffer."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "2": {
+      "title": "Zebrafish Model Organism",
+      "material_type": "model_organism",
+      "id": "3",
+      "url": "",
+      "contact_user": "2",
+      "organization_id": "1",
+      "additional_metadata": {
+        "resource_details": {
+          "strain_name": "Domestica salvis",
+          "organism": "Danio rerio",
+          "description": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.",
+          "genetic_background": "TTdDss",
+          "genotype": "TTdDsS",
+          "zygosity": "Heterozygous",
+          "number_availible_models": "20",
+          "construct_details": "The dominant gene is represented in this sample."
+        },
+        "additional_details": {
+          "contact_name": "Postworth Docktor",
+          "contact_email": "pdoc@harvard.edu",
+          "publication_title": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Initial Research on Zebrafish Morphology",
+          "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Prim Proffer."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "3": {
+      "title": "Mouse Model Organism",
+      "material_type": "model_organism",
+      "id": "4",
+      "url": "",
+      "contact_user": "2",
+      "organization_id": "1",
+      "additional_metadata": {
+        "resource_details": {
+          "strain_name": "Sylvaticus",
+          "organism": "Mus musculus",
+          "description": "Investigation of expression differences between skin and melanomas from a house mouse.",
+          "genetic_background": "TTdDss",
+          "genotype": "TTdDsS",
+          "zygosity": "Heterozygous",
+          "number_availible_models": "20",
+          "construct_details": "The dominant gene is represented in this sample."
+        },
+        "additional_details": {
+          "contact_name": "Postworth Docktor",
+          "contact_email": "pdoc@harvard.edu",
+          "publication_title": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Initial Research on Zebrafish Morphology",
+          "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Prim Proffer."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "4": {
+      "title": "Stone Tablet (Other)",
+      "material_type": "other",
+      "id": "5",
+      "url": "",
+      "contact_user": "1",
+      "organization_id": "1",
+      "additional_metadata": {
+        "resource_details": {
+          "resource_type": "Stone Tablet",
+          "title": "The Ten Commandments",
+          "description": "Given to me by an old man who said to \"Let my research go\". He then parted my hair by raising his staff and left."
+        },
+        "additional_details": {
+          "contact_name": "Prim Proffer",
+          "contact_email": "pprof@harvard.edu",
+          "publication_title": "The Ten Commandments",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "The Six and a Half Commandments",
+          "citation": "Proffer, Prim. \"The Old Testament\". March 15, 2020.",
+          "additional_info": "This tablet was co-authored by Postworth Docktor."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "5": {
+      "title": "Zebrafish Cell Line",
+      "material_type": "cell_line",
+      "id": "6",
+      "url": "",
+      "contact_user": "3",
+      "organization_id": "4",
+      "additional_metadata": {
+        "basic_info": {
+          "cell_line_name": "A549",
+          "organism": "Danio rerio",
+          "tissue": "15",
+          "cell_type": "Microarray",
+          "disease": "Affymetrix Zebrafish Genome Array",
+          "number_availible_cell_lines": "20",
+          "age": "Four Months",
+          "sex": "Male",
+          "Ethnicity": "N/A",
+          "biosafety_level": "3",
+          "population_doubling_time": "20 Hours"
+        },
+        "culture": {
+          "storage_medium": "Liquid nitrogen vapor phase",
+          "growth_medium": "Ethanol",
+          "subculturing": "Methanol",
+          "Cryopreservation": "Liquid nitrogen",
+          "culture_conditions": "Reproducing at a swift rate"
+        },
+        "quality": {
+          "str": "An str profile",
+          "passage_number": "21430780"
+        },
+        "additional_details": {
+          "contact_name": "Secundus Profarius",
+          "contact_email": "secprof@harvard.edu",
+          "publication_title": "Cell Line from Zebrafish Sample",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Preliminary Research",
+          "citation": "Proffer, Prim. \"Cell Line from Zebrafish Sample\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Postworth Docktor."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "6": {
+      "title": "Zebrafish Dataset",
+      "material_type": "dataset",
+      "id": "7",
+      "url": "",
+      "contact_user": "1",
+      "organization_id": "1",
+      "additional_metadata": {
+        "resource_details": {
+          "title": "Zebrafish Analyis",
+          "accession": "GSE24528",
+          "description": "Data collected from genetically modified zebrafish.",
+          "organism": "Danio rerio",
+          "number_samples": "15",
+          "technology": "R-readable array",
+          "platform": "Amazon s3 Database"
+        },
+        "additional_details": {
+          "contact_name": "Prim Proffer",
+          "contact_email": "pprof@harvard.edu",
+          "publication_title": "Data collected from genetically modified zebrafish",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Proposal for Data Collection from Zebrafish",
+          "citation": "Proffer, Prim. \"Data collected from genetically modified zebrafish\". March 15, 2020.",
+          "additional_info": "This paper was co-authored by Postworth Docktor."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "7": {
+      "title": "Zebrafish PDX",
+      "material_type": "PDX",
+      "id": "8",
+      "url": "",
+      "contact_user": "1",
+      "organization_id": "1",
+      "additional_metadata": {
+        "patient_info": {
+          "patient_id": "18849839",
+          "organism": "Danio rerio",
+          "gender": "Male",
+          "age": "15",
+          "diagnosis": "Stage 4 Lymphoma",
+          "consent_to_share": "false",
+          "Ethnicity": "Hispanic",
+          "treatment_drug": "Anastrozole",
+          "treatment_protocol": "30 mg twice daily",
+          "response_to_treatment": "No response",
+          "virology_status": "Malignant tumor"
+        },
+        "tumor_info": {
+          "submitter_tumor_id": "92739492",
+          "tissue_of_origin": "Lung",
+          "tumor_type": "Malignant",
+          "specimen_tumor_tissue": "Lung",
+          "histology": "Cancerous",
+          "tumor_grade": "2",
+          "disease_stage": "1",
+          "specific_markers": "Circulating marker",
+          "is_from_untreated_patient": "No",
+          "tumor_sample_type": "Biopsy",
+          "existing_model_explaination": "Sublining to do further analysis"
+        },
+        "model_creation": {
+          "pdx_id": "81983924",
+          "model_organism": "Danio rerio",
+          "model_strain_and_source": "Strain 2, from Croatia",
+          "is_strain_immunized": "Yes",
+          "type_of_humanization": "Chimeric",
+          "tumor_preparation": "Removed and preserved",
+          "injection_type_and_site": "Immediate, left thigh",
+          "treatment_for_engraftment": "Sedation",
+          "engraftment_time": "Four days"
+        },
+        "model_quality_assurance": {
+          "tumor_characterization_technology": "Centrifuge",
+          "is_not_of_EVB_origin": "Yes",
+          "is_passage_QA_performed": "Yes",
+          "response_to_standard_of_care": "Positive",
+          "animal_health_status": "Good"
+        },
+        "model_study": {
+          "treatment_passage": "Daily glass of milk",
+          "treatment_protocol": "30 mg Anastrozole daily",
+          "treatment_response": "Positive",
+          "tumor_omics": "Sample #194982984, mouse",
+          "metastases_in_strain": "Yes",
+          "lag_time": "Three months"
+        },
+        "associated_metadata": {
+          "number_availible_models": "20",
+          "pdx_model_availability": "Availible",
+          "goverance_restriction": "None"
+        },
+        "additional_details": {
+          "contact_name": "Prim Proffer",
+          "contact_email": "pprof@harvard.edu",
+          "publication_title": "Grafting to Zebrafish",
+          "pre_print_doi": "10.1109/5.771073",
+          "pre_print_title": "Preliminary research on Grafting to Zebrafish",
+          "citation": "Proffer, Prim. \"Grafting to Zebrafish\". March 15, 2020.",
+          "additional_info": "This tablet was co-authored by Postworth Docktor."
+        }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "needs_irb": "true",
+      "needs_mta": "true",
+      "pubmed_id": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "updated_at": "2020-01-30 16:12:25-07"
+    }
+  },
+  "organization_user_setting": {
+    "0": {
+      "id": "1",
+      "organization_id": "1",
+      "user_id": "1",
+      "new_request_notif": "true",
+      "change_in_request_status_notif": "false",
+      "request_approval_determined_notif": "false",
+      "request_assigned_notif": "false",
+      "reminder_notif": "false",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "1": {
+      "id": "2",
+      "organization_id": "2",
+      "user_id": "1",
+      "new_request_notif": "true",
+      "change_in_request_status_notif": "true",
+      "request_approval_determined_notif": "true",
+      "request_assigned_notif": "true",
+      "reminder_notif": "true",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "2": {
+      "id": "3",
+      "organization_id": "1",
+      "user_id": "2",
+      "new_request_notif": "true",
+      "change_in_request_status_notif": "true",
+      "request_approval_determined_notif": "true",
+      "request_assigned_notif": "true",
+      "reminder_notif": "true",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "3": {
+      "id": "4",
+      "organization_id": "3",
+      "user_id": "2",
+      "new_request_notif": "true",
+      "change_in_request_status_notif": "true",
+      "request_approval_determined_notif": "true",
+      "request_assigned_notif": "true",
+      "reminder_notif": "false",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    "4": {
+      "id": "5",
+      "organization_id": "4",
+      "user_id": "4",
+      "new_request_notif": "true",
+      "change_in_request_status_notif": "true",
+      "request_approval_determined_notif": "true",
+      "request_assigned_notif": "true",
+      "reminder_notif": "true",
+      "created_at": "2020-03-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07"
+    }
+  },
+  "organizations": {
+    "0": {
+      "name": "PrimaryLab",
+      "id": "1",
+      "owner_id": "1",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-03-21 10:11:25-07"
+    },
+    "1": {
+      "name": "PrimaryProfPersonalOrg",
+      "id": "2",
+      "owner_id": "1",
+      "created_at": "2020-02-13 18:12:25-07",
+      "updated_at": "2020-02-10 10:12:25-07"
+    },
+    "2": {
+      "name": "PostDocOrg",
+      "id": "3",
+      "owner_id": "2",
+      "created_at": "2020-01-02 15:02:25-07",
+      "updated_at": "2020-03-24 10:12:25-07"
+    },
+    "3": {
+      "name": "SecondaryProfOrg",
+      "id": "4",
+      "owner_id": "3",
+      "created_at": "2020-03-27 09:12:25-07",
+      "updated_at": "2020-03-29 11:13:25-07"
+    }
+  },
+  "organizations_members": {
+    "0": {
+      "id": "1",
+      "organization_id": "1",
+      "user_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "organization_id": "2",
+      "user_id": "1"
+    },
+    "2": {
+      "id": "3",
+      "organization_id": "1",
+      "user_id": "2"
+    },
+    "3": {
+      "id": "4",
+      "organization_id": "3",
+      "user_id": "2"
+    },
+    "4": {
+      "id": "5",
+      "organization_id": "4",
+      "user_id": "3"
+    }
+  },
+  "resources_portal_user": {
+    "0": {
+      "username": "PrimaryProf",
+      "first_name": "Prim",
+      "last_name": "Proffer",
+      "password": "App1eB0ttomGene$",
+      "last_login": "2020-02-19 17:15:25-07",
+      "is_superuser": "false",
+      "email": "pprof@havard.edu",
+      "is_staff": "false",
+      "is_active": "true",
+      "date_joined": "2020-01-22 19:10:25-07",
+      "id": "1"
+    },
+    "1": {
+      "username": "PostDoc",
+      "first_name": "Postsworth",
+      "last_name": "Doktor",
+      "password": "Malc0mInPlasmiddle!",
+      "last_login": "2020-03-12 04:15:25-07",
+      "is_superuser": "false",
+      "email": "pdoc@harvard.edu",
+      "is_staff": "false",
+      "is_active": "true",
+      "date_joined": "2020-01-01 16:15:25-07",
+      "id": "2"
+    },
+    "2": {
+      "username": "SecondaryProf",
+      "first_name": "Secundus",
+      "last_name": "Profarius",
+      "password": "PDXG0nG!veItToYa",
+      "last_login": "2020-03-31 09:11:25-07",
+      "is_superuser": "false",
+      "email": "secprof@harvard.edu",
+      "is_staff": "false",
+      "is_active": "true",
+      "date_joined": "2020-03-26 04:12:25-07",
+      "id": "3"
+    }
+  },
+  "resources_portal_user_groups": {
+    "0": {
+      "id": "1",
+      "user_id": "1",
+      "group_id": "1"
+    },
+    "1": {
+      "id": "2",
+      "user_id": "2",
+      "group_id": "2"
+    },
+    "2": {
+      "id": "3",
+      "user_id": "3",
+      "group_id": "1"
+    }
+  },
+  "resources_portal_user_user_permissions": {
+    "id": "",
+    "user_id": "",
+    "permission_id": ""
+  }
 }
