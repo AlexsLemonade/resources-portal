@@ -1,7 +1,8 @@
+from django.db import transaction
 from rest_framework import mixins, serializers, viewsets
 from rest_framework.permissions import AllowAny
 
-from resources_portal.models import User
+from resources_portal.models import Organization, User
 from resources_portal.permissions import IsUserOrReadOnly
 
 
@@ -57,3 +58,13 @@ class UserCreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
     queryset = User.objects.all()
     serializer_class = CreateUserSerializer
     permission_classes = (AllowAny,)
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        response = super(UserCreateViewSet, self).create(request, args, kwargs)
+
+        # Every user should have their own organization.
+        user = User.objects.get(id=response.data["id"])
+        Organization.objects.create(owner=user)
+
+        return response
