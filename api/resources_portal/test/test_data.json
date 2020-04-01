@@ -121,6 +121,12 @@
 			"id":"7",
 			"grant_id":"2",
 			"material_id":"7"
+		},
+		"7":
+		{
+			"id":"7",
+			"grant_id":"2",
+			"material_id":"8"
 		}
 	},
 
@@ -220,6 +226,7 @@
 	{
 		"0":
 		{
+			"title":"Melanoma Reduction Plasmid",
 			"material_type":"plasmid",
 			"id":"1",
 			"url":"https://www.addgene.org/53246/",
@@ -250,7 +257,7 @@
 					"cloning_method":"Unknown",
 					"sequence_maps":
 					{
-						"https://bucket-name.s3.region.amazonaws.com/keyname"
+						"1":"https://bucket-name.s3.region.amazonaws.com/keyname"
 					}
 				},
 				"growth_in_bacteria":
@@ -281,6 +288,7 @@
 
 		"1":
 		{
+			"title":"Allele Extraction Protocol",
 			"material_type":"protocol",
 			"id":"2",
 			"url":"https://www.ncbi.nlm.nih.gov/pubmed/32223680",
@@ -314,6 +322,7 @@
 
 		"2":
 		{
+			"title":"Zebrafish Model Organism",
 			"material_type":"model_organism",
 			"id":"3",
 			"url":"",
@@ -353,6 +362,7 @@
 
 		"3":
 		{
+			"title":"Mouse Model Organism",
 			"material_type":"model_organism",
 			"id":"4",
 			"url":"",
@@ -392,6 +402,7 @@
 
 		"4":
 		{
+			"title":"Stone Tablet (Other)",
 			"material_type":"other",
 			"id":"5",
 			"url":"",
@@ -426,6 +437,7 @@
 
 		"5":
 		{
+			"title":"Zebrafish Cell Line",
 			"material_type":"cell_line",
 			"id":"6",
 			"url":"",
@@ -481,6 +493,7 @@
 
 		"6":
 		{
+			"title":"Zebrafish Dataset",
 			"material_type":"dataset",
 			"id":"7",
 			"url":"",
@@ -519,6 +532,7 @@
 
 		"7":
 		{
+			"title":"Zebrafish PDX",
 			"material_type":"PDX",
 			"id":"8",
 			"url":"",
