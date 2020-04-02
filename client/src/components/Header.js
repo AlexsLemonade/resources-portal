@@ -1,12 +1,14 @@
 import React from 'react';
 import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet';
 import styled from 'styled-components';
+import LogoSvg from './logo.svg';
 
-export default function() {
+function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext);
 
   return (
     <Header
+      className={className}
       background="brand"
       pad="medium"
       border={[{ size: 'medium', side: 'bottom', color: '#F3E502' }]}
@@ -20,11 +22,15 @@ export default function() {
       >
         <Box direction="row" align="center" gap="small">
           <Anchor color="white" href="#">
-            Bio Resources Portal
+            <Logo />
           </Anchor>
         </Box>
 
-        <Nav direction="row" gap={size == 'large' ? 'xlarge' : 'medium'}>
+        <Nav
+          direction="row"
+          gap={size == 'large' ? 'xlarge' : 'medium'}
+          align="center"
+        >
           <Anchor color="white" href="#" label="Search" />
           <Anchor color="white" href="#" label="List Resource" />
           <Anchor color="white" href="#" label="Help" />
@@ -34,3 +40,13 @@ export default function() {
     </Header>
   );
 }
+
+ResourcesHeader = styled(ResourcesHeader)`
+  margin-bottom: 2rem;
+`;
+
+export default ResourcesHeader;
+
+const Logo = styled(LogoSvg)`
+  margin-bottom: -56px;
+`;
