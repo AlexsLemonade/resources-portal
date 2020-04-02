@@ -9,9 +9,9 @@ import {
 } from 'grommet';
 import styled from 'styled-components';
 
-function DetailsTable({ data }) {
+function DetailsTable({ data, className }) {
   return (
-    <Table>
+    <Table className={className}>
       <TableHeader>
         <TableRow>
           <TableCell scope="col" align="right" />
@@ -21,10 +21,15 @@ function DetailsTable({ data }) {
       <TableBody>
         {data.map((datum, i) => (
           <TableRow key={datum['name']}>
-            <TableCell align="center">
-              <Text>{datum['name']}</Text>
+            <TableCell
+              align="center"
+              pad="medium"
+              align="right"
+              verticalAlign="top"
+            >
+              <Text weight="bold">{datum['name']}</Text>
             </TableCell>
-            <TableCell align="center">
+            <TableCell align="center" pad="medium" align="left">
               <Text>{datum['value']}</Text>
             </TableCell>
           </TableRow>
@@ -33,5 +38,22 @@ function DetailsTable({ data }) {
     </Table>
   );
 }
+
+DetailsTable = styled(DetailsTable)`
+  width: 100%;
+
+  thead {
+    display: none;
+  }
+
+  tbody > tr > td:first-child {
+    width: 150px;
+  }
+
+  tbody > tr:nth-child(2n + 1) {
+    background-color: ${props =>
+      props.theme.global.colors['background-highlight']};
+  }
+`;
 
 export default DetailsTable;

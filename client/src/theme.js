@@ -200,6 +200,7 @@ const theme = {
     colors: {
       'active-background': 'background-contrast',
       'active-text': 'text-strong',
+      'background-highlight': '#F2F2F2',
       background: {
         dark: '#111111',
         light: '#FFFFFF'
