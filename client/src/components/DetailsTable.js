@@ -1,21 +1,37 @@
 import React from 'react';
-import { DataTable } from 'grommet';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+  Text
+} from 'grommet';
 import styled from 'styled-components';
 
-export default function({ data }) {
+function DetailsTable({ data }) {
   return (
-    <DataTable
-      columns={[
-        {
-          property: 'name',
-          primary: true,
-
-        },
-        {
-          property: 'value'
-        }
-      ]}
-      data={data}
-    ></DataTable>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableCell scope="col" align="right" />
+          <TableCell scope="col" align="right" />
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {data.map((datum, i) => (
+          <TableRow key={datum['name']}>
+            <TableCell align="center">
+              <Text>{datum['name']}</Text>
+            </TableCell>
+            <TableCell align="center">
+              <Text>{datum['value']}</Text>
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 }
+
+export default DetailsTable;
