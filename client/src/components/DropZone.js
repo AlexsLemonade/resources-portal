@@ -8,10 +8,14 @@ export default ({
   onDrop,
 }) => {
   const size = React.useContext(ResponsiveContext)
+
   return (
-    <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+    <Dropzone
+      accept={fileTypes.map(ft => `.${ft}`)}
+      onDrop={onDrop}>
       {({getRootProps, getInputProps, open}) => (
         <Box
+          { ...getRootProps() }
           width="full"
           fill="horizontal"
           align="center"
@@ -21,9 +25,8 @@ export default ({
           border={{
             style: 'dashed'
           }}
-          {...getRootProps()}
         >
-          <input {...getInputProps()} />
+          <input { ...getInputProps() } />
             <Button
               label="Select Files"
               onClick={open}
@@ -31,9 +34,7 @@ export default ({
             />
             <Text
               color="text-weak"
-              margin={{
-                vertical: "medium"
-              }}
+              margin="large"
             >
             or  drag and drop files
           </Text>
@@ -46,7 +47,7 @@ export default ({
                 ? "Supported file format:"
                 : "Supported file formats:"
             }
-            {fileTypes.map(ff => ff)}
+            {fileTypes.map(ft => ` ${ft.toUpperCase()}`)}
           </Text>
         </Box>
       )}
