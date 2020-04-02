@@ -1,10 +1,10 @@
 import { Grommet } from 'grommet';
-import theme from '../src/theme';
+import theme from '../theme';
 import Head from 'next/head';
-import Layout from '../src/components/Layout';
+import Layout from '../components/Layout';
 
 // global styles
-import '../src/styles/app.scss';
+import '../styles/app.scss';
 
 export default ({ Component, pageProps }) => {
   return (
