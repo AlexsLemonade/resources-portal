@@ -7,6 +7,7 @@ dev_addr: 0.0.0.0:8001
 
 nav:
   - Home: 'index.md'
+  - Storybook: 'storybook/index.html'
   - API:
       - Authentication: 'api/authentication.md'
       - Users: 'api/users.md'
