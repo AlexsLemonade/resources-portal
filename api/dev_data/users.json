@@ -1,0 +1,122 @@
+{
+  "resources_portal_user": [
+    {
+      "username": "PrimaryProf",
+      "first_name": "Prim",
+      "last_name": "Proffer",
+      "password": "App1eB0ttomGene$",
+      "last_login": "2020-02-19 17:15:25-07",
+      "is_superuser": "False",
+      "email": "pprof@havard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-01-22 19:10:25-07",
+      "id": "10000000-0f5a-4165-b518-b2386a753d6f"
+    },
+    {
+      "username": "PostDoc",
+      "first_name": "Postsworth",
+      "last_name": "Doktor",
+      "password": "Malc0mInPlasmiddle!",
+      "last_login": "2020-03-12 04:15:25-07",
+      "is_superuser": "False",
+      "email": "pdoc@harvard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-01-01 16:15:25-07",
+      "id": "20000000-a55d-42b7-b53e-056956e18b8c"
+    },
+    {
+      "username": "SecondaryProf",
+      "first_name": "Secundus",
+      "last_name": "Profarius",
+      "password": "PDXG0nG!veItToYa",
+      "last_login": "2020-03-31 09:11:25-07",
+      "is_superuser": "False",
+      "email": "secprof@harvard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-03-26 04:12:25-07",
+      "id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+    }
+  ],
+  "resources_portal_user_groups": [
+    {
+      "id": "782a5626-70ba-4019-a94a-90079589b098",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+    },
+    {
+      "id": "934b5bcf-1878-474a-83cf-566337587861",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+    },
+    {
+      "id": "e6e53466-fa63-4f4b-a5a6-7f3e63e2a14e",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+    }
+  ],
+  "organization_user_setting": [
+    {
+      "id": "fda60675-bf53-4190-9fbb-4f4a2a7cb6e1",
+      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "False",
+      "request_approval_determined_notif": "False",
+      "request_assigned_notif": "False",
+      "reminder_notif": "False",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "c24ef80a-1c7a-4153-b649-145c8a201004",
+      "organization_id": "20000000-a4aa-4887-92b8-5f5575aa82e9",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "c5519b9d-6d0e-4f7b-8831-45a2188025b1",
+      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "093e6fe0-56ef-4bcb-80e2-84265857a3b7",
+      "organization_id": "30000000-66df-4785-aa51-6b98e0d48a24",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "False",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "b355e186-b856-4c05-8f8d-c905acf0d2a2",
+      "organization_id": "40000000-6a0c-4762-bbe8-cb3da6ac7ff2",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-03-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07"
+    }
+  ]
+}

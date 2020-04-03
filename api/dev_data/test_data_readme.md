@@ -12,8 +12,8 @@ There are fours organizations which have these users as members:
 - SecondaryProfOrg, owned by SecondaryProf
 
 There are two grants:
-- A grant for melanoma research, given to PrimaryProf
-- A grant for tumor growth research, given to SecondaryProf
+- A grant for melanoma research, owned by PrimaryProf
+- A grant for tumor growth research, co-owned by PrimaryProf and SecondaryProf
 
 There are eight materials:
 	Four contributed by PrimaryProf:

@@ -1,0 +1,89 @@
+{
+  "grants": [
+    {
+      "id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07",
+      "title": "Grant for Research in Melanoma Treatment",
+      "funder_id": "10000000-0f5a-4165-b518-b2386a753d6f"
+    },
+    {
+      "id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07",
+      "title": "Grant for Research in Tumor Growth",
+      "funder_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+    }
+  ],
+  "grants_materials": [
+    {
+      "id": "726b132c-ec04-4463-b6ad-acc3cb1cbd8c",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "material_id": "9b6079b7-f7a6-4d70-a87d-c41583ce62cb"
+    },
+    {
+      "id": "14c20314-c91f-42a4-8a27-8a9879a4095d",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "material_id": "55690195-4714-4a8d-bc1c-9ff6e2e70a69"
+    },
+    {
+      "id": "09c8bd47-f571-4ca5-a737-e8f74dc239b0",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "material_id": "23dd71a3-9f53-4c17-bf35-7014ddcd637c"
+    },
+    {
+      "id": "36d2fe1f-980d-43d2-b34a-013150bd1f08",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "material_id": "4b338483-7ef0-4ca9-b149-75b0f1bef829"
+    },
+    {
+      "id": "f6e3631c-9bbe-4694-b1af-0ba5d4870d24",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "material_id": "2a38de2b-e7d5-4d9d-848e-6296e1387b73"
+    },
+    {
+      "id": "d6aa9637-e392-47b7-b346-a4ef8451be29",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "material_id": "cc2193c5-a99e-433e-b83b-8708fe580c65"
+    },
+    {
+      "id": "7931052e-29f7-4e8a-a547-a177d46363a3",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "material_id": "d1686a6c-7d7d-4e90-9c6c-9be541d5074f"
+    },
+    {
+      "id": "77f09c55-d513-4b7b-a99f-73204a0c6965",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "material_id": "39ec5797-8c1a-4b57-a87a-fa1feb36d8fa"
+    }
+  ],
+  "grants_organizations": [
+    {
+      "id": "ccb29d98-c274-4404-b738-43c48dfd7e30",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b"
+    },
+    {
+      "id": "370a5e21-710d-452d-9ba3-938ce6c5c926",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "organization_id": "40000000-6a0c-4762-bbe8-cb3da6ac7ff2"
+    }
+  ],
+  "grants_users": [
+    {
+      "id": "3c687b8c-ec4e-476e-8042-f7f7977344ce",
+      "grant_id": "10000000-2bee-4206-bcd9-2381d314bc01",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
+    },
+    {
+      "id": "9b800f7c-6922-4f6f-8028-ad78ad42f3f8",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
+    },
+    {
+      "id": "ccd23d37-4591-4f01-a403-4081b5aee1e6",
+      "grant_id": "20000000-dcfa-4c64-aedc-a9bd99b489f3",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+    }
+  ]
+}
