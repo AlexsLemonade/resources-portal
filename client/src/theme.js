@@ -1,14 +1,20 @@
-// This file is the theme config for the grommet theme provider
+import { normalizeColor } from 'grommet/utils';
+
 const theme = {
   button: {
     border: {
-      radius: '12px',
-      width: '2px'
+      radius: '4px',
+      width: '1px'
     },
     padding: {
-      horizontal: '14px',
-      vertical: '2px'
-    }
+      horizontal: '24px',
+      vertical: '8px'
+    },
+    extend: props => `
+      ${!props.primary && `
+         color: ${props.theme.global.colors.brand.light};
+      `}
+    `
   },
   calendar: {
     large: {
@@ -210,7 +216,7 @@ const theme = {
         light: '#EEEEEE'
       },
       'background-contrast': {
-        dark: '#FFFFFF11',
+        dark: '#FFFFFF',
         light: '#F2F2F2'
       },
       'background-front': {
@@ -229,14 +235,14 @@ const theme = {
       'graph-0': 'brand',
       'graph-1': 'status-warning',
       'selected-background': 'brand',
-      'selected-text': 'text-strong',
+      'selected-text': 'text',
       'status-critical': '#FF4040',
       'status-disabled': '#CCCCCC',
       'status-ok': '#00C781',
       'status-unknown': '#CCCCCC',
       'status-warning': '#FFAA15',
       text: {
-        dark: '#EEEEEE',
+        dark: '#FDFDFD',
         light: '#000000'
       },
       'text-strong': {
@@ -245,7 +251,7 @@ const theme = {
       },
       'text-weak': {
         dark: '#CCCCCC',
-        light: '#444444'
+        light: '#999999'
       },
       'text-xweak': {
         dark: '#999999',
@@ -491,9 +497,9 @@ const theme = {
       size: '15px'
     },
     medium: {
-      height: '16px',
+      height: '24px',
       maxWidth: '192px',
-      size: '12px'
+      size: '16px'
     },
     small: {
       height: '15px',
