@@ -45,6 +45,8 @@ services:
     command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
     volumes:
       - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+      - ./client/.next:/home/user/code/.next
     depends_on:
       - api
   storybook:
