@@ -4,36 +4,36 @@ services:
   postgres:
     image: postgres:11.6
     volumes:
-      - ./volumes_postgres/volumes_postgres:/var/lib/postgresql/data
+      - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
   web:
     restart: always
     environment:
       - DJANGO_SECRET_KEY=local
     image: web
     build:
-      context: ./
-      dockerfile: Dockerfile.local
+      context: ./api/
+      dockerfile: ./api/Dockerfile.local
       args:
-        PORT: "${HTTP_PORT}"
+        PORT: '${HTTP_PORT}'
     command: >
       bash -c "python wait_for_postgres.py &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
     volumes:
-      - ./:/home/user/code
+      - ./api:/home/user/code
     ports:
-      - "${HTTP_PORT}:${HTTP_PORT}"
+      - '${HTTP_PORT}:${HTTP_PORT}'
     depends_on:
       - postgres
   documentation:
     restart: always
     build:
       context: ./
-      dockerfile: Dockerfile.local
+      dockerfile: ./api/Dockerfile.local
       args:
-        PORT: "${DOCS_PORT}"
-    command: "mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}"
+        PORT: '${DOCS_PORT}'
+    command: 'mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}'
     volumes:
-      - ./:/home/user/code
+      - ./api:/home/user/code
     ports:
-      - "${DOCS_PORT}:${DOCS_PORT}"
+      - '${DOCS_PORT}:${DOCS_PORT}'
