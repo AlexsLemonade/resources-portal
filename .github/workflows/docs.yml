@@ -1,10 +1,9 @@
 name: Publish docs via GitHub Pages
 
 on:
-  push
-  # push:
-  #   branches:
-  #     - dev
+  push:
+    branches:
+      - dev
 
 jobs:
   build:
