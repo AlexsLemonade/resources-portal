@@ -5,14 +5,14 @@ services:
     image: postgres:11.6
     volumes:
       - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
-  web:
+  api:
     restart: always
     environment:
       - DJANGO_SECRET_KEY=local
-    image: web
+    image: api
     build:
-      context: ./api/
-      dockerfile: ./api/Dockerfile.local
+      context: ./api
+      dockerfile: Dockerfile.local
       args:
         PORT: '${HTTP_PORT}'
     command: >
@@ -37,3 +37,26 @@ services:
       - ./api:/home/user/code
     ports:
       - '${DOCS_PORT}:${DOCS_PORT}'
+  client:
+    ports:
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+    build:
+      context: ./client/
+    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+      - ./client/.next:/home/user/code/.next
+    depends_on:
+      - api
+  storybook:
+    ports:
+      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
+    build:
+      context: ./client/
+    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+    depends_on:
+      - client
