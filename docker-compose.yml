@@ -28,8 +28,8 @@ services:
   documentation:
     restart: always
     build:
-      context: ./
-      dockerfile: ./api/Dockerfile.local
+      context: ./api
+      dockerfile: Dockerfile.local
       args:
         PORT: '${DOCS_PORT}'
     command: 'mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}'
