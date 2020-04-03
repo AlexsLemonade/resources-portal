@@ -40,4 +40,4 @@ docker-compose run --rm web ./manage.py graph_models -a -g > model.dot
 At the moment png exports are not setup but these can be generated from the `.dot` file.
 (Either with `dot -Tpng model.dot -o database_diagram.png` or https://convertio.co/dot-png/)
 
-![database-diagram](/database_diagram.png)
+![database-diagram](database_diagram.png)
