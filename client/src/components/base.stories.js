@@ -9,8 +9,8 @@ storiesOf('Button', module).add('default', () => {
     <Grommet theme={theme}>
       <Box align="center" pad="large" gap="large">
         <Button label="Primary" primary />
-
         <Button label="Secondary" />
+        <Button label="Default" />
       </Box>
     </Grommet>
   );
