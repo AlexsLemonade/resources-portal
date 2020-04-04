@@ -18,7 +18,9 @@ for (let key of Object.keys(Mappings)) {
     })
     .add('Details', () => (
       <Grommet theme={theme}>
-        <Details category={key} {...data[key]} />
+        <Box pad="xlarge">
+          <Details category={key} {...data[key]} />
+        </Box>
       </Grommet>
     ));
 }
