@@ -73,6 +73,7 @@ function PublicationField({ data }) {
 }
 
 function RequestRequirementsField({ data }) {
+  // TODO: Request requirements field in search
   return (
     <SearchResultField>
       <Text weight="bold">Request Requirements</Text>
