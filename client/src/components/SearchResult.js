@@ -6,8 +6,8 @@ import styled from 'styled-components';
 function SearchResult({ data, fields, className }) {
   return (
     <Box
-      border="normal"
-      pad="medium"
+      border={true}
+      pad="large"
       className={className}
       margin={{ bottom: 'large' }}
     >
@@ -16,8 +16,8 @@ function SearchResult({ data, fields, className }) {
         justify="between"
         align="center"
         border={[{ side: 'bottom' }]}
-        margin={{ bottom: 'small' }}
-        pad={{ bottom: 'small' }}
+        margin={{ bottom: 'medium' }}
+        pad={{ bottom: 'medium' }}
       >
         <div>
           <Heading level="3" margin={{ top: '0', bottom: 'small' }}>
@@ -33,7 +33,7 @@ function SearchResult({ data, fields, className }) {
       </Box>
       <Box>
         {fields.map(({ label, value }) => (
-          <SearchResultField>
+          <SearchResultField key={label}>
             <Text weight="bold">{label}</Text>
             <br />
             <Text>{value}</Text>
