@@ -1,11 +1,50 @@
 import Head from 'next/head';
 
+import SearchInput from '../components/SearchInput';
+import styled from 'styled-components';
+
+import { Box, Button, Grid, Text } from 'grommet';
+
 const Home = () => (
-  <div className="container">
-    <main>
-      <h1 className="title">Search page</h1>
-    </main>
-  </div>
+  <main>
+    <SearchInputContainer>
+      <SearchInput />
+    </SearchInputContainer>
+
+    <Grid
+      fill
+      rows={['auto', 'flex']}
+      columns={['auto', 'flex']}
+      areas={[
+        { name: 'header', start: [1, 0], end: [1, 1] },
+        { name: 'sidebar', start: [0, 0], end: [0, 1] },
+        { name: 'main', start: [1, 1], end: [1, 1] }
+      ]}
+    >
+      <Box
+        gridArea="header"
+        direction="row"
+        align="center"
+        justify="between"
+        pad="small"
+      >
+        TODO: Page size controls
+      </Box>
+      <Box gridArea="sidebar" width="medium" pad="small">
+        TODO: Search filters
+      </Box>
+      <Box gridArea="main" pad="small">
+        <Text>main</Text>
+      </Box>
+    </Grid>
+  </main>
 );
 
 export default Home;
+
+const SearchInputContainer = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 752px;
+  margin-bottom: ${({ theme }) => theme.global.edgeSize.xlarge};
+`;

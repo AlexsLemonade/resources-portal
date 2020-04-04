@@ -6,7 +6,7 @@ import { Box, Main } from 'grommet';
 export default function Layout({ children }) {
   return (
     <LayoutContainer>
-      <Box gridArea="header">
+      <Box gridArea="header" margin={{ bottom: 'xlarge' }}>
         <Header />
       </Box>
       <Main width="xlarge" alignSelf="center">
