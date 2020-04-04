@@ -1,6 +1,7 @@
 import React from 'react';
 import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 export default function() {
   const size = React.useContext(ResponsiveContext);
@@ -19,13 +20,17 @@ export default function() {
         justify="between"
       >
         <Box direction="row" align="center" gap="small">
-          <Anchor color="white" href="#">
-            Bio Resources Portal
-          </Anchor>
+          <Link href="/">
+            <Anchor color="white" href="#">
+              Bio Resources Portal
+            </Anchor>
+          </Link>
         </Box>
 
         <Nav direction="row" gap={size == 'large' ? 'xlarge' : 'medium'}>
-          <Anchor color="white" href="#" label="Search" />
+          <Link href="/search">
+            <Anchor color="white" href="#" label="Search" />
+          </Link>
           <Anchor color="white" href="#" label="List Resource" />
           <Anchor color="white" href="#" label="Help" />
           <Anchor color="white" href="#" label="My Account" />
