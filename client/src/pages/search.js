@@ -3,17 +3,11 @@ import Head from 'next/head';
 import SearchInput from '../components/SearchInput';
 import styled from 'styled-components';
 
-import { Box, Button, Grid, Text } from 'grommet';
-import { useLoader } from '../common/hooks';
+import { Box, Grid } from 'grommet';
 import { search } from '../common/api';
 import { SearchResult } from '../resources';
-import { useRouter } from 'next/router';
-export default function Search({}) {
-  const router = useRouter();
-  // check for the parameter `ref=search` to ensure that the previous page was the search
-  const { q: query } = router.query;
-  const { isLoading, data } = useLoader(() => search({ query }));
 
+export default function Search({ results }) {
   return (
     <main>
       <SearchInputContainer>
@@ -43,19 +37,23 @@ export default function Search({}) {
           TODO: Search filters
         </Box>
         <Box gridArea="main" pad="small">
-          {!isLoading &&
-            data.map(result => (
-              <SearchResult
-                key={result.id}
-                category={result.category}
-                data={result}
-              />
-            ))}
+          {results.map(result => (
+            <SearchResult
+              key={result.id}
+              category={result.category}
+              data={result}
+            />
+          ))}
         </Box>
       </Grid>
     </main>
   );
 }
+Search.getInitialProps = async ({ query }) => {
+  // TODO: add additional filter parameters here
+  const results = await search({ query: query.q });
+  return { results };
+};
 
 const SearchInputContainer = styled.div`
   margin-left: auto;
