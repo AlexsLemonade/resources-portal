@@ -1,0 +1,74 @@
+import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet';
+import styled from 'styled-components';
+
+function SearchResult({ data, fields, className }) {
+  return (
+    <Box
+      border="normal"
+      pad="medium"
+      className={className}
+      margin={{ bottom: 'large' }}
+    >
+      <Box
+        direction="row"
+        justify="between"
+        align="center"
+        border={[{ side: 'bottom' }]}
+        margin={{ bottom: 'small' }}
+        pad={{ bottom: 'small' }}
+      >
+        <div>
+          <Heading level="3" margin={{ top: '0', bottom: 'small' }}>
+            <Anchor href="#" label={data.title} />
+          </Heading>
+          [i] Dataset
+        </div>
+        <div>
+          <Button label="View Resource" primary />
+        </div>
+      </Box>
+      <Box>
+        {fields.map(({ label, value }) => (
+          <SearchResultField>
+            <Text weight="bold">{label}</Text>
+            <br />
+            <Text>{value}</Text>
+          </SearchResultField>
+        ))}
+        <PublicationField data={data} />
+        <RequestRequirementsField data={data} />
+      </Box>
+    </Box>
+  );
+}
+SearchResult = styled(SearchResult)`
+  box-shadow: 0 2px 18px 1px rgba(0, 0, 0, 0.1);
+`;
+
+export default SearchResult;
+
+const SearchResultField = styled.div`
+  margin-bottom: ${({ theme }) => theme.global.edgeSize.small};
+`;
+
+function PublicationField({ data }) {
+  return (
+    <SearchResultField>
+      <Text weight="bold">Publication</Text>
+      <br />
+      <Text>
+        <Anchor href="#" label={data.additional_metadata.publication_title} />
+      </Text>
+    </SearchResultField>
+  );
+}
+
+function RequestRequirementsField({ data }) {
+  return (
+    <SearchResultField>
+      <Text weight="bold">Request Requirements</Text>
+      <br />
+      <Text>Needs MTA</Text>
+    </SearchResultField>
+  );
+}
