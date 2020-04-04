@@ -29,7 +29,7 @@ const data = {
   DATASET: {
     data: {
       title: 'Zebrafish Dataset',
-      material_type: 'DATASET',
+      category: 'DATASET',
       id: 'd1686a6c-7d7d-4e90-9c6c-9be541d5074f',
       url: '',
       contact_user: '10000000-0f5a-4165-b518-b2386a753d6f',

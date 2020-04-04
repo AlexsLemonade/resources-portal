@@ -1,5 +1,7 @@
 import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet';
 import styled from 'styled-components';
+// import ResourceTypeIcon from '../images/resource-type.svg';
+// import OrganismIcon from '../images/organism.svg';
 
 function SearchResult({ data, fields, className }) {
   return (
@@ -21,7 +23,9 @@ function SearchResult({ data, fields, className }) {
           <Heading level="3" margin={{ top: '0', bottom: 'small' }}>
             <Anchor href="#" label={data.title} />
           </Heading>
-          [i] Dataset
+          <Text margin={{ right: 'large' }}>[i] {data.category}</Text>
+
+          <Text>[i] {data.additional_metadata.organism}</Text>
         </div>
         <div>
           <Button label="View Resource" primary />
