@@ -2,6 +2,7 @@ import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet';
 import styled from 'styled-components';
 // import ResourceTypeIcon from '../images/resource-type.svg';
 // import OrganismIcon from '../images/organism.svg';
+import Link from 'next/link';
 
 function SearchResult({ data, fields, className }) {
   return (
@@ -21,14 +22,18 @@ function SearchResult({ data, fields, className }) {
       >
         <div>
           <Heading level="3" margin={{ top: '0', bottom: 'small' }}>
-            <Anchor href="#" label={data.title} />
+            <Link href="/resources/[id]" as={`/resources/${data.id}`}>
+              <Anchor label={data.title} />
+            </Link>
           </Heading>
           <Text margin={{ right: 'large' }}>[i] {data.category}</Text>
 
           <Text>[i] {data.additional_metadata.organism}</Text>
         </div>
         <div>
-          <Button label="View Resource" primary />
+          <Link href="/resources/[id]" as={`/resources/${data.id}`}>
+            <Button label="View Resource" primary />
+          </Link>
         </div>
       </Box>
       <Box>
