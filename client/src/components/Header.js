@@ -31,7 +31,9 @@ export default function() {
           <Link href="/search">
             <Anchor color="white" href="#" label="Search" />
           </Link>
-          <Anchor color="white" href="#" label="List Resource" />
+          <Link href="/resources">
+            <Anchor color="white" href="#" label="List Resource" />
+          </Link>
           <Anchor color="white" href="#" label="Help" />
           <Anchor color="white" href="#" label="My Account" />
         </Nav>
