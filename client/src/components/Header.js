@@ -1,9 +1,10 @@
 import React from 'react';
 import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet';
 import styled from 'styled-components';
+import Link from 'next/link';
 import LogoSvg from './logo.svg';
 
-function ResourcesHeader({ className }) {
+export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext);
 
   return (
@@ -13,6 +14,7 @@ function ResourcesHeader({ className }) {
       pad="medium"
       border={[{ size: 'medium', side: 'bottom', color: '#F3E502' }]}
       justify="center"
+      margin={{ bottom: '2rem' }}
     >
       <Box
         direction="row"
@@ -21,9 +23,11 @@ function ResourcesHeader({ className }) {
         justify="between"
       >
         <Box direction="row" align="center" gap="small">
-          <Anchor color="white" href="#">
-            <Logo />
-          </Anchor>
+          <Link href="/">
+            <Anchor color="white" href="#">
+              <Logo />
+            </Anchor>
+          </Link>
         </Box>
 
         <Nav
@@ -31,8 +35,12 @@ function ResourcesHeader({ className }) {
           gap={size == 'large' ? 'xlarge' : 'medium'}
           align="center"
         >
-          <Anchor color="white" href="#" label="Search" />
-          <Anchor color="white" href="#" label="List Resource" />
+          <Link href="/search">
+            <Anchor color="white" href="#" label="Search" />
+          </Link>
+          <Link href="/resources">
+            <Anchor color="white" href="#" label="List Resource" />
+          </Link>
           <Anchor color="white" href="#" label="Help" />
           <Anchor color="white" href="#" label="My Account" />
         </Nav>
@@ -40,12 +48,6 @@ function ResourcesHeader({ className }) {
     </Header>
   );
 }
-
-ResourcesHeader = styled(ResourcesHeader)`
-  margin-bottom: 2rem;
-`;
-
-export default ResourcesHeader;
 
 const Logo = styled(LogoSvg)`
   margin-bottom: -56px;

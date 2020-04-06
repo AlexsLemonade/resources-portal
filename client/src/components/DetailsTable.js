@@ -20,14 +20,14 @@ function DetailsTable({ data, className }) {
       </TableHeader>
       <TableBody>
         {data.map((datum, i) => (
-          <TableRow key={datum['name']}>
+          <TableRow key={datum['label']}>
             <TableCell
               align="center"
               pad="medium"
               align="right"
               verticalAlign="top"
             >
-              <Text weight="bold">{datum['name']}</Text>
+              <Text weight="bold">{datum['label']}</Text>
             </TableCell>
             <TableCell align="center" pad="medium" align="left">
               <Text>{datum['value']}</Text>
