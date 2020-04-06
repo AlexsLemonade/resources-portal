@@ -40,15 +40,6 @@ There are seventeen materials:
 	- a ZIRC Imported Mouse Model Organism
 	- an Imported Stone Tablet (Other)
 
-There are the following permission groups:
-- Admin
-- User
-
-The users are in the following groups:
-- PrimaryProf: Admin
-- SecondaryProf: Admin
-- PostDoc: User
-
 The following notifcation settings are in place:
 - PrimaryProf: all notifcations off for PrimaryLab, all notifcations on for PrimaryProfPersonalOrg
 - PostDoc: all notifications on for PrimaryLab, all notifcations except reminders on for PostDocOrg
