@@ -19,14 +19,14 @@ function findResourceComponent(category) {
   );
 }
 
-const ResourceComponentGetter = key => ({ category, ...props }) => {
-  const ResourceComponent = findResourceComponent(category);
+const ResourceComponentGetter = key => ({ resource }) => {
+  const ResourceComponent = findResourceComponent(resource.category);
   if (!ResourceComponent[key]) {
     throw new Error(`Resource ${category} doesn't have ${key} defined.`);
   }
   const Resource = ResourceComponent[key];
 
-  return <Resource {...props} />;
+  return <Resource resource={resource} />;
 };
 
 export const SearchResult = ResourceComponentGetter('SearchResult');

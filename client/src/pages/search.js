@@ -38,11 +38,7 @@ export default function Search({ results }) {
         </Box>
         <Box gridArea="main" pad="small">
           {results.map(result => (
-            <SearchResult
-              key={result.id}
-              category={result.category}
-              data={result}
-            />
+            <SearchResult key={result.id} resource={result} />
           ))}
         </Box>
       </Grid>

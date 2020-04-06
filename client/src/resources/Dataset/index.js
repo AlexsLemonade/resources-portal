@@ -1,40 +1,40 @@
 import SearchResultComponent from '../../components/SearchResult';
 import DetailsTable from '../../components/DetailsTable';
 
-function SearchResult({ data, className }) {
+function SearchResult({ resource, className }) {
   return (
     <SearchResultComponent
-      data={data}
+      resource={resource}
       className={className}
       fields={[
         {
           label: 'Description',
-          value: data.additional_metadata.description
+          value: resource.additional_metadata.description
         }
       ]}
     />
   );
 }
 
-function ResourceDetails({ data }) {
+function ResourceDetails({ resource }) {
   return (
     <DetailsTable
       data={[
-        { label: 'Title', value: data.title },
+        { label: 'Title', value: resource.title },
         {
           label: 'Description',
-          value: data.additional_metadata.description
+          value: resource.additional_metadata.description
         },
-        { label: 'Organism', value: data.additional_metadata.organism },
+        { label: 'Organism', value: resource.additional_metadata.organism },
         {
           label: 'Number of Samples',
-          value: data.additional_metadata.number_samples
+          value: resource.additional_metadata.number_samples
         },
-        { label: 'Technology', value: data.additional_metadata.technology },
-        { label: 'Platform', value: data.additional_metadata.platform },
+        { label: 'Technology', value: resource.additional_metadata.technology },
+        { label: 'Platform', value: resource.additional_metadata.platform },
         {
           label: 'Additional Information',
-          value: data.additional_metadata.additional_info || 'None'
+          value: resource.additional_metadata.additional_info || 'None'
         }
       ]}
     />

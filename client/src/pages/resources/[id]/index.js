@@ -35,8 +35,6 @@ const ResourceDetailsPage = ({ resource }) => (
     <div>
       <Heading level="3">Resource Details</Heading>
 
-      <ResourceDetails category={resource.category} data={resource} />
-
       <ResourceDetails resource={resource} />
     </div>
   </>

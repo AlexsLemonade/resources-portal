@@ -4,7 +4,7 @@ import styled from 'styled-components';
 // import OrganismIcon from '../images/organism.svg';
 import Link from 'next/link';
 
-function SearchResult({ data, fields, className }) {
+function SearchResult({ resource, fields, className }) {
   return (
     <Box
       border={true}
@@ -22,16 +22,16 @@ function SearchResult({ data, fields, className }) {
       >
         <div>
           <Heading level="3" margin={{ top: '0', bottom: 'small' }}>
-            <Link href="/resources/[id]" as={`/resources/${data.id}`}>
-              <Anchor label={data.title} />
+            <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
+              <Anchor label={resource.title} />
             </Link>
           </Heading>
-          <Text margin={{ right: 'large' }}>[i] {data.category}</Text>
+          <Text margin={{ right: 'large' }}>[i] {resource.category}</Text>
 
-          <Text>[i] {data.additional_metadata.organism}</Text>
+          <Text>[i] {resource.additional_metadata.organism}</Text>
         </div>
         <div>
-          <Link href="/resources/[id]" as={`/resources/${data.id}`}>
+          <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
             <Button label="View Resource" primary />
           </Link>
         </div>
@@ -44,8 +44,8 @@ function SearchResult({ data, fields, className }) {
             <Text>{value}</Text>
           </SearchResultField>
         ))}
-        <PublicationField data={data} />
-        <RequestRequirementsField data={data} />
+        <PublicationField data={resource} />
+        <RequestRequirementsField data={resource} />
       </Box>
     </Box>
   );
