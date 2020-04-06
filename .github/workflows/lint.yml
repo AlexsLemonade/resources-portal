@@ -40,5 +40,5 @@ jobs:
           flake8_dir: api/
           eslint: true
           eslint_dir: client/
-          prettier: true
+          prettier: false
           prettier_lint: client/
