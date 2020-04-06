@@ -5,9 +5,8 @@ from rest_framework.test import APITestCase
 
 import factory
 from faker import Faker
-from nose.tools import eq_, ok_
 
-from resources_portal.models import User
+from resources_portal.models import Organization, User
 from resources_portal.test.factories import UserFactory
 
 fake = Faker()
@@ -21,18 +20,23 @@ class TestUserListTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("user-list")
         self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
+        # Don't post created_at and updated_at.
+        self.user_data.pop("created_at")
+        self.user_data.pop("updated_at")
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
-        eq_(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_with_valid_data_succeeds(self):
         response = self.client.post(self.url, self.user_data)
-        eq_(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         user = User.objects.get(pk=response.data.get("id"))
-        eq_(user.username, self.user_data.get("username"))
-        ok_(check_password(self.user_data.get("password"), user.password))
+        self.assertEqual(user.username, self.user_data.get("username"))
+        self.assertTrue(check_password(self.user_data.get("password"), user.password))
+
+        self.assertIsNotNone(Organization.objects.get(owner=user))
 
 
 class TestUserDetailTestCase(APITestCase):
@@ -47,13 +51,13 @@ class TestUserDetailTestCase(APITestCase):
 
     def test_get_request_returns_a_given_user(self):
         response = self.client.get(self.url)
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_request_updates_a_user(self):
         new_first_name = fake.first_name()
         payload = {"first_name": new_first_name}
         response = self.client.put(self.url, payload)
-        eq_(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user = User.objects.get(pk=self.user.id)
-        eq_(user.first_name, new_first_name)
+        self.assertEqual(user.first_name, new_first_name)
