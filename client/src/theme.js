@@ -303,7 +303,7 @@ const theme = {
       large: '512px',
       medium: '256px',
       small: '128px',
-      xlarge: '768px',
+      xlarge: `${8 * 130}px`,
       xsmall: '64px',
       xxlarge: `${8 * 156}px`,
       xxsmall: '32px'
