@@ -2,28 +2,28 @@
   "organizations": [
     {
       "name": "PrimaryLab",
-      "id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "id": "1",
       "owner_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "created_at": "2020-01-30 16:12:25-07",
       "updated_at": "2020-03-21 10:11:25-07"
     },
     {
       "name": "PrimaryProfPersonalOrg",
-      "id": "20000000-a4aa-4887-92b8-5f5575aa82e9",
+      "id": "2",
       "owner_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "created_at": "2020-02-13 18:12:25-07",
       "updated_at": "2020-02-10 10:12:25-07"
     },
     {
       "name": "PostDocOrg",
-      "id": "30000000-66df-4785-aa51-6b98e0d48a24",
+      "id": "3",
       "owner_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "created_at": "2020-01-02 15:02:25-07",
       "updated_at": "2020-03-24 10:12:25-07"
     },
     {
       "name": "SecondaryProfOrg",
-      "id": "40000000-6a0c-4762-bbe8-cb3da6ac7ff2",
+      "id": "4",
       "owner_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
       "created_at": "2020-03-27 09:12:25-07",
       "updated_at": "2020-03-29 11:13:25-07"
@@ -31,28 +31,28 @@
   ],
   "organizations_members": [
     {
-      "id": "d4585acd-0805-4588-ae39-fd851b69f799",
-      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "id": "1",
+      "organization_id": "1",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
-      "id": "0d21fa87-38ab-443f-90f5-324d3417eb3c",
-      "organization_id": "20000000-a4aa-4887-92b8-5f5575aa82e9",
+      "id": "2",
+      "organization_id": "2",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
-      "id": "b7b23574-a4e1-4764-8a1c-87d075c1fec3",
-      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "id": "3",
+      "organization_id": "1",
       "user_id": "20000000-a55d-42b7-b53e-056956e18b8c"
     },
     {
-      "id": "2840dfb0-f544-4b5d-a722-d4edca41bade",
-      "organization_id": "30000000-66df-4785-aa51-6b98e0d48a24",
+      "id": "4",
+      "organization_id": "3",
       "user_id": "20000000-a55d-42b7-b53e-056956e18b8c"
     },
     {
-      "id": "1c1bded8-3915-490d-a2a2-ea0a74dbb7eb",
-      "organization_id": "40000000-6a0c-4762-bbe8-cb3da6ac7ff2",
+      "id": "5",
+      "organization_id": "4",
       "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }
   ]

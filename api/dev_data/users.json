@@ -42,25 +42,25 @@
   ],
   "resources_portal_user_groups": [
     {
-      "id": "782a5626-70ba-4019-a94a-90079589b098",
+      "id": "1",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
-      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+      "group_id": "2"
     },
     {
-      "id": "934b5bcf-1878-474a-83cf-566337587861",
+      "id": "2",
       "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
-      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+      "group_id": "2"
     },
     {
-      "id": "e6e53466-fa63-4f4b-a5a6-7f3e63e2a14e",
+      "id": "3",
       "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
-      "group_id": "20000000-5818-45ed-b84f-6e9be7e7a28c"
+      "group_id": "2"
     }
   ],
   "organization_user_setting": [
     {
-      "id": "fda60675-bf53-4190-9fbb-4f4a2a7cb6e1",
-      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "id": "1",
+      "organization_id": "1",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "new_request_notif": "True",
       "change_in_request_status_notif": "False",
@@ -71,8 +71,8 @@
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
-      "id": "c24ef80a-1c7a-4153-b649-145c8a201004",
-      "organization_id": "20000000-a4aa-4887-92b8-5f5575aa82e9",
+      "id": "1",
+      "organization_id": "2",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "new_request_notif": "True",
       "change_in_request_status_notif": "True",
@@ -83,8 +83,8 @@
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
-      "id": "c5519b9d-6d0e-4f7b-8831-45a2188025b1",
-      "organization_id": "10000000-10d9-4e4f-8fb6-d18cb8f5392b",
+      "id": "2",
+      "organization_id": "1",
       "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "new_request_notif": "True",
       "change_in_request_status_notif": "True",
@@ -95,8 +95,8 @@
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
-      "id": "093e6fe0-56ef-4bcb-80e2-84265857a3b7",
-      "organization_id": "30000000-66df-4785-aa51-6b98e0d48a24",
+      "id": "3",
+      "organization_id": "3",
       "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "new_request_notif": "True",
       "change_in_request_status_notif": "True",
@@ -107,8 +107,8 @@
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
-      "id": "b355e186-b856-4c05-8f8d-c905acf0d2a2",
-      "organization_id": "40000000-6a0c-4762-bbe8-cb3da6ac7ff2",
+      "id": "4",
+      "organization_id": "4",
       "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
       "new_request_notif": "True",
       "change_in_request_status_notif": "True",
