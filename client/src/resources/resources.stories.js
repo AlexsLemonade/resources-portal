@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { Grommet, Box } from 'grommet';
-import { storiesOf } from '@storybook/react';
-import theme from '../theme';
-import { Mappings, SearchResult, ResourceDetails } from './index';
+import * as React from 'react'
+import { Grommet, Box } from 'grommet'
+import { storiesOf } from '@storybook/react'
+import theme from '../theme'
+import { Mappings, SearchResult, ResourceDetails } from './index'
 
 export function formatSentenceCase(str) {
-  if (!str) return '';
+  if (!str) return ''
 
-  const tmpStr = str.toLowerCase().replace(/_/g, ' ');
-  return tmpStr.charAt(0).toUpperCase() + tmpStr.slice(1);
+  const tmpStr = str.toLowerCase().replace(/_/g, ' ')
+  return tmpStr.charAt(0).toUpperCase() + tmpStr.slice(1)
 }
 
-for (let key of Object.keys(Mappings)) {
+for (const key of Object.keys(Mappings)) {
   storiesOf(`${formatSentenceCase(key)}`, module)
     .add('SearchResult', () => {
       return (
@@ -21,7 +21,7 @@ for (let key of Object.keys(Mappings)) {
             <SearchResult resource={data[key]} />
           </Box>
         </Grommet>
-      );
+      )
     })
     .add('Details', () => (
       <Grommet theme={theme}>
@@ -29,7 +29,7 @@ for (let key of Object.keys(Mappings)) {
           <ResourceDetails resource={data[key]} />
         </Box>
       </Grommet>
-    ));
+    ))
 }
 
 const data = {
@@ -64,4 +64,4 @@ const data = {
     pubmed_id: 'https://www.ncbi.nlm.nih.gov/pubmed/32223680',
     updated_at: '2020-01-30 16:12:25-07'
   }
-};
+}

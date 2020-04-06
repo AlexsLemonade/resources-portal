@@ -4,4 +4,4 @@ export default () => (
       <h1 className="title">TODO: Resource request page</h1>
     </main>
   </div>
-);
+)

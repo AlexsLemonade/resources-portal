@@ -1,8 +1,8 @@
-import { getResourceDetails } from '../../../common/api';
-import { useRouter } from 'next/router';
-import { ResourceDetails } from '../../../resources';
-import { Box, Heading, Anchor, Text, Button } from 'grommet';
-import Link from 'next/link';
+import { useRouter } from 'next/router'
+import { Box, Heading, Anchor, Text, Button } from 'grommet'
+import Link from 'next/link'
+import { ResourceDetails } from '../../../resources'
+import { getResourceDetails } from '../../../common/api'
 
 const ResourceDetailsPage = ({ resource }) => (
   <>
@@ -38,9 +38,9 @@ const ResourceDetailsPage = ({ resource }) => (
       <ResourceDetails resource={resource} />
     </div>
   </>
-);
+)
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const resource = await getResourceDetails({ id: query.id });
-  return { resource };
-};
-export default ResourceDetailsPage;
+  const resource = await getResourceDetails({ id: query.id })
+  return { resource }
+}
+export default ResourceDetailsPage

@@ -1,4 +1,4 @@
-import { normalizeColor } from 'grommet/utils';
+import { normalizeColor } from 'grommet/utils'
 
 const theme = {
   button: {
@@ -10,26 +10,30 @@ const theme = {
       horizontal: '24px',
       vertical: '8px'
     },
-    extend: props => `
-      ${!props.primary &&
+    extend: (props) => `
+      ${
+        !props.primary &&
         `
          color: ${props.theme.global.colors.brand.light};
-      `}
+      `
+      }
     `
   },
   tabs: {
     gap: '91px',
     header: {
-      extend: props => `
+      extend: (props) => `
         border-bottom: 1px solid #CACACA;
-        justify-content: ${props.children.length > 3
-          ? 'space-between'
-          : 'start'
+        justify-content: ${
+          props.children.length > 3 ? 'space-between' : 'start'
         };
         > div {
-          ${props.children.length > 3 && `
+          ${
+            props.children.length > 3 &&
+            `
             display: none;
-          `}
+          `
+          }
         }
         > button {
           position: relative;
@@ -73,7 +77,8 @@ const theme = {
           right: 50%;
           transform-origin: right;
           transform: translate(95%, 100%) rotate(-20deg)
-    `}
+    `
+    }
   },
   calendar: {
     large: {
@@ -581,6 +586,6 @@ const theme = {
       size: '23px'
     }
   }
-};
+}
 
-export default theme;
+export default theme

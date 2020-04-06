@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { Grommet, Box } from 'grommet';
-import { storiesOf } from '@storybook/react';
+import * as React from 'react'
+import { Grommet, Box } from 'grommet'
+import { storiesOf } from '@storybook/react'
 
-import DetailsTable from './DetailsTable';
-import theme from '../theme';
+import DetailsTable from './DetailsTable'
+import theme from '../theme'
 
 storiesOf('DetailsTable', module).add('default', () => {
   const DATA = [
@@ -28,7 +28,7 @@ storiesOf('DetailsTable', module).add('default', () => {
         </a>
       )
     }
-  ];
+  ]
 
   return (
     <Grommet theme={theme}>
@@ -36,5 +36,5 @@ storiesOf('DetailsTable', module).add('default', () => {
         <DetailsTable data={DATA} />
       </Box>
     </Grommet>
-  );
-});
+  )
+})

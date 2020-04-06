@@ -1,11 +1,11 @@
-import Head from 'next/head';
+import Head from 'next/head'
 
-import SearchInput from '../components/SearchInput';
-import styled from 'styled-components';
+import styled from 'styled-components'
 
-import { Box, Grid } from 'grommet';
-import { search } from '../common/api';
-import { SearchResult } from '../resources';
+import { Box, Grid } from 'grommet'
+import SearchInput from '../components/SearchInput'
+import { search } from '../common/api'
+import { SearchResult } from '../resources'
 
 export default function Search({ results }) {
   return (
@@ -37,23 +37,23 @@ export default function Search({ results }) {
           TODO: Search filters
         </Box>
         <Box gridArea="main" pad="small">
-          {results.map(result => (
+          {results.map((result) => (
             <SearchResult key={result.id} resource={result} />
           ))}
         </Box>
       </Grid>
     </main>
-  );
+  )
 }
 Search.getInitialProps = async ({ query }) => {
   // TODO: add additional filter parameters here
-  const results = await search({ query: query.q });
-  return { results };
-};
+  const results = await search({ query: query.q })
+  return { results }
+}
 
 const SearchInputContainer = styled.div`
   margin-left: auto;
   margin-right: auto;
   max-width: 752px;
   margin-bottom: ${({ theme }) => theme.global.edgeSize.xlarge};
-`;
+`

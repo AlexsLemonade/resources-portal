@@ -1,17 +1,12 @@
-import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet';
-import styled from 'styled-components';
+import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet'
+import styled from 'styled-components'
 // import ResourceTypeIcon from '../images/resource-type.svg';
 // import OrganismIcon from '../images/organism.svg';
-import Link from 'next/link';
+import Link from 'next/link'
 
 function SearchResult({ resource, fields, className }) {
   return (
-    <Box
-      border={true}
-      pad="large"
-      className={className}
-      margin={{ bottom: 'large' }}
-    >
+    <Box border pad="large" className={className} margin={{ bottom: 'large' }}>
       <Box
         direction="row"
         justify="between"
@@ -48,17 +43,17 @@ function SearchResult({ resource, fields, className }) {
         <RequestRequirementsField data={resource} />
       </Box>
     </Box>
-  );
+  )
 }
 SearchResult = styled(SearchResult)`
   box-shadow: 0 2px 18px 1px rgba(0, 0, 0, 0.1);
-`;
+`
 
-export default SearchResult;
+export default SearchResult
 
 const SearchResultField = styled.div`
   margin-bottom: ${({ theme }) => theme.global.edgeSize.small};
-`;
+`
 
 function PublicationField({ data }) {
   return (
@@ -69,7 +64,7 @@ function PublicationField({ data }) {
         <Anchor href="#" label={data.additional_metadata.publication_title} />
       </Text>
     </SearchResultField>
-  );
+  )
 }
 
 function RequestRequirementsField({ data }) {
@@ -80,5 +75,5 @@ function RequestRequirementsField({ data }) {
       <br />
       <Text>Needs MTA</Text>
     </SearchResultField>
-  );
+  )
 }

@@ -94,7 +94,7 @@ export async function search({ query, filters, pageSize, page }) {
       pubmed_id: 'https://www.ncbi.nlm.nih.gov/pubmed/32223680',
       updated_at: '2020-01-30 16:12:25-07'
     }
-  ];
+  ]
 }
 
 export async function getResourceDetails({ id }) {
@@ -128,5 +128,5 @@ export async function getResourceDetails({ id }) {
     needs_mta: 'true',
     pubmed_id: 'https://www.ncbi.nlm.nih.gov/pubmed/32223680',
     updated_at: '2020-01-30 16:12:25-07'
-  };
+  }
 }

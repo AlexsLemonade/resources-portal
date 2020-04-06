@@ -1,5 +1,5 @@
-import SearchResultComponent from '../../components/SearchResult';
-import DetailsTable from '../../components/DetailsTable';
+import SearchResultComponent from '../../components/SearchResult'
+import DetailsTable from '../../components/DetailsTable'
 
 function SearchResult({ resource, className }) {
   return (
@@ -13,7 +13,7 @@ function SearchResult({ resource, className }) {
         }
       ]}
     />
-  );
+  )
 }
 
 function ResourceDetails({ resource }) {
@@ -38,10 +38,10 @@ function ResourceDetails({ resource }) {
         }
       ]}
     />
-  );
+  )
 }
 
 export default {
   SearchResult,
   ResourceDetails
-};
+}
