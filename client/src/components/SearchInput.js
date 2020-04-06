@@ -1,8 +1,7 @@
-import React from 'react';
-import { Box, Button, TextInput } from 'grommet';
-import styled from 'styled-components';
+import React from 'react'
+import { Box, Button, TextInput } from 'grommet'
 
-export default function SearchInput({ query, onSubmit, size = 'medium' }) {
+export default function SearchInput({ query, size = 'medium' }) {
   // TODO: add form and use onSubmit
   return (
     <Box direction="row">
@@ -14,5 +13,5 @@ export default function SearchInput({ query, onSubmit, size = 'medium' }) {
         margin={{ left: 'medium' }}
       />
     </Box>
-  );
+  )
 }

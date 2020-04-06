@@ -1,7 +1,6 @@
-import React from 'react';
-import Header from './Header';
-import styled from 'styled-components';
-import { Box, Main } from 'grommet';
+import React from 'react'
+import { Box, Main } from 'grommet'
+import Header from './Header'
 
 export default function Layout({ children }) {
   return (
@@ -13,5 +12,5 @@ export default function Layout({ children }) {
         {children}
       </Main>
     </Box>
-  );
+  )
 }

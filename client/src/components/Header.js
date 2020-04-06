@@ -1,11 +1,11 @@
-import React from 'react';
-import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet';
-import styled from 'styled-components';
-import Link from 'next/link';
-import LogoSvg from './logo.svg';
+import React from 'react'
+import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
+import styled from 'styled-components'
+import Link from 'next/link'
+import LogoSvg from './logo.svg'
 
 export default function ResourcesHeader({ className }) {
-  const size = React.useContext(ResponsiveContext);
+  const size = React.useContext(ResponsiveContext)
 
   return (
     <Header
@@ -18,7 +18,7 @@ export default function ResourcesHeader({ className }) {
     >
       <Box
         direction="row"
-        width={{ max: size == 'large' ? 'xxlarge' : 'full' }}
+        width={{ max: size === 'large' ? 'xxlarge' : 'full' }}
         fill="horizontal"
         justify="between"
       >
@@ -32,7 +32,7 @@ export default function ResourcesHeader({ className }) {
 
         <Nav
           direction="row"
-          gap={size == 'large' ? 'xlarge' : 'medium'}
+          gap={size === 'large' ? 'xlarge' : 'medium'}
           align="center"
         >
           <Link href="/search">
@@ -46,9 +46,9 @@ export default function ResourcesHeader({ className }) {
         </Nav>
       </Box>
     </Header>
-  );
+  )
 }
 
 const Logo = styled(LogoSvg)`
   margin-bottom: -56px;
-`;
+`

@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import React from 'react'
 
 const Home = () => (
   <div className="container">
@@ -6,6 +6,6 @@ const Home = () => (
       <h1 className="title">TODO: Landing page goes here</h1>
     </main>
   </div>
-);
+)
 
-export default Home;
+export default Home

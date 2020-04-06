@@ -1,8 +1,9 @@
-import { Box, Heading, Button, Anchor, Text } from 'grommet';
-import Link from 'next/link';
-import styled from 'styled-components';
+import React from 'react'
+import { Box, Heading, Button, Anchor, Text } from 'grommet'
+import Link from 'next/link'
+import styled from 'styled-components'
 
-export default function ListResource({}) {
+export default function ListResource() {
   return (
     <>
       <Box margin={{ bottom: 'large' }}>
@@ -28,7 +29,7 @@ export default function ListResource({}) {
         </Link>
       </Box>
 
-      <MessageBox pad="medium" border={true} alignSelf="center">
+      <MessageBox pad="medium" border alignSelf="center">
         <Text>
           Repository for your resource doesn’t exist? Can’t list your resource
           in a repository yet?{' '}
@@ -38,10 +39,10 @@ export default function ListResource({}) {
         </Text>
       </MessageBox>
     </>
-  );
+  )
 }
 
 const MessageBox = styled(Box)`
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   max-width: 536px;
-`;
+`

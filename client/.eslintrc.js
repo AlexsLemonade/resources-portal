@@ -2,7 +2,7 @@ module.exports = {
   extends: ['airbnb', 'plugin:prettier/recommended'],
   env: {
     browser: true,
-    es6: true,
+    es6: true
   },
   plugins: ['react'],
   rules: {
@@ -18,8 +18,8 @@ module.exports = {
         ignoreUrls: true,
         ignoreStrings: true,
         ignoreTemplateLiterals: true,
-        ignoreRegExpLiterals: true,
-      },
+        ignoreRegExpLiterals: true
+      }
     ],
     'jsx-a11y/href-no-hash': ['off'],
     'react/jsx-filename-extension': ['warn', { extensions: ['.js', '.jsx'] }],
@@ -42,5 +42,6 @@ module.exports = {
     'no-use-before-define': 0,
     'react/no-multi-comp': 0,
     'import/no-mutable-exports': 0,
-  },
-};
+    'react/jsx-props-no-spreading': 'warn'
+  }
+}
