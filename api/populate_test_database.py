@@ -1,0 +1,62 @@
+import os
+from json import loads
+
+from resources_portal.models import *
+
+
+def add_class_to_database(class_json, Class):
+    for element in class_json:
+        element_in_class = Class(**element)
+        element_in_class.save()
+
+
+# Add users
+users_json = loads(open("./dev_data/users.json").read())
+add_class_to_database(users_json["resources_portal_user"], User)
+
+# add organizations
+organizations_json = loads(open("./dev_data/organizations.json").read())
+add_class_to_database(organizations_json["organizations"], Organization)
+
+materials_json = loads(open("./dev_data/materials.json").read())
+add_class_to_database(materials_json["materials"], Material)
+
+# add grants
+grants_json = loads(open("./dev_data/grants.json").read())
+add_class_to_database(grants_json["grants"], Grant)
+
+# add user settings
+add_class_to_database(users_json["organization_user_setting"], OrganizationUserSetting)
+
+# add share events
+add_class_to_database(materials_json["materials_share_events"], MaterialShareEvent)
+
+# add requests
+add_class_to_database(materials_json["materials_requests"], MaterialRequest)
+
+# add relation of organizations and members
+for i in organizations_json["organizations_members"]:
+    myOrg = Organization.objects.get(id=i["organization_id"])
+    myUser = User.objects.get(id=i["user_id"])
+    myOrg.members.add(myUser)
+
+# add relation of grants and materials
+for i in grants_json["grants_materials"]:
+    myGrant = Grant.objects.get(id=i["grant_id"])
+    myMaterial = Material.objects.get(id=i["material_id"])
+    myGrant.materials.add(myMaterial)
+
+# add relation of grants and organizations
+for i in grants_json["grants_organizations"]:
+    myGrant = Grant.objects.get(id=i["grant_id"])
+    myOrg = Organization.objects.get(id=i["organization_id"])
+    myGrant.organizations.add(myOrg)
+
+# add relation of grants and users
+for i in grants_json["grants_users"]:
+    myGrant = Grant.objects.get(id=i["grant_id"])
+    myUser = User.objects.get(id=i["user_id"])
+    myGrant.users.add(myUser)
+
+# TODO If permissions and auth groups have thier design finalized,
+# add new model and relationship for resources_portal_user_groups and resources_portal_user_user_permissions here

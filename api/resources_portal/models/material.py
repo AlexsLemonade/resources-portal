@@ -9,20 +9,23 @@ class Material(models.Model):
         db_table = "materials"
         get_latest_by = "created_at"
 
-    MATERIAL_TYPE_CHOICES = (
+    CATEGORY_CHOICES = (
         ("CELL_LINE", "CELL_LINE"),
         ("PLASMID", "PLASMID"),
         ("PROTOCOL", "PROTOCOL"),
         ("DATASET", "DATASET"),
         ("MOUSE_MODEL", "MOUSE_MODEL"),
         ("ZEBRAFISH_MODEL", "ZEBRAFISH_MODEL"),
+        ("PDX", "PDX"),
+        ("OTHER", "OTHER"),
     )
 
     objects = models.Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    material_type = models.CharField(max_length=32, choices=MATERIAL_TYPE_CHOICES)
+    title = models.TextField()
+    category = models.CharField(max_length=32, choices=CATEGORY_CHOICES)
     url = models.TextField(blank=True, null=True)
     pubmed_id = models.CharField(max_length=32, blank=True)
 
@@ -31,6 +34,11 @@ class Material(models.Model):
     mta_s3_url = models.TextField(
         blank=True, null=True, help_text="Contains an url to download the MTA."
     )
+
+    title = models.TextField(
+        blank=False, null=False, help_text="The title of the material.", default="New Material"
+    )
+
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)
 

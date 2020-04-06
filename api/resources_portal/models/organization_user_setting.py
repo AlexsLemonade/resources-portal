@@ -16,6 +16,12 @@ class OrganizationUserSetting(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    new_request_notif = models.BooleanField(default=True)
+    change_in_request_status_notif = models.BooleanField(default=True)
+    request_approval_determined_notif = models.BooleanField(default=True)
+    request_assigned_notif = models.BooleanField(default=True)
+    reminder_notif = models.BooleanField(default=True)
+
     user = models.ForeignKey(
         User,
         blank=False,
