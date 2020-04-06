@@ -1,5 +1,3 @@
-import { normalizeColor } from 'grommet/utils'
-
 const theme = {
   button: {
     border: {

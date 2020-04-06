@@ -8,7 +8,7 @@ import theme from '../theme'
 storiesOf('DropZone', module).add('default', () => {
   return (
     <Grommet theme={theme}>
-      <DropZone fileTypes={['pdf']} onDrop={(files) => console.log(files)} />
+      <DropZone fileTypes={['pdf']} onDrop={(files) => console.error(files)} />
     </Grommet>
   )
 })
@@ -27,12 +27,7 @@ storiesOf('DropZone', module).add('View Files', () => {
           setFiles(newFiles)
         }}
       />
-      <DropZone
-        fileTypes={['pdf']}
-        onDrop={(files) => {
-          setFiles(files)
-        }}
-      />
+      <DropZone fileTypes={['pdf']} onDrop={(f) => setFiles(f)} />
     </Grommet>
   )
 })

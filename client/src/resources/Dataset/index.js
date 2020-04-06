@@ -1,3 +1,4 @@
+import React from 'react'
 import SearchResultComponent from '../../components/SearchResult'
 import DetailsTable from '../../components/DetailsTable'
 

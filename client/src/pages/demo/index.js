@@ -1,10 +1,9 @@
-import react from 'react'
+import React from 'react'
+
 import {
   Box,
-  Button,
   Paragraph,
   Main,
-  Stack,
   Select,
   FormField,
   Heading,

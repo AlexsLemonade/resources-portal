@@ -1,4 +1,5 @@
-import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet'
+import React from 'react'
+import { Box, Anchor, Button, Heading, Text } from 'grommet'
 import styled from 'styled-components'
 // import ResourceTypeIcon from '../images/resource-type.svg';
 // import OrganismIcon from '../images/organism.svg';
@@ -67,7 +68,7 @@ function PublicationField({ data }) {
   )
 }
 
-function RequestRequirementsField({ data }) {
+function RequestRequirementsField() {
   // TODO: Request requirements field in search
   return (
     <SearchResultField>

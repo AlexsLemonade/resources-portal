@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router'
+import React from 'react'
+
 import { Box, Heading, Anchor, Text, Button } from 'grommet'
 import Link from 'next/link'
 import { ResourceDetails } from '../../../resources'

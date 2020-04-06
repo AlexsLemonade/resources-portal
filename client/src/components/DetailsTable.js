@@ -19,17 +19,12 @@ function DetailsTable({ data, className }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((datum, i) => (
+        {data.map((datum) => (
           <TableRow key={datum.label}>
-            <TableCell
-              align="center"
-              pad="medium"
-              align="right"
-              verticalAlign="top"
-            >
+            <TableCell pad="medium" align="right" verticalAlign="top">
               <Text weight="bold">{datum.label}</Text>
             </TableCell>
-            <TableCell align="center" pad="medium" align="left">
+            <TableCell pad="medium" align="left">
               <Text>{datum.value}</Text>
             </TableCell>
           </TableRow>

@@ -1,8 +1,9 @@
+import React from 'react'
 import { Box, Heading, Button, Anchor, Text } from 'grommet'
 import Link from 'next/link'
 import styled from 'styled-components'
 
-export default function ListResource({}) {
+export default function ListResource() {
   return (
     <>
       <Box margin={{ bottom: 'large' }}>

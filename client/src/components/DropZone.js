@@ -1,13 +1,10 @@
 import React from 'react'
-import { Box, Text, Button, ResponsiveContext } from 'grommet'
+import { Box, Text, Button } from 'grommet'
 import Dropzone from 'react-dropzone'
 
-export default ({ fileTypes = [], multiple = true, onDrop }) => {
-  const size = React.useContext(ResponsiveContext)
-
+export default ({ fileTypes = [], onDrop }) => {
   return (
-    <Dropzone
-accept={fileTypes.map((ft) => `.${ft}`)} onDrop={onDrop}>
+    <Dropzone accept={fileTypes.map((ft) => `.${ft}`)} onDrop={onDrop}>
       {({ getRootProps, getInputProps, open }) => (
         <Box
           {...getRootProps()}

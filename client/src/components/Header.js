@@ -18,7 +18,7 @@ export default function ResourcesHeader({ className }) {
     >
       <Box
         direction="row"
-        width={{ max: size == 'large' ? 'xxlarge' : 'full' }}
+        width={{ max: size === 'large' ? 'xxlarge' : 'full' }}
         fill="horizontal"
         justify="between"
       >
@@ -32,7 +32,7 @@ export default function ResourcesHeader({ className }) {
 
         <Nav
           direction="row"
-          gap={size == 'large' ? 'xlarge' : 'medium'}
+          gap={size === 'large' ? 'xlarge' : 'medium'}
           align="center"
         >
           <Link href="/search">

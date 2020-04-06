@@ -1,3 +1,4 @@
+import React from 'react'
 import { Grommet } from 'grommet'
 import Head from 'next/head'
 import theme from '../theme'

@@ -1,3 +1,4 @@
+import React from 'react'
 import Dataset from './Dataset'
 
 export const Mappings = {
@@ -22,7 +23,9 @@ function findResourceComponent(category) {
 const ResourceComponentGetter = (key) => ({ resource }) => {
   const ResourceComponent = findResourceComponent(resource.category)
   if (!ResourceComponent[key]) {
-    throw new Error(`Resource ${category} doesn't have ${key} defined.`)
+    throw new Error(
+      `Resource ${resource.category} doesn't have ${key} defined.`
+    )
   }
   const Resource = ResourceComponent[key]
 

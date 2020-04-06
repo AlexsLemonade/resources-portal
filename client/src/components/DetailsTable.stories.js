@@ -22,11 +22,7 @@ storiesOf('DetailsTable', module).add('default', () => {
     { label: 'Technology', value: 'microarray' },
     {
       label: 'Source Url',
-      value: (
-        <a href="#">
-          https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE24528
-        </a>
-      )
+      value: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE24528'
     }
   ]
 

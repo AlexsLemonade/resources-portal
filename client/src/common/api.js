@@ -1,4 +1,6 @@
-export async function search({ query, filters, pageSize, page }) {
+export async function search() {
+  // params: query, filters, pageSize, page
+
   // TODO: Connect to API
   return [
     {
@@ -97,7 +99,9 @@ export async function search({ query, filters, pageSize, page }) {
   ]
 }
 
-export async function getResourceDetails({ id }) {
+export async function getResourceDetails() {
+  // params: id
+  // TODO call API
   return {
     title: 'Zebrafish Dataset',
     category: 'DATASET',
