@@ -11,7 +11,8 @@ const theme = {
       vertical: '8px'
     },
     extend: props => `
-      ${!props.primary && `
+      ${!props.primary &&
+        `
          color: ${props.theme.global.colors.brand.light};
       `}
     `
