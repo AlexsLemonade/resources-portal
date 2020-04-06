@@ -7,12 +7,12 @@ export default function SearchInput({ query, onSubmit, size = 'medium' }) {
   return (
     <Box direction="row">
       <TextInput value={query} size={size} />
-      <SearchButton label="Search" size={size} />
+      <Button
+        label="Search"
+        size={size}
+        width="96px"
+        margin={{ left: 'medium' }}
+      />
     </Box>
   );
 }
-
-const SearchButton = styled(Button)`
-  margin-left: ${({ theme }) => theme.global.edgeSize.medium};
-  width: 96px;
-`;

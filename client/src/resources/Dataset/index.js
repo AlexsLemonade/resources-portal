@@ -16,7 +16,7 @@ function SearchResult({ data, className }) {
   );
 }
 
-function Details({ data }) {
+function ResourceDetails({ data }) {
   return (
     <DetailsTable
       data={[
@@ -43,5 +43,5 @@ function Details({ data }) {
 
 export default {
   SearchResult,
-  Details
+  ResourceDetails
 };

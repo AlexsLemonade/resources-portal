@@ -30,4 +30,4 @@ const ResourceComponentGetter = key => ({ category, ...props }) => {
 };
 
 export const SearchResult = ResourceComponentGetter('SearchResult');
-export const Details = ResourceComponentGetter('Details');
+export const ResourceDetails = ResourceComponentGetter('ResourceDetails');

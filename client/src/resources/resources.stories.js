@@ -2,10 +2,17 @@ import * as React from 'react';
 import { Grommet, Box } from 'grommet';
 import { storiesOf } from '@storybook/react';
 import theme from '../theme';
-import { Mappings, SearchResult, Details } from './index';
+import { Mappings, SearchResult, ResourceDetails } from './index';
+
+export function formatSentenceCase(str) {
+  if (!str) return '';
+
+  const tmpStr = str.toLowerCase().replace(/_/g, ' ');
+  return tmpStr.charAt(0).toUpperCase() + tmpStr.slice(1);
+}
 
 for (let key of Object.keys(Mappings)) {
-  storiesOf(`Resource: ${key}`, module)
+  storiesOf(`${formatSentenceCase(key)}`, module)
     .add('SearchResult', () => {
       return (
         <Grommet theme={theme}>
@@ -19,7 +26,7 @@ for (let key of Object.keys(Mappings)) {
     .add('Details', () => (
       <Grommet theme={theme}>
         <Box pad="xlarge">
-          <Details category={key} {...data[key]} />
+          <ResourceDetails category={key} {...data[key]} />
         </Box>
       </Grommet>
     ));
