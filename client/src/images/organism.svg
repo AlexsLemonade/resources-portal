@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>badges/organism</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="12" cy="12" r="12"></circle>
+        <path d="M9.4979443,10.0716516 C8.67065251,10.0282951 8.05857901,8.87539349 8.13083989,7.49657384 C8.20310077,6.11775418 8.93233229,5.03514741 9.75962408,5.07850393 C10.5869159,5.12186046 11.1989894,6.27476205 11.1267285,7.65358171 C11.0544676,9.03240136 10.3252361,10.1150081 9.4979443,10.0716516 Z M15.0144252,10.1294022 C14.1905362,10.2159964 13.4056448,9.17303832 13.2613212,7.79989013 C13.1169975,6.42674194 13.6678939,5.24338691 14.4917828,5.15679269 C15.3156718,5.07019848 16.1005632,6.11315655 16.2448868,7.48630474 C16.3892105,8.85945293 15.8383141,10.042808 15.0144252,10.1294022 Z M19.8479328,13.9756702 C19.0275678,14.0909649 18.2067558,13.0760345 18.0145979,11.7087597 C17.8224399,10.3414848 18.3317023,9.1396246 19.1520672,9.02432983 C19.9724322,8.90903506 20.7932442,9.92396547 20.9854021,11.2912403 C21.1775601,12.6585152 20.6682977,13.8603754 19.8479328,13.9756702 Z M5.23867884,13.9863047 C4.41478993,13.8997105 3.86389347,12.7163555 4.00821716,11.3432073 C4.15254085,9.97005911 4.93743224,8.92710105 5.76132116,9.01369526 C6.58521007,9.10028948 7.13610653,10.2836445 6.99178284,11.6567927 C6.84745915,13.0299409 6.06256776,14.072899 5.23867884,13.9863047 Z M12.5,16.6204138 C9.46243388,16.6204138 7,19.7244827 7,16.6204138 C7,13.516345 9.46243388,11 12.5,11 C15.5375661,11 18,13.516345 18,16.6204138 C18,19.7244827 15.5375661,16.6204138 12.5,16.6204138 Z" id="path-3"></path>
+    </defs>
+    <g id="Search-Resources" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="search-results-other" transform="translate(-703.000000, -433.000000)">
+            <g id="result-card-other-biosample" transform="translate(464.000000, 313.000000)">
+                <g id="organisms" transform="translate(239.000000, 120.000000)">
+                    <g id="badges/organism">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <use id="Oval" fill="#017FA3" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        <g id="color/turteal/base-017FA3" mask="url(#mask-2)" fill="#017FA3" fill-rule="evenodd" stroke="#017FA3" stroke-width="1">
+                            <rect id="turteal-017FA3" x="0.5" y="0.5" width="23" height="23"></rect>
+                        </g>
+                        <mask id="mask-4" fill="white">
+                            <use xlink:href="#path-3"></use>
+                        </mask>
+                        <use id="Combined-Shape" fill="#F2F2F2" fill-rule="evenodd" xlink:href="#path-3"></use>
+                        <g id="color/gray/white-FDFDFD" mask="url(#mask-4)" fill="#FDFDFD" fill-rule="evenodd">
+                            <rect id="white-FDFDFD" x="0" y="0" width="24" height="24"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

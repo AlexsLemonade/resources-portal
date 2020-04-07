@@ -1,4 +1,0 @@
-.*
-!.coveragerc
-!.env
-volumes_postgres/
