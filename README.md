@@ -18,50 +18,22 @@ Start the dev server for local development:
 cd api && docker-compose up
 ```
 
-Run a command inside the docker container:
+See the [README for the API](api/README.md) for more information and commands.
 
-```bash
-cd api && docker-compose run --rm web [command]
-```
-
-i.e. the tests:
-
-```
-cd api && docker-compose run --rm web ./run_tests.sh
-```
-
-The dev server runs by default on port 8000 with the docs being served at 8001.
-If these ports are already in use on your local machine, you can run them at different ports with:
-```bash
-cd api && PORT=8002 DOCS_PORT=8003 docker-compose run --rm web [command]
-```
-
-A postgres commmand line client can be started by running:
-```
-cd api && ./run_psql_client.sh
-```
+`pre-commit` can run linting on all committed files for you automatically on every commit.
+To enable this behavior, run `pre-commit install` in the root directory.
+This will require installing `pre-commit` if you have not already done so.
 
 ## Cloud Development
 
-Currently we do not have a staging or production stack, but a development stack can be deployed with:
+Currently we do not have a staging or production stack, but a development stack can be deployed with the [infrastrucutre READEME](infrastructure/README.md)
 
-```
-cd infrastructure && python3 deploy.py -d [dockerhub-repo] -e dev -u [username] -v v0.0.0
-```
+## Testing
 
-You will need an `resources-portal-api:v0.0.0` image in the dockerhub-repo you supply. Run `python3 infrastructure/deploy.py -h` for more options.
+To populate the dev database with some realistic data, please run:
 
-Once your deployment is complete it will output the elastic_ip_address like:  `elastic_ip_address = X.X.X.X`
-You can use this to make a curl request to the API like so:
-```
-curl -X POST http://X.X.X.X/v1/users -H "Content-Type: application/json" -d '{"username": "crazyparklady", "password": "i<3parks", "first_name": "Leslie", "last_name": "Knope", "email": "lknope@parks.pawneeindiana.gov"}'
+```python
+cd api && docker-compose run --rm web python3 manage.py populate_test_database
 ```
 
-Subsequent deploys to the same stack will use the same elastic IP address.
-
-You can destroy an existing stack with:
-```
-cd infrastructure && python3 destroy_terraform.py -e dev -u [username]
-```
-
-The username you use to destroy should match the one you supplied to `deploy.py`.
+See the [README for the test data](api/dev_data/test_data_readme.md) for a description of the test dataset.

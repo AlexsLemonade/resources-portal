@@ -14,8 +14,7 @@ class Material(models.Model):
         ("PLASMID", "PLASMID"),
         ("PROTOCOL", "PROTOCOL"),
         ("DATASET", "DATASET"),
-        ("MOUSE_MODEL", "MOUSE_MODEL"),
-        ("ZEBRAFISH_MODEL", "ZEBRAFISH_MODEL"),
+        ("MODEL_ORGANISM", "MODEL_ORGANISM"),
         ("PDX", "PDX"),
         ("OTHER", "OTHER"),
     )
@@ -41,6 +40,7 @@ class Material(models.Model):
 
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)
+    needs_abstract = models.BooleanField(default=False)
 
     contact_user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(

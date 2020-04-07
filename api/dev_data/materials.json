@@ -42,16 +42,17 @@
           "contact_name": "Prim Proffer",
           "contact_email": "pprof@harvard.edu",
           "publication_title": "Expression Analysis of Zebrafish Melanoma",
-          "pre_print_doi": "10.1109/5.771073",
-          "pre_print_title": "Initial Research on Zebrafish Melanoma",
+          "pre_print_doi": "",
+          "pre_print_title": "",
           "citation": "Proffer, Prim. \"Expression Analysis of Zebrafish Melanoma\". March 15, 2020.",
-          "additional_info": "This paper was co-authored by Postworth Docktor."
+          "additional_info": ""
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
       "needs_irb": "False",
       "needs_mta": "True",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -71,22 +72,23 @@
           "contact_name": "Postworth Docktor",
           "contact_email": "pdoc@harvard.edu",
           "publication_title": "Extraction of t-type alleles from zebrafish samples",
-          "pre_print_doi": "10.1109/5.771073",
-          "pre_print_title": "Initial Research on Zebrafish Extraction",
-          "citation": "Docktor, Postworth. \"Initial Research on Zebrafish Extraction\". March 15, 2020.",
+          "pre_print_doi": "",
+          "pre_print_title": "",
+          "citation": "",
           "additional_info": "This paper was co-authored by Prim Proffer."
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "True",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
       "title": "Zebrafish Model Organism",
-      "category": "ZEBRAFISH_MODEL",
+      "category": "MODEL_ORGANISM",
       "id": "3",
       "url": "",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -105,23 +107,24 @@
         "additional_details": {
           "contact_name": "Postworth Docktor",
           "contact_email": "pdoc@harvard.edu",
-          "publication_title": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
-          "pre_print_doi": "10.1109/5.771073",
-          "pre_print_title": "Initial Research on Zebrafish Morphology",
-          "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
-          "additional_info": "This paper was co-authored by Prim Proffer."
+          "publication_title": "",
+          "pre_print_doi": "",
+          "pre_print_title": "",
+          "citation": "",
+          "additional_info": ""
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
       "needs_irb": "True",
       "needs_mta": "True",
+      "needs_abstract": "True",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
       "title": "Mouse Model Organism",
-      "category": "MOUSE_MODEL",
+      "category": "MODEL_ORGANISM",
       "id": "4",
       "url": "",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -149,8 +152,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
+      "needs_irb": "False",
       "needs_mta": "True",
+      "needs_abstract": "True",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -179,8 +183,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -217,19 +222,20 @@
           "passage_number": "21430780"
         },
         "additional_details": {
-          "contact_name": "Secundus Profarius",
-          "contact_email": "secprof@harvard.edu",
-          "publication_title": "Cell Line from Zebrafish Sample",
-          "pre_print_doi": "10.1109/5.771073",
-          "pre_print_title": "Preliminary Research",
-          "citation": "Proffer, Prim. \"Cell Line from Zebrafish Sample\". March 15, 2020.",
-          "additional_info": "This paper was co-authored by Postworth Docktor."
+          "contact_name": "",
+          "contact_email": "",
+          "publication_title": "",
+          "pre_print_doi": "",
+          "pre_print_title": "",
+          "citation": "",
+          "additional_info": ""
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
       "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_mta": "False",
+      "needs_abstract": "True",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -253,18 +259,19 @@
         "additional_details": {
           "contact_name": "Prim Proffer",
           "contact_email": "pprof@harvard.edu",
-          "publication_title": "Data collected from genetically modified zebrafish",
+          "publication_title": "",
           "pre_print_doi": "10.1109/5.771073",
           "pre_print_title": "Proposal for Data Collection from Zebrafish",
-          "citation": "Proffer, Prim. \"Data collected from genetically modified zebrafish\". March 15, 2020.",
+          "citation": "",
           "additional_info": "This paper was co-authored by Postworth Docktor."
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
+      "needs_irb": "False",
       "needs_mta": "True",
-      "pubmed_id": "32223680",
+      "needs_abstract": "False",
+      "pubmed_id": "",
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
@@ -343,10 +350,11 @@
         }
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
+      "mta_s3_url": "",
       "needs_irb": "True",
-      "needs_mta": "True",
-      "pubmed_id": "32223680",
+      "needs_mta": "False",
+      "needs_abstract": "True",
+      "pubmed_id": "",
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
@@ -367,8 +375,8 @@
           "platform": "Amazon s3 Database"
         },
         "additional_details": {
-          "contact_name": "Prim Proffer",
-          "contact_email": "pprof@harvard.edu",
+          "contact_name": "",
+          "contact_email": "",
           "publication_title": "Data collected from genetically modified zebrafish",
           "pre_print_doi": "10.1109/5.771073",
           "pre_print_title": "Proposal for Data Collection from Zebrafish",
@@ -378,8 +386,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -409,8 +418,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -440,8 +450,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -469,8 +480,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
@@ -502,7 +514,7 @@
     },
     {
       "title": "Jackson Labs Imported Mouse Model Organism",
-      "category": "MOUSE_MODEL",
+      "category": "MODEL_ORGANISM",
       "id": "14",
       "url": "https://www.jax.org/strain/006933",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -555,14 +567,15 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
       "title": "ZIRC Imported Zebrafish Model Organism",
-      "category": "ZEBRAFISH_MODEL",
+      "category": "MODEL_ORGANISM",
       "id": "16",
       "url": "http://zfin.org/ZDB-GENO-100413-1",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -611,8 +624,9 @@
       },
       "created_at": "2020-01-30 16:12:25-07",
       "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "True",
-      "needs_mta": "True",
+      "needs_irb": "False",
+      "needs_mta": "False",
+      "needs_abstract": "False",
       "pubmed_id": "32223680",
       "updated_at": "2020-01-30 16:12:25-07"
     }
