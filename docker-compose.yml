@@ -1,0 +1,62 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:11.6
+    volumes:
+      - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
+  api:
+    restart: always
+    environment:
+      - DJANGO_SECRET_KEY=local
+    image: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+      args:
+        PORT: '${HTTP_PORT}'
+    command: >
+      bash -c "python wait_for_postgres.py &&
+               ./manage.py migrate &&
+               ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
+    volumes:
+      - ./api:/home/user/code
+    ports:
+      - '${HTTP_PORT}:${HTTP_PORT}'
+    depends_on:
+      - postgres
+  documentation:
+    restart: always
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+      args:
+        PORT: '${DOCS_PORT}'
+    command: 'mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}'
+    volumes:
+      - ./api:/home/user/code
+    ports:
+      - '${DOCS_PORT}:${DOCS_PORT}'
+  client:
+    ports:
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+    build:
+      context: ./client/
+    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+      - ./client/.next:/home/user/code/.next
+    depends_on:
+      - api
+  storybook:
+    ports:
+      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
+    build:
+      context: ./client/
+    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+    depends_on:
+      - client

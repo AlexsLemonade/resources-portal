@@ -19,6 +19,7 @@ export default ({ Component, pageProps }) => {
       </Head>
       <Grommet theme={theme}>
         <Layout>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Component {...pageProps} />
         </Layout>
       </Grommet>
