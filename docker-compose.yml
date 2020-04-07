@@ -36,7 +36,6 @@ services:
     ports:
       - '${CLIENT_PORT}:${CLIENT_PORT}'
     image: node:10.16.0
-    build: ./client
     command: >
       bash -c "cd /home/user/code &&
                yarn install &&
@@ -51,7 +50,6 @@ services:
     ports:
       - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
     image: node:10.16.0
-    build: ./client
     command: >
       bash -c "cd /home/user/code &&
                API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
