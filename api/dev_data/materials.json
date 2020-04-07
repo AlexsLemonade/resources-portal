@@ -213,7 +213,7 @@
           "culture_conditions": "Reproducing at a swift rate"
         },
         "quality": {
-          "str": "An str profile",
+          "str": "Amelogenin: X Y\nCSF1PO: 11\nD13S317: 8, 14\nD16S539: 9, 11\nD5S818: 11, 13\nD7S820: 10\nTH01: 6, 9.3\nTPOX: 9, 12\nvWA: 16, 17",
           "passage_number": "21430780"
         },
         "additional_details": {
@@ -353,7 +353,7 @@
       "title": "Imported Zebrafish Dataset",
       "category": "DATASET",
       "id": "9",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31712",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "organization_id": "1",
       "additional_metadata": {
@@ -387,7 +387,7 @@
       "title": "Imported GEO/SRA Dataset",
       "category": "DATASET",
       "id": "10",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37165",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "organization_id": "1",
       "additional_metadata": {
@@ -418,12 +418,13 @@
       "title": "Imported dbGaP Dataset",
       "category": "DATASET",
       "id": "11",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000328.v2.p1",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "organization_id": "1",
       "additional_metadata": {
         "resource_details": {
           "title": "GEO Zebrafish Analysis",
+          "accession": "phs000328.v2.p1",
           "description": "This dataset has interesting implications for future research.",
           "number_samples": "15"
         },
@@ -448,7 +449,7 @@
       "title": "Imported Protocol",
       "category": "PROTOCOL",
       "id": "12",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.protocols.io/view/labyrinthulomycete-dna-extraction-protocol-n83dhyn",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "organization_id": "1",
       "additional_metadata": {
@@ -477,7 +478,7 @@
       "title": "Imported AddGene Melanoma Reduction Plasmid",
       "category": "PLASMID",
       "id": "13",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.addgene.org/53246/",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "organization_id": "1",
       "additional_metadata": {
@@ -500,10 +501,10 @@
       }
     },
     {
-      "title": "Jackson Labs Imported Zebrafish Model Organism",
-      "category": "ZEBRAFISH_MODEL",
+      "title": "Jackson Labs Imported Mouse Model Organism",
+      "category": "MOUSE_MODEL",
       "id": "14",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.jax.org/strain/006933",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "organization_id": "1",
       "additional_metadata": {
@@ -527,7 +528,7 @@
       "title": "ATCC Imported Zebrafish Cell Line",
       "category": "CELL_LINE",
       "id": "15",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "https://www.atcc.org/products/all/CCL-185.aspx#generalinformation",
       "contact_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
       "organization_id": "4",
       "additional_metadata": {
@@ -560,10 +561,10 @@
       "updated_at": "2020-01-30 16:12:25-07"
     },
     {
-      "title": "ZIRC Imported Mouse Model Organism",
-      "category": "MOUSE_MODEL",
+      "title": "ZIRC Imported Zebrafish Model Organism",
+      "category": "ZEBRAFISH_MODEL",
       "id": "16",
-      "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
+      "url": "http://zfin.org/ZDB-GENO-100413-1",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "organization_id": "1",
       "additional_metadata": {

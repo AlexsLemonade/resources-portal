@@ -1,7 +1,6 @@
-import os
 from json import loads
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from resources_portal.models import (
     Grant,
