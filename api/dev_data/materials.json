@@ -2,7 +2,7 @@
   "materials": [
     {
       "title": "Melanoma Reduction Plasmid",
-      "material_type": "PLASMID",
+      "category": "PLASMID",
       "id": "1",
       "url": "",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -57,7 +57,7 @@
     },
     {
       "title": "Allele Extraction Protocol",
-      "material_type": "PROTOCOL",
+      "category": "PROTOCOL",
       "id": "2",
       "url": "",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -86,7 +86,7 @@
     },
     {
       "title": "Zebrafish Model Organism",
-      "material_type": "ZEBRAFISH_MODEL",
+      "category": "ZEBRAFISH_MODEL",
       "id": "3",
       "url": "",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -121,7 +121,7 @@
     },
     {
       "title": "Mouse Model Organism",
-      "material_type": "MOUSE_MODEL",
+      "category": "MOUSE_MODEL",
       "id": "4",
       "url": "",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -156,7 +156,7 @@
     },
     {
       "title": "Stone Tablet (Other)",
-      "material_type": "OTHER",
+      "category": "OTHER",
       "id": "5",
       "url": "",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -186,7 +186,7 @@
     },
     {
       "title": "Zebrafish Cell Line",
-      "material_type": "CELL_LINE",
+      "category": "CELL_LINE",
       "id": "6",
       "url": "",
       "contact_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
@@ -235,7 +235,7 @@
     },
     {
       "title": "Zebrafish Dataset",
-      "material_type": "DATASET",
+      "category": "DATASET",
       "id": "7",
       "url": "",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -269,7 +269,7 @@
     },
     {
       "title": "Zebrafish PDX",
-      "material_type": "PDX",
+      "category": "PDX",
       "id": "8",
       "url": "",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -351,7 +351,7 @@
     },
     {
       "title": "Imported Zebrafish Dataset",
-      "material_type": "DATASET",
+      "category": "DATASET",
       "id": "9",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -385,7 +385,7 @@
     },
     {
       "title": "Imported GEO/SRA Dataset",
-      "material_type": "DATASET",
+      "category": "DATASET",
       "id": "10",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -416,7 +416,7 @@
     },
     {
       "title": "Imported dbGaP Dataset",
-      "material_type": "DATASET",
+      "category": "DATASET",
       "id": "11",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -446,7 +446,7 @@
     },
     {
       "title": "Imported Protocol",
-      "material_type": "PROTOCOL",
+      "category": "PROTOCOL",
       "id": "12",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -475,7 +475,7 @@
     },
     {
       "title": "Imported AddGene Melanoma Reduction Plasmid",
-      "material_type": "PLASMID",
+      "category": "PLASMID",
       "id": "13",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
@@ -501,7 +501,7 @@
     },
     {
       "title": "Jackson Labs Imported Zebrafish Model Organism",
-      "material_type": "ZEBRAFISH_MODEL",
+      "category": "ZEBRAFISH_MODEL",
       "id": "14",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -525,7 +525,7 @@
     },
     {
       "title": "ATCC Imported Zebrafish Cell Line",
-      "material_type": "CELL_LINE",
+      "category": "CELL_LINE",
       "id": "15",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
@@ -561,7 +561,7 @@
     },
     {
       "title": "ZIRC Imported Mouse Model Organism",
-      "material_type": "MOUSE_MODEL",
+      "category": "MOUSE_MODEL",
       "id": "16",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
@@ -587,7 +587,7 @@
     },
     {
       "title": "Imported Stone Tablet (Other)",
-      "material_type": "OTHER",
+      "category": "OTHER",
       "id": "17",
       "url": "https://www.ncbi.nlm.nih.gov/pubmed/32223680",
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
