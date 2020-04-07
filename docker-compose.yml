@@ -27,22 +27,20 @@ services:
       - postgres
   documentation:
     restart: always
-    build:
-      context: .
-      dockerfile: ./api/Dockerfile.local
-      args:
-        PORT: '${DOCS_PORT}'
-    command: 'mkdocs serve --dev-addr=0.0.0.0:${DOCS_PORT}'
+    image: squidfunk/mkdocs-material
     volumes:
-      - ./:/home/user/code
+      - ${PWD}:/docs
     ports:
-      - '${DOCS_PORT}:${DOCS_PORT}'
+      - '${DOCS_PORT}:8000'
   client:
     ports:
       - '${CLIENT_PORT}:${CLIENT_PORT}'
-    build:
-      context: ./client/
-    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
+    image: node:10.16.0
+    build: ./client
+    command: >
+      bash -c "cd /home/user/code &&
+               yarn install &&
+               API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
     volumes:
       - ./client:/home/user/code
       - ./client/node_modules:/home/user/code/node_modules
@@ -52,9 +50,11 @@ services:
   storybook:
     ports:
       - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
-    build:
-      context: ./client/
-    command: bash -c "API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
+    image: node:10.16.0
+    build: ./client
+    command: >
+      bash -c "cd /home/user/code &&
+               API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
     volumes:
       - ./client:/home/user/code
       - ./client/node_modules:/home/user/code/node_modules
