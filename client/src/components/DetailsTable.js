@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   Table,
   TableBody,
@@ -6,8 +6,8 @@ import {
   TableHeader,
   TableRow,
   Text
-} from 'grommet';
-import styled from 'styled-components';
+} from 'grommet'
+import styled from 'styled-components'
 
 function DetailsTable({ data, className }) {
   return (
@@ -19,24 +19,19 @@ function DetailsTable({ data, className }) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((datum, i) => (
-          <TableRow key={datum['name']}>
-            <TableCell
-              align="center"
-              pad="medium"
-              align="right"
-              verticalAlign="top"
-            >
-              <Text weight="bold">{datum['name']}</Text>
+        {data.map((datum) => (
+          <TableRow key={datum.label}>
+            <TableCell pad="medium" align="right" verticalAlign="top">
+              <Text weight="bold">{datum.label}</Text>
             </TableCell>
-            <TableCell align="center" pad="medium" align="left">
-              <Text>{datum['value']}</Text>
+            <TableCell pad="medium" align="left">
+              <Text>{datum.value}</Text>
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  );
+  )
 }
 
 DetailsTable = styled(DetailsTable)`
@@ -51,9 +46,9 @@ DetailsTable = styled(DetailsTable)`
   }
 
   tbody > tr:nth-child(2n + 1) {
-    background-color: ${props =>
+    background-color: ${(props) =>
       props.theme.global.colors['background-highlight']};
   }
-`;
+`
 
-export default DetailsTable;
+export default DetailsTable

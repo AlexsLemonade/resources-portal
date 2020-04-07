@@ -1,5 +1,3 @@
-import { normalizeColor } from 'grommet/utils';
-
 const theme = {
   button: {
     border: {
@@ -10,11 +8,75 @@ const theme = {
       horizontal: '24px',
       vertical: '8px'
     },
-    extend: props => `
-      ${!props.primary && `
+    extend: (props) => `
+      ${
+        !props.primary &&
+        `
          color: ${props.theme.global.colors.brand.light};
-      `}
+      `
+      }
     `
+  },
+  tabs: {
+    gap: '91px',
+    header: {
+      extend: (props) => `
+        border-bottom: 1px solid #CACACA;
+        justify-content: ${
+          props.children.length > 3 ? 'space-between' : 'start'
+        };
+        > div {
+          ${
+            props.children.length > 3 &&
+            `
+            display: none;
+          `
+          }
+        }
+        > button {
+          position: relative;
+        }
+        > button > div > span {
+          font-size: 21px;
+        }
+        > button[aria-expanded="true"] {
+          font-weight: bold;
+        }
+        > button > div {
+          margin: 0;
+          border-bottom: none;
+          position: relative;
+        }
+        > button[aria-expanded="true"] > div:after {
+          content: '';
+          position: absolute;
+          display: block;
+          width: 41px;
+          height: 1px;
+          top: 100%;
+          left: 50%;
+          transform: translate(-50%, 0);
+          background-color: #FFFFFF;
+        }
+        > button[aria-expanded="true"]:before,
+        > button[aria-expanded="true"]:after {
+          content: '';
+          position: absolute;
+          top: 97.5%;
+          width: 24px;
+          border-bottom: 1px solid #cacaca;
+        }
+        > button[aria-expanded="true"]:before {
+          left: 50%;
+          transform-origin: left;
+          transform: translate(-95%, 100%) rotate(20deg)
+        }
+        > button[aria-expanded="true"]:after {
+          right: 50%;
+          transform-origin: right;
+          transform: translate(95%, 100%) rotate(-20deg)
+    `
+    }
   },
   calendar: {
     large: {
@@ -302,7 +364,7 @@ const theme = {
       large: '512px',
       medium: '256px',
       small: '128px',
-      xlarge: '768px',
+      xlarge: `${8 * 130}px`,
       xsmall: '64px',
       xxlarge: `${8 * 156}px`,
       xxsmall: '32px'
@@ -522,6 +584,6 @@ const theme = {
       size: '23px'
     }
   }
-};
+}
 
-export default theme;
+export default theme

@@ -1,0 +1,24 @@
+name: Publish docs via GitHub Pages
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    name: Deploy docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v1
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.16.0'
+      - run: cd client && yarn install && yarn run build-storybook -c storybook -o ../docs/storybook
+
+      - name: Deploy docs
+        uses: mhausenblas/mkdocs-deploy-gh-pages@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
