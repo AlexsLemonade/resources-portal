@@ -35,26 +35,16 @@ services:
   client:
     ports:
       - '${CLIENT_PORT}:${CLIENT_PORT}'
+      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
     image: node:10.16.0
     command: >
       bash -c "cd /home/user/code &&
                yarn install &&
-               API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT}"
+               (API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT} &
+               API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT})"
     volumes:
       - ./client:/home/user/code
       - ./client/node_modules:/home/user/code/node_modules
       - ./client/.next:/home/user/code/.next
     depends_on:
       - api
-  storybook:
-    ports:
-      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
-    image: node:10.16.0
-    command: >
-      bash -c "cd /home/user/code &&
-               API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT}"
-    volumes:
-      - ./client:/home/user/code
-      - ./client/node_modules:/home/user/code/node_modules
-    depends_on:
-      - client
