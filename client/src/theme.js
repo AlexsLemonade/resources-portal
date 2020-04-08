@@ -380,7 +380,7 @@ const theme = {
       },
       'background-back': {
         dark: '#111111',
-        light: 'white' // this is for testing
+        light: 'white'
       },
       'background-contrast': {
         dark: '#FFFFFF',
