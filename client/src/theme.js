@@ -3,8 +3,8 @@ import { normalizeColor } from 'grommet/utils'
 const theme = {
   button: {
     border: {
-      width: '1px',
       radius: '4px'
+      width: '1px',
     },
     padding: {
       horizontal: '24px',
