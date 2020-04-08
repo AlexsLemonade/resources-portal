@@ -1,16 +1,30 @@
 import * as React from 'react'
-import { Grommet, Button, Box, Tabs, Tab, Paragraph } from 'grommet'
+import { Grommet, Box, Button, Tabs, Tab, Paragraph } from 'grommet'
 import { storiesOf } from '@storybook/react'
 
 import theme from '../theme'
 
-storiesOf('Button', module).add('default', () => {
+storiesOf('Button', module).add('primary', () => {
   return (
     <Grommet theme={theme}>
-      <Box align="center" pad="large" gap="large">
-        <Button label="Primary" primary />
-        <Button label="Secondary" />
-        <Button label="Default" />
+      <Box pad="medium">
+        <Box align="center" pad="large" gap="large">
+          <Button label="Primary" primary />
+          <Button label="Primary Disabled" primary disabled />
+        </Box>
+      </Box>
+    </Grommet>
+  )
+})
+
+storiesOf('Button', module).add('secondary', () => {
+  return (
+    <Grommet theme={theme}>
+      <Box pad="medium">
+        <Box align="center" pad="large" gap="large">
+          <Button label="Default" />
+          <Button label="Default Disabled" disabled />
+        </Box>
       </Box>
     </Grommet>
   )
