@@ -358,7 +358,7 @@ const theme = {
       'savana-green-shade-40': '#5C7A31',
       'savana-green-shade-60': '#3D5121',
       'savana-green-shade-80': '#1E2810',
-      black : '#000000',
+      black: '#000000',
       'black-tint-20': '#333333',
       'black-tint-30': '#4A4A4A',
       'black-tint-40': '#666666',
