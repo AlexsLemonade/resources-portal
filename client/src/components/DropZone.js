@@ -7,7 +7,7 @@ export default ({ fileTypes = [], onDrop }) => {
     <Dropzone accept={fileTypes.map((ft) => `.${ft}`)} onDrop={onDrop}>
       {({ getRootProps, getInputProps, open }) => (
         <Box
-          {...getRootProps()}
+          {...getRootProps()} // eslint-disable-line react/jsx-props-no-spreading
           width="full"
           fill="horizontal"
           align="center"
@@ -18,7 +18,8 @@ export default ({ fileTypes = [], onDrop }) => {
             style: 'dashed'
           }}
         >
-          <input {...getInputProps()} />
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+          <input {...getInputProps()} />{' '}
           <Button label="Select Files" onClick={open} primary />
           <Text color="text-weak" margin="large">
             or drag and drop files

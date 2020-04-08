@@ -11,6 +11,7 @@ export default class MyDocument extends Document {
 
     // Step 2: Retrieve styles from components in the page
     const page = renderPage((App) => (props) =>
+      // eslint-disable-next-line react/jsx-props-no-spreading
       sheet.collectStyles(<App {...props} />)
     )
 
