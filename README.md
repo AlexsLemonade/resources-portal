@@ -34,7 +34,7 @@ Currently we do not have a staging or production stack, but a development stack 
 To populate the dev database with some realistic data, please run:
 
 ```python
-docker-compose run --rm web python3 manage.py populate_test_database
+docker-compose run --rm api python3 manage.py populate_test_database
 ```
 
 See the [README for the test data](api/dev_data/test_data_readme.md) for a description of the test dataset.

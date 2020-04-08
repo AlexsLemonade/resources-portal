@@ -34,9 +34,7 @@ class Material(models.Model):
         blank=True, null=True, help_text="Contains an url to download the MTA."
     )
 
-    title = models.TextField(
-        blank=False, null=False, help_text="The title of the material.", default="New Material"
-    )
+    title = models.TextField(blank=False, null=False, help_text="The title of the material.")
 
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)

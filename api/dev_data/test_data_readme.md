@@ -1,6 +1,6 @@
 The test data can be imported with the following command:
 
-```docker-compose run --rm web python3 manage.py populate_test_database```
+```docker-compose run --rm api python3 manage.py populate_test_database```
 
 The test data describes the following situation:
 
