@@ -266,32 +266,82 @@ const theme = {
       }
     },
     colors: {
-      'active-background': 'background-contrast',
+      'alexs-navy': '#002F6C',
+      'alexs-navy-tint-20': '#0051BC',
+      'alexs-navy-tint-40': '#0D76FF',
+      'alexs-navy-tint-60': '#5EA4fE',
+      'alexs-navy-tint-80': '#AED1FE',
+      'alexs-navy-tint-90': '#D6E8FF',
+      'alexs-lemon': '#F3E500',
+      'alexs-lemon-tint-40': '#FFF55E',
+      'alexs-lemon-tint-80': '#FFFBC9',
+      'alexs-lemon-shade-10': '#DACE00',
+      'alexs-lemon-shade-20': '#C2B700',
+      'alexs-lemon-shade-30': '#AAA000',
+      turteal: '#017FA3',
+      'turteal-tint-20': '#01B4E7',
+      'turteal-tint-40': '#30D0FD',
+      'turteal-tint-60': '#75DFFE',
+      'turteal-tint-80': '#BAEFFE',
+      'turteal-tint-90': '#DCF7FE',
+      'turteal-shade-20': '#006582',
+      'turteal-shade-40': '#AAA000',
+      'soda-orange': '#E55517',
+      'soda-orange-tint-20': '#ec7643',
+      'soda-orange-tint-40': '#F09872',
+      'soda-orange-tint-60': '#F5BAA1',
+      'soda-orange-tint-80': '#FADCD0',
+      'soda-orange-tint-90': '#FCEDE7',
+      'soda-orange-shade-20': '#B74412',
+      'soda-orange-shade-40': '#89320D',
+      'soda-orange-shade-60': '#5B2209',
+      'savana-green': '#98BF61',
+      'savana-green-tint-40': '#C1D8A0',
+      'savana-green-tint-60': '#D5E5BF',
+      'savana-green-tint-80': '#EAF2DF',
+      'savana-green-shade-20': '#7BA342',
+      'savana-green-shade-40': '#5C7A31',
+      'savana-green-shade-60': '#3D5121',
+      'savana-green-shade-80': '#1E2810',
+      black : '#000000',
+      'black-tint-20': '#333333',
+      'black-tint-30': '#4A4A4A',
+      'black-tint-40': '#666666',
+      'black-tint-60': '#999999',
+      'black-tint-80': '#CCCCCC',
+      'black-tint-95': '#F2F2F2',
+      white: '#FDFDFD',
+      info: '#002F6C', // alexs-navy-base
+      success: '#41A36D',
+      error: '#DB3B28',
+      warning: '#DACE00', // alexs-lemon-shade-10
+      'active-background': 'brand',
       'active-text': 'text-strong',
       'background-highlight': '#F2F2F2',
+
       background: {
         dark: '#111111',
-        light: '#FFFFFF'
+        light: 'white'
       },
       'background-back': {
         dark: '#111111',
-        light: '#EEEEEE'
+        light: 'white' // this is for testing
       },
       'background-contrast': {
         dark: '#FFFFFF',
-        light: '#F2F2F2'
+        light: 'white'
       },
       'background-front': {
         dark: '#222222',
-        light: '#FFFFFF'
+        light: 'white'
       },
       border: {
         dark: '#444444',
-        light: '#CCCCCC'
+        light: 'black-tint-80'
       },
       brand: {
-        dark: '#017FA3',
-        light: '#017FA3'
+        dark: 'turteal',
+        light: 'turteal'
       },
       control: 'brand',
       'graph-0': 'brand',
