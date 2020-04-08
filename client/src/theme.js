@@ -1,3 +1,5 @@
+import { normalizeColor } from 'grommet/utils'
+
 const theme = {
   button: {
     border: {
@@ -6,16 +8,69 @@ const theme = {
     },
     padding: {
       horizontal: '24px',
-      vertical: '8px'
+      vertical: '7px' // 8px - 1px for border
     },
-    extend: (props) => `
-      ${
-        !props.primary &&
-        `
-         color: ${props.theme.global.colors.brand.light};
+    disabled: {
+      opacity: 1
+    },
+    extend: (props) =>
+      !props.role &&
       `
-      }
-    `
+        ${
+          !props.primary &&
+          !props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('brand', props.theme)};
+          &:hover, &:active {
+            box-shadow: none;
+            background-color: ${normalizeColor('turteal', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          }
+          &:active {
+            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+          }
+        `
+        }
+        ${
+          !props.primary &&
+          props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('black-tint-60', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+          border-color: ${normalizeColor('black-tint-60', props.theme)};
+        `
+        }
+        ${
+          props.primary &&
+          !props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('white', props.theme)};
+          &:hover, &:active {
+            box-shadow: none;
+            background-color: ${normalizeColor(
+              'turteal-shade-20',
+              props.theme
+            )};
+          }
+          &:active {
+            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+          }
+        `
+        }
+        ${
+          props.primary &&
+          props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('white', props.theme)};
+          background-color: ${normalizeColor('black-tint-60', props.theme)};
+          border-color: ${normalizeColor('black-tint-60', props.theme)};
+        `
+        }
+      `
   },
   tabs: {
     gap: '91px',
@@ -233,7 +288,7 @@ const theme = {
     breakpoints: {
       large: {},
       medium: {
-        value: 1024
+        value: '1024px'
       },
       small: {
         borderSize: {
