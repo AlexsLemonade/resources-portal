@@ -10,6 +10,17 @@ const theme = {
       horizontal: '24px',
       vertical: '7px' // 8px - 1px for border
     },
+    size: {
+      medium: {
+        border: {
+          radius: '4px'
+        },
+        padding: {
+          horizontal: '24px',
+          vertical: '7px' // 8px - 1px for border
+        }
+      }
+    },
     disabled: {
       opacity: 1
     },
