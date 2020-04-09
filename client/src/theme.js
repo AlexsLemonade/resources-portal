@@ -26,6 +26,7 @@ const theme = {
     },
     extend: (props) =>
       !props.role &&
+      !props.plain &&
       `
         ${
           !props.primary &&
