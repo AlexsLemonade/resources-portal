@@ -46,7 +46,8 @@
       "needs_mta": "True",
       "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Allele Extraction Protocol",
@@ -72,7 +73,8 @@
       "needs_mta": "False",
       "needs_abstract": "True",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Zebrafish Model Organism",
@@ -104,7 +106,8 @@
       "needs_mta": "True",
       "needs_abstract": "True",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Mouse Model Organism",
@@ -136,7 +139,8 @@
       "needs_mta": "True",
       "needs_abstract": "True",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Stone Tablet (Other)",
@@ -163,7 +167,8 @@
       "needs_mta": "False",
       "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Zebrafish Cell Line",
@@ -205,7 +210,8 @@
       "needs_mta": "False",
       "needs_abstract": "True",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Zebrafish Dataset",
@@ -236,7 +242,8 @@
       "needs_mta": "True",
       "needs_abstract": "False",
       "pubmed_id": "",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Zebrafish PDX",
@@ -304,7 +311,8 @@
       "needs_mta": "False",
       "needs_abstract": "True",
       "pubmed_id": "",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "False"
     },
     {
       "title": "Imported Zebrafish Dataset",
@@ -330,12 +338,9 @@
         "additional_info": "This paper was co-authored by Postworth Docktor."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Imported GEO/SRA Dataset",
@@ -358,12 +363,9 @@
         "additional_info": "This paper was co-authored by Postworth Docktor."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Imported dbGaP Dataset",
@@ -386,12 +388,9 @@
         "additional_info": "This paper was co-authored by Postworth Docktor."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Imported Protocol",
@@ -412,12 +411,9 @@
         "additional_info": "This paper was co-authored by Prim Proffer."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Imported AddGene Melanoma Reduction Plasmid",
@@ -439,7 +435,11 @@
         "pre_print_title": "Initial Research on Zebrafish Plasmids",
         "citation": "Docktor, Postworth. \"Initial Research on Zebrafish Plasmids\". March 15, 2020.",
         "additional_info": "This paper was co-authored by Prim Proffer."
-      }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "pubmed_id": "32223680",
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Jackson Labs Imported Mouse Model Organism",
@@ -459,7 +459,11 @@
         "pre_print_title": "Initial Research on Zebrafish Morphology",
         "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
         "additional_info": "This paper was co-authored by Prim Proffer."
-      }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "pubmed_id": "32223680",
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "ATCC Imported Zebrafish Cell Line",
@@ -487,12 +491,9 @@
         "additional_info": "This paper was co-authored by Postworth Docktor."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "ZIRC Imported Zebrafish Model Organism",
@@ -514,7 +515,11 @@
         "pre_print_title": "Initial Research on Zebrafish Morphology",
         "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
         "additional_info": "This paper was co-authored by Prim Proffer."
-      }
+      },
+      "created_at": "2020-01-30 16:12:25-07",
+      "pubmed_id": "32223680",
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     },
     {
       "title": "Imported Stone Tablet (Other)",
@@ -536,12 +541,9 @@
         "additional_info": "This tablet was co-authored by Postworth Docktor."
       },
       "created_at": "2020-01-30 16:12:25-07",
-      "mta_s3_url": "https://bucket-name.s3.region.amazonaws.com/keyname",
-      "needs_irb": "False",
-      "needs_mta": "False",
-      "needs_abstract": "False",
       "pubmed_id": "32223680",
-      "updated_at": "2020-01-30 16:12:25-07"
+      "updated_at": "2020-01-30 16:12:25-07",
+      "imported": "True"
     }
   ],
   "materials_requests": [

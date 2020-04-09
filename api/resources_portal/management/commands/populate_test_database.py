@@ -23,18 +23,18 @@ class Command(BaseCommand):
                 element_in_class.save()
 
         # Add users
-        users_json = loads(open("./api/dev_data/users.json").read())
+        users_json = loads(open("./dev_data/users.json").read())
         add_class_to_database(users_json["resources_portal_user"], User)
 
         # add organizations
-        organizations_json = loads(open("./api/dev_data/organizations.json").read())
+        organizations_json = loads(open("./dev_data/organizations.json").read())
         add_class_to_database(organizations_json["organizations"], Organization)
 
-        materials_json = loads(open("./api/dev_data/materials.json").read())
+        materials_json = loads(open("./dev_data/materials.json").read())
         add_class_to_database(materials_json["materials"], Material)
 
         # add grants
-        grants_json = loads(open("./api/dev_data/grants.json").read())
+        grants_json = loads(open("./dev_data/grants.json").read())
         add_class_to_database(grants_json["grants"], Grant)
 
         # add user settings

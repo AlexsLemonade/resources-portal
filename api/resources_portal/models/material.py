@@ -36,9 +36,10 @@ class Material(models.Model):
 
     title = models.TextField(blank=False, null=False, help_text="The title of the material.")
 
-    needs_mta = models.BooleanField(default=False)
-    needs_irb = models.BooleanField(default=False)
-    needs_abstract = models.BooleanField(default=False)
+    needs_mta = models.BooleanField(default=False, null=True)
+    needs_irb = models.BooleanField(default=False, null=True)
+    needs_abstract = models.BooleanField(default=False, null=True)
+    imported = models.BooleanField(default=False, null=False)
 
     contact_user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(

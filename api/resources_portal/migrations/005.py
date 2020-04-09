@@ -11,7 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(model_name="material", name="material_type",),
         migrations.AddField(
             model_name="material",
             name="category",
