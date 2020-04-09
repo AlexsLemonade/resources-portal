@@ -1,107 +1,197 @@
 import React from 'react'
 import { Box, Button, Text } from 'grommet'
-import Info from '../images/info.svg'
-import Warning from '../images/warning.svg'
-import Check from '../images/check.svg'
-import Cross from '../images/cross.svg'
+import styled from 'styled-components'
 
-export const useAlertContext = () => {
-  const [alerts, setAlerts] = React.useState([])
-  const addAlert = (alert) => {
-    setAlerts([...alerts, alert])
-  }
-  const removeAlert = () => {
-    const newAlerts = [...alerts]
-    newAlerts.shift()
-    setAlerts(newAlerts)
-  }
-  const clearAlerts = () => {
-    setAlerts([])
-  }
+import Info from '../images/info-white.svg'
+import Warning from '../images/warning-white.svg'
+import Check from '../images/check-white.svg'
+import Cross from '../images/cross-white.svg'
 
-  return React.useContext({
-    alerts: [],
-    addAlert,
-    removeAlert,
-    clearAlerts
-  })
-}
-
-const alertTypes = {
+const types = {
   info: {
+    Icon: Info,
     background: 'brand',
+    multipleBackground: 'turteal-shade-20',
     color: 'white'
   },
   error: {
+    Icon: Warning,
     background: 'error',
+    multipleBackground: 'error-shade-20',
     color: 'white'
   },
   success: {
+    Icon: Check,
     background: 'success',
+    multipleBackground: 'success-shade-20',
     color: 'white'
   }
 }
 
-export const Alert = ({ type = 'info', message = '' }) => {
-  const { background, color } = alertTypes[type]
+const AlertsContext = React.createContext({ alerts: {} })
 
+export const useAlerts = (queue = 'main') => {
+  const context = React.useContext(AlertsContext)
+
+  const [alerts, setAlerts] = React.useState(context.alerts)
+
+  if (!alerts[queue]) alerts[queue] = []
+
+  const addAlert = (message, type = 'info') => {
+    context.alerts[queue].push({
+      time: Date.now(),
+      message,
+      type
+    })
+    setAlerts({ ...context.alerts })
+  }
+
+  const removeAlert = (alertToRemove) => {
+    const newAlerts = context.alerts[queue].filter((a) => {
+      return a.time !== alertToRemove.time
+    })
+    context.alerts[queue] = newAlerts
+    setAlerts({ ...context.alerts })
+  }
+
+  const clearAlerts = () => {
+    context.alerts[queue] = []
+    setAlerts({ ...context.alerts })
+  }
+
+  const AlertsQueue = ({ lifo = true }) => (
+    <Alerts
+      lifo={lifo}
+      alerts={context.alerts[queue]}
+      clearAlerts={clearAlerts}
+      removeAlert={removeAlert}
+    />
+  )
+
+  return {
+    alerts: context.alerts,
+    addAlert,
+    clearAlerts,
+    removeAlert,
+    Alerts: AlertsQueue
+  }
+}
+
+const CloseButton = styled(Button)`
+  text-align: right;
+  padding-right: 16px;
+`
+
+export const AlertComponent = ({
+  Icon,
+  message,
+  background,
+  color,
+  height,
+  onRemove
+}) => {
   return (
-    <Box anchor="right" direction="row">
+    <Box direction="row">
       <Box
         direction="row"
         width="full"
-        height="40px"
+        height={height}
         background={background}
         justify="center"
+        pad={{ left: height }}
       >
         <Box direction="row" align="center">
-          <Box align="center">
-            {type === 'info' && <Info />}
-            {type === 'success' && <Check />}
-            {type === 'error' && <Warning />}
-          </Box>
+          {Icon && (
+            <Box alignContents="center" margin={{ right: '8px' }}>
+              <Icon />
+            </Box>
+          )}
           <Box>
             <Text color={color}>{message}</Text>
           </Box>
         </Box>
       </Box>
-      <Box background={background} width="40px" height="40px">
-        <Button fill justify="center" plain icon={<Cross />} />
+      <Box background={background} width={{ min: height }} height={height}>
+        <CloseButton fill plain icon={<Cross />} onClick={onRemove} />
       </Box>
     </Box>
   )
 }
 
-export const AlertZone = () => {
-  const { alerts } = React.useContext()
+export const Alert = ({
+  type = 'info',
+  message = '',
+  height = '56px',
+  onRemove
+}) => {
+    const { background, color, Icon } = types[type]
+
+  return (
+    <AlertComponent
+      Icon={Icon}
+      background={background}
+      color={color}
+      message={message}
+      height={height}
+      onRemove={onRemove}
+    />
+  )
+}
+
+const MultipleAlerts = ({ alert, alerts, clearAlerts }) => {
+  const { multipleBackground, color } = types[alert.type]
+  return (
+    <Box direction="row">
+      <Box
+        direction="row"
+        width="full"
+        height="40px"
+        background={multipleBackground}
+        justify="center"
+      >
+        <Box direction="row" align="center" pad={{ left: '80px' }}>
+          <Text color={color}>{alerts.length} Alerts</Text>
+        </Box>
+      </Box>
+      <Box
+        direction="row"
+        background={multipleBackground}
+        width={{ min: '80px' }}
+        pad={{ right: '16px' }}
+        height="40px"
+        justify="end"
+      >
+        <Button plain label="clear all" onClick={clearAlerts} />
+      </Box>
+    </Box>
+  )
+}
+
+export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts }) => {
+  if (alerts.length === 0) return <></>
+
+  const alert = lifo ? alerts[alerts.length - 1] : alerts[0]
+
   return (
     <>
-      {alerts.lenth > 1 && 'MORE THAN ONE'}
-      {alerts.length >= 1 && (
-        <Alert type={alerts[0].type} message={alert[0].message} />
+      {alerts.length > 1 && (
+        <MultipleAlerts
+          alert={alert}
+          alerts={alerts}
+          clearAlerts={clearAlerts}
+        />
+      )}
+      {alerts.length > 0 && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onRemove={() => {
+            removeAlert(alert)
+          }}
+        />
       )}
     </>
   )
 }
 
-// Alert
-// AlertContext
-//
-// Takes a message and type/role and presents the alert
-//
-// all alerts are closeable
-//
-// may be possible to be outside of header
-//
-// they do not time out so forever until you click
-// they go away after you navigate away
-//
-// stack virtually and preset 1 at a time
-//
-// (close all button?)
-//
-// show how many exist with number
-//
-// 40 tall
-// including 8px vert padding
-// for how many and clear all space
+export default Alert
