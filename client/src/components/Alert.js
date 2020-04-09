@@ -124,7 +124,7 @@ export const Alert = ({
   height = '56px',
   onRemove
 }) => {
-    const { background, color, Icon } = types[type]
+  const { background, color, Icon } = types[type]
 
   return (
     <AlertComponent
