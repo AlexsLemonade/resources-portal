@@ -380,12 +380,13 @@ const theme = {
       white: '#FDFDFD',
       info: '#002F6C', // alexs-navy-base
       success: '#41A36D',
+      'success-shade-20': '#348257',
       error: '#DB3B28',
+      'error-shade-20': '#A72A1B',
       warning: '#DACE00', // alexs-lemon-shade-10
       'active-background': 'brand',
       'active-text': 'text-strong',
       'background-highlight': '#F2F2F2',
-
       background: {
         dark: '#111111',
         light: 'white'
