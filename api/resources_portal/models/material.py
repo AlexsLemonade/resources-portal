@@ -14,8 +14,9 @@ class Material(models.Model):
         ("PLASMID", "PLASMID"),
         ("PROTOCOL", "PROTOCOL"),
         ("DATASET", "DATASET"),
-        ("MOUSE_MODEL", "MOUSE_MODEL"),
-        ("ZEBRAFISH_MODEL", "ZEBRAFISH_MODEL"),
+        ("MODEL_ORGANISM", "MODEL_ORGANISM"),
+        ("PDX", "PDX"),
+        ("OTHER", "OTHER"),
     )
 
     objects = models.Manager()
@@ -32,8 +33,12 @@ class Material(models.Model):
     mta_s3_url = models.TextField(
         blank=True, null=True, help_text="Contains an url to download the MTA."
     )
+
+    title = models.TextField(blank=False, null=False, help_text="The title of the material.")
+
     needs_mta = models.BooleanField(default=False)
     needs_irb = models.BooleanField(default=False)
+    needs_abstract = models.BooleanField(default=False)
 
     contact_user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(
