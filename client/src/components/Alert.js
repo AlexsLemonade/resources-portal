@@ -98,7 +98,7 @@ const MultipleAlerts = ({ alert, alerts, clearAlerts }) => {
   )
 }
 
-export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts}) => {
+export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts }) => {
   if (alerts.length === 0) return <></>
 
   const alert = lifo ? alerts[alerts.length - 1] : alerts[0]
