@@ -26,7 +26,6 @@ This will require installing `pre-commit` if you have not already done so.
 
 ## Cloud Development
 
-<<<<<<< HEAD
 Currently we do not have a staging or production stack, but a development stack can be deployed with the [infrastructure README](infrastructure/README.md)
 
 ## Testing
