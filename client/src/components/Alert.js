@@ -82,14 +82,14 @@ const CloseButton = styled(Button)`
   padding-right: 16px;
 `
 
-export const AlertComponent = ({
-  Icon,
-  message,
-  background,
-  color,
-  height,
+export const Alert = ({
+  type = 'info',
+  message = '',
+  height = '56px',
   onRemove
 }) => {
+  const { background, color, Icon } = types[type]
+
   return (
     <Box direction="row">
       <Box
@@ -115,26 +115,6 @@ export const AlertComponent = ({
         <CloseButton fill plain icon={<Cross />} onClick={onRemove} />
       </Box>
     </Box>
-  )
-}
-
-export const Alert = ({
-  type = 'info',
-  message = '',
-  height = '56px',
-  onRemove
-}) => {
-  const { background, color, Icon } = types[type]
-
-  return (
-    <AlertComponent
-      Icon={Icon}
-      background={background}
-      color={color}
-      message={message}
-      height={height}
-      onRemove={onRemove}
-    />
   )
 }
 
