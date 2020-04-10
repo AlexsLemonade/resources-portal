@@ -28,56 +28,7 @@ const types = {
   }
 }
 
-const AlertsContext = React.createContext({ alerts: {} })
-
-export const useAlerts = (queue = 'main') => {
-  const context = React.useContext(AlertsContext)
-
-  const [alerts, setAlerts] = React.useState(context.alerts)
-
-  if (!alerts[queue]) alerts[queue] = []
-
-  const addAlert = (message, type = 'info') => {
-    context.alerts[queue].push({
-      time: Date.now(),
-      message,
-      type
-    })
-    setAlerts({ ...context.alerts })
-  }
-
-  const removeAlert = (alertToRemove) => {
-    const newAlerts = context.alerts[queue].filter((a) => {
-      return a.time !== alertToRemove.time
-    })
-    context.alerts[queue] = newAlerts
-    setAlerts({ ...context.alerts })
-  }
-
-  const clearAlerts = () => {
-    context.alerts[queue] = []
-    setAlerts({ ...context.alerts })
-  }
-
-  const AlertsQueue = ({ lifo = true }) => (
-    <Alerts
-      lifo={lifo}
-      alerts={context.alerts[queue]}
-      clearAlerts={clearAlerts}
-      removeAlert={removeAlert}
-    />
-  )
-
-  return {
-    alerts: context.alerts,
-    addAlert,
-    clearAlerts,
-    removeAlert,
-    Alerts: AlertsQueue
-  }
-}
-
-const CloseButton = styled(Button)`
+const CloseAlertButton = styled(Button)`
   text-align: right;
   padding-right: 16px;
 `
@@ -112,7 +63,7 @@ export const Alert = ({
         </Box>
       </Box>
       <Box background={background} width={{ min: height }} height={height}>
-        <CloseButton fill plain icon={<Cross />} onClick={onRemove} />
+        <CloseAlertButton fill plain icon={<Cross />} onClick={onRemove} />
       </Box>
     </Box>
   )
@@ -147,7 +98,7 @@ const MultipleAlerts = ({ alert, alerts, clearAlerts }) => {
   )
 }
 
-export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts }) => {
+export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts}) => {
   if (alerts.length === 0) return <></>
 
   const alert = lifo ? alerts[alerts.length - 1] : alerts[0]
@@ -171,6 +122,18 @@ export const Alerts = ({ lifo = true, alerts, removeAlert, clearAlerts }) => {
         />
       )}
     </>
+  )
+}
+
+export const AlertsWithQueue = ({ lifo = true, queue }) => {
+  const { alerts, clearAlerts, removeAlert } = queue
+  return (
+    <Alerts
+      lifo={lifo}
+      alerts={alerts}
+      clearAlerts={clearAlerts}
+      removeAlert={removeAlert}
+    />
   )
 }
 

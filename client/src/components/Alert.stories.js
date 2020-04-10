@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { Grommet, Box, Button } from 'grommet'
 import { storiesOf } from '@storybook/react'
-import { Alert, useAlerts } from './Alert'
+import { useAlertsQueue } from '../hooks/useAlertsQueue'
+import { Alert, AlertsWithQueue } from './Alert'
 import theme from '../theme'
 
 storiesOf('Alert', module).add('default', () => {
@@ -21,19 +22,20 @@ storiesOf('Alert', module).add('default', () => {
 })
 
 storiesOf('Alert', module).add('Alerts', () => {
-  const { addAlert, Alerts } = useAlerts('demo1')
+  const alertsQueue = useAlertsQueue('demo1')
 
   // This is to demonstate how you can use queues and context
-  const { addAlert: addAnotherAlert } = useAlerts('demo1')
+  // This would be in some child component or somewhere else
+  const { addAlert } = useAlertsQueue('demo1')
   return (
     <Grommet theme={theme}>
-      <Alerts />
+      <AlertsWithQueue queue={alertsQueue} />
       <Box pad="medium" direction="row">
         <Button
           label="Add Success Alert"
           width="50px"
           onClick={() => {
-            addAlert('New Alert!', 'success')
+            alertsQueue.addAlert('New Alert!', 'success')
           }}
         />
       </Box>
@@ -42,7 +44,7 @@ storiesOf('Alert', module).add('Alerts', () => {
           label="Add Error Alert"
           width="50px"
           onClick={() => {
-            addAnotherAlert('New Error Alert!', 'error')
+            addAlert('New Error Alert!', 'error')
           }}
         />
       </Box>
@@ -51,8 +53,7 @@ storiesOf('Alert', module).add('Alerts', () => {
           label="Add Info Alert"
           width="50px"
           onClick={() => {
-            addAnotherAlert('New Info Alert!', 'info')
-            // or addAnotherAlert('New Info Alert!')
+            addAlert('New Info Alert!', 'info')
           }}
         />
       </Box>
