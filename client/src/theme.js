@@ -644,14 +644,14 @@ const theme = {
       size: '15px'
     },
     medium: {
-      height: '16px',
+      height: '24px',
       maxWidth: '192px',
-      size: '12px'
+      size: '16px'
     },
     small: {
-      height: '15px',
+      height: '16px',
       maxWidth: '171px',
-      size: '11px'
+      size: '12px'
     },
     xlarge: {
       height: '21px',
