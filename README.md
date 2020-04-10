@@ -33,7 +33,7 @@ Currently we do not have a staging or production stack, but a development stack 
 
 To populate the dev database with some realistic data, please run:
 
-```python
+```bash
 docker-compose run --rm api python3 manage.py populate_test_database
 ```
 
