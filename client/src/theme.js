@@ -1,6 +1,58 @@
+import React from 'react'
 import { normalizeColor } from 'grommet/utils'
+import { Blank } from 'grommet-icons'
+
+const applyAll = (...rules) => rules.concat()
+const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
+
+const DownArrow = (props) => (
+  <Blank {...props} >
+    <polygon points="4,8 20,8 12,16" stroke="#000" fill="#000" />
+  </Blank>
+)
 
 const theme = {
+  textInput: {
+    extend: (props) => applyWhen(props.focus, 'box-shadow: none;')
+  },
+  select: {
+    border: {
+      radius: '4px'
+    },
+    icons: {
+      margin: 'none',
+      color: 'black-tint-60',
+      down: DownArrow
+    },
+    control: {
+      extend: (props) => `
+        border-radius: 4px;
+        background-color: ${normalizeColor('black-tint-80', props.theme)};
+        ${applyWhen(
+          !props.disabled,
+          `
+          input {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            background-color:  ${normalizeColor('white', props.theme)};
+          }
+          `
+        )}
+        ${applyWhen(
+          props.disabled,
+          `
+          border-color: ${normalizeColor('black-tint-60', props.theme)};
+          background-color: ${normalizeColor('black-tint-95', props.theme)};
+          `
+        )}
+        `
+    },
+    options: {
+      text: {
+        color: 'black'
+      }
+    }
+  },
   button: {
     border: {
       radius: '4px',
@@ -25,64 +77,71 @@ const theme = {
       opacity: 1
     },
     extend: (props) =>
-      !props.role &&
-      !props.plain &&
-      `
-        ${
-          !props.primary &&
-          !props.disabled &&
+      applyAll(
+        applyWhen(
+          !props.plain && !props.role,
           `
-          ;
-          color: ${normalizeColor('brand', props.theme)};
-          &:hover, &:active {
-            box-shadow: none;
-            background-color: ${normalizeColor('turteal', props.theme)};
+          ${applyWhen(
+            !props.primary && !props.disabled,
+            `
+            color: ${normalizeColor('brand', props.theme)};
+            &:hover, &:active {
+              box-shadow: none;
+              background-color: ${normalizeColor('turteal', props.theme)};
+              color: ${normalizeColor('white', props.theme)};
+            }
+            &:active {
+              box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+            }
+          `
+          )}
+          ${applyWhen(
+            !props.primary && props.disabled,
+            `
+            color: ${normalizeColor('black-tint-60', props.theme)};
+            background-color: ${normalizeColor('white', props.theme)};
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            `
+          )}
+          ${applyWhen(
+            props.primary && !props.disabled,
+            `
             color: ${normalizeColor('white', props.theme)};
-          }
-          &:active {
-            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
-          }
-        `
-        }
-        ${
-          !props.primary &&
-          props.disabled &&
+            &:hover, &:active {
+              box-shadow: none;
+              background-color: ${normalizeColor(
+                'turteal-shade-20',
+                props.theme
+              )};
+            }
+            &:active {
+              box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+            }
+           `
+          )}
+          ${applyWhen(
+            props.primary && props.disabled,
+            `
+            color: ${normalizeColor('white', props.theme)};
+            background-color: ${normalizeColor('black-tint-60', props.theme)};
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            `
+          )}
           `
-          ;
-          color: ${normalizeColor('black-tint-60', props.theme)};
-          background-color: ${normalizeColor('white', props.theme)};
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-        `
-        }
-        ${
-          props.primary &&
-          !props.disabled &&
+        ),
+        applyWhen(
+          props.active || props.selected,
           `
-          ;
-          color: ${normalizeColor('white', props.theme)};
-          &:hover, &:active {
-            box-shadow: none;
-            background-color: ${normalizeColor(
-              'turteal-shade-20',
-              props.theme
-            )};
+          &[role="menuitem"], &[role="menuitem"] > div {
+            background-color: ${normalizeColor('black-tint-80', props.theme)};
           }
-          &:active {
-            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+
+          &[role="menuitem"] span {
+            color: ${normalizeColor('brand', props.theme)};
           }
-        `
-        }
-        ${
-          props.primary &&
-          props.disabled &&
           `
-          ;
-          color: ${normalizeColor('white', props.theme)};
-          background-color: ${normalizeColor('black-tint-60', props.theme)};
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-        `
-        }
-      `
+        )
+      )
   },
   tabs: {
     gap: '91px',
@@ -164,6 +223,7 @@ const theme = {
   },
   chart: {},
   checkBox: {
+    color: 'brand',
     check: {
       radius: '4px'
     },
@@ -171,6 +231,21 @@ const theme = {
     toggle: {
       radius: '16px',
       size: '32px'
+    },
+    border: {
+      width: '1px',
+      color: {
+        dark: 'black-tint-80',
+        light: 'black-tint-80'
+      }
+    },
+    hover: {
+      border: {
+        color: {
+          dark: 'black-tint-60',
+          light: 'black-tint-60'
+        }
+      }
     }
   },
   clock: {
@@ -229,10 +304,9 @@ const theme = {
   diagram: {
     line: {}
   },
-  email: 'd.mejia@alexslemonade.org',
   formField: {
     border: {
-      color: 'active-background',
+      color: 'black-tint-60',
       error: {
         color: {
           dark: 'white',
@@ -275,14 +349,12 @@ const theme = {
     },
     label: {
       margin: {
-        horizontal: 'none',
+        horizontal: 'xsmall',
         vertical: 'xsmall'
       },
-      size: 'small'
+      size: 'medium'
     },
-    margin: {
-      bottom: 'small'
-    },
+    margin: 'medium',
     round: '4px'
   },
   global: {
@@ -436,7 +508,8 @@ const theme = {
       'text-xweak': {
         dark: '#999999',
         light: '#666666'
-      }
+      },
+      focus: 'brand'
     },
     control: {
       border: {
@@ -446,6 +519,21 @@ const theme = {
     drop: {
       border: {
         radius: '4px'
+      },
+      extend: (props) => `
+        border: 1px solid ${normalizeColor('black-tint-60', props.theme)};
+        margin-top: 4px;
+
+        button:hover, button:focus {
+          background-color: ${normalizeColor('black-tint-80', props.theme)};
+        }
+
+        button:hover span {
+          color: ${normalizeColor('brand', props.theme)};
+        }
+      `,
+      active: {
+        background: 'red'
       }
     },
     edgeSize: {
@@ -471,7 +559,7 @@ const theme = {
     },
     input: {
       padding: '8px',
-      weight: 600
+      weight: 400
     },
     selected: {
       background: 'selected-background',
@@ -665,7 +753,23 @@ const theme = {
     }
   },
   radioButton: {
-    size: '16px'
+    color: 'black-tint-80',
+    size: '16px',
+    border: {
+      width: '1px',
+      color: {
+        dark: 'black-tint-80',
+        light: 'black-tint-80'
+      }
+    },
+    hover: {
+      border: {
+        color: {
+          dark: 'black-tint-60',
+          light: 'black-tint-60'
+        }
+      }
+    }
   },
   rounding: 4,
   scale: 1,
