@@ -23,6 +23,8 @@ class Common(Configuration):
         "rest_framework.authtoken",  # token authentication
         "django_filters",  # for filtering rest endpoints
         "guardian",  # extended permissions to individual objects
+        "django_elasticsearch_dsl",  # elasticsearch
+        "django_elasticsearch_dsl_drf",  # elasticsearch rest api
         # Your apps
         "resources_portal",
     )
@@ -109,6 +111,9 @@ class Common(Configuration):
         {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
         {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
     ]
+
+    # Elastic Search
+    ELASTICSEARCH_DSL = {"default": {"hosts": "9200" + ":" + "9300"}}
 
     # Logging
     LOGGING = {
