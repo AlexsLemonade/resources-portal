@@ -113,7 +113,13 @@ class Common(Configuration):
     ]
 
     # Elastic Search
-    ELASTICSEARCH_DSL = {"default": {"hosts": "9200" + ":" + "9300"}}
+    ELASTICSEARCH_DSL = {
+        "default": {
+            "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch")
+            + ":"
+            + os.getenv("ELASTICSEARCH_PORT", "9200")
+        }
+    }
 
     # Logging
     LOGGING = {

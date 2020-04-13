@@ -18,6 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         def add_class_to_database(class_json, Class):
+            print(f"Inserting {Class.__name__} into database...")
             for element in class_json:
                 element_in_class = Class(**element)
                 element_in_class.save()

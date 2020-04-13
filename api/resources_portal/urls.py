@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter
 from resources_portal.views import (
     MaterialDocumentView,
     MaterialViewSet,
+    OrganizationDocumentView,
     UserCreateViewSet,
     UserViewSet,
 )
@@ -20,6 +21,7 @@ router.register(r"materials", MaterialViewSet)
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search")
+search_router.register(r"organizations", OrganizationDocumentView, basename="search")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

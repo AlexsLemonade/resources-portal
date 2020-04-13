@@ -20,46 +20,41 @@ from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from elasticsearch_dsl import TermsFacet
 from six import iteritems
 
-from resources_portal.models import Material
-from resources_portal.models.documents import MaterialDocument
+from resources_portal.models import Organization
+from resources_portal.models.documents import OrganizationDocument
 from resources_portal.views.user import UserSerializer
 
 
-class MaterialSerializer(serializers.ModelSerializer):
+class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Material
+        model = Organization
         fields = (
             "id",
-            "category",
-            "title",
-            "url",
-            "organization",
-            "pubmed_id",
-            "additional_metadata",
-            # "contact_user",
+            "name",
+            # "owner_id",
             "created_at",
             "updated_at",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
 
-class MaterialDetailSerializer(MaterialSerializer):
-    contact_user = UserSerializer()
+class OrganizationDetailSerializer(OrganizationSerializer):
+    owner_id = UserSerializer()
 
 
-class MaterialViewSet(viewsets.ModelViewSet):
-    queryset = Material.objects.all()
+class OrganizationViewSet(viewsets.ModelViewSet):
+    queryset = Organization.objects.all()
 
     def get_serializer_class(self):
         if self.action == "retrieve":
-            return MaterialDetailSerializer
+            return OrganizationDetailSerializer
 
-        return MaterialSerializer
+        return OrganizationSerializer
 
 
-class MaterialDocumentView(DocumentViewSet):
-    document = MaterialDocument
-    serializer_class = MaterialSerializer
+class OrganizationDocumentView(DocumentViewSet):
+    document = OrganizationDocument
+    serializer_class = OrganizationSerializer
     pagination_class = ESLimitOffsetPagination
 
     # Filter backends provide different functionality we want
@@ -75,57 +70,35 @@ class MaterialDocumentView(DocumentViewSet):
     # Define search fields
     # Is this exhaustive enough?
     search_fields = {
-        "title": {"boost": 10},
-        "description": {"boost": 8},
-        # "contact_user": {"boost": 5},
-        "organization": {"boost": 3},
-        "url": None,
-        "category": None,
-        "pubmed_id": None,
-        "additional_metadata": None,
+        "name": {"boost": 10},
+        # "owner_id"
     }
 
     # Define filtering fields
     filter_fields = {
         "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-        "category": "category",
-        "organization": {"field": "name"},
-        "title": "title",
+        "name": "name",
     }
 
     # Define ordering fields
     ordering_fields = {
+        "name": "name",
         "id": "id",
-        "title": "title.raw",
-        "category": "category.raw",
-        "created_at": "created_at",
-        "updated_at": "updated_at",
     }
 
     # Specify default ordering
     ordering = (
-        "created_at",
+        "name",
         "id",
     )
 
     faceted_search_fields = {
-        "category": {
-            "field": "category",
-            "facet": TermsFacet,
-            "enabled": True,  # These are enabled by default, which is more expensive but more simple.
-        },
         # "contact_user.username": {"field": "username", "facet": TermsFacet, "enabled": True,},
-        "organization.name": {
-            "field": "organization",
-            "facet": TermsFacet,
-            "enabled": True,
-            "global": False,
-        },
     }
     faceted_search_param = "facet"
 
     def list(self, request, *args, **kwargs):
-        response = super(MaterialDocumentView, self).list(request, args, kwargs)
+        response = super(OrganizationDocumentView, self).list(request, args, kwargs)
         response.data["facets"] = self.transform_es_facets(response.data["facets"])
         return response
 

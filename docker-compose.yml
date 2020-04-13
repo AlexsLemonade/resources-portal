@@ -49,11 +49,10 @@ services:
     depends_on:
       - api
   elasticsearch:
-    # container_name: dres
+    container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-    restart: unless-stopped
+    restart: always
     ports:
       - 9200:9200
-      - 9300:9300
     environment:
       discovery.type: single-node
