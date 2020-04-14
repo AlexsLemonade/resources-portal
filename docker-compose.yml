@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:11.6
+    volumes:
+      - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
+  api:
+    restart: always
+    environment:
+      - DJANGO_SECRET_KEY=local
+    image: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+      args:
+        PORT: '${HTTP_PORT}'
+    command: >
+      bash -c "python wait_for_postgres.py &&
+               ./manage.py migrate &&
+               ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
+    volumes:
+      - ./api:/home/user/code
+    ports:
+      - '${HTTP_PORT}:${HTTP_PORT}'
+    depends_on:
+      - postgres
+  documentation:
+    restart: always
+    image: squidfunk/mkdocs-material
+    volumes:
+      - ${PWD}:/docs
+    ports:
+      - '${DOCS_PORT}:8000'
+  client:
+    ports:
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
+    image: node:10.16.0
+    command: >
+      bash -c "cd /home/user/code &&
+               yarn install &&
+               (API_URL=http://localhost:${HTTP_PORT} yarn run storybook --quiet -p ${STORYBOOK_PORT} &
+               API_URL=http://localhost:${HTTP_PORT} yarn run dev -p ${CLIENT_PORT})"
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+      - ./client/.next:/home/user/code/.next
+    depends_on:
+      - api

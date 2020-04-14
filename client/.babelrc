@@ -2,6 +2,20 @@
   "presets": ["next/babel"],
   "plugins": [
     [
+      "inline-react-svg",
+      {
+        "svgo": {
+          "plugins": [
+            {
+              "cleanupIDs": {
+                "minify": false
+              }
+            }
+          ]
+        }
+      }
+    ],
+    [
       "styled-components",
       {
         "ssr": true,

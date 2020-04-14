@@ -1,10 +1,11 @@
-import { Grommet } from 'grommet';
-import theme from '../src/theme';
-import Head from 'next/head';
-import Layout from '../src/components/Layout';
+import React from 'react'
+import { Grommet } from 'grommet'
+import Head from 'next/head'
+import theme from '../theme'
+import Layout from '../components/Layout'
 
 // global styles
-import '../src/styles/app.scss';
+import '../styles/app.scss'
 
 export default ({ Component, pageProps }) => {
   return (
@@ -18,9 +19,10 @@ export default ({ Component, pageProps }) => {
       </Head>
       <Grommet theme={theme}>
         <Layout>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <Component {...pageProps} />
         </Layout>
       </Grommet>
     </>
-  );
-};
+  )
+}

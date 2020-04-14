@@ -20,13 +20,13 @@ docker-compose up
 Create a superuser to login to the admin:
 
 ```bash
-docker-compose run --rm web ./manage.py createsuperuser
+docker-compose run --rm api ./manage.py createsuperuser
 ```
 
 # Making migrations
 
 ```bash
-docker-compose run --rm web ./manage.py makemigrations resources_portal
+docker-compose run --rm api ./manage.py makemigrations resources_portal
 ```
 
 # Visualizing the data model
@@ -34,10 +34,10 @@ docker-compose run --rm web ./manage.py makemigrations resources_portal
 This project includes [django-extensions graph_models command](https://django-extensions.readthedocs.io/en/latest/graph_models.html).
 
 ```bash
-docker-compose run --rm web ./manage.py graph_models -a -g > model.dot
+docker-compose run --rm api ./manage.py graph_models -a -g > model.dot
 ```
 
 At the moment png exports are not setup but these can be generated from the `.dot` file.
 (Either with `dot -Tpng model.dot -o database_diagram.png` or https://convertio.co/dot-png/)
 
-![database-diagram](/database_diagram.png)
+![database-diagram](database_diagram.png)

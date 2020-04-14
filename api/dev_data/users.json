@@ -1,0 +1,122 @@
+{
+  "resources_portal_user": [
+    {
+      "username": "PrimaryProf",
+      "first_name": "Prim",
+      "last_name": "Proffer",
+      "password": "App1eB0ttomGene$",
+      "last_login": "2020-02-19 17:15:25-07",
+      "is_superuser": "False",
+      "email": "pprof@havard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-01-22 19:10:25-07",
+      "id": "10000000-0f5a-4165-b518-b2386a753d6f"
+    },
+    {
+      "username": "PostDoc",
+      "first_name": "Postsworth",
+      "last_name": "Doktor",
+      "password": "Malc0mInPlasmiddle!",
+      "last_login": "2020-03-12 04:15:25-07",
+      "is_superuser": "False",
+      "email": "pdoc@harvard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-01-01 16:15:25-07",
+      "id": "20000000-a55d-42b7-b53e-056956e18b8c"
+    },
+    {
+      "username": "SecondaryProf",
+      "first_name": "Secundus",
+      "last_name": "Profarius",
+      "password": "PDXG0nG!veItToYa",
+      "last_login": "2020-03-31 09:11:25-07",
+      "is_superuser": "False",
+      "email": "secprof@harvard.edu",
+      "is_staff": "False",
+      "is_active": "True",
+      "date_joined": "2020-03-26 04:12:25-07",
+      "id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+    }
+  ],
+  "resources_portal_user_groups": [
+    {
+      "id": "1",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "group_id": "2"
+    },
+    {
+      "id": "2",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "group_id": "2"
+    },
+    {
+      "id": "3",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "group_id": "2"
+    }
+  ],
+  "organization_user_setting": [
+    {
+      "id": "1",
+      "organization_id": "1",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "False",
+      "request_approval_determined_notif": "False",
+      "request_assigned_notif": "False",
+      "reminder_notif": "False",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "1",
+      "organization_id": "2",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "2",
+      "organization_id": "1",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "3",
+      "organization_id": "3",
+      "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "False",
+      "created_at": "2020-01-30 16:12:25-07",
+      "updated_at": "2020-01-30 16:12:25-07"
+    },
+    {
+      "id": "4",
+      "organization_id": "4",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "new_request_notif": "True",
+      "change_in_request_status_notif": "True",
+      "request_approval_determined_notif": "True",
+      "request_assigned_notif": "True",
+      "reminder_notif": "True",
+      "created_at": "2020-03-30 16:12:25-07",
+      "updated_at": "2020-03-30 16:12:25-07"
+    }
+  ]
+}

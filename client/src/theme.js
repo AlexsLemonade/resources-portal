@@ -1,13 +1,148 @@
-// This file is the theme config for the grommet theme provider
+import { normalizeColor } from 'grommet/utils'
+
 const theme = {
   button: {
     border: {
-      radius: '12px',
-      width: '2px'
+      radius: '4px',
+      width: '1px'
     },
     padding: {
-      horizontal: '14px',
-      vertical: '2px'
+      horizontal: '24px',
+      vertical: '7px' // 8px - 1px for border
+    },
+    size: {
+      medium: {
+        border: {
+          radius: '4px'
+        },
+        padding: {
+          horizontal: '24px',
+          vertical: '7px' // 8px - 1px for border
+        }
+      }
+    },
+    disabled: {
+      opacity: 1
+    },
+    extend: (props) =>
+      !props.role &&
+      !props.plain &&
+      `
+        ${
+          !props.primary &&
+          !props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('brand', props.theme)};
+          &:hover, &:active {
+            box-shadow: none;
+            background-color: ${normalizeColor('turteal', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          }
+          &:active {
+            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+          }
+        `
+        }
+        ${
+          !props.primary &&
+          props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('black-tint-60', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+          border-color: ${normalizeColor('black-tint-60', props.theme)};
+        `
+        }
+        ${
+          props.primary &&
+          !props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('white', props.theme)};
+          &:hover, &:active {
+            box-shadow: none;
+            background-color: ${normalizeColor(
+              'turteal-shade-20',
+              props.theme
+            )};
+          }
+          &:active {
+            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+          }
+        `
+        }
+        ${
+          props.primary &&
+          props.disabled &&
+          `
+          ;
+          color: ${normalizeColor('white', props.theme)};
+          background-color: ${normalizeColor('black-tint-60', props.theme)};
+          border-color: ${normalizeColor('black-tint-60', props.theme)};
+        `
+        }
+      `
+  },
+  tabs: {
+    gap: '91px',
+    header: {
+      extend: (props) => `
+        border-bottom: 1px solid #CACACA;
+        justify-content: ${
+          props.children.length > 3 ? 'space-between' : 'start'
+        };
+        > div {
+          ${
+            props.children.length > 3 &&
+            `
+            display: none;
+          `
+          }
+        }
+        > button {
+          position: relative;
+        }
+        > button > div > span {
+          font-size: 21px;
+        }
+        > button[aria-expanded="true"] {
+          font-weight: bold;
+        }
+        > button > div {
+          margin: 0;
+          border-bottom: none;
+          position: relative;
+        }
+        > button[aria-expanded="true"] > div:after {
+          content: '';
+          position: absolute;
+          display: block;
+          width: 41px;
+          height: 1px;
+          top: 100%;
+          left: 50%;
+          transform: translate(-50%, 0);
+          background-color: #FFFFFF;
+        }
+        > button[aria-expanded="true"]:before,
+        > button[aria-expanded="true"]:after {
+          content: '';
+          position: absolute;
+          top: 97.5%;
+          width: 24px;
+          border-bottom: 1px solid #cacaca;
+        }
+        > button[aria-expanded="true"]:before {
+          left: 50%;
+          transform-origin: left;
+          transform: translate(-95%, 100%) rotate(20deg)
+        }
+        > button[aria-expanded="true"]:after {
+          right: 50%;
+          transform-origin: right;
+          transform: translate(95%, 100%) rotate(-20deg)
+    `
     }
   },
   calendar: {
@@ -165,7 +300,7 @@ const theme = {
     breakpoints: {
       large: {},
       medium: {
-        value: 1024
+        value: '1024px'
       },
       small: {
         borderSize: {
@@ -198,44 +333,96 @@ const theme = {
       }
     },
     colors: {
-      'active-background': 'background-contrast',
+      'alexs-navy': '#002F6C',
+      'alexs-navy-tint-20': '#0051BC',
+      'alexs-navy-tint-40': '#0D76FF',
+      'alexs-navy-tint-60': '#5EA4fE',
+      'alexs-navy-tint-80': '#AED1FE',
+      'alexs-navy-tint-90': '#D6E8FF',
+      'alexs-lemon': '#F3E500',
+      'alexs-lemon-tint-40': '#FFF55E',
+      'alexs-lemon-tint-80': '#FFFBC9',
+      'alexs-lemon-shade-10': '#DACE00',
+      'alexs-lemon-shade-20': '#C2B700',
+      'alexs-lemon-shade-30': '#AAA000',
+      turteal: '#017FA3',
+      'turteal-tint-20': '#01B4E7',
+      'turteal-tint-40': '#30D0FD',
+      'turteal-tint-60': '#75DFFE',
+      'turteal-tint-80': '#BAEFFE',
+      'turteal-tint-90': '#DCF7FE',
+      'turteal-shade-20': '#006582',
+      'turteal-shade-40': '#AAA000',
+      'soda-orange': '#E55517',
+      'soda-orange-tint-20': '#ec7643',
+      'soda-orange-tint-40': '#F09872',
+      'soda-orange-tint-60': '#F5BAA1',
+      'soda-orange-tint-80': '#FADCD0',
+      'soda-orange-tint-90': '#FCEDE7',
+      'soda-orange-shade-20': '#B74412',
+      'soda-orange-shade-40': '#89320D',
+      'soda-orange-shade-60': '#5B2209',
+      'savana-green': '#98BF61',
+      'savana-green-tint-40': '#C1D8A0',
+      'savana-green-tint-60': '#D5E5BF',
+      'savana-green-tint-80': '#EAF2DF',
+      'savana-green-shade-20': '#7BA342',
+      'savana-green-shade-40': '#5C7A31',
+      'savana-green-shade-60': '#3D5121',
+      'savana-green-shade-80': '#1E2810',
+      black: '#000000',
+      'black-tint-20': '#333333',
+      'black-tint-30': '#4A4A4A',
+      'black-tint-40': '#666666',
+      'black-tint-60': '#999999',
+      'black-tint-80': '#CCCCCC',
+      'black-tint-95': '#F2F2F2',
+      white: '#FDFDFD',
+      info: '#002F6C', // alexs-navy-base
+      success: '#41A36D',
+      'success-shade-20': '#348257',
+      error: '#DB3B28',
+      'error-shade-20': '#A72A1B',
+      warning: '#DACE00', // alexs-lemon-shade-10
+      'active-background': 'brand',
       'active-text': 'text-strong',
+      'background-highlight': '#F2F2F2',
       background: {
         dark: '#111111',
-        light: '#FFFFFF'
+        light: 'white'
       },
       'background-back': {
         dark: '#111111',
-        light: '#EEEEEE'
+        light: 'white'
       },
       'background-contrast': {
-        dark: '#FFFFFF11',
-        light: '#F2F2F2'
+        dark: '#FFFFFF',
+        light: 'white'
       },
       'background-front': {
         dark: '#222222',
-        light: '#FFFFFF'
+        light: 'white'
       },
       border: {
         dark: '#444444',
-        light: '#CCCCCC'
+        light: 'black-tint-80'
       },
       brand: {
-        dark: '#017FA3',
-        light: '#017FA3'
+        dark: 'turteal',
+        light: 'turteal'
       },
       control: 'brand',
       'graph-0': 'brand',
       'graph-1': 'status-warning',
       'selected-background': 'brand',
-      'selected-text': 'text-strong',
+      'selected-text': 'text',
       'status-critical': '#FF4040',
       'status-disabled': '#CCCCCC',
       'status-ok': '#00C781',
       'status-unknown': '#CCCCCC',
       'status-warning': '#FFAA15',
       text: {
-        dark: '#EEEEEE',
+        dark: '#FDFDFD',
         light: '#000000'
       },
       'text-strong': {
@@ -244,7 +431,7 @@ const theme = {
       },
       'text-weak': {
         dark: '#CCCCCC',
-        light: '#444444'
+        light: '#999999'
       },
       'text-xweak': {
         dark: '#999999',
@@ -295,7 +482,7 @@ const theme = {
       large: '512px',
       medium: '256px',
       small: '128px',
-      xlarge: '768px',
+      xlarge: `${8 * 130}px`,
       xsmall: '64px',
       xxlarge: `${8 * 156}px`,
       xxsmall: '32px'
@@ -490,9 +677,9 @@ const theme = {
       size: '15px'
     },
     medium: {
-      height: '16px',
+      height: '24px',
       maxWidth: '192px',
-      size: '12px'
+      size: '16px'
     },
     small: {
       height: '15px',
@@ -515,6 +702,6 @@ const theme = {
       size: '23px'
     }
   }
-};
+}
 
-export default theme;
+export default theme

@@ -1,12 +1,13 @@
 site_name: resources_portal
 site_description: Resources Portal
-repo_url: https://github.com/ccdl/resources_portal
+repo_url: https://github.com/AlexsLemonade/resources-portal
 site_dir: site
-copyright: Copyright &copy; 2019, <a href="https://github.com/ccdl">ccdl</a>.
+copyright: Developed by the <a href="https://www.ccdatalab.org/">Childhood Cancer Data Lab</a>.
 dev_addr: 0.0.0.0:8001
 
 nav:
   - Home: 'index.md'
+  - Storybook: 'storybook'
   - API:
       - Authentication: 'api/authentication.md'
       - Users: 'api/users.md'
