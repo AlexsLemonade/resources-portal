@@ -21,12 +21,15 @@ class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
     members = UserRelationSerializer(many=True)
 
-    def update_members(self, organization, members):
+    def update_members(self, organization, owner_id, members):
         if not members:
             # Nothing to do.
             return organization
 
         member_ids = [member["id"] for member in members]
+
+        if owner_id not in member_ids:
+            member_ids.append(owner_id)
 
         organization.members.set(User.objects.filter(id__in=member_ids))
         organization.save()
@@ -40,7 +43,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
 
         organization = super(OrganizationSerializer, self).create(validated_data)
 
-        return self.update_members(organization, members)
+        return self.update_members(organization, owner["id"], members)
 
     def update(self, instance, validated_data):
         owner = validated_data.pop("owner")
@@ -50,7 +53,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
 
         organization = super(OrganizationSerializer, self).update(instance, validated_data)
 
-        return self.update_members(organization, members)
+        return self.update_members(organization, owner["id"], members)
 
 
 class OrganizationListSerializer(OrganizationSerializer):
