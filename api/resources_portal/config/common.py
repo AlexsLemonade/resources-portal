@@ -138,7 +138,7 @@ class Common(Configuration):
         "filters": {"require_debug_true": {"()": "django.utils.log.RequireDebugTrue",},},
         "handlers": {
             "django.server": {
-                "level": "INFO",
+                "level": "DEBUG",
                 "class": "logging.StreamHandler",
                 "formatter": "django.server",
             },
@@ -147,7 +147,7 @@ class Common(Configuration):
         },
         "loggers": {
             "django": {"handlers": ["console"], "propagate": True,},
-            "django.server": {"handlers": ["django.server"], "level": "INFO", "propagate": False,},
+            "django.server": {"handlers": ["django.server"], "level": "DEBUG", "propagate": False,},
             "django.request": {
                 "handlers": ["mail_admins", "console"],
                 "level": "ERROR",

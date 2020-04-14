@@ -53,8 +53,9 @@ class MaterialDocument(Document):
 class OrganizationDocument(Document):
 
     name = fields.TextField(fielddata=True, fields={"raw": fields.KeywordField()})
-    owner_id = fields.TextField(
+    owner = fields.NestedField(
         properties={
+            "pk": fields.TextField(),
             "first_name": fields.TextField(),
             "last_name": fields.TextField(),
             "username": fields.TextField(),
