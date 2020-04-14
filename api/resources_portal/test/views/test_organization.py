@@ -3,7 +3,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-import factory
 from faker import Faker
 
 from resources_portal.models import Organization, User
