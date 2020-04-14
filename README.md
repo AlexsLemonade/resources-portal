@@ -36,4 +36,10 @@ To populate the dev database with some realistic data, please run:
 docker-compose run --rm api python3 manage.py populate_test_database
 ```
 
+To clear the database, run:
+
+```bash
+./recreate_schema.sh
+```
+
 See the [README for the test data](api/dev_data/test_data_readme.md) for a description of the test dataset.
