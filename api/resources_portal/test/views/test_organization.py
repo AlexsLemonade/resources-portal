@@ -69,3 +69,15 @@ class TestSingleOrganizationTestCase(APITestCase):
         organization = Organization.objects.get(pk=self.organization.id)
         self.assertIn(new_member, organization.members.all())
         self.assertEqual(new_member, organization.owner)
+
+    def test_put_cannot_add_invalid_user(self):
+        organization_json = self.client.get(self.url).json()
+
+        new_member_json = {"id": "invalid"}
+        # The lab gets sold to a new owner or something...
+        organization_json["owner"] = new_member_json
+        organization_json["members"].append(new_member_json)
+
+        # TODO: this should require authentication
+        response = self.client.put(self.url, organization_json)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
