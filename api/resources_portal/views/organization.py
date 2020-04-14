@@ -31,6 +31,8 @@ class OrganizationDetailSerializer(OrganizationSerializer):
         organization.members.set(User.objects.filter(id__in=member_ids))
         organization.save()
 
+        return organization
+
     def create(self, validated_data):
         owner = validated_data.pop("owner")
         members = validated_data.pop("members")
@@ -38,9 +40,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
 
         organization = super(OrganizationSerializer, self).create(validated_data)
 
-        self.update_members(organization, members)
-
-        return organization
+        return self.update_members(organization, members)
 
     def update(self, instance, validated_data):
         owner = validated_data.pop("owner")
@@ -50,9 +50,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
 
         organization = super(OrganizationSerializer, self).update(instance, validated_data)
 
-        self.update_members(organization, members)
-
-        return organization
+        return self.update_members(organization, members)
 
 
 class OrganizationListSerializer(OrganizationSerializer):
