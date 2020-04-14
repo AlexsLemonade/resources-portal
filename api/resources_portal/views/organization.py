@@ -45,6 +45,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
     def create(self, validated_data):
         owner = validated_data.pop("owner")
         members = validated_data.pop("members")
+        validated_data["owner_id"] = owner["id"]
 
         organization = super(OrganizationSerializer, self).create(validated_data)
 

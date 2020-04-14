@@ -14,7 +14,7 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     organizations = models.ManyToManyField(
-        "User", related_name="members", through="OrganizationUserAssociation"
+        "Organization", through="OrganizationUserAssociation"
     )
 
     def __str__(self):
