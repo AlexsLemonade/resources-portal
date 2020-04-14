@@ -32,9 +32,7 @@ class UserRelationSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("username", "first_name", "last_name", "created_at", "updated_at")
-        extra_kwargs = {'id': {'read_only': False}}
-
-
+        extra_kwargs = {"id": {"read_only": False}}
 
 
 class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
