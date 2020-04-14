@@ -10,6 +10,7 @@ class OrganizationUserAssociation(models.Model):
         Organization, blank=False, null=False, on_delete=models.CASCADE
     )
     user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         db_table = "organization_user_associations"
