@@ -19,27 +19,16 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
-    # owner_id = serializers.PrimaryKeyRelatedField(
-    #     source="owner", queryset=User.objects.all(), write_only=True
-    # )
     members = UserRelationSerializer(many=True)
-    # members = serializers.PrimaryKeyRelatedField(
-    #     # Why is this owner? I think maybe it should be members.
-    #     many=True, queryset=User.objects.all(), write_only=True
-    # )
 
-    def update_users(self, organization, owner, members):
-        if not owner or members:
+    def update_members(self, organization, members):
+        if not members:
             # Nothing to do.
             return organization
 
-        if owner:
-            organization.owner = User.objects.get(id=owner["id"])
+        member_ids = [member["id"] for member in members]
 
-        if members:
-            member_ids = [member["id"] for member in members]
-            organization.members.set(User.objects.filter(id__in=member_ids))
-
+        organization.members.set(User.objects.filter(id__in=member_ids))
         organization.save()
 
     def create(self, validated_data):
@@ -49,17 +38,19 @@ class OrganizationDetailSerializer(OrganizationSerializer):
 
         organization = super(OrganizationSerializer, self).create(validated_data)
 
-        self.update_users(organization, owner, members)
+        self.update_members(organization, members)
 
         return organization
 
     def update(self, instance, validated_data):
         owner = validated_data.pop("owner")
         members = validated_data.pop("members")
+        if owner:
+            validated_data["owner_id"] = owner["id"]
 
         organization = super(OrganizationSerializer, self).update(instance, validated_data)
 
-        self.update_users(organization, owner, members)
+        self.update_members(organization, members)
 
         return organization
 
