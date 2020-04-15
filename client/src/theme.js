@@ -579,9 +579,10 @@ const theme = {
   },
   heading: {
     font: {
-      family: 'Arvo',
+      family: 'Lato',
       weight: 'bold'
     },
+    extend: (props) => (props.title ? `font-family: 'Arvo'` : null),
     level: {
       '1': {
         large: {
@@ -592,7 +593,7 @@ const theme = {
         medium: {
           height: '37px',
           maxWidth: '533px',
-          size: '33px'
+          size: '67px'
         },
         small: {
           height: '27px',
@@ -614,7 +615,7 @@ const theme = {
         medium: {
           height: '32px',
           maxWidth: '448px',
-          size: '28px'
+          size: '50px'
         },
         small: {
           height: '24px',
@@ -636,7 +637,7 @@ const theme = {
         medium: {
           height: '27px',
           maxWidth: '363px',
-          size: '23px'
+          size: '38px'
         },
         small: {
           height: '21px',
@@ -658,7 +659,7 @@ const theme = {
         medium: {
           height: '21px',
           maxWidth: '277px',
-          size: '17px'
+          size: '28px'
         },
         small: {
           height: '19px',
@@ -680,7 +681,7 @@ const theme = {
         medium: {
           height: '15px',
           maxWidth: '171px',
-          size: '11px'
+          size: '21px'
         },
         small: {
           height: '15px',
