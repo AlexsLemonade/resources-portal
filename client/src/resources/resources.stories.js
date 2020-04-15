@@ -12,7 +12,7 @@ export function formatSentenceCase(str) {
 }
 
 for (const key of Object.keys(Mappings)) {
-  storiesOf(`${formatSentenceCase(key)}`, module)
+  storiesOf(`Resources/${formatSentenceCase(key)}`, module)
     .add('SearchResult', () => {
       return (
         <Grommet theme={theme}>
