@@ -582,7 +582,8 @@ const theme = {
       family: 'Lato',
       weight: 'bold'
     },
-    extend: (props) => (props.title ? `font-family: 'Arvo'` : null),
+    extend: (props) =>
+      props.title ? `font-family: 'Arvo'; font-weight: 400` : null,
     level: {
       '1': {
         large: {
