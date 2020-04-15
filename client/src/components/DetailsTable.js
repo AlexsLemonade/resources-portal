@@ -25,7 +25,7 @@ function DetailsTable({ data, className }) {
               <Text weight="bold">{datum.label}</Text>
             </TableCell>
             <TableCell pad="medium" align="left">
-              <Text>{datum.value}</Text>
+              <Text>{datum.value ? datum.value : 'Not specified'}</Text>
             </TableCell>
           </TableRow>
         ))}

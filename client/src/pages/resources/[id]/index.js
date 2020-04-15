@@ -1,18 +1,10 @@
 import React from 'react'
 
-import {
-  Box,
-  Heading,
-  Anchor,
-  Text,
-  Button,
-  Tabs,
-  Tab,
-  Paragraph
-} from 'grommet'
+import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
 import { ResourceDetails } from '../../../resources'
 import { getResourceDetails } from '../../../common/api'
+import DetailsTable from '../../../components/DetailsTable'
 
 const ResourceDetailsPage = ({ resource }) => (
   <>
@@ -45,23 +37,13 @@ const ResourceDetailsPage = ({ resource }) => (
     <div>
       <Tabs>
         <Tab title="Resource Details">
-          <Box
-            border={[
-              { size: 'xsmall', side: 'bottom', color: 'turteal-tint-80' }
-            ]}
-            margin={{ bottom: 'large' }}
-          >
-            <Heading level="5" margin={{ bottom: 'medium' }}>
-              Resource Details
-            </Heading>
-          </Box>
-
+          <TabHeading title="Resource Details" />
           <ResourceDetails resource={resource} />
         </Tab>
         <Tab title="Publication Information">
-          <Box alvign="center" pad="large" gap="large">
-            TODO: Publication information
-          </Box>
+          <TabHeading title="Publication Information" />
+
+          <PublicationInformation resource={resource} />
         </Tab>
         <Tab title="Contact Submitter">
           <Box alvign="center" pad="large" gap="large">
@@ -82,3 +64,38 @@ ResourceDetailsPage.getInitialProps = async ({ query }) => {
   return { resource }
 }
 export default ResourceDetailsPage
+
+const TabHeading = ({ title }) => (
+  <Box
+    border={[{ size: 'xsmall', side: 'bottom', color: 'turteal-tint-80' }]}
+    margin={{ bottom: 'large' }}
+  >
+    <Heading level="5" margin={{ bottom: 'medium' }}>
+      {title}
+    </Heading>
+  </Box>
+)
+
+const PublicationInformation = ({ resource }) => (
+  <DetailsTable
+    data={[
+      {
+        label: 'PubMed ID',
+        value: resource.additional_metadata.pubmedid
+      },
+      {
+        label: 'Publication Title',
+        value: resource.additional_metadata.publication_title
+      },
+      {
+        label: 'Pre-print DOI',
+        value: resource.additional_metadata.pre_print_doi
+      },
+      {
+        label: 'Pre-print Title',
+        value: resource.additional_metadata.pre_print_title
+      },
+      { label: 'Citation', value: resource.additional_metadata.citation }
+    ]}
+  />
+)

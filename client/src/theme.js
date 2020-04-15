@@ -682,7 +682,6 @@ const theme = {
         },
         medium: {
           height: 1.5,
-          maxWidth: '171px',
           size: '21px'
         },
         small: {
