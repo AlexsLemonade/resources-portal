@@ -12,7 +12,8 @@ import {
   TextInput,
   RadioButton,
   RadioButtonGroup,
-  CheckBox
+  CheckBox,
+  Heading
 } from 'grommet'
 
 import theme from '../theme'
@@ -193,3 +194,31 @@ storiesOf('Forms Inputs', module).add('Textboxes', () => {
     </Grommet>
   )
 })
+
+storiesOf('Headings', module)
+  .add('Lato (for body)', () => {
+    return (
+      <Grommet theme={theme}>
+        <Box align="center" pad="large">
+          {[1, 2, 3, 4, 5].map((level) => (
+            <Heading level={level}>
+              H{level} Heading {level}
+            </Heading>
+          ))}
+        </Box>
+      </Grommet>
+    )
+  })
+  .add('Arvo (for headers)', () => {
+    return (
+      <Grommet theme={theme}>
+        <Box align="center" pad="large">
+          {[1, 2, 3, 4, 5].map((level) => (
+            <Heading level={level} title>
+              H{level} Heading {level}
+            </Heading>
+          ))}
+        </Box>
+      </Grommet>
+    )
+  })
