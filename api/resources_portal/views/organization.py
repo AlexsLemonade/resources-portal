@@ -22,10 +22,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
     members = UserRelationSerializer(many=True)
 
     def update_members(self, organization, owner_id, members):
-        if not members:
-            # Nothing to do.
-            return organization
-
+        """If owner_id is not in members, it will be added."""
         member_ids = [member["id"] for member in members]
 
         if owner_id not in member_ids:
