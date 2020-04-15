@@ -731,27 +731,27 @@ const theme = {
   paragraph: {
     large: {
       height: '19px',
-      maxWidth: '235px',
+      maxWidth: '100%',
       size: '15px'
     },
     medium: {
       height: '24px',
-      maxWidth: '192px',
+      maxWidth: '100%',
       size: '16px'
     },
     small: {
       height: '16px',
-      maxWidth: '171px',
+      maxWidth: '100%',
       size: '12px'
     },
     xlarge: {
       height: '21px',
-      maxWidth: '277px',
+      maxWidth: '100%',
       size: '17px'
     },
     xxlarge: {
       height: '27px',
-      maxWidth: '363px',
+      maxWidth: '100%',
       size: '23px'
     }
   },
