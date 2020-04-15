@@ -31,10 +31,10 @@ export function getQueryString(queryObj) {
  * @param {string} queryString
  * @returns {object}
  */
-export function getQueryParamObject(queryString) {
-  if (queryString.startsWith('?')) {
-    queryString = queryString.substr(1)
-  }
+export function getQueryParamObject(queryStringParam) {
+  const queryString = queryString.startsWith('?')
+    ? queryStringParam.substr(1)
+    : queryStringParam
 
   const queryObj = {}
   queryString.split('&').forEach((queryParam) => {
@@ -80,11 +80,10 @@ export function getRange(n) {
  * @returns {Promise}
  */
 export async function asyncFetch(url, params = false) {
-  const fullURL = url.startsWith('http')
-    ? url
-    : process.env.API_URL
-    ? `${process.env.API_URL}${url}`
-    : url
+  const fullURL =
+    !fullURL.startsWith('http') && process.env.API_URL
+      ? `${process.env.API_URL}${fullURL}`
+      : url
 
   let response
   try {
@@ -118,18 +117,11 @@ export function formatSentenceCase(str) {
 }
 
 // thanks to https://github.com/customd/jquery-number/blob/master/jquery.number.js#L729
-export function formatNumber(number, decimals = 2, decPoint, thousandsSep) {
+export function formatNumber(numberParam, decimals = 2) {
   // Set the default values here, instead so we can use them in the replace below.
-  thousandsSep =
-    typeof thousandsSep === 'undefined'
-      ? (1000).toLocaleString() !== '1000'
-        ? (1000).toLocaleString().charAt(1)
-        : ''
-      : thousandsSep
-  decPoint =
-    typeof decPoint === 'undefined'
-      ? (0.1).toLocaleString().charAt(1)
-      : decPoint
+  const thousandsSep =
+    (1000).toLocaleString() !== '1000' ? (1000).toLocaleString().charAt(1) : ''
+  const decPoint = (0.1).toLocaleString().charAt(1)
 
   // Work out the unicode representation for the decimal place and thousand sep.
   const uDec = `\\u${`0000${decPoint.charCodeAt(0).toString(16)}`.slice(-4)}`
@@ -138,7 +130,7 @@ export function formatNumber(number, decimals = 2, decPoint, thousandsSep) {
   )}`
 
   // Fix the number, so that it's an actual number.
-  number = `${number}`
+  const number = `${numberParam}`
     .replace('.', decPoint) // because the number if passed in as a float (having . as decimal point per definition) we need to replace this with the passed in decimal point character
     .replace(new RegExp(uSep, 'g'), '')
     .replace(new RegExp(uDec, 'g'), '.')
@@ -146,7 +138,7 @@ export function formatNumber(number, decimals = 2, decPoint, thousandsSep) {
 
   const n = !Number.isFinite(+number) ? 0 : +number
   let s = ''
-  const toFixedFix = function (nArg, decimalsArg) {
+  const toFixedFix = (nArg, decimalsArg) => {
     return `${+`${Math.round(
       `${nArg}`.indexOf('e') > 0 ? nArg : `${nArg}e+${decimalsArg}`
     )}e-${decimalsArg}`}`
@@ -167,11 +159,11 @@ export function formatNumber(number, decimals = 2, decPoint, thousandsSep) {
 // Helper methods to ease working with ajax functions
 export const Ajax = {
   get: (url, params = false, headers = false) => {
-    url = params ? `${url}?${getQueryString(params)}` : url
+    const fullUrl = params ? `${url}?${getQueryString(params)}` : url
 
     return !headers
-      ? asyncFetch(url)
-      : asyncFetch(url, {
+      ? asyncFetch(fullUrl)
+      : asyncFetch(fullUrl, {
           method: 'GET',
           headers: {
             'content-type': 'application/json',
@@ -219,7 +211,7 @@ export function truncateOnWord(str, limit, end = '...') {
   const words = str.split(reg)
   let count = 0
   const result = words
-    .filter(function (word) {
+    .filter((word) => {
       count += word.length
       return count <= limit
     })
