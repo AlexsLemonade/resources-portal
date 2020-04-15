@@ -214,7 +214,7 @@ storiesOf('Headings', module)
       <Grommet theme={theme}>
         <Box align="center" pad="large">
           {[1, 2, 3, 4, 5].map((level) => (
-            <Heading level={level} title={true}>
+            <Heading level={level} title>
               H{level} Heading {level}
             </Heading>
           ))}
