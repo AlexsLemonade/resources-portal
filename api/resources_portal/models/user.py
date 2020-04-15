@@ -13,8 +13,10 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
+
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

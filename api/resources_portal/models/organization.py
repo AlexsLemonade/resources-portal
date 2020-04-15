@@ -26,7 +26,7 @@ class Organization(models.Model):
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="owned_organizations"
     )
 
-    members = models.ManyToManyField(User, related_name="organizations")
+    members = models.ManyToManyField(User, through="OrganizationUserAssociation")
 
 
 @receiver(post_save, sender="resources_portal.Organization")
