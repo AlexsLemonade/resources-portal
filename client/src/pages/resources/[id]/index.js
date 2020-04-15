@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { ResourceDetails } from '../../../resources'
 import { getResourceDetails } from '../../../common/api'
 import DetailsTable from '../../../components/DetailsTable'
+import Organism from '../../../images/organism.svg'
+import ResourceType from '../../../images/resource-type.svg'
 
 const ResourceDetailsPage = ({ resource }) => (
   <>
@@ -14,16 +16,25 @@ const ResourceDetailsPage = ({ resource }) => (
       align="center"
       margin={{ bottom: 'large' }}
     >
-      <div>
-        <Heading level="5" margin={{ top: '0', bottom: 'small' }}>
+      <Box pad="large">
+        <Heading level="5" margin={{ top: '0', bottom: 'large' }}>
           <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
             <Anchor label={resource.title} />
           </Link>
         </Heading>
-        <Text margin={{ right: 'large' }}>[i] {resource.category}</Text>
 
-        <Text>[i] {resource.additional_metadata.organism}</Text>
-      </div>
+        <Box direction="row">
+          <ResourceType />
+          <Text margin={{ left: 'small', right: 'xlarge' }}>
+            {resource.category}
+          </Text>
+
+          <Organism />
+          <Text margin={{ left: 'small' }}>
+            {resource.additional_metadata.organism}
+          </Text>
+        </Box>
+      </Box>
       <div>
         <Link
           href="/resources/[id]/request"
