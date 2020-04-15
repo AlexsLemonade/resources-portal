@@ -6,6 +6,7 @@ const applyAll = (...rules) => rules.concat()
 const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
 
 const DownArrow = (props) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
   <Blank {...props}>
     <polygon points="4,8 20,8 12,16" stroke="#000" fill="#000" />
   </Blank>
@@ -579,9 +580,11 @@ const theme = {
   },
   heading: {
     font: {
-      family: 'Arvo',
+      family: 'Lato',
       weight: 'bold'
     },
+    extend: (props) =>
+      props.title ? `font-family: 'Arvo'; font-weight: 400` : null,
     level: {
       '1': {
         large: {
@@ -590,9 +593,9 @@ const theme = {
           size: '55px'
         },
         medium: {
-          height: '37px',
+          height: 1.5,
           maxWidth: '533px',
-          size: '33px'
+          size: '67px'
         },
         small: {
           height: '27px',
@@ -612,9 +615,9 @@ const theme = {
           size: '36px'
         },
         medium: {
-          height: '32px',
+          height: 1.5,
           maxWidth: '448px',
-          size: '28px'
+          size: '50px'
         },
         small: {
           height: '24px',
@@ -634,9 +637,9 @@ const theme = {
           size: '28px'
         },
         medium: {
-          height: '27px',
+          height: 1.5,
           maxWidth: '363px',
-          size: '23px'
+          size: '38px'
         },
         small: {
           height: '21px',
@@ -656,9 +659,9 @@ const theme = {
           size: '20px'
         },
         medium: {
-          height: '21px',
+          height: 1.5,
           maxWidth: '277px',
-          size: '17px'
+          size: '28px'
         },
         small: {
           height: '19px',
@@ -678,9 +681,9 @@ const theme = {
           size: '11px'
         },
         medium: {
-          height: '15px',
+          height: 1.5,
           maxWidth: '171px',
-          size: '11px'
+          size: '21px'
         },
         small: {
           height: '15px',
