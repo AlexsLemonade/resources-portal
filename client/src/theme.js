@@ -593,7 +593,7 @@ const theme = {
           size: '55px'
         },
         medium: {
-          height: '37px',
+          height: 1.5,
           maxWidth: '533px',
           size: '67px'
         },
@@ -615,7 +615,7 @@ const theme = {
           size: '36px'
         },
         medium: {
-          height: '32px',
+          height: 1.5,
           maxWidth: '448px',
           size: '50px'
         },
@@ -637,7 +637,7 @@ const theme = {
           size: '28px'
         },
         medium: {
-          height: '27px',
+          height: 1.5,
           maxWidth: '363px',
           size: '38px'
         },
@@ -659,7 +659,7 @@ const theme = {
           size: '20px'
         },
         medium: {
-          height: '21px',
+          height: 1.5,
           maxWidth: '277px',
           size: '28px'
         },
@@ -681,7 +681,7 @@ const theme = {
           size: '11px'
         },
         medium: {
-          height: '15px',
+          height: 1.5,
           maxWidth: '171px',
           size: '21px'
         },
