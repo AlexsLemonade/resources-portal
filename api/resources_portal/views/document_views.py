@@ -25,12 +25,13 @@ from drf_yasg.utils import swagger_auto_schema
 from elasticsearch_dsl import TermsFacet
 from six import iteritems
 
-from resources_portal.models import Material
+from resources_portal.models import Material, Organization, User
 from resources_portal.models.documents import MaterialDocument, OrganizationDocument, UserDocument
 from resources_portal.views.organization import OrganizationSerializer
 from resources_portal.views.user import UserSerializer
 
 
+# Puts material search data into a form that the client will accept
 class MaterialDocumentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     category = serializers.CharField(read_only=True)
@@ -78,7 +79,7 @@ class FacetedSearchFilterBackendExtended(FacetedSearchFilterBackend):
         for field, facet in iteritems(facets):
             agg = facet["facet"].get_aggregation()
             queryset.aggs.bucket(field, agg).metric(
-                "total_samples", "cardinality", field="category", precision_threshold=40000,
+                "total_samples", "cardinality", field="id", precision_threshold=40000,
             )
         return queryset
 
@@ -125,14 +126,16 @@ There's an additional field in the response named `facets` that contain stats on
 
 Example Requests:
 ```
-?search=medulloblastoma
+?search=zebrafish
 ?id=1
-?search=medulloblastoma&technology=microarray&has_publication=true
+?search=zebrafish&category=plasmid&has_publication=true
 ?ordering=source_first_published
 ```
 """,
     ),
 )
+
+# Defines search and filter fields for Materials
 class MaterialDocumentView(DocumentViewSet):
     document = MaterialDocument
     serializer_class = MaterialDocumentSerializer
@@ -146,7 +149,6 @@ class MaterialDocumentView(DocumentViewSet):
         CompoundSearchFilterBackend,
         FacetedSearchFilterBackendExtended,
     ]
-    ordering = ("created_at",)
     lookup_field = "id"
 
     # Define search fields
@@ -181,16 +183,13 @@ class MaterialDocumentView(DocumentViewSet):
 
     # Specify default ordering
     ordering = (
+        "_score",
         "created_at",
         "id",
     )
 
     faceted_search_fields = {
-        "category": {
-            "field": "category",
-            "facet": TermsFacet,
-            "enabled": True,  # These are enabled by default, which is more expensive but more simple.
-        },
+        "category": {"field": "category", "facet": TermsFacet, "enabled": True},
         "organism": {"field": "organism", "facet": TermsFacet, "enabled": True},
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
@@ -220,9 +219,28 @@ class MaterialDocumentView(DocumentViewSet):
         return result
 
 
+class OrganizationDocumentSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    owner_id = serializers.CharField(read_only=True)
+    created_at = serializers.DateField(read_only=True)
+    updated_at = serializers.DateField(read_only=True)
+
+    class Meta:
+        model = Organization
+        fields = (
+            "id",
+            "name",
+            "owner_id",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+
 class OrganizationDocumentView(DocumentViewSet):
     document = OrganizationDocument
-    serializer_class = OrganizationSerializer
+    serializer_class = OrganizationDocumentSerializer
     pagination_class = ESLimitOffsetPagination
 
     # Filter backends provide different functionality we want
@@ -232,21 +250,15 @@ class OrganizationDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
     ]
-    ordering = ("created_at",)
+
     lookup_field = "id"
 
     # Define search fields
     # Is this exhaustive enough?
-    search_fields = {
-        "name": {"boost": 10},
-        # "owner_id"
-    }
+    search_fields = {"name": {"boost": 10}}
 
     # Define filtering fields
-    filter_fields = {
-        "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-        "name": "name",
-    }
+    filter_fields = {}
 
     # Define ordering fields
     ordering_fields = {
@@ -255,37 +267,11 @@ class OrganizationDocumentView(DocumentViewSet):
     }
 
     # Specify default ordering
-    ordering = (
-        "name",
-        "id",
-    )
+    ordering = ("_score", "created_at")
 
-    faceted_search_fields = {
-        # "contact_user.username": {"field": "username", "facet": TermsFacet, "enabled": True,},
-    }
+    faceted_search_fields = {}
+
     faceted_search_param = "facet"
-
-    def list(self, request, *args, **kwargs):
-        response = super(OrganizationDocumentView, self).list(request, args, kwargs)
-        response.data["facets"] = self.transform_es_facets(response.data["facets"])
-        return response
-
-    def transform_es_facets(self, facets):
-        """Transforms Elastic Search facets into a set of objects where each one corresponds
-        to a filter group. Example:
-
-        { technology: {rna-seq: 254, microarray: 8846, unknown: 0} }
-
-        Which means the users could attach `?technology=rna-seq` to the url and expect 254
-        samples returned in the results.
-        """
-        result = {}
-        for field, facet in iteritems(facets):
-            filter_group = {}
-            for bucket in facet["buckets"]:
-                filter_group[bucket["key"]] = bucket["total_samples"]["value"]
-            result[field] = filter_group
-        return result
 
 
 class UserDocumentView(DocumentViewSet):
@@ -312,9 +298,7 @@ class UserDocumentView(DocumentViewSet):
     }
 
     # Define filtering fields
-    filter_fields = {
-        "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-    }
+    filter_fields = {}
 
     # Define ordering fields
     ordering_fields = {
@@ -330,25 +314,3 @@ class UserDocumentView(DocumentViewSet):
 
     faceted_search_fields = {}
     faceted_search_param = "facet"
-
-    def list(self, request, *args, **kwargs):
-        response = super(UserDocumentView, self).list(request, args, kwargs)
-        response.data["facets"] = self.transform_es_facets(response.data["facets"])
-        return response
-
-    def transform_es_facets(self, facets):
-        """Transforms Elastic Search facets into a set of objects where each one corresponds
-        to a filter group. Example:
-
-        { technology: {rna-seq: 254, microarray: 8846, unknown: 0} }
-
-        Which means the users could attach `?technology=rna-seq` to the url and expect 254
-        samples returned in the results.
-        """
-        result = {}
-        for field, facet in iteritems(facets):
-            filter_group = {}
-            for bucket in facet["buckets"]:
-                filter_group[bucket["key"]] = bucket["total_samples"]["value"]
-            result[field] = filter_group
-        return result

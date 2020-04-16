@@ -19,6 +19,10 @@ html_strip = analyzer(
     char_filter=["html_strip"],
 )
 
+string_analyzer = analyzer(
+    "html_strip", tokenizer="keyword", filter=["lowercase", "stop", "snowball"],
+)
+
 # Document for materials. Interprets material data from the model so that it can be indexed into elasticsearch.
 @material_index.doc_type
 class MaterialDocument(Document):
@@ -26,14 +30,12 @@ class MaterialDocument(Document):
     title = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
-    category = fields.TextField(
-        fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
-    )
+    category = fields.KeywordField()
 
     organism = fields.TextField(
         attr="get_organism",
         fielddata=True,
-        analyzer=html_strip,
+        analyzer=string_analyzer,
         fields={"raw": fields.KeywordField()},
     )
 

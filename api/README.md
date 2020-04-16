@@ -51,6 +51,25 @@ curl -X POST http://0.0.0.0:8000/v1/materials -H "Content-Type: application/json
 
 (Note that you may want to change `organization` as well.)
 
+## Elasticsearch Queries
+
+You can search the test database using elasticsearch. Go to
+```http://localhost:8000/search/materials```
+
+to see a list of all materials. Other searches you can do include:
+
+```http://localhost:8000/search/materials?search=PrimProf```
+Finds all materials with the term "PrimProf" somewhere in the data.
+
+```http://localhost:8000/search/materials?category=PLASMID```
+Filter for all materials with under the category "PLASMID"
+
+```http://localhost:8000/search/materials?ordering=created_at```
+Order the searches by their time created. Default ordering is best match.
+
+These queries can also be combined, like:
+```http://localhost:8000/search/materials?ordering=created_at&category=PLASMID&search=zebrafish```
+
 ## Cloud Deployments
 
 To be able to deploy the API to AWS the docker image will need to be hosted in a Docker repository.
