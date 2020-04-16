@@ -46,8 +46,21 @@ class Material(models.Model):
         "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
     )
 
-    def get_organism(self, instance):
-        if "organism" in instance.additional_metadata:
-            return instance.additional_metadata["organism"]
+    def get_organism(self):
+        if "organism" in self.additional_metadata:
+            return self.additional_metadata["organism"]
         else:
             return ""
+
+    def has_publication(self):
+        return not (self.pubmed_id == "")
+
+    def has_pre_print(self):
+        if (
+            "pre_print_doi" in self.additional_metadata
+            and "pre_print_title" in self.additional_metadata
+        ):
+            return not (
+                self.additional_metadata["pre_print_doi"] == ""
+                and self.additional_metadata["pre_print_title"] == ""
+            )

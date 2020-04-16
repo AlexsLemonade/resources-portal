@@ -19,7 +19,7 @@ html_strip = analyzer(
     char_filter=["html_strip"],
 )
 
-
+# Document for materials. Interprets material data from the model so that it can be indexed into elasticsearch.
 @material_index.doc_type
 class MaterialDocument(Document):
 
@@ -30,7 +30,17 @@ class MaterialDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
 
-    organism = fields.TextField(attr="get_organism")
+    organism = fields.TextField(
+        attr="get_organism",
+        fielddata=True,
+        analyzer=html_strip,
+        fields={"raw": fields.KeywordField()},
+    )
+
+    has_publication = fields.BooleanField(attr="has_publication")
+
+    has_pre_print = fields.BooleanField(attr="has_pre_print")
+
     # Basic Fields
     id = fields.IntegerField()
     url = fields.TextField()
@@ -38,7 +48,7 @@ class MaterialDocument(Document):
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
-    pubmed_id = fields.IntegerField()
+    pubmed_id = fields.TextField()
     created_at = fields.DateField()
     updated_at = fields.DateField()
     additional_metadata = fields.TextField()
@@ -55,6 +65,7 @@ class MaterialDocument(Document):
         queryset_pagination = 3000
 
 
+# Document for organizations. Interprets organization data from the model so that it can be indexed into elasticsearch.
 @organization_index.doc_type
 class OrganizationDocument(Document):
 
@@ -73,6 +84,7 @@ class OrganizationDocument(Document):
         queryset_pagination = 3000
 
 
+# Document for users. Interprets user data from the model so that it can be indexed into elasticsearch.
 @user_index.doc_type
 class UserDocument(Document):
 

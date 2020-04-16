@@ -25,6 +25,7 @@ class Common(Configuration):
         "guardian",  # extended permissions to individual objects
         "django_elasticsearch_dsl",  # elasticsearch
         "django_elasticsearch_dsl_drf",  # elasticsearch rest api
+        "drf_yasg",
         # Your apps
         "resources_portal",
     )

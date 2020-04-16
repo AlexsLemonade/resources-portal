@@ -1,3 +1,7 @@
-from resources_portal.views.material import MaterialDocumentView, MaterialViewSet
-from resources_portal.views.organization import OrganizationDocumentView
-from resources_portal.views.user import UserCreateViewSet, UserDocumentView, UserViewSet
+from resources_portal.views.document_views import (
+    MaterialDocumentView,
+    OrganizationDocumentView,
+    UserDocumentView,
+)
+from resources_portal.views.material import MaterialViewSet
+from resources_portal.views.user import UserCreateViewSet, UserViewSet
