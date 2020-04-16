@@ -22,12 +22,35 @@ class UserFactory(factory.django.DjangoModelFactory):
     created_at = timezone.now()
     updated_at = timezone.now()
 
+    @factory.post_generation
+    def organizations(self, create, extracted, **kwargs):
+        if not create:
+            # Simple build, do nothing.
+            return
 
-class OrganizationFactory(factory.django.DjangoModelFactory):
+        if extracted:
+            for organization in extracted:
+                self.organizations.add(organization)
+
+
+class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Organization"
 
     owner = factory.SubFactory(UserFactory)
+
+
+class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationUserAssociation"
+
+    user = factory.SubFactory(UserFactory)
+    organization = factory.SubFactory(PersonalOrganizationFactory)
+
+
+class OrganizationFactory(PersonalOrganizationFactory):
+    membership1 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
+    membership2 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
 
 
 class MaterialFactory(factory.django.DjangoModelFactory):

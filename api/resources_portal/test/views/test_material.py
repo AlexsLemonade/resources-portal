@@ -19,7 +19,7 @@ class TestMaterialListTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("material-list")
         self.user = UserFactory()
-        self.organization = OrganizationFactory()
+        self.organization = OrganizationFactory(owner=self.user)
         self.material = MaterialFactory(contact_user=self.user, organization=self.organization)
         self.material_data = model_to_dict(self.material)
 

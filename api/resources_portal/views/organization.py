@@ -1,27 +1,7 @@
 from rest_framework import serializers, viewsets
 
-from django_elasticsearch_dsl_drf.constants import (
-    LOOKUP_FILTER_RANGE,
-    LOOKUP_QUERY_GT,
-    LOOKUP_QUERY_GTE,
-    LOOKUP_QUERY_IN,
-    LOOKUP_QUERY_LT,
-    LOOKUP_QUERY_LTE,
-    SUGGESTER_COMPLETION,
-)
-from django_elasticsearch_dsl_drf.filter_backends import (
-    CompoundSearchFilterBackend,
-    DefaultOrderingFilterBackend,
-    FilteringFilterBackend,
-    OrderingFilterBackend,
-)
-from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
-from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
-from elasticsearch_dsl import TermsFacet
-from six import iteritems
-
-from resources_portal.models import Organization
-from resources_portal.views.user import UserSerializer
+from resources_portal.models import Organization, User
+from resources_portal.views.user import UserRelationSerializer
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -29,8 +9,8 @@ class OrganizationSerializer(serializers.ModelSerializer):
         model = Organization
         fields = (
             "id",
-            "name",
-            "owner_id",
+            "owner",
+            "members",
             "created_at",
             "updated_at",
         )
@@ -38,14 +18,51 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationDetailSerializer(OrganizationSerializer):
-    owner_id = UserSerializer()
+    owner = UserRelationSerializer()
+    members = UserRelationSerializer(many=True)
+
+    def update_members(self, organization, owner_id, members):
+        """If owner_id is not in members, it will be added."""
+        member_ids = [member["id"] for member in members]
+
+        if owner_id not in member_ids:
+            member_ids.append(owner_id)
+
+        organization.members.set(User.objects.filter(id__in=member_ids))
+        organization.save()
+
+        return organization
+
+    def create(self, validated_data):
+        owner = validated_data.pop("owner")
+        members = validated_data.pop("members")
+        validated_data["owner_id"] = owner["id"]
+
+        organization = super(OrganizationSerializer, self).create(validated_data)
+
+        return self.update_members(organization, owner["id"], members)
+
+    def update(self, instance, validated_data):
+        owner = validated_data.pop("owner")
+        members = validated_data.pop("members")
+        if owner:
+            validated_data["owner_id"] = owner["id"]
+
+        organization = super(OrganizationSerializer, self).update(instance, validated_data)
+
+        return self.update_members(organization, owner["id"], members)
+
+
+class OrganizationListSerializer(OrganizationSerializer):
+    owner = serializers.StringRelatedField()
+    members = serializers.StringRelatedField(many=True)
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):
     queryset = Organization.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
-            return OrganizationDetailSerializer
+        if self.action == "list":
+            return OrganizationListSerializer
 
-        return OrganizationSerializer
+        return OrganizationDetailSerializer
