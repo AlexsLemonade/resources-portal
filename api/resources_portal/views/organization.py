@@ -31,7 +31,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
-            # "owner_id",
+            "owner_id",
             "created_at",
             "updated_at",
         )

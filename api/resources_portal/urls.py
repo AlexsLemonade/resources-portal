@@ -11,6 +11,7 @@ from resources_portal.views import (
     MaterialViewSet,
     OrganizationDocumentView,
     UserCreateViewSet,
+    UserDocumentView,
     UserViewSet,
 )
 
@@ -19,9 +20,10 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 
-search_router = DefaultRouter(trailing_slash=False)
-search_router.register(r"materials", MaterialDocumentView, basename="search")
-search_router.register(r"organizations", OrganizationDocumentView, basename="search")
+search_router = DefaultRouter(trailing_slash=True)
+search_router.register(r"materials", MaterialDocumentView, basename="")
+search_router.register(r"organizations", OrganizationDocumentView, basename="")
+search_router.register(r"users", UserDocumentView, basename="")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

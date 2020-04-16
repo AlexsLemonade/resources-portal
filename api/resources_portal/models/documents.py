@@ -29,11 +29,9 @@ class MaterialDocument(Document):
     category = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
-    contact_user = fields.ObjectField(properties={"username": fields.TextField()})
-
-    organization = fields.ObjectField(properties={"name": fields.TextField()})
 
     # Basic Fields
+    id = fields.IntegerField()
     url = fields.TextField()
     mta_s3_url = fields.TextField()
     needs_irb = fields.BooleanField()
@@ -44,23 +42,17 @@ class MaterialDocument(Document):
     updated_at = fields.DateField()
     additional_metadata = fields.TextField()
 
+    def prepare_additional_metadata(self, instance):
+        metadata_string = str(instance.additional_metadata)
+        metadata_string = metadata_string.strip("{")
+        metadata_string = metadata_string.strip("}")
+        metadata_string = metadata_string.replace("'", "")
+        return metadata_string
+
     class Django:
         model = Material
         parallel_indexing = True
         queryset_pagination = 3000
-
-        fields = ["id"]
-        related_models = [User, Organization]
-
-    def get_queryset(self):
-        return (
-            super(MaterialDocument, self)
-            .get_queryset()
-            .select_related("contact_user", "organization")
-        )
-
-    def get_instances_from_related(self, related_instance):
-        return related_instance.material_set.all()
 
 
 @organization_index.doc_type
@@ -71,6 +63,7 @@ class OrganizationDocument(Document):
     )
 
     # Basic Fields
+    id = fields.IntegerField()
     created_at = fields.DateField()
     updated_at = fields.DateField()
 
@@ -79,13 +72,10 @@ class OrganizationDocument(Document):
         parallel_indexing = True
         queryset_pagination = 3000
 
-        fields = ["id"]
-
 
 @user_index.doc_type
 class UserDocument(Document):
 
-    owner_id = fields.TextField()
     first_name = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
@@ -102,15 +92,9 @@ class UserDocument(Document):
     created_at = fields.DateField()
     updated_at = fields.DateField()
     date_joined = fields.DateField()
-    id = fields.TextField()
+    id = fields.TextField(fielddata=True)
 
     class Django:
         model = User
         parallel_indexing = True
         queryset_pagination = 3000
-
-    def get_queryset(self):
-        return super(UserDocument, self).get_queryset().select_related("owner")
-
-    def get_instances_from_related(self, related_instance):
-        return related_instance.Organization

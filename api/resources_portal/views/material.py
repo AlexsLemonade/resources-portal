@@ -33,10 +33,8 @@ class MaterialSerializer(serializers.ModelSerializer):
             "category",
             "title",
             "url",
-            "organization",
             "pubmed_id",
             "additional_metadata",
-            # "contact_user",
             "created_at",
             "updated_at",
         )
