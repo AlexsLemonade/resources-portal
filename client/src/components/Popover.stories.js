@@ -12,12 +12,12 @@ storiesOf('Popover', module).add('default', () => {
           {'Requirements: '}
           <Popover label="Shipping Information">
             <Box width="auto">
-              <Text weight="600">Require:</Text>
+              <Text weight="bold">Require:</Text>
               <Text margin={{ left: '4px' }}>Shipping Address</Text>
               <Text margin={{ left: '4px', bottom: '4px' }}>
                 Shipping Service Code
               </Text>
-              <Text weight="600">Restrictions</Text>
+              <Text weight="bold">Restrictions</Text>
               <Text margin={{ left: '4px' }}>
                 Insitution only supports shipping via UPS
               </Text>
