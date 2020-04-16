@@ -1,3 +1,4 @@
+from django.utils.decorators import method_decorator
 from rest_framework import serializers, viewsets
 
 from django_elasticsearch_dsl_drf.constants import (
@@ -12,11 +13,15 @@ from django_elasticsearch_dsl_drf.constants import (
 from django_elasticsearch_dsl_drf.filter_backends import (
     CompoundSearchFilterBackend,
     DefaultOrderingFilterBackend,
+    FacetedSearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
 )
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from elasticsearch_dsl import TermsFacet
 from six import iteritems
 
@@ -37,6 +42,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "additional_metadata",
             "created_at",
             "updated_at",
+            "organism",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
@@ -55,6 +61,68 @@ class MaterialViewSet(viewsets.ModelViewSet):
         return MaterialSerializer
 
 
+class FacetedSearchFilterBackendExtended(FacetedSearchFilterBackend):
+    def aggregate(self, request, queryset, view):
+        """Extends FacetedSearchFilterBackend to add additional metrics to each bucket
+        https://github.com/barseghyanartur/django-elasticsearch-dsl-drf/blob/master/src/django_elasticsearch_dsl_drf/filter_backends/faceted_search.py#L19
+
+        We have the downloadable sample accession codes indexed for each experiment.
+        The cardinality metric, returns the number of unique samples for each bucket.
+        However it's just an approximate
+        https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html#_counts_are_approximate
+        I used the highest possible precision threshold, but this might increase the amount
+        of memory used.
+        """
+        facets = self.construct_facets(request, view)
+        for field, facet in iteritems(facets):
+            agg = facet["facet"].get_aggregation()
+            queryset.aggs.bucket(field, agg).metric(
+                "total_samples",
+                "cardinality",
+                field="downloadable_samples",
+                precision_threshold=40000,
+            )
+        return queryset
+
+
+##
+# ElasticSearch powered Search and Filter
+##
+@method_decorator(
+    name="list",
+    decorator=swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                name="category",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by category, can have multiple values. Eg: `?category=plasmid&category=other`",
+            ),
+            openapi.Parameter(
+                name="organism",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by organism",
+            ),
+        ],
+        operation_description="""
+Use this endpoint to search among the experiments.
+
+This is powered by ElasticSearch, information regarding advanced usages of the
+filters can be found in the [Django-ES-DSL-DRF docs](https://django-elasticsearch-dsl-drf.readthedocs.io/en/0.17.1/filtering_usage_examples.html#filtering)
+
+There's an additional field in the response named `facets` that contain stats on the number of results per filter type.
+
+Example Requests:
+```
+?search=medulloblastoma
+?id=1
+?search=medulloblastoma&technology=microarray&has_publication=true
+?ordering=source_first_published
+```
+""",
+    ),
+)
 class MaterialDocumentView(DocumentViewSet):
     document = MaterialDocument
     serializer_class = MaterialSerializer
@@ -66,6 +134,7 @@ class MaterialDocumentView(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
+        FacetedSearchFilterBackendExtended,
     ]
     ordering = ("created_at",)
     lookup_field = "id"

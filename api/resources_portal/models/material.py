@@ -45,3 +45,9 @@ class Material(models.Model):
     organization = models.ForeignKey(
         "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
     )
+
+    def get_organism(self, instance):
+        if "organism" in instance.additional_metadata:
+            return instance.additional_metadata["organism"]
+        else:
+            return ""

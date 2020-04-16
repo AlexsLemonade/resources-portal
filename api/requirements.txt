@@ -43,3 +43,4 @@ django-elasticsearch-dsl-drf==0.20.8
 django-elasticsearch-dsl==7.1.1
 elasticsearch-dsl==7.1.0
 elasticsearch==7.6.0
+drf_yasg

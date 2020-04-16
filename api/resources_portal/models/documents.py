@@ -30,6 +30,7 @@ class MaterialDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
 
+    organism = fields.TextField(attr="get_organism")
     # Basic Fields
     id = fields.IntegerField()
     url = fields.TextField()
@@ -46,7 +47,6 @@ class MaterialDocument(Document):
         metadata_string = str(instance.additional_metadata)
         metadata_string = metadata_string.strip("{")
         metadata_string = metadata_string.strip("}")
-        metadata_string = metadata_string.replace("'", "")
         return metadata_string
 
     class Django:
