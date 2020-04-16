@@ -20,21 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("username", "created_at", "updated_at")
 
 
-class UserRelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "username",
-            "first_name",
-            "last_name",
-            "created_at",
-            "updated_at",
-        )
-        read_only_fields = ("username", "first_name", "last_name", "created_at", "updated_at")
-        extra_kwargs = {"id": {"read_only": False}}
-
-
 class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """
     Updates and retrieves user accounts

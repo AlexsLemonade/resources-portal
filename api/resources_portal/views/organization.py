@@ -1,7 +1,7 @@
 from rest_framework import serializers, viewsets
 
 from resources_portal.models import Organization, User
-from resources_portal.views.user import UserRelationSerializer
+from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
 class OrganizationSerializer(serializers.ModelSerializer):

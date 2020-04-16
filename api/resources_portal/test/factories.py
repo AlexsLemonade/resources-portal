@@ -63,3 +63,44 @@ class MaterialFactory(factory.django.DjangoModelFactory):
 
     contact_user = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)
+
+
+class LeafGrantFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Grant"
+
+    title = "Young Investigator's Grant"
+    funder_id = "1234567890"
+
+
+class GrantUserAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantUserAssociation"
+
+    user = factory.SubFactory(UserFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class GrantOrganizationAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantOrganizationAssociation"
+
+    organization = factory.SubFactory(PersonalOrganizationFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantMaterialAssociation"
+
+    # Can I pass contact_user and organization along here?
+    material = factory.SubFactory(MaterialFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class GrantFactory(LeafGrantFactory):
+    user1 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
+    user2 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
+    organization = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
+    material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
