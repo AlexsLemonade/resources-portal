@@ -1,15 +1,7 @@
 from django.utils.decorators import method_decorator
-from rest_framework import serializers, viewsets
+from rest_framework import serializers
 
-from django_elasticsearch_dsl_drf.constants import (
-    LOOKUP_FILTER_RANGE,
-    LOOKUP_QUERY_GT,
-    LOOKUP_QUERY_GTE,
-    LOOKUP_QUERY_IN,
-    LOOKUP_QUERY_LT,
-    LOOKUP_QUERY_LTE,
-    SUGGESTER_COMPLETION,
-)
+from django_elasticsearch_dsl_drf.constants import LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN
 from django_elasticsearch_dsl_drf.filter_backends import (
     CompoundSearchFilterBackend,
     DefaultOrderingFilterBackend,
@@ -19,7 +11,6 @@ from django_elasticsearch_dsl_drf.filter_backends import (
 )
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from elasticsearch_dsl import TermsFacet
@@ -27,8 +18,6 @@ from six import iteritems
 
 from resources_portal.models import Material, Organization, User
 from resources_portal.models.documents import MaterialDocument, OrganizationDocument, UserDocument
-from resources_portal.views.organization import OrganizationSerializer
-from resources_portal.views.user import UserSerializer
 
 
 # Puts material search data into a form that the client will accept
@@ -134,9 +123,9 @@ Example Requests:
 """,
     ),
 )
-
-# Defines search and filter fields for Materials
 class MaterialDocumentView(DocumentViewSet):
+    """Defines search and filter fields for Materials"""
+
     document = MaterialDocument
     serializer_class = MaterialDocumentSerializer
     pagination_class = ESLimitOffsetPagination
@@ -239,6 +228,8 @@ class OrganizationDocumentSerializer(serializers.Serializer):
 
 
 class OrganizationDocumentView(DocumentViewSet):
+    """Defines search and filter fields for Organizations"""
+
     document = OrganizationDocument
     serializer_class = OrganizationDocumentSerializer
     pagination_class = ESLimitOffsetPagination
@@ -274,9 +265,32 @@ class OrganizationDocumentView(DocumentViewSet):
     faceted_search_param = "facet"
 
 
+class UserDocumentSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(read_only=True)
+    first_name = serializers.CharField(read_only=True)
+    last_name = serializers.DateField(read_only=True)
+    created_at = serializers.DateField(read_only=True)
+    updated_at = serializers.DateField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("username", "created_at", "updated_at")
+
+
 class UserDocumentView(DocumentViewSet):
+    """Defines search and filter fields for Users"""
+
     document = UserDocument
-    serializer_class = UserSerializer
+    serializer_class = UserDocumentSerializer
     pagination_class = ESLimitOffsetPagination
 
     # Filter backends provide different functionality we want

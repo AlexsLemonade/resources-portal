@@ -1,6 +1,5 @@
 from django_elasticsearch_dsl import Document, Index, fields
 from elasticsearch_dsl import analyzer
-from elasticsearch_dsl.analysis import token_filter
 
 from resources_portal.models import Material, Organization, User
 
@@ -47,9 +46,9 @@ class MaterialDocument(Document):
     id = fields.IntegerField()
     url = fields.TextField()
     mta_s3_url = fields.TextField()
-    needs_irb = fields.BooleanField()
-    needs_mta = fields.BooleanField()
-    needs_abstract = fields.BooleanField()
+    needs_irb = fields.BooleanField(attr="process_irb")
+    needs_mta = fields.BooleanField(attr="process_mta")
+    needs_abstract = fields.BooleanField(attr="process_abstract")
     pubmed_id = fields.TextField()
     created_at = fields.DateField()
     updated_at = fields.DateField()
@@ -103,9 +102,9 @@ class UserDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     # Basic Fields
-    created_at = fields.DateField()
-    updated_at = fields.DateField()
-    date_joined = fields.DateField()
+    created_at = fields.TextField()
+    updated_at = fields.TextField()
+    date_joined = fields.TextField()
     id = fields.TextField(fielddata=True)
 
     class Django:

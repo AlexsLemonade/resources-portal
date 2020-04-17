@@ -64,3 +64,14 @@ class Material(models.Model):
                 self.additional_metadata["pre_print_doi"] == ""
                 and self.additional_metadata["pre_print_title"] == ""
             )
+
+    # These are needed because ElasticSearch only takes lower-case boolean variables
+    # like (true, false), whereas the current version of Python uses upper-case (True, False).
+    def process_irb(self):
+        return str(self.needs_irb).lower()
+
+    def process_mta(self):
+        return str(self.needs_mta).lower()
+
+    def process_abstract(self):
+        return str(self.needs_abstract).lower()

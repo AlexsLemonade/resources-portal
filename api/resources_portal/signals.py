@@ -1,9 +1,7 @@
-from django.db.models.signals import post_delete, post_init, post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 
 from django_elasticsearch_dsl.registries import registry
-
-from resources_portal.models.documents import MaterialDocument, OrganizationDocument, UserDocument
 
 
 @receiver(post_save)
