@@ -7,10 +7,13 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 from resources_portal.views import (
+    GrantViewSet,
     MaterialViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
     UserViewSet,
+    grant_material_relationship,
+    list_grant_material_relationships,
 )
 
 router = DefaultRouter(trailing_slash=False)
@@ -18,9 +21,21 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
+router.register(r"grants", GrantViewSet)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path(
+        "v1/grants/<int:pk>/materials/<int:material_id>/",
+        grant_material_relationship,
+        name="grant-associate-material",
+    ),
+    path(
+        "v1/grants/<int:pk>/materials/",
+        list_grant_material_relationships,
+        name="grant-list-materials",
+    ),
     path("v1/", include(router.urls)),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

@@ -66,9 +66,9 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         new_member = User.objects.get(id=new_member.id)
-        organization = Organization.objects.get(pk=self.organization.id)
-        self.assertIn(new_member, organization.members.all())
-        self.assertEqual(new_member, organization.owner)
+        self.organization.refresh_from_db()
+        self.assertIn(new_member, self.organization.members.all())
+        self.assertEqual(new_member, self.organization.owner)
 
     def test_put_owner_is_added_to_members(self):
         organization_json = self.client.get(self.url).json()
@@ -84,9 +84,9 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         new_member = User.objects.get(id=new_member.id)
-        organization = Organization.objects.get(pk=self.organization.id)
-        self.assertIn(new_member, organization.members.all())
-        self.assertEqual(new_member, organization.owner)
+        self.organization.refresh_from_db()
+        self.assertIn(new_member, self.organization.members.all())
+        self.assertEqual(new_member, self.organization.owner)
 
     def test_put_cannot_add_invalid_user(self):
         organization_json = self.client.get(self.url).json()
