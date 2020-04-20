@@ -9,7 +9,7 @@ class OrganizationInvitation(models.Model):
 
     class Meta:
         db_table = "organization_invitations"
-        get_latest_by = "created_at"
+        get_latest_by = "updated_at"
 
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),
