@@ -8,6 +8,7 @@ from resources_portal.models import (
     MaterialRequest,
     MaterialShareEvent,
     Organization,
+    OrganizationInvitation,
     OrganizationUserSetting,
     User,
 )
@@ -46,6 +47,11 @@ class Command(BaseCommand):
 
         # add requests
         add_class_to_database(materials_json["materials_requests"], MaterialRequest)
+
+        # add organization invitations
+        add_class_to_database(
+            organizations_json["organization_invitations"], OrganizationInvitation
+        )
 
         # add relation of organizations and members
         for i in organizations_json["organizations_members"]:
