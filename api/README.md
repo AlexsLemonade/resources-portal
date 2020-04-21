@@ -64,6 +64,9 @@ Finds all materials with the term "PrimProf" somewhere in the data.
 ```http://localhost:8000/search/materials?category=PLASMID```
 Filter for all materials with under the category "PLASMID"
 
+```http://localhost:8000/search/materials?contact_user.username=PrimProf```
+Filter for all materials with the contact user of PrimProf
+
 ```http://localhost:8000/search/materials?ordering=created_at```
 Order the searches by their time created. Default ordering is best match.
 
