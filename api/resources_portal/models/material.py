@@ -19,6 +19,19 @@ class Material(models.Model):
         ("OTHER", "OTHER"),
     )
 
+    IMPORTED_CHOICES = (
+        ("GEO", "GEO"),
+        ("SRA", "SRA"),
+        ("DBGAP", "DBGAP"),
+        ("DATASET", "DATASET"),
+        ("PROTOCOLS_IO", "PROTOCOLS_IO"),
+        ("ADDGENE", "ADDGENE"),
+        ("JACKSON_LAB", "JACKSON_LAB"),
+        ("ATCC", "ATCC"),
+        ("ZIRC_ZFIN", "ZIRC_ZFIN"),
+        ("OTHER", "OTHER"),
+    )
+
     objects = models.Manager()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -41,29 +54,28 @@ class Material(models.Model):
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
 
+    import_source = models.CharField(max_length=32, null=True, choices=IMPORTED_CHOICES)
+
     contact_user = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(
         "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
     )
 
-    def get_organism(self):
-        if "organism" in self.additional_metadata:
-            return self.additional_metadata["organism"]
-        else:
-            return ""
+    organism = models.TextField(blank=True, null=True)
+    contact_name = models.TextField(blank=True, null=True)
+    contact_email = models.TextField(blank=True, null=True)
+    publication_title = models.TextField(blank=True, null=True)
+    pre_print_doi = models.TextField(blank=True, null=True)
+    pre_print_title = models.TextField(blank=True, null=True)
+    citation = models.TextField(blank=True, null=True)
+    additional_info = models.TextField(blank=True, null=True)
+    embargo_date = models.TextField(blank=True, null=True)
 
     def has_publication(self):
         return not (self.pubmed_id == "")
 
     def has_pre_print(self):
-        if (
-            "pre_print_doi" in self.additional_metadata
-            and "pre_print_title" in self.additional_metadata
-        ):
-            return not (
-                self.additional_metadata["pre_print_doi"] == ""
-                and self.additional_metadata["pre_print_title"] == ""
-            )
+        return not (self.pre_print_doi == "" and self.pre_print_title == "")
 
     # These are needed because ElasticSearch only takes lower-case boolean variables
     # like (true, false), whereas the current version of Python uses upper-case (True, False).

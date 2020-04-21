@@ -1,3 +1,5 @@
+from json import dumps, loads
+
 from django.utils.decorators import method_decorator
 from rest_framework import serializers
 
@@ -27,12 +29,31 @@ class MaterialDocumentSerializer(serializers.Serializer):
     title = serializers.CharField(read_only=True)
     url = serializers.CharField(read_only=True)
     pubmed_id = serializers.CharField(read_only=True)
-    additional_metadata = serializers.CharField(read_only=True)
     created_at = serializers.DateField(read_only=True)
     updated_at = serializers.DateField(read_only=True)
     organism = serializers.CharField(read_only=True)
     has_publication = serializers.CharField(read_only=True)
     has_pre_print = serializers.CharField(read_only=True)
+    additional_info = serializers.CharField(read_only=True)
+    contact_name = serializers.CharField(read_only=True)
+    contact_email = serializers.CharField(read_only=True)
+    publication_title = serializers.CharField(read_only=True)
+    pre_print_doi = serializers.CharField(read_only=True)
+    pre_print_title = serializers.CharField(read_only=True)
+    citation = serializers.CharField(read_only=True)
+    contact_user = serializers.SerializerMethodField(read_only=True)
+    organization = (serializers.SerializerMethodField(read_only=True),)
+    additional_metadata = serializers.SerializerMethodField(read_only=True)
+
+    def get_contact_user(self, obj):
+        return loads(dumps(obj.contact_user.to_dict()))
+
+    def get_organization(self, obj):
+        return loads(dumps(obj.organization.to_dict()))
+
+    def get_additional_metadata(self, obj):
+        # this pre-processes the JSON string in django form into a form that loads can take.
+        return loads("{" + obj.additional_metadata.replace('"', "").replace("'", '"') + "}")
 
     class Meta:
         model = Material
@@ -48,29 +69,15 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "organism",
             "has_publication",
             "has_pre_print",
+            "additional_info",
+            "contact_name",
+            "contact_email",
+            "publication_title",
+            "pre_print_doi",
+            "pre_print_title",
+            "citation",
+            "contact_user",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
-
-
-class FacetedSearchFilterBackendExtended(FacetedSearchFilterBackend):
-    def aggregate(self, request, queryset, view):
-        """Extends FacetedSearchFilterBackend to add additional metrics to each bucket
-        https://github.com/barseghyanartur/django-elasticsearch-dsl-drf/blob/master/src/django_elasticsearch_dsl_drf/filter_backends/faceted_search.py#L19
-
-        We have the downloadable sample accession codes indexed for each experiment.
-        The cardinality metric, returns the number of unique samples for each bucket.
-        However it's just an approximate
-        https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-metrics-cardinality-aggregation.html#_counts_are_approximate
-        I used the highest possible precision threshold, but this might increase the amount
-        of memory used.
-        """
-        facets = self.construct_facets(request, view)
-        for field, facet in iteritems(facets):
-            agg = facet["facet"].get_aggregation()
-            queryset.aggs.bucket(field, agg).metric(
-                "total_samples", "cardinality", field="id", precision_threshold=40000,
-            )
-        return queryset
 
 
 ##
@@ -93,6 +100,18 @@ class FacetedSearchFilterBackendExtended(FacetedSearchFilterBackend):
                 description="Allows filtering the results by organism",
             ),
             openapi.Parameter(
+                name="contact_user.username",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by the owner's username",
+            ),
+            openapi.Parameter(
+                name="contact_user.email",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by the owner's email",
+            ),
+            openapi.Parameter(
                 name="has_publication",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
@@ -106,7 +125,7 @@ class FacetedSearchFilterBackendExtended(FacetedSearchFilterBackend):
             ),
         ],
         operation_description="""
-Use this endpoint to search among the experiments.
+Use this endpoint to search among the materials.
 
 This is powered by ElasticSearch, information regarding advanced usages of the
 filters can be found in the [Django-ES-DSL-DRF docs](https://django-elasticsearch-dsl-drf.readthedocs.io/en/0.17.1/filtering_usage_examples.html#filtering)
@@ -136,18 +155,25 @@ class MaterialDocumentView(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
-        FacetedSearchFilterBackendExtended,
+        FacetedSearchFilterBackend,
     ]
     lookup_field = "id"
 
     # Define search fields
-    # Is this exhaustive enough?
     search_fields = {
         "title": {"boost": 10},
         "category": None,
+        "contact_user": None,
         "additional_metadata": None,
         "pubmed_id": None,
         "organism": None,
+        "additional_info": None,
+        "contact_name": None,
+        "contact_email": None,
+        "publication_title": None,
+        "pre_print_doi": None,
+        "pre_print_title": None,
+        "citation": None,
     }
 
     # Define filtering fields
@@ -157,6 +183,8 @@ class MaterialDocumentView(DocumentViewSet):
         "organization": {"field": "name"},
         "title": "title",
         "organism": "organism",
+        "contact_user.username": "contact_user.username",
+        "contact_user.email": "contact_user.email",
         "has_publication": "has_publication",
         "has_pre_print": "has_pre_print",
     }
@@ -173,13 +201,19 @@ class MaterialDocumentView(DocumentViewSet):
     # Specify default ordering
     ordering = (
         "_score",
-        "created_at",
+        "updated_at",
         "id",
     )
 
     faceted_search_fields = {
         "category": {"field": "category", "facet": TermsFacet, "enabled": True},
         "organism": {"field": "organism", "facet": TermsFacet, "enabled": True},
+        "contact_user.username": {
+            "field": "contact_user.username",
+            "facet": TermsFacet,
+            "enabled": True,
+        },
+        "contact_user.email": {"field": "contact_user.email", "facet": TermsFacet, "enabled": True},
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
     }
@@ -194,17 +228,26 @@ class MaterialDocumentView(DocumentViewSet):
         """Transforms Elastic Search facets into a set of objects where each one corresponds
         to a filter group. Example:
 
-        { technology: {rna-seq: 254, microarray: 8846, unknown: 0} }
+        "category": {
+            "DATASET": 4,
+            "MODEL_ORGANISM": 4,
+            "CELL_LINE": 2,
+            "OTHER": 2,
+            "PLASMID": 2,
+            "PROTOCOL": 2,
+            "PDX": 1
+        }
 
-        Which means the users could attach `?technology=rna-seq` to the url and expect 254
+        Which means the users could attach `?category=DATASET` to the url and expect 4
         samples returned in the results.
         """
         result = {}
         for field, facet in iteritems(facets):
             filter_group = {}
-            for bucket in facet["buckets"]:
-                filter_group[bucket["key"]] = bucket["total_samples"]["value"]
-            result[field] = filter_group
+            fieldName = field.replace("_filter_", "")
+            for bucket in facet[fieldName]["buckets"]:
+                filter_group[bucket["key"]] = bucket["doc_count"]
+            result[fieldName] = filter_group
         return result
 
 
@@ -224,7 +267,6 @@ class OrganizationDocumentSerializer(serializers.Serializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
 
 
 class OrganizationDocumentView(DocumentViewSet):
@@ -245,7 +287,6 @@ class OrganizationDocumentView(DocumentViewSet):
     lookup_field = "id"
 
     # Define search fields
-    # Is this exhaustive enough?
     search_fields = {"name": {"boost": 10}}
 
     # Define filtering fields
@@ -258,7 +299,7 @@ class OrganizationDocumentView(DocumentViewSet):
     }
 
     # Specify default ordering
-    ordering = ("_score", "created_at")
+    ordering = ("_score", "updated_at")
 
     faceted_search_fields = {}
 
@@ -266,7 +307,7 @@ class OrganizationDocumentView(DocumentViewSet):
 
 
 class UserDocumentSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
+    id = serializers.CharField(read_only=True)
     username = serializers.CharField(read_only=True)
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.DateField(read_only=True)
@@ -283,7 +324,6 @@ class UserDocumentSerializer(serializers.Serializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("username", "created_at", "updated_at")
 
 
 class UserDocumentView(DocumentViewSet):
@@ -300,13 +340,16 @@ class UserDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
     ]
-    ordering = ("created_at",)
+    ordering = (
+        "_score",
+        "updated_at",
+    )
     lookup_field = "id"
 
     # Define search fields
-    # Is this exhaustive enough?
     search_fields = {
         "username": {"boost": 10},
+        "email": {"boost": 9},
         "last_name": {"boost": 8},
         "first_name": {"boost": 7},
     }

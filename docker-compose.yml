@@ -25,7 +25,6 @@ services:
       - '${HTTP_PORT}:${HTTP_PORT}'
     depends_on:
       - postgres
-      - elasticsearch
   documentation:
     restart: always
     image: squidfunk/mkdocs-material

@@ -19,8 +19,10 @@ html_strip = analyzer(
 )
 
 string_analyzer = analyzer(
-    "html_strip", tokenizer="keyword", filter=["lowercase", "stop", "snowball"],
+    "string_analyzer", tokenizer="keyword", filter=["lowercase", "stop", "snowball"],
 )
+
+no_op_analyzer = analyzer("no_op_analyzer", tokenizer="keyword", filter=[],)
 
 # Document for materials. Interprets material data from the model so that it can be indexed into elasticsearch.
 @material_index.doc_type
@@ -32,10 +34,20 @@ class MaterialDocument(Document):
     category = fields.KeywordField()
 
     organism = fields.TextField(
-        attr="get_organism",
-        fielddata=True,
-        analyzer=string_analyzer,
-        fields={"raw": fields.KeywordField()},
+        fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()},
+    )
+
+    contact_user = fields.ObjectField(
+        properties={
+            "username": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "first_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "last_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "email": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+        }
+    )
+
+    organization = fields.ObjectField(
+        properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
     has_publication = fields.BooleanField(attr="has_publication")
@@ -53,6 +65,18 @@ class MaterialDocument(Document):
     created_at = fields.DateField()
     updated_at = fields.DateField()
     additional_metadata = fields.TextField()
+
+    # These fields are optional, so we need to have the redundancy with the referenced
+    # contact_user above.
+    contact_name = fields.TextField()
+    contact_email = fields.TextField()
+
+    publication_title = fields.TextField()
+    pre_print_doi = fields.TextField()
+    pre_print_title = fields.TextField()
+    citation = fields.TextField()
+    additional_info = fields.TextField()
+    embargo_date = fields.TextField()
 
     def prepare_additional_metadata(self, instance):
         metadata_string = str(instance.additional_metadata)
