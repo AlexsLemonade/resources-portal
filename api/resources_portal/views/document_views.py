@@ -40,9 +40,10 @@ class MaterialDocumentSerializer(serializers.Serializer):
     publication_title = serializers.CharField(read_only=True)
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
-    citation = serializers.CharField(read_only=True)
+    citation = (serializers.CharField(read_only=True),)
+    needs_shipping_info = serializers.CharField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
-    organization = (serializers.SerializerMethodField(read_only=True),)
+    organization = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
 
     def get_contact_user(self, obj):
@@ -77,6 +78,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "pre_print_title",
             "citation",
             "contact_user",
+            "needs_shipping_info",
         )
 
 

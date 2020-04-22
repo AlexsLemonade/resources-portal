@@ -28,7 +28,7 @@ class Material(models.Model):
         ("ADDGENE", "ADDGENE"),
         ("JACKSON_LAB", "JACKSON_LAB"),
         ("ATCC", "ATCC"),
-        ("ZIRC_ZFIN", "ZIRC_ZFIN"),
+        ("ZIRC", "ZIRC"),
         ("OTHER", "OTHER"),
     )
 
@@ -53,6 +53,7 @@ class Material(models.Model):
     needs_irb = models.BooleanField(default=False, null=True)
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
+    needs_shipping_info = models.BooleanField(default=False, null=False)
 
     import_source = models.CharField(max_length=32, null=True, choices=IMPORTED_CHOICES)
 
@@ -76,14 +77,3 @@ class Material(models.Model):
 
     def has_pre_print(self):
         return not (self.pre_print_doi == "" and self.pre_print_title == "")
-
-    # These are needed because ElasticSearch only takes lower-case boolean variables
-    # like (true, false), whereas the current version of Python uses upper-case (True, False).
-    def process_irb(self):
-        return str(self.needs_irb).lower()
-
-    def process_mta(self):
-        return str(self.needs_mta).lower()
-
-    def process_abstract(self):
-        return str(self.needs_abstract).lower()
