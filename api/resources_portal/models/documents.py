@@ -33,8 +33,10 @@ class MaterialDocument(Document):
     )
     category = fields.KeywordField()
 
-    organism = fields.TextField(
-        fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()},
+    organism = fields.ListField(
+        fields.TextField(
+            fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()}
+        )
     )
 
     contact_user = fields.ObjectField(

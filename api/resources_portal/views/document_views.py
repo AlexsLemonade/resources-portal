@@ -31,7 +31,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pubmed_id = serializers.CharField(read_only=True)
     created_at = serializers.DateField(read_only=True)
     updated_at = serializers.DateField(read_only=True)
-    organism = serializers.CharField(read_only=True)
+    organism = serializers.ListField(read_only=True)
     has_publication = serializers.CharField(read_only=True)
     has_pre_print = serializers.CharField(read_only=True)
     additional_info = serializers.CharField(read_only=True)

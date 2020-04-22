@@ -1,4 +1,4 @@
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 from resources_portal.models.user import User
@@ -62,7 +62,7 @@ class Material(models.Model):
         "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
     )
 
-    organism = models.TextField(blank=True, null=True)
+    organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
     publication_title = models.TextField(blank=True, null=True)
