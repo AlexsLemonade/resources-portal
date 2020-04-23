@@ -67,9 +67,10 @@ export const SearchResult = ({ resource, children, hideDefaults = false }) => {
             <>
               <Link href={resource.url} as={`/resources/${resource.id}`}>
                 <Button
-                  label={`View on ${getReadable(
-                    resource.additional_metadata.import_source
-                  )}`}
+                  label={`View on ${
+                    getReadable(resource.additional_metadata.import_source) ||
+                    'Source Site'
+                  }`}
                   margin={{ bottom: 'small' }}
                   primary
                 />
@@ -151,9 +152,10 @@ export const RequestRequirements = ({ resource }) => {
       <SearchResultDetail title="Request Requirements">
         <Anchor
           href={resource.url}
-          label={`Request on ${getReadable(
-            resource.additional_metadata.import_source
-          )}`}
+          label={`Request on ${
+            getReadable(resource.additional_metadata.import_source) ||
+            'Source Site'
+          }`}
           target="_blank"
           rel="nooper norefferer"
         />
