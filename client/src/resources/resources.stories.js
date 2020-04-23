@@ -17,7 +17,8 @@ const convertTruthies = (obj) => {
   keys.forEach((key) => {
     if (obj[key] === 'True') convertedObj[key] = true
     if (obj[key] === 'False') convertedObj[key] = false
-    if (typeof obj[key] === 'object') convertedObj[key] = convertTruthies(obj[key])
+    if (typeof obj[key] === 'object')
+      convertedObj[key] = convertTruthies(obj[key])
   })
 
   return convertedObj
@@ -35,7 +36,7 @@ for (const key of Object.keys(Mappings)) {
       return (
         <Grommet theme={theme}>
           <Box pad="xlarge" width={{ max: '928px' }}>
-            { data[key].map((resource) => (
+            {data[key].map((resource) => (
               <SearchResult resource={resource} />
             ))}
           </Box>
@@ -44,7 +45,7 @@ for (const key of Object.keys(Mappings)) {
     })
     .add('Details', () => (
       <Grommet theme={theme}>
-        { data[key].map((resource) => (
+        {data[key].map((resource) => (
           <Box pad="xlarge" key={resource.id}>
             <ResourceDetails resource={resource} />
           </Box>

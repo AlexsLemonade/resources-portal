@@ -10,7 +10,8 @@ import {
 import styled from 'styled-components'
 
 let DetailsTable = ({ data, className }) => {
-  const handleArray = (value) => Array.isArray(value) ? value.join(', ') : value
+  const handleArray = (value) =>
+    Array.isArray(value) ? value.join(', ') : value
 
   return (
     <Table className={className}>
