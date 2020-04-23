@@ -13,6 +13,10 @@ const DownArrow = (props) => (
 )
 
 const theme = {
+  anchor: {
+    fontWeight: 400,
+    extend: (props) => applyWhen(props.bold, 'font-weight: 600')
+  },
   textInput: {
     extend: (props) => applyWhen(props.focus, 'box-shadow: none;')
   },
@@ -548,6 +552,11 @@ const theme = {
       xsmall: '4px',
       xxsmall: '2px'
     },
+    elevation: {
+      light: {
+        medium: '0 2px 18px 1px rgba(0, 0, 0, 0.1)'
+      }
+    },
     font: {
       family: 'Lato',
       height: '24px',
@@ -589,131 +598,132 @@ const theme = {
       '1': {
         large: {
           height: '59px',
-          maxWidth: '875px',
+          maxWidth: null,
           size: '55px'
         },
         medium: {
           height: 1.5,
-          maxWidth: '533px',
+          maxWidth: null,
           size: '67px'
         },
         small: {
           height: '27px',
-          maxWidth: '363px',
+          maxWidth: null,
           size: '23px'
         },
         xlarge: {
           height: '80px',
-          maxWidth: '1216px',
+          maxWidth: null,
           size: '76px'
         }
       },
       '2': {
         large: {
           height: '40px',
-          maxWidth: '576px',
+          maxWidth: null,
           size: '36px'
         },
         medium: {
           height: 1.5,
-          maxWidth: '448px',
+          maxWidth: null,
           size: '50px'
         },
         small: {
           height: '24px',
-          maxWidth: '320px',
+          maxWidth: null,
           size: '20px'
         },
         xlarge: {
           height: '48px',
-          maxWidth: '704px',
+          maxWidth: null,
           size: '44px'
         }
       },
       '3': {
         large: {
           height: '32px',
-          maxWidth: '448px',
+          maxWidth: null,
           size: '28px'
         },
         medium: {
           height: 1.5,
-          maxWidth: '363px',
+          maxWidth: null,
           size: '38px'
         },
         small: {
           height: '21px',
-          maxWidth: '277px',
+          maxWidth: null,
           size: '17px'
         },
         xlarge: {
           height: '37px',
-          maxWidth: '533px',
+          maxWidth: null,
           size: '33px'
         }
       },
       '4': {
         large: {
           height: '24px',
-          maxWidth: '320px',
+          maxWidth: null,
           size: '20px'
         },
         medium: {
           height: 1.5,
-          maxWidth: '277px',
+          maxWidth: null,
           size: '28px'
         },
         small: {
           height: '19px',
-          maxWidth: '235px',
+          maxWidth: null,
           size: '15px'
         },
         xlarge: {
           height: '27px',
-          maxWidth: '363px',
+          maxWidth: null,
           size: '23px'
         }
       },
       '5': {
         large: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         },
         medium: {
-          height: 1.5,
+          height: 1.524,
+          maxWidth: null,
           size: '21px'
         },
         small: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         },
         xlarge: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         }
       },
       '6': {
         large: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         medium: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         small: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         xlarge: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         }
       }
@@ -777,6 +787,7 @@ const theme = {
   scale: 1,
   spacing: 16,
   text: {
+    extend: (props) => applyWhen(props.italic, 'font-style: italic'),
     large: {
       height: '19px',
       maxWidth: '235px',
