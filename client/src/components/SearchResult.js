@@ -179,7 +179,7 @@ export const RequestRequirements = ({ resource }) => {
               {req === MTA ? (
                 <Anchor
                   href={resource.mta_s3_url}
-                  target="_blanke"
+                  target="_blank"
                   rel="noopener noreferrer"
                   label={req}
                 />
