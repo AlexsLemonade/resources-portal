@@ -66,18 +66,3 @@ class OrganizationViewSet(viewsets.ModelViewSet):
             return OrganizationListSerializer
 
         return OrganizationDetailSerializer
-
-
-def grant_material_relationship(request, *args, **kwargs):
-    grant = Grant.objects.get(pk=kwargs["pk"])
-    material = Material.objects.get(pk=kwargs["material_id"])
-
-    if request.method == "POST":
-        GrantMaterialAssociation.objects.get_or_create(grant=grant, material=material)
-    elif request.method == "DELETE":
-        association = GrantMaterialAssociation.objects.get(grant=grant, material=material)
-        association.delete()
-    else:
-        return HttpResponseNotAllowed(["POST", "DELETE"])
-
-    return HttpResponse()
