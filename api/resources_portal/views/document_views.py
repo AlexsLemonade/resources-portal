@@ -102,16 +102,16 @@ class MaterialDocumentSerializer(serializers.Serializer):
                 description="Allows filtering the results by organism",
             ),
             openapi.Parameter(
-                name="contact_user.username",
-                in_=openapi.IN_QUERY,
-                type=openapi.TYPE_STRING,
-                description="Allows filtering the results by the owner's username",
-            ),
-            openapi.Parameter(
                 name="contact_user.email",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
                 description="Allows filtering the results by the owner's email",
+            ),
+            openapi.Parameter(
+                name="contact_user.published_name",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by the owner's published_name",
             ),
             openapi.Parameter(
                 name="has_publication",
@@ -172,6 +172,7 @@ class MaterialDocumentView(DocumentViewSet):
         "additional_info": None,
         "contact_name": None,
         "contact_email": None,
+        "contact_user.published_name": None,
         "publication_title": None,
         "pre_print_doi": None,
         "pre_print_title": None,
@@ -185,8 +186,8 @@ class MaterialDocumentView(DocumentViewSet):
         "organization": {"field": "name"},
         "title": "title",
         "organism": "organism",
-        "contact_user.username": "contact_user.username",
         "contact_user.email": "contact_user.email",
+        "contact_user.published_name": "contact_user.published_name",
         "has_publication": "has_publication",
         "has_pre_print": "has_pre_print",
     }
@@ -210,12 +211,12 @@ class MaterialDocumentView(DocumentViewSet):
     faceted_search_fields = {
         "category": {"field": "category", "facet": TermsFacet, "enabled": True},
         "organism": {"field": "organism", "facet": TermsFacet, "enabled": True},
-        "contact_user.username": {
-            "field": "contact_user.username",
+        "contact_user.email": {"field": "contact_user.email", "facet": TermsFacet, "enabled": True},
+        "contact_user.published_name": {
+            "field": "contact_user.published_name",
             "facet": TermsFacet,
             "enabled": True,
         },
-        "contact_user.email": {"field": "contact_user.email", "facet": TermsFacet, "enabled": True},
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
     }
@@ -310,9 +311,9 @@ class OrganizationDocumentView(DocumentViewSet):
 
 class UserDocumentSerializer(serializers.Serializer):
     id = serializers.CharField(read_only=True)
-    username = serializers.CharField(read_only=True)
     first_name = serializers.CharField(read_only=True)
-    last_name = serializers.DateField(read_only=True)
+    last_name = serializers.CharField(read_only=True)
+    published_name = serializers.CharField(read_only=True)
     created_at = serializers.DateField(read_only=True)
     updated_at = serializers.DateField(read_only=True)
 
@@ -320,9 +321,9 @@ class UserDocumentSerializer(serializers.Serializer):
         model = User
         fields = (
             "id",
-            "username",
             "first_name",
             "last_name",
+            "published_name",
             "created_at",
             "updated_at",
         )
@@ -350,26 +351,17 @@ class UserDocumentView(DocumentViewSet):
 
     # Define search fields
     search_fields = {
-        "username": {"boost": 10},
         "email": {"boost": 9},
         "last_name": {"boost": 8},
         "first_name": {"boost": 7},
+        "published_name": {"boost": 4},
     }
 
     # Define filtering fields
     filter_fields = {}
 
     # Define ordering fields
-    ordering_fields = {
-        "username": "username",
-        "id": "id",
-    }
-
-    # Specify default ordering
-    ordering = (
-        "username",
-        "id",
-    )
+    ordering_fields = {"id": "id", "published_name": "published_name"}
 
     faceted_search_fields = {}
     faceted_search_param = "facet"

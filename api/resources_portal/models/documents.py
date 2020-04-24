@@ -41,9 +41,9 @@ class MaterialDocument(Document):
 
     contact_user = fields.ObjectField(
         properties={
-            "username": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "first_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "last_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "published_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "email": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
         }
     )
@@ -79,7 +79,7 @@ class MaterialDocument(Document):
     pre_print_title = fields.TextField()
     citation = fields.TextField()
     additional_info = fields.TextField()
-    embargo_date = fields.TextField()
+    embargo_date = fields.DateField()
 
     def prepare_additional_metadata(self, instance):
         metadata_string = str(instance.additional_metadata)
@@ -122,15 +122,15 @@ class UserDocument(Document):
     last_name = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
-    username = fields.TextField(
+    published_name = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     email = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     # Basic Fields
-    created_at = fields.TextField()
-    updated_at = fields.TextField()
+    created_at = fields.DateField()
+    updated_at = fields.DateField()
     date_joined = fields.TextField()
     id = fields.TextField(fielddata=True)
 
