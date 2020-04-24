@@ -25,6 +25,7 @@ services:
       - '${HTTP_PORT}:${HTTP_PORT}'
     depends_on:
       - postgres
+      - elasticsearch
   documentation:
     restart: always
     image: squidfunk/mkdocs-material
@@ -48,3 +49,10 @@ services:
       - ./client/.next:/home/user/code/.next
     depends_on:
       - api
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    ports:
+      - 9200:9200
+    environment:
+      discovery.type: single-node
