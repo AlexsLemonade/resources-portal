@@ -8,6 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 from resources_portal.views import (
     MaterialViewSet,
+    OrganizationInvitationViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
     UserViewSet,
@@ -18,6 +19,7 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
+router.register(r"invitations", OrganizationInvitationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
