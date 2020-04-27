@@ -259,16 +259,19 @@ class MaterialDocumentView(DocumentViewSet):
 class OrganizationDocumentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
-    owner_id = serializers.CharField(read_only=True)
+    owner = serializers.SerializerMethodField(read_only=True)
     created_at = serializers.DateField(read_only=True)
     updated_at = serializers.DateField(read_only=True)
+
+    def get_owner(self, obj):
+        return loads(dumps(obj.owner.to_dict()))
 
     class Meta:
         model = Organization
         fields = (
             "id",
             "name",
-            "owner_id",
+            "owner",
             "created_at",
             "updated_at",
         )
@@ -292,7 +295,13 @@ class OrganizationDocumentView(DocumentViewSet):
     lookup_field = "id"
 
     # Define search fields
-    search_fields = {"name": {"boost": 10}}
+    search_fields = {
+        "name": {"boost": 10},
+        "owner.first_name": None,
+        "owner.last_name": None,
+        "owner.published_name": None,
+        "owner.email": None,
+    }
 
     # Define filtering fields
     filter_fields = {}

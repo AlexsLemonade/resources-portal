@@ -101,6 +101,15 @@ class OrganizationDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
 
+    owner = fields.ObjectField(
+        properties={
+            "first_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "last_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "published_name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "email": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+        }
+    )
+
     # Basic Fields
     id = fields.IntegerField()
     created_at = fields.DateField()
