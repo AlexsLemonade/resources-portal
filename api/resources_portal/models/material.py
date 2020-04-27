@@ -70,7 +70,7 @@ class Material(models.Model):
     pre_print_title = models.TextField(blank=True, null=True)
     citation = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
-    embargo_date = models.TextField(blank=True, null=True)
+    embargo_date = models.DateField(blank=True, null=True)
 
     def has_publication(self):
         return not (self.pubmed_id == "")

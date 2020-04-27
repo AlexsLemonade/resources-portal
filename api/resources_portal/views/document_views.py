@@ -42,6 +42,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pre_print_title = serializers.CharField(read_only=True)
     citation = (serializers.CharField(read_only=True),)
     needs_shipping_info = serializers.CharField(read_only=True)
+    embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
     organization = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
@@ -77,6 +78,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "pre_print_doi",
             "pre_print_title",
             "citation",
+            "embargo_date",
             "contact_user",
             "needs_shipping_info",
         )
