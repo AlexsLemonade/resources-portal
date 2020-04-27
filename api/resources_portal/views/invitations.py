@@ -8,8 +8,6 @@ from resources_portal.views.user import UserSerializer
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
-    contact_user = serializers.SerializerMethodField(read_only=True)
-
     class Meta:
         model = OrganizationInvitation
         fields = (
@@ -70,26 +68,3 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             return OrganizationInvitationDetailSerializer
 
         return OrganizationInvitationSerializer
-
-
-def organisation_invitation(request, *args, **kwargs):
-    organization = Organization.objects.get(pk=kwargs["organization_id"])
-    request_reciever_id = User.objects.get(pk=kwargs["request_reciever_id"])
-    requester_id = User.objects.get(pk=kwargs["requester_id"])
-    invite_or_request = kwargs["invite_or_request"]
-
-    if request.method == "POST":
-        OrganizationInvitation.objects.get_or_create(
-            organization_id=organization,
-            request_reciever_id=request_reciever_id,
-            requester_id=requester_id,
-            status="PENDING",
-            invite_or_request=invite_or_request,
-        )
-    elif request.method == "DELETE":
-        association = GrantMaterialAssociation.objects.get(grant=grant, material=material)
-        association.delete()
-    else:
-        return HttpResponseNotAllowed(["POST", "DELETE"])
-
-    return HttpResponse()
