@@ -12,6 +12,8 @@ from resources_portal.views import (
     OrganizationViewSet,
     UserCreateViewSet,
     UserViewSet,
+    invitation_detail,
+    invitation_list,
 )
 
 router = DefaultRouter(trailing_slash=False)
@@ -23,6 +25,8 @@ router.register(r"invitations", OrganizationInvitationViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("invitations/", invitation_list, name="invitation_list",),
+    path("invitations/<int:pk>", invitation_detail, name="invitation_detail",),
     path("v1/", include(router.urls)),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

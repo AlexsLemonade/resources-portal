@@ -1,6 +1,8 @@
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers, viewsets
+from rest_framework import serializers, status, viewsets
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from resources_portal.models import Organization, OrganizationInvitation, User
 from resources_portal.views.organization import OrganizationSerializer
@@ -24,40 +26,50 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
 
 
 class OrganizationInvitationDetailSerializer(OrganizationInvitationSerializer):
-    organization_id = OrganizationSerializer()
     request_reciever_id = UserSerializer()
     requester_id = UserSerializer()
 
-    def check_permissions(self, request_reciever_id):
-        request_reciever = User.objects.get(pk=request_reciever_id)
-        return request_reciever.has_perm("add_members_and_manage_permissions")
 
-    def create(self, validated_data):
-        organization_id = validated_data.pop("organization_id")
-        request_reciever_id = validated_data.pop("request_reciever_id")
-        requester_id = validated_data.pop("requester_id")
-        invite_or_request = validated_data.pop("invite_or_request")
+def check_permissions(request_reciever_id):
+    request_reciever = User.objects.get(pk=request_reciever_id)
+    return request_reciever.has_perm("add_members_and_manage_permissions")
 
-        if not self.check_permissions(request_reciever_id):
-            return HttpResponseForbidden()
 
-        invitation, created = OrganizationInvitation.objects.get_or_create(
-            organization_id=organization_id,
-            request_reciever_id=request_reciever_id,
-            requester_id=requester_id,
-            status="PENDING",
-            invite_or_request=invite_or_request,
-        )
+@api_view(["GET", "POST"])
+def invitation_list(request):
+    if request.method == "POST":
+        serializer = OrganizationInvitationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        return invitation
+    elif request.method == "GET":
+        invitations = OrganizationInvitation.objects.all()
+        serializer = OrganizationInvitationSerializer(invitations, many=True)
+        return Response(serializer.data)
 
-    def delete(self, validated_data):
-        invitation = get_object_or_404(OrganizationInvitation, id=validated_data.pop("id"))
+
+@api_view(["GET", "PUT", "DELETE"])
+def invitation_detail(request, pk):
+    try:
+        invitation = OrganizationInvitation.objects.get(pk=pk)
+    except OrganizationInvitation.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = OrganizationInvitationSerializer(invitation)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = OrganizationInvitationSerializer(invitation, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
         invitation.delete()
-
-    def update(self, instance, validated_data):
-        oldStatus = instance.status
-        newStatus = validated_data.pop("status")
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
