@@ -244,7 +244,7 @@ class MaterialDocumentView(DocumentViewSet):
         }
 
         Which means the users could attach `?category=DATASET` to the url and expect 4
-        samples returned in the results.
+        datasets returned in the results.
         """
         result = {}
         for field, facet in iteritems(facets):

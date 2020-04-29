@@ -2,22 +2,9 @@ import React from 'react'
 import SearchResultComponent from '../../components/SearchResult'
 import DetailsTable from '../../components/DetailsTable'
 
-function SearchResult({ resource, className }) {
-  return (
-    <SearchResultComponent
-      resource={resource}
-      className={className}
-      fields={[
-        {
-          label: 'Description',
-          value: resource.additional_metadata.description
-        }
-      ]}
-    />
-  )
-}
+export const SearchResult = SearchResultComponent
 
-function ResourceDetails({ resource }) {
+export const ResourceDetails = ({ resource }) => {
   return (
     <DetailsTable
       data={[

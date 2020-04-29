@@ -7,10 +7,13 @@ from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
 from resources_portal.views import (
+    MaterialDocumentView,
     MaterialViewSet,
+    OrganizationDocumentView,
     OrganizationInvitationViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
+    UserDocumentView,
     UserViewSet,
     invitation_detail,
     invitation_list,
@@ -23,6 +26,11 @@ router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 
+search_router = DefaultRouter(trailing_slash=False)
+search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
+search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
+search_router.register(r"users", UserDocumentView, basename="search-users")
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("v1/", include(router.urls)),
@@ -31,4 +39,5 @@ urlpatterns = [
     # the 'api-root' from django rest-frameworks default router
     # http://www.django-rest-framework.org/api-guide/routers/#defaultrouter
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
+    path("search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
