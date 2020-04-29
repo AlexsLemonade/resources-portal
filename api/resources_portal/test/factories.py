@@ -63,3 +63,15 @@ class MaterialFactory(factory.django.DjangoModelFactory):
 
     contact_user = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)
+
+
+class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationInvitation"
+
+    requester = factory.SubFactory(UserFactory)
+    request_reciever = factory.SubFactory(UserFactory)
+    organization = factory.SubFactory(OrganizationFactory)
+
+    status = "PENDING"
+    invite_or_request = "INVITE"
