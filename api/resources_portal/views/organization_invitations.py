@@ -1,3 +1,5 @@
+import pdb
+
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
@@ -11,6 +13,7 @@ from resources_portal.views.user import UserSerializer
 
 
 def check_permissions(request_reciever_id):
+    pdb.set_trace()
     request_reciever = User.objects.get(pk=request_reciever_id)
     if not request_reciever.has_perm("add_members_and_manage_permissions"):
         raise PermissionDenied
@@ -19,9 +22,11 @@ def check_permissions(request_reciever_id):
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
-    requester_id = serializers.CharField(read_only=True)
-    request_reciever_id = serializers.CharField(read_only=True, validators=[check_permissions])
-    organization_id = serializers.CharField(read_only=True)
+    requester_id = serializers.PrimaryKeyRelatedField(read_only=True)
+    request_reciever_id = serializers.PrimaryKeyRelatedField(
+        read_only=True, validators=[check_permissions]
+    )
+    organization_id = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = OrganizationInvitation
@@ -43,18 +48,21 @@ class OrganizationInvitationDetailSerializer(OrganizationInvitationSerializer):
     requester_id = UserSerializer()
 
 
-@api_view(["GET", "POST"])
+@api_view(["GET"])
 def invitation_list(request):
-    if request.method == "POST":
-        serializer = OrganizationInvitationSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    elif request.method == "GET":
+    if request.method == "GET":
         invitations = OrganizationInvitation.objects.all()
         serializer = OrganizationInvitationSerializer(invitations, many=True)
         return Response(serializer.data)
+
+    if not request.user.is_authenticated:
+        return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
+
+    elif request.method == "POST":
+        serializer = OrganizationInvitationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return request.data
 
 
 @api_view(["GET", "PUT", "DELETE"])
@@ -67,6 +75,9 @@ def invitation_detail(request, pk):
     if request.method == "GET":
         serializer = OrganizationInvitationSerializer(invitation)
         return Response(serializer.data)
+
+    if not request.user.is_authenticated:
+        return Response(serializer.errors, status=status.HTTP_403_FORBIDDEN)
 
     elif request.method == "PUT":
         serializer = OrganizationInvitationSerializer(invitation, data=request.data)

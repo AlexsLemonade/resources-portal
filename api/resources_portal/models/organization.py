@@ -12,6 +12,12 @@ class Organization(models.Model):
         db_table = "organizations"
         get_latest_by = "created_at"
 
+        permissions = (
+            ("add_resources", "add_resources"),
+            ("add_members_and_manage_permissions", "add_members_and_manage_permissions"),
+            ("approve_requests", "approve_requests"),
+        )
+
     objects = models.Manager()
 
     created_at = models.DateTimeField(auto_now_add=True)

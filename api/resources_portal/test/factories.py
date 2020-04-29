@@ -1,6 +1,10 @@
 from django.utils import timezone
 
 import factory
+from factory import post_generation
+from guardian.shortcuts import assign_perm
+
+from resources_portal.models import Organization, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -75,3 +79,10 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
 
     status = "PENDING"
     invite_or_request = "INVITE"
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        new = User.objects.get(id=self.request_reciever.id)
+        newOrg = Organization.objects.get(id=self.organization.id)
+
+        assign_perm("add_members_and_manage_permissions", new, newOrg)

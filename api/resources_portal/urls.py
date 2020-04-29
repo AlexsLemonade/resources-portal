@@ -21,12 +21,10 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
-router.register(r"invitations", OrganizationInvitationViewSet)
+router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("invitations/", invitation_list, name="invitation_list",),
-    path("invitations/<int:pk>", invitation_detail, name="invitation_detail",),
     path("v1/", include(router.urls)),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
