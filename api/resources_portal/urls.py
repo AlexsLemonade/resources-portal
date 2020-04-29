@@ -23,9 +23,9 @@ router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
 
 search_router = DefaultRouter(trailing_slash=False)
-search_router.register(r"materials", MaterialDocumentView, basename="")
-search_router.register(r"organizations", OrganizationDocumentView, basename="")
-search_router.register(r"users", UserDocumentView, basename="")
+search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
+search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
+search_router.register(r"users", UserDocumentView, basename="search-users")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
