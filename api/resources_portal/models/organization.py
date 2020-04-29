@@ -11,9 +11,6 @@ class Organization(models.Model):
     class Meta:
         db_table = "organizations"
         get_latest_by = "created_at"
-        permissions = [
-            ("approve_requests", "Can approve requests"),
-        ]
 
     objects = models.Manager()
 

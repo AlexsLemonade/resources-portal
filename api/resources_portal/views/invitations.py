@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, viewsets
@@ -9,7 +10,19 @@ from resources_portal.views.organization import OrganizationSerializer
 from resources_portal.views.user import UserSerializer
 
 
+def check_permissions(request_reciever_id):
+    request_reciever = User.objects.get(pk=request_reciever_id)
+    if not request_reciever.has_perm("add_members_and_manage_permissions"):
+        raise PermissionDenied
+    else:
+        return request_reciever_id
+
+
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
+    requester_id = serializers.CharField(read_only=True)
+    request_reciever_id = serializers.CharField(read_only=True, validators=[check_permissions])
+    organization_id = serializers.CharField(read_only=True)
+
     class Meta:
         model = OrganizationInvitation
         fields = (
@@ -28,11 +41,6 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
 class OrganizationInvitationDetailSerializer(OrganizationInvitationSerializer):
     request_reciever_id = UserSerializer()
     requester_id = UserSerializer()
-
-
-def check_permissions(request_reciever_id):
-    request_reciever = User.objects.get(pk=request_reciever_id)
-    return request_reciever.has_perm("add_members_and_manage_permissions")
 
 
 @api_view(["GET", "POST"])
