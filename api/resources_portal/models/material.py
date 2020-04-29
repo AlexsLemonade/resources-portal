@@ -45,7 +45,7 @@ class Material(models.Model):
     additional_metadata = JSONField(default=dict)
 
     mta_attachment = models.ForeignKey(
-        Attachment, blank=False, null=True, on_delete=models.SET_NULL
+        Attachment, blank=False, null=True, on_delete=models.SET_NULL, related_name="mta_materials"
     )
 
     title = models.TextField(blank=False, null=False, help_text="The title of the material.")

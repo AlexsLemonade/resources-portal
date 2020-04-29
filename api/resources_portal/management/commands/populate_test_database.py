@@ -3,6 +3,7 @@ from json import loads
 from django.core.management.base import BaseCommand
 
 from resources_portal.models import (
+    Attachment,
     Grant,
     Material,
     MaterialRequest,
@@ -32,6 +33,11 @@ class Command(BaseCommand):
         organizations_json = loads(open("./dev_data/organizations.json").read())
         add_class_to_database(organizations_json["organizations"], Organization)
 
+        # add attachments
+        attachments_json = loads(open("./dev_data/attachments.json").read())
+        add_class_to_database(attachments_json["attachments"], Attachment)
+
+        # add materials
         materials_json = loads(open("./dev_data/materials.json").read())
         add_class_to_database(materials_json["materials"], Material)
 

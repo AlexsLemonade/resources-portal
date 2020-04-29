@@ -1,6 +1,8 @@
 The test data can be imported with the following command:
 
-```docker-compose run --rm api python3 manage.py populate_test_database```
+```
+docker-compose run --rm api python3 manage.py populate_test_database
+```
 
 The test data describes the following situation:
 
@@ -20,7 +22,7 @@ There are two grants:
 - A grant for tumor growth research, co-owned by PrimaryProf and SecondaryProf
 
 There are seventeen materials:
-	Eight listed materials:
+	Eight listed materials (four of which require an MTA):
 	Four contributed by PrimaryProf:
 	- A Plasmid
 	- A Protocol

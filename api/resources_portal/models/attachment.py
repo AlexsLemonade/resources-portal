@@ -20,6 +20,15 @@ class Attachment(models.Model):
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
+    sequence_map_for = models.ForeignKey(
+        "resources_portal.Material",
+        blank=False,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="sequence_maps",
+        help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
+    )
+
     deleted = models.BooleanField(default=False)
 
     @property
