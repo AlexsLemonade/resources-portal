@@ -22,6 +22,6 @@ class ShippingInformation(models.Model):
     )
     payment_method = models.CharField(null=True, max_length=32, choices=PAYMENT_CHOICES)
 
-    restrictions = models.TextField(blank=False, null=True)
+    restrictions = models.TextField(blank=True, null=True)
 
     deleted = models.BooleanField(default=False)
