@@ -15,11 +15,12 @@ class ShippingInformation(models.Model):
     sharer_pays = models.BooleanField(default=False)
 
     PAYMENT_CHOICES = (
-        ("UPS_OR_FEDEX_CODE", "UPS_OR_FEDEX_CODE"),
+        ("UPS_CODE", "UPS_CODE"),
+        ("FEDEX_CODE", "FEDEX_CODE"),
         ("REIMBURSEMENT", "REIMBURSEMENT"),
         ("OTHER", "OTHER"),
     )
-    payment_method = models.CharField(max_length=32, choices=PAYMENT_CHOICES)
+    payment_method = models.CharField(null=True, max_length=32, choices=PAYMENT_CHOICES)
 
     restrictions = models.TextField(blank=False, null=True)
 
