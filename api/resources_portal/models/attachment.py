@@ -1,8 +1,4 @@
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-from resources_portal.models.user import User
 
 
 class Attachment(models.Model):
