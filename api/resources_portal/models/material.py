@@ -1,6 +1,7 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
+from resources_portal.models.attachment import Attachment
 from resources_portal.models.user import User
 
 
@@ -30,8 +31,8 @@ class Material(models.Model):
 
     additional_metadata = JSONField(default=dict)
 
-    mta_s3_url = models.TextField(
-        blank=True, null=True, help_text="Contains an url to download the MTA."
+    mta_attachment = models.ForeignKey(
+        Attachment, blank=False, null=True, on_delete=models.SET_NULL
     )
 
     title = models.TextField(blank=False, null=False, help_text="The title of the material.")
