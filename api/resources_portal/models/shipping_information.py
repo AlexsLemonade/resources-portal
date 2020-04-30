@@ -11,7 +11,7 @@ class ShippingInformation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    shipping_address = models.BooleanField(default=False)
+    needs_shipping_address = models.BooleanField(default=False)
     sharer_pays = models.BooleanField(default=False)
 
     ups_code_accepted = models.BooleanField(default=False)

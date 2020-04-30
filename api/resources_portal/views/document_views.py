@@ -29,8 +29,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
     title = serializers.CharField(read_only=True)
     url = serializers.CharField(read_only=True)
     pubmed_id = serializers.CharField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
     organism = serializers.ListField(read_only=True)
     has_publication = serializers.CharField(read_only=True)
     has_pre_print = serializers.CharField(read_only=True)
@@ -41,14 +41,18 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
     citation = (serializers.CharField(read_only=True),)
-    needs_shipping_info = serializers.CharField(read_only=True)
     embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
+    shipping_information = serializers.SerializerMethodField(read_only=True)
+
     organization = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
 
     def get_contact_user(self, obj):
         return loads(dumps(obj.contact_user.to_dict()))
+
+    def get_shipping_information(self, obj):
+        return loads(dumps(obj.shipping_information.to_dict()))
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
@@ -260,8 +264,8 @@ class OrganizationDocumentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
     owner = serializers.SerializerMethodField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
 
     def get_owner(self, obj):
         return loads(dumps(obj.owner.to_dict()))
@@ -325,8 +329,8 @@ class UserDocumentSerializer(serializers.Serializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     published_name = serializers.CharField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = User

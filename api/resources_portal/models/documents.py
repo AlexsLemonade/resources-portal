@@ -52,6 +52,20 @@ class MaterialDocument(Document):
         properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
+    shipping_information = fields.ObjectField(
+        properties={
+            "needs_shipping_address": fields.BooleanField(),
+            "sharer_pays": fields.BooleanField(),
+            "ups_code_accepted": fields.BooleanField(),
+            "fedex_code_accepted": fields.BooleanField(),
+            "reimbursement_accepted": fields.BooleanField(),
+            "other_payment_methods_accepted": fields.BooleanField(),
+            "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "created_at": fields.DateField(),
+            "updated_at": fields.DateField(),
+        }
+    )
+
     has_publication = fields.BooleanField(attr="has_publication")
 
     has_pre_print = fields.BooleanField(attr="has_pre_print")
@@ -63,7 +77,6 @@ class MaterialDocument(Document):
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
-    needs_shipping_info = fields.BooleanField()
     pubmed_id = fields.TextField()
     created_at = fields.DateField()
     updated_at = fields.DateField()

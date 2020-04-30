@@ -1,0 +1,28 @@
+{
+  "shipping_information": [
+      {
+          "id": "1",
+          "needs_shipping_address": true,
+          "sharer_pays": true,
+          "ups_code_accepted": true,
+          "fedex_code_accepted": true,
+          "reimbursement_accepted": false,
+          "other_payment_methods_accepted": false,
+          "restrictions": "Only ships within the greater Hanover area.",
+          "created_at": "2020-01-30 16:12:25-07",
+          "updated_at": "2020-01-30 16:12:25-07"
+      },
+      {
+          "id": "2",
+          "needs_shipping_address": true,
+          "sharer_pays": false,
+          "ups_code_accepted": false,
+          "fedex_code_accepted": false,
+          "reimbursement_accepted": false,
+          "other_payment_methods_accepted": false,
+          "restrictions": "None. Free yourself!",
+          "created_at": "2020-01-30 16:12:25-07",
+          "updated_at": "2020-01-30 16:12:25-07"
+      }
+  ]
+}
