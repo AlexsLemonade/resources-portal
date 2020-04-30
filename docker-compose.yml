@@ -17,6 +17,7 @@ services:
         PORT: '${HTTP_PORT}'
     command: >
       bash -c "python wait_for_postgres.py &&
+               python3 api/wait_for_elasticsearch.py &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
     volumes:
@@ -25,6 +26,7 @@ services:
       - '${HTTP_PORT}:${HTTP_PORT}'
     depends_on:
       - postgres
+      - elasticsearch
   documentation:
     restart: always
     image: squidfunk/mkdocs-material
@@ -57,4 +59,3 @@ services:
       discovery.type: single-node
     depends_on:
       - postgres
-      - api
