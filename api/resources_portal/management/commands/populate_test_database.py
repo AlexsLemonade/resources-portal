@@ -1,6 +1,7 @@
 from json import loads
 
 from django.core.management.base import BaseCommand
+from django.utils import dateparse
 
 from resources_portal.models import (
     Attachment,
@@ -22,6 +23,11 @@ class Command(BaseCommand):
         def add_class_to_database(class_json, Class):
             print(f"Inserting {Class.__name__} into database...")
             for element in class_json:
+                if "updated_at" in element:
+                    element["updated_at"] = dateparse.parse_datetime(element["updated_at"])
+                if "created_at" in element:
+                    element["created_at"] = dateparse.parse_datetime(element["created_at"])
+
                 element_in_class = Class(**element)
                 element_in_class.save()
 

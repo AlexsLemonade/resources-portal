@@ -58,8 +58,8 @@ class MaterialDocument(Document):
             "s3_bucket": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "s3_key": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "download_url": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
-            "created_at": fields.TextField(),
-            "updated_at": fields.TextField(),
+            "created_at": fields.DateField(),
+            "updated_at": fields.DateField(),
         }
     )
 
@@ -75,8 +75,8 @@ class MaterialDocument(Document):
     needs_abstract = fields.BooleanField()
     needs_shipping_info = fields.BooleanField()
     pubmed_id = fields.TextField()
-    created_at = fields.TextField()
-    updated_at = fields.TextField()
+    created_at = fields.DateField()
+    updated_at = fields.DateField()
     additional_metadata = fields.TextField()
 
     # These fields are optional, so we need to have the redundancy with the referenced
@@ -122,8 +122,8 @@ class OrganizationDocument(Document):
 
     # Basic Fields
     id = fields.IntegerField()
-    created_at = fields.TextField()
-    updated_at = fields.TextField()
+    created_at = fields.DateField()
+    updated_at = fields.DateField()
 
     class Django:
         model = Organization
@@ -148,8 +148,8 @@ class UserDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     # Basic Fields
-    created_at = fields.TextField()
-    updated_at = fields.TextField()
+    created_at = fields.DateField()
+    updated_at = fields.DateField()
     date_joined = fields.TextField()
     id = fields.TextField(fielddata=True)
 
