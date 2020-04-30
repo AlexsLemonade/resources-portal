@@ -14,13 +14,10 @@ class ShippingInformation(models.Model):
     shipping_address = models.BooleanField(default=False)
     sharer_pays = models.BooleanField(default=False)
 
-    PAYMENT_CHOICES = (
-        ("UPS_CODE", "UPS_CODE"),
-        ("FEDEX_CODE", "FEDEX_CODE"),
-        ("REIMBURSEMENT", "REIMBURSEMENT"),
-        ("OTHER", "OTHER"),
-    )
-    payment_method = models.CharField(null=True, max_length=32, choices=PAYMENT_CHOICES)
+    ups_code_accepted = models.BooleanField(default=False)
+    fedex_code_accepted = models.BooleanField(default=False)
+    reimbursement_accepted = models.BooleanField(default=False)
+    other_payment_methods_accepted = models.BooleanField(default=False)
 
     restrictions = models.TextField(blank=True, null=True)
 
