@@ -17,7 +17,7 @@ services:
         PORT: '${HTTP_PORT}'
     command: >
       bash -c "python wait_for_postgres.py &&
-               python3 api/wait_for_elasticsearch.py &&
+               python3 wait_for_elasticsearch.py &&
                ./manage.py migrate &&
                ./manage.py runserver 0.0.0.0:${HTTP_PORT}"
     volumes:
