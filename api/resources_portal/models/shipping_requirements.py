@@ -4,7 +4,7 @@ from django.db import models
 class ShippingRequirements(models.Model):
     class Meta:
         db_table = "shipping_requirements"
-        get_latest_by = "created_at"
+        get_latest_by = "updated_at"
 
     objects = models.Manager()
 
