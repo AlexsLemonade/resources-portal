@@ -46,6 +46,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     shipping_information = serializers.SerializerMethodField(read_only=True)
 
     organization = serializers.SerializerMethodField(read_only=True)
+    mta_attachment = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
 
     def get_contact_user(self, obj):
@@ -56,6 +57,9 @@ class MaterialDocumentSerializer(serializers.Serializer):
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
+
+    def get_mta_attachment(self, obj):
+        return loads(dumps(obj.mta_attachment.to_dict()))
 
     def get_additional_metadata(self, obj):
         # this pre-processes the JSON string in django form into a form that loads can take.

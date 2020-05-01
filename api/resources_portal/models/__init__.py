@@ -1,6 +1,7 @@
 from resources_portal.models.associations.organization_user_association import (
     OrganizationUserAssociation,
 )
+from resources_portal.models.attachment import Attachment
 from resources_portal.models.grant import Grant
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
