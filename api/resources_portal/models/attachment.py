@@ -4,7 +4,7 @@ from django.db import models
 class Attachment(models.Model):
     class Meta:
         db_table = "attachments"
-        get_latest_by = "created_at"
+        get_latest_by = "updated_at"
 
     objects = models.Manager()
 
@@ -12,6 +12,9 @@ class Attachment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     filename = models.TextField(blank=False, null=True, help_text="The name of the attachment.")
+    description = models.TextField(
+        blank=True, null=True, help_text="A description for the attachment."
+    )
 
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)

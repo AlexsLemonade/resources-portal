@@ -55,6 +55,7 @@ class MaterialDocument(Document):
     mta_attachment = fields.ObjectField(
         properties={
             "filename": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "description": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "s3_bucket": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "s3_key": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "download_url": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
