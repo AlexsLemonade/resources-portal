@@ -52,14 +52,14 @@ class MaterialDocument(Document):
         properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
-    shipping_information = fields.ObjectField(
+    shipping_requirements = fields.ObjectField(
         properties={
             "needs_shipping_address": fields.BooleanField(),
             "sharer_pays": fields.BooleanField(),
-            "ups_code_accepted": fields.BooleanField(),
-            "fedex_code_accepted": fields.BooleanField(),
-            "reimbursement_accepted": fields.BooleanField(),
-            "other_payment_methods_accepted": fields.BooleanField(),
+            "accepts_ups_code": fields.BooleanField(),
+            "accepts_fedex_code": fields.BooleanField(),
+            "accepts_reimbursement": fields.BooleanField(),
+            "accepts_other_payment_methods": fields.BooleanField(),
             "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "created_at": fields.DateField(),
             "updated_at": fields.DateField(),

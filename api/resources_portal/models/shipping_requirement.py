@@ -1,9 +1,9 @@
 from django.db import models
 
 
-class ShippingInformation(models.Model):
+class ShippingRequirements(models.Model):
     class Meta:
-        db_table = "shipping_information"
+        db_table = "shipping_requirements"
         get_latest_by = "created_at"
 
     objects = models.Manager()
@@ -14,11 +14,11 @@ class ShippingInformation(models.Model):
     needs_shipping_address = models.BooleanField(default=False)
     sharer_pays = models.BooleanField(default=False)
 
-    ups_code_accepted = models.BooleanField(default=False)
-    fedex_code_accepted = models.BooleanField(default=False)
-    reimbursement_accepted = models.BooleanField(default=False)
-    other_payment_methods_accepted = models.BooleanField(default=False)
+    accepts_ups_code = models.BooleanField(default=False)
+    accepts_fedex_code = models.BooleanField(default=False)
+    accepts_reimbursement = models.BooleanField(default=False)
+    accepts_other_payment_methods = models.BooleanField(default=False)
 
     restrictions = models.TextField(blank=True, null=True)
 
-    deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
