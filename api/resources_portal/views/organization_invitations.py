@@ -1,13 +1,8 @@
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseForbidden, HttpResponseNotAllowed
-from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, viewsets
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from resources_portal.models import Organization, OrganizationInvitation, User
-from resources_portal.views.organization import OrganizationSerializer
-from resources_portal.views.user import UserSerializer
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
