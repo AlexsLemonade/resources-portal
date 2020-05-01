@@ -27,6 +27,8 @@ class Command(BaseCommand):
                     element["updated_at"] = dateparse.parse_datetime(element["updated_at"])
                 if "created_at" in element:
                     element["created_at"] = dateparse.parse_datetime(element["created_at"])
+                if "date_joined" in element:
+                    element["date_joined"] = dateparse.parse_datetime(element["date_joined"])
 
                 element_in_class = Class(**element)
                 element_in_class.save()
