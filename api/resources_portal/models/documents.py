@@ -90,7 +90,7 @@ class MaterialDocument(Document):
     pre_print_title = fields.TextField()
     citation = fields.TextField()
     additional_info = fields.TextField()
-    embargo_date = fields.TextField()
+    embargo_date = fields.DateField()
 
     def prepare_additional_metadata(self, instance):
         metadata_string = str(instance.additional_metadata)
@@ -151,7 +151,7 @@ class UserDocument(Document):
     # Basic Fields
     created_at = fields.DateField()
     updated_at = fields.DateField()
-    date_joined = fields.TextField()
+    date_joined = fields.DateField()
     id = fields.TextField(fielddata=True)
 
     class Django:
