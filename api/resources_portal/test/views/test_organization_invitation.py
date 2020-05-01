@@ -23,17 +23,9 @@ class OrganizationInvitationListTestCase(APITestCase):
 
     def setUp(self):
         self.url = reverse("invitation-list")
-        self.request_reciever = UserFactory()
-        self.requester = UserFactory()
-        self.organization = OrganizationFactory(owner=self.request_reciever)
-        self.invitation = OrganizationInvitationFactory(
-            request_reciever=self.request_reciever,
-            requester=self.requester,
-            organization=self.organization,
-        )
+        self.invitation = OrganizationInvitationFactory()
         self.invitation_data = model_to_dict(self.invitation)
-
-        self.client.login(username=self.requester.username, password=self.requester.password)
+        self.client.force_authenticate(user=self.invitation.requester)
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
@@ -43,7 +35,9 @@ class OrganizationInvitationListTestCase(APITestCase):
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        self.assertEqual(self.invitation_data.request_reciever, response.json()["request_reciever"])
+        self.assertEqual(
+            str(self.invitation_data["request_reciever"]), response.json()["request_reciever"]
+        )
 
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
@@ -60,10 +54,9 @@ class OrganizationInvitationListTestCase(APITestCase):
         )
 
     def test_post_request_without_authentication_fails(self):
-        self.client.logout()
+        self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.client.login(username=self.requester.username, password=self.requester.password)
 
 
 class TestSingleOrganizationInvitationTestCase(APITestCase):
@@ -74,8 +67,7 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
     def setUp(self):
         self.invitation = OrganizationInvitationFactory()
         self.url = reverse("invitation-detail", args=[self.invitation.id])
-
-        self.client.login(username=self.requester.username, password=self.requester.password)
+        self.client.force_authenticate(user=self.invitation.requester)
 
     def test_get_request_returns_a_given_invitation(self):
         response = self.client.get(self.url)
@@ -93,6 +85,7 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(invitation.status, "ACCEPTED")
 
     def test_put_request_without_authentication_fails(self):
+        self.client.force_authenticate(user=None)
         invitation_json = self.client.get(self.url).json()
 
         invitation_json["status"] = "ACCEPTED"

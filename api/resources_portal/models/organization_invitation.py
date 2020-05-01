@@ -11,10 +11,6 @@ class OrganizationInvitation(models.Model):
         db_table = "organization_invitations"
         get_latest_by = "updated_at"
 
-        permissions = (
-            ("add_members_and_manage_permissions", "Can add members and manage their permissions"),
-        )
-
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),
         ("ACCEPTED", "ACCEPTED"),

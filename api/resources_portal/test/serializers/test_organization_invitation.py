@@ -1,3 +1,4 @@
+from django.core.exceptions import PermissionDenied
 from django.forms.models import model_to_dict
 from django.test import TestCase
 
@@ -12,6 +13,10 @@ class TestOrganizationInvitationSerializer(TestCase):
     def setUp(self):
         self.invitation = OrganizationInvitationFactory()
         self.invitation_data = model_to_dict(self.invitation)
+        reference_fields = ("requester", "organization", "request_reciever")
+
+        for field in reference_fields:
+            self.invitation_data[field] = str(self.invitation_data[field])
 
     def test_serializer_with_empty_data(self):
         serializer = OrganizationInvitationSerializer(data={})
@@ -19,6 +24,7 @@ class TestOrganizationInvitationSerializer(TestCase):
 
     def test_serializer_with_valid_data(self):
         serializer = OrganizationInvitationSerializer(data=self.invitation_data)
+        serializer.is_valid()
         self.assertTrue(serializer.is_valid())
 
     def test_serializer_with_invalid_permissions(self):
@@ -28,7 +34,7 @@ class TestOrganizationInvitationSerializer(TestCase):
             self.invitation.organization,
         )
         serializer = OrganizationInvitationSerializer(data=self.invitation_data)
-        self.assertFalse(serializer.is_valid())
+        self.assertRaises(PermissionDenied, serializer.is_valid)
         assign_perm(
             "add_members_and_manage_permissions",
             self.invitation.request_reciever,

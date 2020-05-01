@@ -15,8 +15,6 @@ from resources_portal.views import (
     UserCreateViewSet,
     UserDocumentView,
     UserViewSet,
-    invitation_detail,
-    invitation_list,
 )
 
 router = DefaultRouter(trailing_slash=False)
