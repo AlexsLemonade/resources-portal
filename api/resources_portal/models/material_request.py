@@ -1,5 +1,6 @@
 from django.db import models
 
+from resources_portal.models.attachment import Attachment
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
@@ -26,12 +27,23 @@ class MaterialRequest(models.Model):
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    requester_signed_mta_s3_url = models.TextField(
-        help_text="Url to download the MTA after it was signed by the requester"
+    requester_signed_mta_attachment = models.ForeignKey(
+        Attachment,
+        blank=False,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="requests_signed_mta",
     )
-    irb_s3_url = models.TextField(help_text="Url to download the IRB")
-    executed_mta_s3_url = models.TextField(
-        help_text="Url to download the MTA after it has been signed by all parties."
+    irb_attachment = models.ForeignKey(
+        Attachment, blank=False, null=True, on_delete=models.SET_NULL, related_name="requests_irb"
+    )
+    executed_mta_attachment = models.ForeignKey(
+        Attachment,
+        blank=False,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="requests_executed_mta",
+        help_text="Attachment containing the MTA after it has been signed by all parties.",
     )
 
     is_active = models.BooleanField(default=True)
