@@ -23,13 +23,6 @@ class User(AbstractUser):
     def __str__(self):
         return str(self.id)
 
-    class Meta:
-        permissions = (
-            ("add_resources", "add_resources"),
-            ("add_members_and_manage_permissions", "add_members_and_manage_permissions"),
-            ("approve_requests", "approve_requests"),
-        )
-
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
