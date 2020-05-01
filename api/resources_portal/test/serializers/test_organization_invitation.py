@@ -4,7 +4,6 @@ from django.test import TestCase
 
 from guardian.shortcuts import assign_perm, remove_perm
 
-from resources_portal.models import User
 from resources_portal.test.factories import OrganizationInvitationFactory
 from resources_portal.views.organization_invitations import OrganizationInvitationSerializer
 
