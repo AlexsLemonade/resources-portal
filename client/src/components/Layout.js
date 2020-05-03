@@ -8,7 +8,7 @@ export default function Layout({ children }) {
       <Box gridArea="header" margin={{ bottom: 'xlarge' }}>
         <Header />
       </Box>
-      <Main width="xlarge" alignSelf="center">
+      <Main width="xlarge" alignSelf="center" overflow="visible">
         {children}
       </Main>
     </Box>
