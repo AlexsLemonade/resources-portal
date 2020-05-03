@@ -1,8 +1,8 @@
 import React from 'react'
 import { Anchor } from 'grommet'
-import { SearchResult, SearchResultDetail } from '../../components/SearchResult'
-import DetailsTable from '../../components/DetailsTable'
-import { HeaderRow } from '../../components/HeaderRow'
+import { SearchResult, SearchResultDetail } from '../../SearchResult'
+import DetailsTable from '../../DetailsTable'
+import { HeaderRow } from '../../HeaderRow'
 
 export const PlasmidSearchResult = ({ resource }) => {
   return (
