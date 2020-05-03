@@ -1,59 +1,62 @@
 import React from 'react'
-
-import styled from 'styled-components'
-
 import { Box, Grid } from 'grommet'
+
+import { searchMaterials } from '../api/search'
+
 import SearchInput from '../components/SearchInput'
-import { search } from '../common/api'
-import { SearchResult } from '../resources'
+import { SearchResultsLimit } from '../components/SearchResultsLimit'
+import { SearchResultsFilters } from '../components/SearchResultsFilters'
+import { SearchResultsOffset } from '../components/SearchResultsOffset'
+import { SearchResult } from '../components/resources'
 
-export default function Search({ results }) {
+import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+
+const Search = (search) => {
+  const {
+    response: { results }
+  } = useMaterialsSearch(search)
+
   return (
-    <main>
-      <SearchInputContainer>
+    <>
+      <Box pad={{ horizontal: '144px' }} margin={{ bottom: 'xlarge' }}>
         <SearchInput />
-      </SearchInputContainer>
-
+      </Box>
       <Grid
         fill
         rows={['auto', 'flex']}
         columns={['auto', 'flex']}
+        gap="gutter"
         areas={[
-          { name: 'header', start: [1, 0], end: [1, 1] },
-          { name: 'sidebar', start: [0, 0], end: [0, 1] },
-          { name: 'main', start: [1, 1], end: [1, 1] }
+          { name: 'searchLimit', start: [1, 0], end: [1, 1] },
+          { name: 'filters', start: [0, 0], end: [0, 1] },
+          { name: 'results', start: [1, 1], end: [1, 1] }
         ]}
       >
-        <Box
-          gridArea="header"
-          direction="row"
-          align="center"
-          justify="between"
-          pad="small"
-        >
-          TODO: Page size controls
+        <Box gridArea="filters" width="medium">
+          <SearchResultsFilters />
         </Box>
-        <Box gridArea="sidebar" width="medium" pad="small">
-          TODO: Search filters
+        <Box gridArea="searchLimit">
+          <SearchResultsLimit />
         </Box>
-        <Box gridArea="main" pad="small">
+        <Box gridArea="results">
           {results.map((result) => (
             <SearchResult key={result.id} resource={result} />
           ))}
+          <SearchResultsOffset />
         </Box>
       </Grid>
-    </main>
+    </>
   )
 }
-Search.getInitialProps = async ({ query }) => {
-  // TODO: add additional filter parameters here
-  const results = await search({ query: query.q })
-  return { results }
+
+Search.getInitialProps = async ({ pathname, query }) => {
+  // navigate to new page with new search query
+  // default the size of the page to 10 results
+  return {
+    pathname,
+    query,
+    response: await searchMaterials({ limit: '10', ...query })
+  }
 }
 
-const SearchInputContainer = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  max-width: 752px;
-  margin-bottom: ${({ theme }) => theme.global.edgeSize.xlarge};
-`
+export default Search

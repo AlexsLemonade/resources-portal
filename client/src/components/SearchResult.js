@@ -1,18 +1,23 @@
 import React from 'react'
 import Link from 'next/link'
-import { Box, Anchor, Button, Heading, Text, Paragraph } from 'grommet'
+import { Box, Anchor, Button, Heading, Text } from 'grommet'
 import { getReadable } from '../helpers/readableNames'
 import { getPubmedUrl } from '../helpers/getPubmedUrl'
 import { getDOIUrl } from '../helpers/getDOIUrl'
 import ResourceTypeIcon from '../images/resource-type.svg'
 import OrganismIcon from '../images/organism.svg'
 
-export const SearchResult = ({ resource, children, hideDefaults = false }) => {
+export const SearchResult = ({
+  resource,
+  children,
+  hideDefaults = false,
+  margin = { bottom: 'gutter' }
+}) => {
   return (
     <Box
       round="xsmall"
       pad="large"
-      margin={{ bottom: 'large' }}
+      margin={margin}
       elevation="medium"
       border={
         resource.imported
@@ -65,16 +70,15 @@ export const SearchResult = ({ resource, children, hideDefaults = false }) => {
           )}
           {resource.imported && (
             <>
-              <Link href={resource.url} as={`/resources/${resource.id}`}>
-                <Button
-                  label={`View on ${
-                    getReadable(resource.additional_metadata.import_source) ||
-                    'Source Site'
-                  }`}
-                  margin={{ bottom: 'small' }}
-                  primary
-                />
-              </Link>
+              <Button
+                as="a"
+                href={resource.url}
+                label={`View on ${
+                  getReadable(resource.import_source) || 'Source Site'
+                }`}
+                margin={{ bottom: 'small' }}
+                primary
+              />
               <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
                 <Button label="View Resource" />
               </Link>
@@ -89,13 +93,20 @@ export const SearchResult = ({ resource, children, hideDefaults = false }) => {
   )
 }
 
-export const SearchResultDetail = ({ title, label, italic, children }) => {
+export const SearchResultDetail = ({
+  title,
+  label,
+  italic,
+  children,
+  margin = { top: 'small', bottom: 'medium' },
+  direction = 'row'
+}) => {
   const handleArray = (value) =>
     Array.isArray(value) ? value.join(', ') : value
   return (
-    <Box margin={{ bottom: 'small' }}>
+    <Box>
       <Text weight="bold">{title}</Text>
-      <Box pad={{ vertical: 'small' }}>
+      <Box margin={margin} direction={direction}>
         {label && <Text italic={italic}>{handleArray(label)}</Text>}
         {children}
       </Box>
@@ -153,8 +164,7 @@ export const RequestRequirements = ({ resource }) => {
         <Anchor
           href={resource.url}
           label={`Request on ${
-            getReadable(resource.additional_metadata.import_source) ||
-            'Source Site'
+            getReadable(resource.import_source) || 'Source Site'
           }`}
           target="_blank"
           rel="nooper norefferer"
@@ -165,32 +175,35 @@ export const RequestRequirements = ({ resource }) => {
 
   const requirements = []
   const MTA = 'Material Transfer Agreement'
+  if (resource.needs_abstract) requirements.push('Abstract')
   if (resource.needs_irb) requirements.push('IRB')
   if (resource.needs_mta) requirements.push(MTA)
-  if (resource.needs_mta) requirements.push('Abstract')
-  // if (resource.needs_shipping) requirements.push('Shipping Information')
+  // if (resource.shipping_information) requirements.push('Shipping Information')
 
   return (
-    <SearchResultDetail title="Request Requirements">
+    <SearchResultDetail
+      title="Request Requirements"
+      margin={{ top: 'small' }}
+      direction="row"
+    >
       {requirements.length === 0 && 'Not Available'}
       {requirements.length > 0 && (
-        <Paragraph margin={{ vertical: 'small' }}>
-          {requirements.map((req, i) => (
-            <React.Fragment key={req}>
-              {i !== 0 && `, `}
-              {req === MTA ? (
-                <Anchor
-                  href={resource.mta_s3_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  label={req}
-                />
-              ) : (
-                <Text>{req}</Text>
-              )}
-            </React.Fragment>
-          ))}
-        </Paragraph>
+        <span>
+          {requirements.map((req, i) => [
+            i !== 0 && ', ',
+            req === MTA ? (
+              <Anchor
+                key={req}
+                href={resource.mta_s3_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                label={req}
+              />
+            ) : (
+              <Text key={req}>{req}</Text>
+            )
+          ])}
+        </span>
       )}
     </SearchResultDetail>
   )
