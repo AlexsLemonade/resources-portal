@@ -25,17 +25,3 @@ class TestOrganizationInvitationSerializer(TestCase):
         serializer = OrganizationInvitationSerializer(data=self.invitation_data)
         serializer.is_valid()
         self.assertTrue(serializer.is_valid())
-
-    def test_serializer_with_invalid_permissions(self):
-        remove_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
-        )
-        serializer = OrganizationInvitationSerializer(data=self.invitation_data)
-        self.assertRaises(PermissionDenied, serializer.is_valid)
-        assign_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
-        )

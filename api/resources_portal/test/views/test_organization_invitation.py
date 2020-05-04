@@ -49,6 +49,14 @@ class OrganizationInvitationListTestCase(APITestCase):
             self.invitation.organization,
         )
 
+    def test_post_request_from_incorrect_user_fails(self):
+        self.client.force_authenticate(user=None)
+        self.client.login(
+            username=self.invitation.requester.username, password=self.invitation.requester.password
+        )
+        response = self.client.post(self.url, self.invitation_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_post_request_without_authentication_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.invitation_data, format="json")
@@ -63,22 +71,58 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
     def setUp(self):
         self.invitation = OrganizationInvitationFactory()
         self.url = reverse("invitation-detail", args=[self.invitation.id])
-        self.client.force_authenticate(user=self.invitation.requester)
 
     def test_get_request_returns_a_given_invitation(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_put_request_updates_an_invitation(self):
+    def test_request_approved_by_request_reciever_suceeds(self):
+        self.client.force_authenticate(user=self.invitation.request_reciever)
         invitation_json = self.client.get(self.url).json()
 
+        self.invitation.invite_or_request = "REQUEST"
+        self.invitation.save()
         invitation_json["status"] = "ACCEPTED"
 
         response = self.client.put(self.url, invitation_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+        requester = invitation.requester
+        organization = invitation.organization
+
         self.assertEqual(invitation.status, "ACCEPTED")
+        self.assertTrue(requester in organization.members.all())
+
+    def test_invite_accepted_by_requester_suceeds(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+
+        invitation_json = self.client.get(self.url).json()
+
+        self.invitation.invite_or_request = "INVITE"
+        self.invitation.save()
+        invitation_json["status"] = "ACCEPTED"
+
+        response = self.client.put(self.url, invitation_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+        requester = invitation.requester
+        organization = invitation.organization
+
+        self.assertEqual(invitation.status, "ACCEPTED")
+        self.assertTrue(requester in organization.members.all())
+
+    def test_put_request_from_wrong_user_rejected(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_json = self.client.get(self.url).json()
+
+        invitation_json["status"] = "ACCEPTED"
+        self.invitation.invite_or_request = "REQUEST"
+        self.invitation.save()
+
+        response = self.client.put(self.url, invitation_json)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_without_authentication_fails(self):
         self.client.force_authenticate(user=None)
