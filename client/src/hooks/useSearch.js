@@ -23,7 +23,7 @@ export const useSearch = (state, setState) => {
     setSearch({ ...search })
   }
 
-  // get a list of unique items we can add to or delete from
+  // get a set of unique items we can add to or delete from
   const getSetFromFacet = (facet) => {
     const existingFacet = search.query[facet]
     if (!existingFacet) return new Set()
