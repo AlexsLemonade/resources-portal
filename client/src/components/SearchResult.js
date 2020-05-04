@@ -178,7 +178,7 @@ export const RequestRequirements = ({ resource }) => {
   if (resource.needs_abstract) requirements.push('Abstract')
   if (resource.needs_irb) requirements.push('IRB')
   if (resource.needs_mta) requirements.push(MTA)
-  // if (resource.shipping_information) requirements.push('Shipping Information')
+  if (resource.needs_shipping_info) requirements.push('Shipping Information')
 
   return (
     <SearchResultDetail
