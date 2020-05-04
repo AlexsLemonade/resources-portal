@@ -19,7 +19,7 @@ export const SearchResultsLimit = () => {
   return (
     <Box direction="row" align="center">
       <Paragraph margin="none">Showing</Paragraph>
-      <Box width={{ max: 'small' }} margin={{ horizontal: 'small' }}>
+      <Box width="70px" margin={{ horizontal: 'small' }}>
         <Select
           options={limitOptions}
           value={limit || limitOptions[0]}
