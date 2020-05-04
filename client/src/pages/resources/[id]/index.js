@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { materialsTestData } from '../../../helpers/testData'
 import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
 import { ResourceDetails } from '../../../components/resources'
@@ -106,3 +106,10 @@ const PublicationInformation = ({ resource }) => (
     ]}
   />
 )
+
+ResourceDetailsPage.getInitialProps = async ({ query }) => {
+  const resource = materialsTestData.find((material) => material.id == query.id)
+  return {
+    resource
+  }
+}
