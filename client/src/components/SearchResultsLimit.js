@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Select } from 'grommet'
+import { Box, Select, Paragraph } from 'grommet'
 import { useSearchResources } from '../hooks/useSearchResources'
 
 export const limitOptions = ['10', '25', '50', '100']
@@ -18,7 +18,7 @@ export const SearchResultsLimit = () => {
 
   return (
     <Box direction="row" align="center">
-      Showing
+      <Paragraph margin="none">Showing</Paragraph>
       <Box width={{ max: 'small' }} margin={{ horizontal: 'small' }}>
         <Select
           options={limitOptions}
@@ -29,7 +29,7 @@ export const SearchResultsLimit = () => {
           }}
         />
       </Box>
-      of {count}
+      <Paragraph margin="none">of {count}</Paragraph>
     </Box>
   )
 }
