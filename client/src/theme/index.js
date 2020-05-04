@@ -321,7 +321,7 @@ const theme = {
         large: '96px',
         medium: '64px',
         small: '48px',
-        xxlarge: '144px'
+        xlarge: '144px'
       }
     },
     digital: {
