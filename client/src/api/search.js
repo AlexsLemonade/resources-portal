@@ -28,7 +28,7 @@ const fakeResponse = {
 
 export const searchResources = async () => {
   // perform fetch from api
-  console.log('faking materials api search endpoint (2s)')
+  console.log('faking materials api search endpoint (20ms)')
   const fakeAPICall = new Promise((resolve) =>
     setTimeout(() => resolve(fakeResponse), 20)
   )
