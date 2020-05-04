@@ -5,20 +5,16 @@ import { Mappings } from './resources'
 import { sortedObjectKeys } from '../helpers/sortObjectKeys'
 import { getReadable } from '../helpers/readableNames'
 
-export default function SearchInput({
-  initialString = '',
-  onChange,
-  size = 'medium'
-}) {
+export default function SearchInput({ onChange, size = 'medium' }) {
   const {
-    query: { search },
+    query,
     addFacet,
     removeFacet,
     goToSearchResults,
-    setSearchString
+    setSearchTerm
   } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
-  const [string, setString] = React.useState(search || initialString)
+  const [inputValue, setInputValue] = React.useState(query.search)
   const resourceCategoryOptions = sortedObjectKeys(Mappings).map((mapping) => {
     return {
       label: getReadable(mapping.key),
@@ -35,7 +31,7 @@ export default function SearchInput({
     if (resourceType !== 'ALL') {
       addFacet('category', resourceType)
     }
-    setSearchString(string)
+    setSearchTerm(inputValue)
     goToSearchResults(true)
   }
 
@@ -53,6 +49,7 @@ export default function SearchInput({
       >
         <Select
           plain
+          size={size}
           value={resourceType}
           options={resourceOptions}
           valueKey="value"
@@ -79,10 +76,10 @@ export default function SearchInput({
         <Keyboard onEnter={handleSubmit}>
           <TextInput
             plain
-            value={string}
+            value={inputValue}
             size={size}
             onChange={({ target: { value } }) => {
-              setString(value)
+              setInputValue(value)
               if (onChange) onChange(value)
             }}
           />

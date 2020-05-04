@@ -11,13 +11,13 @@ export const useSearch = (state, setState) => {
     router.push({ pathname, query })
   }
 
-  const setSearchString = (searchString, resetQuery = false) => {
+  const setSearchTerm = (searchTerm, resetQuery = false) => {
     // should this clear the search facets?
     if (resetQuery) search.query = {}
-    if (searchString === '') {
+    if (searchTerm === '') {
       delete search.query.search
     } else {
-      search.query.search = searchString
+      search.query.search = searchTerm
     }
 
     setSearch({ ...search })
@@ -74,7 +74,7 @@ export const useSearch = (state, setState) => {
   }
 
   return {
-    setSearchString,
+    setSearchTerm,
     addFacet,
     removeFacet,
     toggleFacet,
