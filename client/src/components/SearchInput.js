@@ -19,14 +19,15 @@ export default function SearchInput({
   } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
   const [string, setString] = React.useState(search || initialString)
+  const resourceCategoryOptions = sortedObjectKeys(Mappings).map((mapping) => {
+    return {
+      label: getReadable(mapping.key),
+      value: mapping.key
+    }
+  })
   const resourceOptions = [
     { label: 'All', value: 'ALL' },
-    ...sortedObjectKeys(Mappings).map((mapping) => {
-      return {
-        label: getReadable(mapping.key),
-        value: mapping.key
-      }
-    })
+    ...resourceCategoryOptions
   ]
 
   const submitForm = () => {
