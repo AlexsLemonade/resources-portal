@@ -54,10 +54,15 @@ export const SearchResult = ({
               <ResourceTypeIcon />
               {getReadable(resource.category)}
             </Box>
-            {resource.additional_metadata.organism && (
-              <Box as="span" gap="small" align="center" direction="row">
+            {resource.organism && (
+              <Box as="span" align="center" direction="row" gap="small">
                 <OrganismIcon />
-                {resource.additional_metadata.organism}
+                <span>
+                  {resource.organism.map((organism, i) => [
+                    i !== 0 && ', ',
+                    <Text key={organism}>{organism}</Text>
+                  ])}
+                </span>
               </Box>
             )}
           </Box>
