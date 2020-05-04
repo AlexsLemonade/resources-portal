@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button } from 'grommet'
+import { Box, Button, Paragraph, TextInput } from 'grommet'
 import { FormPrevious, FormNext } from 'grommet-icons'
 
 import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
@@ -11,6 +11,12 @@ export const SearchResultsOffset = () => {
     setOffset,
     goToSearchResults
   } = useMaterialsSearch()
+
+  const [enteredPageNumber, setEnteredPageNumber] = React.useState('')
+  const [
+    enteredPageNumberInRange,
+    setEnteredPageNumberInRange
+  ] = React.useState(false)
 
   const safeOffset = parseInt(offset, 10) || 0
   const safeCount = parseInt(count, 10) || 0
@@ -29,11 +35,27 @@ export const SearchResultsOffset = () => {
 
   const goToOffset = (page) => {
     setOffset(page)
+    setEnteredPageNumber('')
     goToSearchResults()
   }
 
   const atEnd = safeOffset === lastOffset
   const atStart = safeOffset === 0
+
+  const handlePageNumberRequest = ({ target: { value } }) => {
+    const parsedValue = parseInt(value, 10)
+    if (/^\d+$/.test(value)) {
+      const pageOffset = parsedValue - 1
+      const inRange = pageOffset <= lastOffset && pageOffset >= 0
+      setEnteredPageNumberInRange(inRange)
+      setEnteredPageNumber(value)
+    }
+    if (value === '') setEnteredPageNumber('')
+  }
+
+  const goToOffsetRequest = () => {
+    goToOffset(parseInt(enteredPageNumber, 10) - 1)
+  }
 
   return (
     <Box
@@ -43,7 +65,7 @@ export const SearchResultsOffset = () => {
       align="center"
       alignSelf="center"
     >
-      <Box direction="row" gap="medium">
+      <Box direction="row" gap="6px">
         <Button
           plain
           gap="xxsmall"
@@ -62,7 +84,14 @@ export const SearchResultsOffset = () => {
             onClick={() => goToOffset(0)}
           />,
           !pageButtonsOffsets.includes(1) && (
-            <Button key="elipse-start" disabled plain label="..." />
+            <Paragraph
+              key="elipse-start"
+              size="medium"
+              margin="none"
+              color="black-tint-60"
+            >
+              ...
+            </Paragraph>
           )
         ]}
         {pageButtonsOffsets.map((pageOffset) => (
@@ -76,7 +105,14 @@ export const SearchResultsOffset = () => {
         ))}
         {!pageButtonsOffsets.includes(lastOffset) && [
           !pageButtonsOffsets.includes(lastOffset - 1) && (
-            <Button key="elipse" disabled plain label="..." />
+            <Paragraph
+              key="elipse-end"
+              size="medium"
+              margin="none"
+              color="black-tint-60"
+            >
+              ...
+            </Paragraph>
           ),
           <Button
             plain
@@ -97,7 +133,21 @@ export const SearchResultsOffset = () => {
           onClick={() => goToOffset(safeOffset + 1)}
         />
       </Box>
-      <Box>Jump to page</Box>
+      <Box direction="row" align="center">
+        <Box flex="grow" align="center" pad={{ horizontal: 'medium' }}>
+          <TextInput
+            size="medium"
+            placeholder="Jump to Page"
+            value={enteredPageNumber}
+            onChange={handlePageNumberRequest}
+          />
+        </Box>
+        <Button
+          label="Go"
+          disabled={!enteredPageNumberInRange}
+          onClick={goToOffsetRequest}
+        />
+      </Box>
     </Box>
   )
 }
