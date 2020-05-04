@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Button, Paragraph, TextInput } from 'grommet'
 import { FormPrevious, FormNext } from 'grommet-icons'
-
+import { isOnlyNumbers } from '../helpers/isOnlyNumbers'
 import { useSearchResources } from '../hooks/useSearchResources'
 
 export const SearchResultsOffset = () => {
@@ -44,7 +44,7 @@ export const SearchResultsOffset = () => {
 
   const handlePageNumberRequest = ({ target: { value } }) => {
     const parsedValue = parseInt(value, 10)
-    if (/^\d+$/.test(value)) {
+    if (isOnlyNumbers(value)) {
       const pageOffset = parsedValue - 1
       const inRange = pageOffset <= lastOffset && pageOffset >= 0
       setEnteredPageNumberInRange(inRange)
