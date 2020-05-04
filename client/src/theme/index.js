@@ -27,27 +27,40 @@ const theme = {
       down: DownArrow
     },
     control: {
-      extend: (props) => `
-        background-color: ${normalizeColor('black-tint-80', props.theme)};
+      extend: (props) =>
+        applyAll(
+          applyWhen(
+            props.open && !props.plain,
+            `background-color: ${normalizeColor('black-tint-80', props.theme)};`
+          ),
+          applyWhen(
+            props.plain && props.plain,
+            `
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          ),
+          applyWhen(
+            !props.disabled && !props.plain,
+            `
+            &:hover {
+              background-color: ${normalizeColor('black-tint-80', props.theme)};
+            }
 
-        ${applyWhen(
-          !props.disabled && !props.plain,
-          `
-          input {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            background-color:  ${normalizeColor('white', props.theme)};
-          }
-          `
-        )}
-        ${applyWhen(
-          props.disabled,
-          `
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-          background-color: ${normalizeColor('black-tint-95', props.theme)};
-          `
-        )}
-        `
+            input {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+              background-color:  ${normalizeColor('white', props.theme)};
+            }
+            `
+          ),
+          applyWhen(
+            props.disabled,
+            `
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          )
+        )
     },
     options: {
       text: {

@@ -39,11 +39,14 @@ export default function SearchInput({
     goToSearchResults(true)
   }
 
+  // this is just the help make the select look more like the designs
+  const selectWidth = resourceType === 'ALL' ? '60px' : '156px'
+
   return (
     <Box direction="row">
       <Box
         direction="row"
-        width="155px"
+        width={selectWidth}
         border={{ size: 'xsmall', color: 'black-tint-60', side: 'all' }}
         round={{ size: 'xsmall', corner: 'left' }}
         overflow="hidden"
