@@ -30,7 +30,7 @@ export default function SearchInput({
     ...resourceCategoryOptions
   ]
 
-  const submitForm = () => {
+  const handleSubmit = () => {
     removeFacet('category')
     if (resourceType !== 'ALL') {
       addFacet('category', resourceType)
@@ -73,7 +73,7 @@ export default function SearchInput({
         round={{ size: 'xsmall', corner: 'right' }}
         flex="grow"
       >
-        <Keyboard onEnter={submitForm}>
+        <Keyboard onEnter={handleSubmit}>
           <TextInput
             plain
             value={string}
@@ -90,7 +90,7 @@ export default function SearchInput({
         size={size}
         width="96px"
         margin={{ left: 'medium' }}
-        onClick={submitForm}
+        onClick={handleSubmit}
       />
     </Box>
   )
