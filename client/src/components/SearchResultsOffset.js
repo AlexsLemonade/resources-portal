@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Button, Paragraph, TextInput } from 'grommet'
 import { FormPrevious, FormNext } from 'grommet-icons'
 
-import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+import { useSearchResources } from '../hooks/useSearchResources'
 
 export const SearchResultsOffset = () => {
   const {
@@ -10,7 +10,7 @@ export const SearchResultsOffset = () => {
     response: { count },
     setOffset,
     goToSearchResults
-  } = useMaterialsSearch()
+  } = useSearchResources()
 
   const [enteredPageNumber, setEnteredPageNumber] = React.useState('')
   const [

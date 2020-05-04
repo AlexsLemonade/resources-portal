@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, Select, TextInput, Keyboard } from 'grommet'
-import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+import { useSearchResources } from '../hooks/useSearchResources'
 import { Mappings } from './resources'
 import { sortedObjectKeys } from '../helpers/sortObjectKeys'
 import { getReadable } from '../helpers/readableNames'
@@ -16,7 +16,7 @@ export default function SearchInput({
     removeFacet,
     goToSearchResults,
     setSearchString
-  } = useMaterialsSearch()
+  } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
   const [string, setString] = React.useState(search || initialString)
   const resourceOptions = [

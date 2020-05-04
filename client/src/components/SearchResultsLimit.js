@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Select } from 'grommet'
-import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+import { useSearchResources } from '../hooks/useSearchResources'
 
 export const limitOptions = ['10', '25', '50', '100']
 
@@ -10,7 +10,7 @@ export const SearchResultsLimit = () => {
     response: { count },
     setLimit,
     goToSearchResults
-  } = useMaterialsSearch()
+  } = useSearchResources()
 
   React.useEffect(() => {
     if (!limit) setLimit(limitOptions[0])

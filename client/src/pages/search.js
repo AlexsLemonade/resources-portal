@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Grid } from 'grommet'
 
 import { searchQueryIsEmpty } from '../helpers/searchQueryIsEmpty'
-import { searchMaterials } from '../api/search'
+import { searchResources } from '../api/search'
 
 import SearchInput from '../components/SearchInput'
 import { SearchResultsLimit } from '../components/SearchResultsLimit'
@@ -10,10 +10,10 @@ import { SearchResultsFilters } from '../components/SearchResultsFilters'
 import { SearchResultsOffset } from '../components/SearchResultsOffset'
 import { SearchResult } from '../components/resources'
 
-import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+import { useSearchResources } from '../hooks/useSearchResources'
 
 const Search = (search) => {
-  const { response } = useMaterialsSearch(search)
+  const { response } = useSearchResources(search)
 
   return (
     <>
@@ -56,7 +56,7 @@ Search.getInitialProps = async ({ pathname, query }) => {
   // default the size of the page to 10 results
   const searchQuery = { limit: 10, ...query }
   const response = !searchQueryIsEmpty(query)
-    ? await searchMaterials({ limit: '10', ...query })
+    ? await searchResources({ limit: '10', ...query })
     : false
 
   return {

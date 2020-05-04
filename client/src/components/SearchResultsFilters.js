@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Text, Heading, CheckBox } from 'grommet'
 import { getReadable } from '../helpers/readableNames'
 import { sortedObjectKeysByValues } from '../helpers/sortObjectKeys'
-import { useMaterialsSearch } from '../hooks/useMaterialsSearch'
+import { useSearchResources } from '../hooks/useSearchResources'
 
 const isChecked = (queryFacets, facet) => {
   return Array.isArray(queryFacets)
@@ -16,7 +16,7 @@ export const SearchResultsFilters = () => {
     response: { facets },
     toggleFacet,
     goToSearchResults
-  } = useMaterialsSearch()
+  } = useSearchResources()
   return (
     <Box>
       <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">

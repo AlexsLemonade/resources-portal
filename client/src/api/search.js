@@ -26,7 +26,7 @@ const fakeResponse = {
   results: materialsTestData.slice(0, 10)
 }
 
-export const searchMaterials = async () => {
+export const searchResources = async () => {
   // perform fetch from api
   console.log('faking materials api search endpoint (2s)')
   const fakeAPICall = new Promise((resolve) =>
@@ -38,5 +38,5 @@ export const searchMaterials = async () => {
 }
 
 export default {
-  searchMaterials
+  searchResources
 }
