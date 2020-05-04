@@ -185,6 +185,7 @@ export const RequestRequirements = ({ resource }) => {
   if (resource.needs_mta) requirements.push(MTA)
   if (resource.needs_shipping_info) requirements.push('Shipping Information')
 
+  // NOTE: mta_s3_url will be an attachment in the near future
   return (
     <SearchResultDetail
       title="Request Requirements"
