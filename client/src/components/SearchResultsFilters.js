@@ -77,10 +77,10 @@ export const SearchResultsFilters = () => {
           }}
         >
           <Text weight="bold" margin={{ bottom: 'small' }}>
-            Publication Info
+            Publication Information
           </Text>
           <CheckBox
-            label={`has publication (${facets.has_publication})`}
+            label={`Has publication (${facets.has_publication})`}
             checked={query.has_publication || false}
             onChange={({ target: { checked } }) => {
               toggleFacet(checked, 'has_publication')
@@ -88,7 +88,7 @@ export const SearchResultsFilters = () => {
             }}
           />
           <CheckBox
-            label={`has pre print (${facets.has_pre_print})`}
+            label={`Has pre print (${facets.has_pre_print})`}
             checked={query.has_pre_print || false}
             onChange={({ target: { checked } }) => {
               toggleFacet(checked, 'has_pre_print')
