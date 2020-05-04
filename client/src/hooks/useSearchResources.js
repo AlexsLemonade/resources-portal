@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSearch } from './useSearch'
-import { ResourcesPortalContext } from '../ResouresPortalContext'
+import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useSearchResources = (newSearch) => {
   const { search, setSearch } = React.useContext(ResourcesPortalContext)
