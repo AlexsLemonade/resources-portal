@@ -618,7 +618,8 @@ const materials = [
     needs_shipping_info: true
   }
 ]
-const materialsRequests = [
+
+export const materialsRequests = [
   {
     id: '1',
     created_at: '2020-01-30 14:12:25-07',
@@ -633,7 +634,8 @@ const materialsRequests = [
     requester_id: '30000000-231f-4dc8-bbfa-02bccfb0372c'
   }
 ]
-const materials_share_events = [
+
+export const materialsShareEvents = [
   {
     id: '1',
     created_at: '2020-01-30 16:12:25-07',

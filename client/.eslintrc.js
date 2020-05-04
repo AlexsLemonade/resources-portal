@@ -18,8 +18,7 @@ module.exports = {
         ignoreUrls: true,
         ignoreStrings: true,
         ignoreTemplateLiterals: true,
-        ignoreRegExpLiterals: true,
-        noConsole: true
+        ignoreRegExpLiterals: true
       }
     ],
     'jsx-a11y/href-no-hash': ['off'],
@@ -43,6 +42,7 @@ module.exports = {
     'no-use-before-define': 0,
     'react/no-multi-comp': 0,
     'import/no-mutable-exports': 0,
-    'react/jsx-props-no-spreading': 'warn'
+    'react/jsx-props-no-spreading': 'warn',
+    'no-console': 'warn'
   }
 }
