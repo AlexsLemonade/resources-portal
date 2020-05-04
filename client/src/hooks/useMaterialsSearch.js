@@ -9,16 +9,8 @@ export const useMaterialsSearch = (newSearch) => {
 
   const defaultSearch = useSearch(search, setSearch)
 
-  const setSearchString = (searchString, resetQuery = false) => {
-    // should this clear the search facets?
-    if (resetQuery) search.query = {}
-    search.query.search = searchString
-    setSearch({ ...search })
-  }
-
   return {
     ...defaultSearch,
-    setSearchString,
     query: search.query,
     response: search.response
   }
