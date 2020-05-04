@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const ResourcesPortalContext = React.createContext([{}, () => {}])
+export const ResourcesPortalContext = React.createContext({})
 
-export const ResourcesPortalProvider = ({ children }) => {
+export const ResourcesPortalContextProvider = ({ children }) => {
   const [search, setSearch] = React.useState({})
 
   return (
