@@ -24,20 +24,18 @@ export const SearchResultsOffset = () => {
   const lastOffset =
     safeCount && parsedLimit > 0 ? Math.floor(safeCount / parsedLimit) : 0
 
-  const startingPageSlices =
-    safeOffset <= 2 ? [0, 6] : [safeOffset - 2, safeOffset + 3]
-
-  const pageSlices = lastOffset - safeOffset <= 2 ? [-5] : startingPageSlices
-
-  const pageButtonsOffsets = [...Array(lastOffset + 1).keys()].slice(
-    ...pageSlices
-  )
-
-  const goToOffset = (page) => {
-    setOffset(page)
-    setEnteredPageNumber('')
-    goToSearchResults()
+  const getPageButtonOffsets = () => {
+    const allOffsets = [...Array(lastOffset + 1).keys()]
+    // get first 6
+    if (safeOffset <= 2) return allOffsets.slice(0, 6)
+    // get last 5
+    if (lastOffset - safeOffset <= 2) return allOffsets.slice(-5)
+    // get 2 before and 2 after current
+    return allOffsets.slice(safeOffset - 2, safeOffset + 3)
   }
+
+  // cache the page offsets
+  const pageButtonsOffsets = getPageButtonOffsets()
 
   const atEnd = safeOffset === lastOffset
   const atStart = safeOffset === 0
@@ -50,6 +48,12 @@ export const SearchResultsOffset = () => {
       setEnteredPageNumber(value)
     }
     if (value === '') setEnteredPageNumber('')
+  }
+
+  const goToOffset = (page) => {
+    setOffset(page)
+    setEnteredPageNumber('')
+    goToSearchResults()
   }
 
   const goToOffsetRequest = () => {
