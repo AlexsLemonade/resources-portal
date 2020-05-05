@@ -44,7 +44,7 @@ export const SearchResultsOffset = () => {
 
   const handlePageNumberRequest = ({ target: { value } }) => {
     if (isOnlyNumbers(value)) {
-      const pageOffset = parseInt(value, 10)  - 1
+      const pageOffset = parseInt(value, 10) - 1
       const inRange = pageOffset <= lastOffset && pageOffset >= 0
       setEnteredPageNumberInRange(inRange)
       setEnteredPageNumber(value)
