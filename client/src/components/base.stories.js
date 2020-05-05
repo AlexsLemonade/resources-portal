@@ -99,7 +99,7 @@ storiesOf('Tabs', module).add('4 Tabs', () => {
 
 storiesOf('Forms Inputs', module).add('Select', () => {
   const options = [...Array(25).keys()].map((o) => `Option ${o + 1}`)
-  const [value, setValue] = React.useState('')
+  const [value, setValue] = React.useState('Option 1')
   return (
     <Grommet theme={theme}>
       <Box direction="row" justify="center">
@@ -214,7 +214,7 @@ storiesOf('Headings', module)
       <Grommet theme={theme}>
         <Box align="center" pad="large">
           {[1, 2, 3, 4, 5].map((level) => (
-            <Heading level={level} title>
+            <Heading level={level} serif>
               H{level} Heading {level}
             </Heading>
           ))}

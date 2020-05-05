@@ -21,36 +21,46 @@ const theme = {
     extend: (props) => applyWhen(props.focus, 'box-shadow: none;')
   },
   select: {
-    border: {
-      radius: '4px'
-    },
     icons: {
       margin: 'none',
-      color: 'black-tint-60',
+      color: 'black-tint-40',
       down: DownArrow
     },
     control: {
-      extend: (props) => `
-        border-radius: 4px;
-        background-color: ${normalizeColor('black-tint-80', props.theme)};
-        ${applyWhen(
-          !props.disabled,
-          `
-          input {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-            background-color:  ${normalizeColor('white', props.theme)};
-          }
-          `
-        )}
-        ${applyWhen(
-          props.disabled,
-          `
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-          background-color: ${normalizeColor('black-tint-95', props.theme)};
-          `
-        )}
-        `
+      extend: (props) =>
+        applyAll(
+          applyWhen(
+            props.open && !props.plain,
+            `background-color: ${normalizeColor('black-tint-80', props.theme)};`
+          ),
+          applyWhen(
+            props.plain,
+            `
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          ),
+          applyWhen(
+            !props.disabled && !props.plain,
+            `
+            &:hover {
+              background-color: ${normalizeColor('black-tint-80', props.theme)};
+            }
+
+            input {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+              background-color:  ${normalizeColor('white', props.theme)};
+            }
+            `
+          ),
+          applyWhen(
+            props.disabled,
+            `
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          )
+        )
     },
     options: {
       text: {
@@ -135,15 +145,54 @@ const theme = {
           `
         ),
         applyWhen(
-          props.active || props.selected,
+          props.plain && props.role === 'menuitem',
           `
-          &[role="menuitem"], &[role="menuitem"] > div {
-            background-color: ${normalizeColor('black-tint-80', props.theme)};
+          background-color: transparent;
+
+          > div {
+            padding: 4px 8px;
           }
 
-          &[role="menuitem"] span {
-            color: ${normalizeColor('brand', props.theme)};
+          ${applyWhen(
+            !props.selected,
+            `
+            &:hover {
+              background-color: ${normalizeColor('black-tint-90', props.theme)};
+
+              span {
+                color: ${normalizeColor('brand', props.theme)};
+              }
+            }
+            `
+          )}
+          ${applyWhen(
+            props.selected || props.active,
+            `
+            background-color: ${normalizeColor('brand', props.theme)};
+
+            span {
+              color: ${normalizeColor('white', props.theme)};
+            }
+            `
+          )}
+          `
+        ),
+        applyWhen(
+          props.plain && !props.role && !props.colorValue,
+          `
+          color: ${normalizeColor('brand', props.theme)};
+
+          input {
+            color: ${normalizeColor('black', props.theme)};
           }
+
+          `
+        ),
+        applyWhen(
+          props.plain && !props.role && props.disabled,
+          `
+          color: ${normalizeColor('black-tint-60', props.theme)};
+
           `
         )
       )
@@ -453,6 +502,7 @@ const theme = {
       'black-tint-40': '#666666',
       'black-tint-60': '#999999',
       'black-tint-80': '#CCCCCC',
+      'black-tint-90': '#E5E5E5',
       'black-tint-95': '#F2F2F2',
       white: '#FDFDFD',
       info: '#002F6C', // alexs-navy-base
@@ -528,14 +578,6 @@ const theme = {
       extend: (props) => `
         border: 1px solid ${normalizeColor('black-tint-60', props.theme)};
         margin-top: 4px;
-
-        button:hover, button:focus {
-          background-color: ${normalizeColor('black-tint-80', props.theme)};
-        }
-
-        button:hover span {
-          color: ${normalizeColor('brand', props.theme)};
-        }
       `,
       active: {
         background: 'red'
@@ -548,7 +590,8 @@ const theme = {
       none: '0px',
       responsiveBreakpoint: 'small',
       small: '8px',
-      xlarge: '64px',
+      xlarge: '48px',
+      gutter: '40px',
       xsmall: '4px',
       xxsmall: '2px'
     },
@@ -578,7 +621,7 @@ const theme = {
     size: {
       full: '100%',
       large: '512px',
-      medium: '256px',
+      medium: '224px',
       small: '128px',
       xlarge: `${8 * 130}px`,
       xsmall: '64px',
@@ -593,7 +636,7 @@ const theme = {
       weight: 'bold'
     },
     extend: (props) =>
-      props.title ? `font-family: 'Arvo'; font-weight: 400` : null,
+      props.serif ? `font-family: 'Arvo'; font-weight: 400` : null,
     level: {
       '1': {
         large: {

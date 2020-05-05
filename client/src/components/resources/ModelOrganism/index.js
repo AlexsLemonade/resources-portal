@@ -1,6 +1,6 @@
 import React from 'react'
-import { SearchResult, SearchResultDetail } from '../../components/SearchResult'
-import DetailsTable from '../../components/DetailsTable'
+import { SearchResult, SearchResultDetail } from '../../SearchResult'
+import DetailsTable from '../../DetailsTable'
 
 export const ModelOrganismSearchResult = ({ resource }) => {
   return (
