@@ -5,11 +5,11 @@ import { getReadable } from '../../helpers/readableNames'
 import theme from '../../theme'
 import { Mappings, SearchResult, ResourceDetails } from '.'
 
-import { materialsTestData } from '../../helpers/testData'
+import { fakeSearchMaterialsResponse } from '../../helpers/testData'
 
 const data = {}
 
-materialsTestData.forEach((material) => {
+fakeSearchMaterialsResponse.results.forEach((material) => {
   data[material.category] = data[material.category] || []
   data[material.category].push(material)
 })
