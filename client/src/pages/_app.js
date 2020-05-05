@@ -3,13 +3,14 @@ import { Grommet } from 'grommet'
 import Head from 'next/head'
 import theme from '../theme'
 import Layout from '../components/Layout'
+import { ResourcesPortalContextProvider } from '../ResourcesPortalContext'
 
 // global styles
 import '../styles/app.scss'
 
 export default ({ Component, pageProps }) => {
   return (
-    <>
+    <ResourcesPortalContextProvider>
       <Head>
         <link
           href="https://fonts.googleapis.com/css?family=Arvo:400,700|Lato:400,400i,700&display=swap"
@@ -23,6 +24,6 @@ export default ({ Component, pageProps }) => {
           <Component {...pageProps} />
         </Layout>
       </Grommet>
-    </>
+    </ResourcesPortalContextProvider>
   )
 }
