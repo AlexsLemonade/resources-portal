@@ -1,4 +1,3 @@
-from django.core.exceptions import PermissionDenied
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
