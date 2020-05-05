@@ -20,9 +20,9 @@ export const SearchResultsOffset = () => {
 
   const safeOffset = parseInt(offset, 10) || 0
   const safeCount = parseInt(count, 10) || 0
-  const safeLimit = parseInt(limit, 10)
+  const parsedLimit = parseInt(limit, 10)
   const lastOffset =
-    safeCount && safeLimit > 0 ? Math.floor(safeCount / safeLimit) : 0
+    safeCount && parsedLimit > 0 ? Math.floor(safeCount / parsedLimit) : 0
 
   const startingPageSlices =
     safeOffset <= 2 ? [0, 6] : [safeOffset - 2, safeOffset + 3]
@@ -43,9 +43,8 @@ export const SearchResultsOffset = () => {
   const atStart = safeOffset === 0
 
   const handlePageNumberRequest = ({ target: { value } }) => {
-    const parsedValue = parseInt(value, 10)
     if (isOnlyNumbers(value)) {
-      const pageOffset = parsedValue - 1
+      const pageOffset = parseInt(value, 10)  - 1
       const inRange = pageOffset <= lastOffset && pageOffset >= 0
       setEnteredPageNumberInRange(inRange)
       setEnteredPageNumber(value)
