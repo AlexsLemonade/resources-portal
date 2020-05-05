@@ -94,15 +94,25 @@ export const SearchResultsOffset = () => {
             </Paragraph>
           )
         ]}
-        {pageButtonsOffsets.map((pageOffset) => (
-          <Button
-            key={pageOffset}
-            plain
-            label={pageOffset + 1}
-            disabled={pageOffset === safeOffset}
-            onClick={() => goToOffset(pageOffset)}
-          />
-        ))}
+        {pageButtonsOffsets.map((pageOffset) =>
+          safeOffset !== pageOffset ? (
+            <Button
+              key={pageOffset}
+              plain
+              label={pageOffset + 1}
+              onClick={() => goToOffset(pageOffset)}
+            />
+          ) : (
+            <Paragraph
+              key="current-page"
+              size="medium"
+              margin="none"
+              color="black"
+            >
+              {pageOffset + 1}
+            </Paragraph>
+          )
+        )}
         {!pageButtonsOffsets.includes(lastOffset) && [
           !pageButtonsOffsets.includes(lastOffset - 1) && (
             <Paragraph
@@ -133,18 +143,20 @@ export const SearchResultsOffset = () => {
           onClick={() => goToOffset(safeOffset + 1)}
         />
       </Box>
-      <Box direction="row" align="center">
-        <Box flex="grow" align="center" pad={{ horizontal: 'medium' }}>
+      <Box direction="row" align="center" gap="small">
+        <Paragraph size="medium" margin="none" color="black">
+          Jump to page
+        </Paragraph>
+        <Box width="xsmall">
           <TextInput
             size="medium"
-            placeholder="Jump to Page"
             value={enteredPageNumber}
             onChange={handlePageNumberRequest}
           />
         </Box>
         <Button
           label="Go"
-          disabled={!enteredPageNumberInRange}
+          disabled={!enteredPageNumberInRange || enteredPageNumber === ''}
           onClick={goToOffsetRequest}
         />
       </Box>
