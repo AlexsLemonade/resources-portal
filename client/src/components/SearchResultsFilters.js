@@ -1,27 +1,34 @@
 import React from 'react'
-import { Box, Text, Heading, CheckBox } from 'grommet'
+import { Box, Button, Text, Heading, CheckBox } from 'grommet'
 import { getReadable } from '../helpers/readableNames'
 import { sortedObjectKeysByValues } from '../helpers/sortObjectKeys'
 import { useSearchResources } from '../hooks/useSearchResources'
 
-const isChecked = (queryFacets, facet) => {
-  return Array.isArray(queryFacets)
-    ? queryFacets.includes(facet)
-    : queryFacets === facet
-}
-
 export const SearchResultsFilters = () => {
   const {
-    query,
     response: { facets },
     toggleFacet,
+    clearFacets,
+    hasFacet,
+    hasAnyFacet,
     goToSearchResults
   } = useSearchResources()
   return (
     <Box>
-      <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">
-        Filters
-      </Heading>
+      <Box direction="row" align="baseline" justify="between">
+        <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">
+          Filters
+        </Heading>
+        <Button
+          plain
+          label="clear all"
+          disabled={!hasAnyFacet()}
+          onClick={() => {
+            clearFacets()
+            goToSearchResults()
+          }}
+        />
+      </Box>
       {facets.category && (
         <Box margin={{ top: 'small' }} pad={{ vertical: 'small' }}>
           <Text weight="bold" margin={{ bottom: 'small' }}>
@@ -31,7 +38,7 @@ export const SearchResultsFilters = () => {
             <CheckBox
               key={category.key}
               label={`${getReadable(category.key)} (${category.value})`}
-              checked={isChecked(query.category, category.key)}
+              checked={hasFacet('category', category.key)}
               onChange={({ target: { checked } }) => {
                 toggleFacet(checked, 'category', category.key)
                 goToSearchResults(true)
@@ -57,7 +64,7 @@ export const SearchResultsFilters = () => {
             <CheckBox
               key={organism.key}
               label={`${organism.key} (${organism.value})`}
-              checked={isChecked(query.organism, organism.key)}
+              checked={hasFacet('organism', organism.key)}
               onChange={({ target: { checked } }) => {
                 toggleFacet(checked, 'organism', organism.key)
                 goToSearchResults(true)
@@ -81,7 +88,7 @@ export const SearchResultsFilters = () => {
           </Text>
           <CheckBox
             label={`Includes Publication (${facets.has_publication})`}
-            checked={query.has_publication || false}
+            checked={hasFacet('has_publication')}
             onChange={({ target: { checked } }) => {
               toggleFacet(checked, 'has_publication')
               goToSearchResults(true)
@@ -89,7 +96,7 @@ export const SearchResultsFilters = () => {
           />
           <CheckBox
             label={`Includes Pre-print (${facets.has_pre_print})`}
-            checked={query.has_pre_print || false}
+            checked={hasFacet('has_pre_print')}
             onChange={({ target: { checked } }) => {
               toggleFacet(checked, 'has_pre_print')
               goToSearchResults(true)

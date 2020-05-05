@@ -63,6 +63,34 @@ export const useSearch = (state, setState) => {
     }
   }
 
+  const hasFacet = (facet, value = true) => {
+    const queryFacet = search.query[facet]
+    if (Array.isArray(queryFacet)) {
+      return queryFacet.includes(value)
+    }
+
+    if (typeof value === 'string') {
+      return queryFacet === value
+    }
+
+    return facet in search.query
+  }
+
+  const hasAnyFacet = () => {
+    const { facets } = search.response
+    let hasFacets = false
+    Object.keys(facets).forEach((facet) => {
+      if (facet in search.query) hasFacets = true
+    })
+
+    return hasFacets
+  }
+
+  const clearFacets = () => {
+    const { facets } = search.response
+    Object.keys(facets || {}).forEach((facet) => removeFacet(facet))
+  }
+
   const setLimit = (limit) => {
     search.query.limit = limit
     setSearch({ ...search })
@@ -78,6 +106,9 @@ export const useSearch = (state, setState) => {
     addFacet,
     removeFacet,
     toggleFacet,
+    hasFacet,
+    hasAnyFacet,
+    clearFacets,
     setLimit,
     setOffset,
     goToSearchResults
