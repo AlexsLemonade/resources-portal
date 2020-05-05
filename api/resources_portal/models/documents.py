@@ -52,6 +52,18 @@ class MaterialDocument(Document):
         properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
+    mta_attachment = fields.ObjectField(
+        properties={
+            "filename": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "description": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "s3_bucket": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "s3_key": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "download_url": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "created_at": fields.DateField(),
+            "updated_at": fields.DateField(),
+        }
+    )
+
     has_publication = fields.BooleanField(attr="has_publication")
 
     has_pre_print = fields.BooleanField(attr="has_pre_print")
@@ -59,7 +71,6 @@ class MaterialDocument(Document):
     # Basic Fields
     id = fields.IntegerField()
     url = fields.TextField()
-    mta_s3_url = fields.TextField()
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
@@ -140,7 +151,7 @@ class UserDocument(Document):
     # Basic Fields
     created_at = fields.DateField()
     updated_at = fields.DateField()
-    date_joined = fields.TextField()
+    date_joined = fields.DateField()
     id = fields.TextField(fielddata=True)
 
     class Django:

@@ -29,8 +29,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
     title = serializers.CharField(read_only=True)
     url = serializers.CharField(read_only=True)
     pubmed_id = serializers.CharField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
     organism = serializers.ListField(read_only=True)
     has_publication = serializers.CharField(read_only=True)
     has_pre_print = serializers.CharField(read_only=True)
@@ -45,6 +45,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
     organization = serializers.SerializerMethodField(read_only=True)
+    mta_attachment = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
 
     def get_contact_user(self, obj):
@@ -52,6 +53,9 @@ class MaterialDocumentSerializer(serializers.Serializer):
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
+
+    def get_mta_attachment(self, obj):
+        return loads(dumps(obj.mta_attachment.to_dict()))
 
     def get_additional_metadata(self, obj):
         # this pre-processes the JSON string in django form into a form that loads can take.
@@ -260,8 +264,8 @@ class OrganizationDocumentSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
     owner = serializers.SerializerMethodField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
 
     def get_owner(self, obj):
         return loads(dumps(obj.owner.to_dict()))
@@ -325,8 +329,8 @@ class UserDocumentSerializer(serializers.Serializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     published_name = serializers.CharField(read_only=True)
-    created_at = serializers.DateField(read_only=True)
-    updated_at = serializers.DateField(read_only=True)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
 
     class Meta:
         model = User

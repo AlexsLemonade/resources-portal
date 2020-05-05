@@ -1,12 +1,15 @@
 from json import loads
 
 from django.core.management.base import BaseCommand
+from django.utils import dateparse
 
 from resources_portal.models import (
+    Attachment,
     Grant,
     Material,
     MaterialRequest,
     MaterialShareEvent,
+    Notification,
     Organization,
     OrganizationInvitation,
     OrganizationUserSetting,
@@ -21,6 +24,13 @@ class Command(BaseCommand):
         def add_class_to_database(class_json, Class):
             print(f"Inserting {Class.__name__} into database...")
             for element in class_json:
+                if "updated_at" in element:
+                    element["updated_at"] = dateparse.parse_datetime(element["updated_at"])
+                if "created_at" in element:
+                    element["created_at"] = dateparse.parse_datetime(element["created_at"])
+                if "date_joined" in element:
+                    element["date_joined"] = dateparse.parse_datetime(element["date_joined"])
+
                 element_in_class = Class(**element)
                 element_in_class.save()
 
@@ -32,8 +42,17 @@ class Command(BaseCommand):
         organizations_json = loads(open("./dev_data/organizations.json").read())
         add_class_to_database(organizations_json["organizations"], Organization)
 
+        # add attachments
+        attachments_json = loads(open("./dev_data/attachments.json").read())
+        add_class_to_database(attachments_json["attachments"], Attachment)
+
+        # add materials
         materials_json = loads(open("./dev_data/materials.json").read())
         add_class_to_database(materials_json["materials"], Material)
+
+        # add notifications
+        notifications_json = loads(open("./dev_data/notifications.json").read())
+        add_class_to_database(notifications_json["notifications"], Notification)
 
         # add grants
         grants_json = loads(open("./dev_data/grants.json").read())
