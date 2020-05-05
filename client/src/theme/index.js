@@ -34,7 +34,7 @@ const theme = {
             `background-color: ${normalizeColor('black-tint-80', props.theme)};`
           ),
           applyWhen(
-            props.plain && props.plain,
+            props.plain,
             `
             background-color: ${normalizeColor('black-tint-95', props.theme)};
             `
