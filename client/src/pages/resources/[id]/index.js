@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
-import { materialsTestData } from '../../../helpers/testData'
+import { fakeSearchMaterialsResponse } from '../../../helpers/testData'
 import { ResourceDetails } from '../../../components/resources'
 import DetailsTable from '../../../components/DetailsTable'
 import Organism from '../../../images/organism.svg'
@@ -108,7 +108,7 @@ const PublicationInformation = ({ resource }) => (
 )
 
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const resource = materialsTestData.find(
+  const resource = fakeSearchMaterialsResponse.find(
     (material) => material.id === query.id
   )
   return {
