@@ -178,8 +178,6 @@ export const RequestRequirements = ({ resource }) => {
     )
   }
 
-  console.log(resource)
-
   const requirements = []
   const MTA = 'Material Transfer Agreement'
   if (resource.needs_abstract) requirements.push('Abstract')
