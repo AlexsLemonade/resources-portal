@@ -32,8 +32,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     organism = serializers.ListField(read_only=True)
-    has_publication = serializers.CharField(read_only=True)
-    has_pre_print = serializers.CharField(read_only=True)
+    has_publication = serializers.BooleanField(read_only=True)
+    has_pre_print = serializers.BooleanField(read_only=True)
     additional_info = serializers.CharField(read_only=True)
     contact_name = serializers.CharField(read_only=True)
     contact_email = serializers.CharField(read_only=True)
@@ -41,7 +41,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
     citation = (serializers.CharField(read_only=True),)
-    needs_shipping_info = serializers.CharField(read_only=True)
+    needs_shipping_info = serializers.BooleanField(read_only=True)
     embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
     organization = serializers.SerializerMethodField(read_only=True)
@@ -58,8 +58,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
         return loads(dumps(obj.mta_attachment.to_dict()))
 
     def get_additional_metadata(self, obj):
-        # this pre-processes the JSON string in django form into a form that loads can take.
-        return loads("{" + obj.additional_metadata.replace('"', "").replace("'", '"') + "}")
+        return loads(obj.additional_metadata)
 
     class Meta:
         model = Material
