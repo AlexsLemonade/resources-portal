@@ -43,17 +43,17 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        if not OrganizationInvitationSerializer(data=request.data).is_valid():
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = OrganizationInvitationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        request_reciever = serializer.validated_data["request_reciever"]
+        organization = serializer.validated_data["organization"]
+        invite_or_request = serializer.validated_data["invite_or_request"]
 
-        request_reciever = User.objects.get(pk=request.data["request_reciever"])
-        organization = Organization.objects.get(pk=request.data["organization"])
-
-        if request.data["invite_or_request"] == "INVITE" and not request_reciever.has_perm(
+        if invite_or_request == "INVITE" and not request_reciever.has_perm(
             "add_members_and_manage_permissions", organization
         ):
             return Response(
-                f"{request_reciever} does not have permission to add members",
+                data={"detail": f"{request_reciever} does not have permission to add members"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -71,17 +71,19 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             request.user == invitation.request_reciever
             and invitation.invite_or_request == "REQUEST"
         )
-
-        # Xor operator
-        if not requester_accepting ^ request_reciever_approving:
+        if not (requester_accepting or request_reciever_approving):
             return Response(
-                f"The current user, {request.user}, is not the correct user to handle invitation id {invitation.id}",
+                data={
+                    "detail": f"The current user, {request.user}, is not the correct user to handle invitation id {invitation.id}"
+                },
                 status=status.HTTP_403_FORBIDDEN,
             )
 
         if not invitation.status == "PENDING":
             return Response(
-                f"Invitation id {invitation.id} has already been resolved with a status of {invitation.status}",
+                data={
+                    "detail": f"Invitation id {invitation.id} has already been resolved with a status of {invitation.status}"
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -96,7 +98,9 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
         if not request.user == invitation.requester:
             return Response(
-                f"The current user, {request.user}, is not the requester of invitation id {invitation.id}",
+                data={
+                    "detail": f"The current user, {request.user}, is not the requester of invitation id {invitation.id}"
+                },
                 status=status.HTTP_403_FORBIDDEN,
             )
 
