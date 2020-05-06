@@ -86,6 +86,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "embargo_date",
             "contact_user",
             "needs_shipping_info",
+            "imported",
+            "import_source",
         )
 
 
