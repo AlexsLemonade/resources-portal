@@ -92,7 +92,7 @@ const MultipleAlerts = ({ alert, alerts, clearAlerts }) => {
         height="40px"
         justify="end"
       >
-        <Button plain label="clear all" onClick={clearAlerts} />
+        <Button plain color="white" label="clear all" onClick={clearAlerts} />
       </Box>
     </Box>
   )

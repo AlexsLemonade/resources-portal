@@ -1,9 +1,8 @@
 import React from 'react'
-
 import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
-import { ResourceDetails } from '../../../resources'
-import { getResourceDetails } from '../../../common/api'
+import { materialsTestData } from '../../../helpers/testData'
+import { ResourceDetails } from '../../../components/resources'
 import DetailsTable from '../../../components/DetailsTable'
 import Organism from '../../../images/organism.svg'
 import ResourceType from '../../../images/resource-type.svg'
@@ -70,10 +69,7 @@ const ResourceDetailsPage = ({ resource }) => (
     </div>
   </>
 )
-ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const resource = await getResourceDetails({ id: query.id })
-  return { resource }
-}
+
 export default ResourceDetailsPage
 
 const TabHeading = ({ title }) => (
@@ -110,3 +106,12 @@ const PublicationInformation = ({ resource }) => (
     ]}
   />
 )
+
+ResourceDetailsPage.getInitialProps = async ({ query }) => {
+  const resource = materialsTestData.find(
+    (material) => material.id === query.id
+  )
+  return {
+    resource
+  }
+}

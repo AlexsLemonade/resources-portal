@@ -1,6 +1,6 @@
 import React from 'react'
-import SearchResultComponent from '../../components/SearchResult'
-import DetailsTable from '../../components/DetailsTable'
+import SearchResultComponent from '../../SearchResult'
+import DetailsTable from '../../DetailsTable'
 
 export const SearchResult = SearchResultComponent
 
