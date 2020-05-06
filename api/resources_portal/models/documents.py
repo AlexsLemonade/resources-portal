@@ -24,6 +24,7 @@ string_analyzer = analyzer(
 
 no_op_analyzer = analyzer("no_op_analyzer", tokenizer="keyword", filter=[],)
 
+
 # Document for materials. Interprets material data from the model so that it can be indexed into elasticsearch.
 @material_index.doc_type
 class MaterialDocument(Document):

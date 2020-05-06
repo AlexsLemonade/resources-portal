@@ -1,7 +1,6 @@
 from rest_framework import serializers, viewsets
-from rest_framework.renderers import JSONRenderer
 
-from resources_portal.models import Grant, GrantMaterialAssociation, Material, User
+from resources_portal.models import Grant
 from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
     OrganizationRelationSerializer,
