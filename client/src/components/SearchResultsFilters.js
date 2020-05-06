@@ -73,7 +73,7 @@ export const SearchResultsFilters = () => {
           ))}
         </Box>
       )}
-      {(facets.has_publication || facets.has_pre_print) && (
+      {('has_publication' in facets || 'has_pre_print' in facets) && (
         <Box
           margin={{ top: 'small' }}
           pad={{ vertical: 'small' }}
@@ -86,7 +86,7 @@ export const SearchResultsFilters = () => {
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Publication Information
           </Text>
-          {facets.has_publication && (
+          {'has_publication' in facets && (
             <CheckBox
               label={`Includes Publication (${facets.has_publication['1']})`}
               checked={hasFacet('has_publication')}
@@ -96,7 +96,7 @@ export const SearchResultsFilters = () => {
               }}
             />
           )}
-          {facets.has_pre_print && (
+          {'has_pre_print' in facets && (
             <CheckBox
               label={`Includes Pre-print (${facets.has_pre_print['1']})`}
               checked={hasFacet('has_pre_print')}
