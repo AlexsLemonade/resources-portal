@@ -1,3 +1,5 @@
+import json
+
 from django_elasticsearch_dsl import Document, Index, fields
 from elasticsearch_dsl import analyzer
 
@@ -105,10 +107,7 @@ class MaterialDocument(Document):
     embargo_date = fields.DateField()
 
     def prepare_additional_metadata(self, instance):
-        metadata_string = str(instance.additional_metadata)
-        metadata_string = metadata_string.strip("{")
-        metadata_string = metadata_string.strip("}")
-        return metadata_string
+        return json.dumps(instance.additional_metadata)
 
     class Django:
         model = Material

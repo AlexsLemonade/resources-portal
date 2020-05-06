@@ -275,7 +275,7 @@
         "gender": "Male",
         "age": "15",
         "diagnosis": "Stage 4 Lymphoma",
-        "consent_to_share": "False",
+        "consent_to_share": false,
         "ethnicity": "Hispanic",
         "prior_treatment_protocol": "10 mg Anastrozole daily",
         "current_treatment_drug": "Anastrozole",
