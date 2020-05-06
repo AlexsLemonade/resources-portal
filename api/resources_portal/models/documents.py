@@ -93,6 +93,8 @@ class MaterialDocument(Document):
     created_at = fields.DateField()
     updated_at = fields.DateField()
     additional_metadata = fields.TextField()
+    imported = fields.BooleanField()
+    import_source = fields.TextField()
 
     # These fields are optional, so we need to have the redundancy with the referenced
     # contact_user above.
