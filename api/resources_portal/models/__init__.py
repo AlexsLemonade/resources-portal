@@ -14,4 +14,5 @@ from resources_portal.models.material_share_event import MaterialShareEvent
 from resources_portal.models.organization import Organization
 from resources_portal.models.organization_invitation import OrganizationInvitation
 from resources_portal.models.organization_user_setting import OrganizationUserSetting
+from resources_portal.models.shipping_requirements import ShippingRequirements
 from resources_portal.models.user import User

@@ -16,6 +16,10 @@ class User(AbstractUser):
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
 
+    def save(self, *args, **kwargs):
+        self.id = uuid.UUID(str(self.id))
+        super(User, self).save(*args, **kwargs)
+
     def __str__(self):
         return str(self.id)
 

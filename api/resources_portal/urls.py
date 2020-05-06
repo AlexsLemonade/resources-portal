@@ -14,24 +14,26 @@ from resources_portal.views import (  # grant_material_relationship,; list_grant
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
+    OrganizationInvitationViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
     UserDocumentView,
     UserViewSet,
 )
 
+
 router = ExtendedSimpleRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserCreateViewSet, basename="user")
 router.register(r"materials", MaterialViewSet, basename="material")
 router.register(r"organizations", OrganizationViewSet, basename="organization")
+router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"materials",
     GrantMaterialViewSet,
     basename="grants-material",
     parents_query_lookups=["grants"],
 )
-
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
@@ -46,5 +48,5 @@ urlpatterns = [
     # the 'api-root' from django rest-frameworks default router
     # http://www.django-rest-framework.org/api-guide/routers/#defaultrouter
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
-    path("search/", include(search_router.urls)),
+    path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

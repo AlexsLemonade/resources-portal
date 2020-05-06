@@ -1,3 +1,5 @@
+import json
+
 from django_elasticsearch_dsl import Document, Index, fields
 from elasticsearch_dsl import analyzer
 
@@ -53,6 +55,19 @@ class MaterialDocument(Document):
         properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
+    shipping_requirements = fields.ObjectField(
+        properties={
+            "needs_shipping_address": fields.BooleanField(),
+            "needs_payment": fields.BooleanField(),
+            "accepts_shipping_code": fields.BooleanField(),
+            "accepts_reimbursement": fields.BooleanField(),
+            "accepts_other_payment_methods": fields.BooleanField(),
+            "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "created_at": fields.DateField(),
+            "updated_at": fields.DateField(),
+        }
+    )
+
     mta_attachment = fields.ObjectField(
         properties={
             "filename": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
@@ -75,11 +90,12 @@ class MaterialDocument(Document):
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
-    needs_shipping_info = fields.BooleanField()
     pubmed_id = fields.TextField()
     created_at = fields.DateField()
     updated_at = fields.DateField()
     additional_metadata = fields.TextField()
+    imported = fields.BooleanField()
+    import_source = fields.TextField()
 
     # These fields are optional, so we need to have the redundancy with the referenced
     # contact_user above.
@@ -94,10 +110,7 @@ class MaterialDocument(Document):
     embargo_date = fields.DateField()
 
     def prepare_additional_metadata(self, instance):
-        metadata_string = str(instance.additional_metadata)
-        metadata_string = metadata_string.strip("{")
-        metadata_string = metadata_string.strip("}")
-        return metadata_string
+        return json.dumps(instance.additional_metadata)
 
     class Django:
         model = Material
