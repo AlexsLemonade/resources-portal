@@ -32,7 +32,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             invitation.organization.members.add(invitation.requester)
             invitation.delete()
 
-        notification_type = f"{invitation.invite_or_request}_{new_status}"
+        notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
         notified_user = User
         associated_user = User
@@ -71,7 +71,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
         if request.data["invite_or_request"] == "INVITE":
             notification = Notification(
-                notification_type="INVITE_CREATED",
+                notification_type="ORG_INVITE_CREATED",
                 notified_user=request.user,
                 associated_user=request_reciever,
                 associated_organization=organization,
@@ -79,7 +79,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             notification.save()
         else:
             notification = Notification(
-                notification_type="REQUEST_CREATED",
+                notification_type="ORG_REQUEST_CREATED",
                 notified_user=request_reciever,
                 associated_user=request.user,
                 associated_organization=organization,

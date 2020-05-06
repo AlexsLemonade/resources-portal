@@ -2,7 +2,7 @@
     "notifications": [
         {
             "id": "1",
-            "message": "PrimProf would like to join your organization",
+            "notification_type": "ORG_REQUEST_CREATED",
             "notified_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
             "associated_organization_id": "4",
             "associated_material_id": "",
@@ -11,7 +11,7 @@
         },
         {
             "id": "2",
-            "message": "PrimProf has accepted your request to join PrimaryLab",
+            "notification_type": "ORG_REQUEST_ACCEPTED",
             "notified_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
             "associated_organization_id": "1",
             "associated_material_id": "",
@@ -20,7 +20,7 @@
         },
         {
             "id": "3",
-            "message": "SecProf has requested \"Allele Extraction Protocol\" for transfer",
+            "notification_type": "TRANSFER_REQUESTED",
             "notified_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
             "associated_organization_id": "1",
             "associated_material_id": "2",
@@ -29,7 +29,7 @@
         },
         {
             "id": "4",
-            "message": "PrimProf has granted you permission to approve material requests for PrimaryLab",
+            "notification_type": "APPROVE_REQUESTS_PERM_GRANTED",
             "notified_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
             "associated_organization_id": "1",
             "associated_material_id": "",
@@ -38,7 +38,7 @@
         },
         {
             "id": "5",
-            "message": "PostDoc has uploaded the MTA for \"Allele Extraction Protocol\"",
+            "notification_type": "MTA_UPLOADED",
             "notified_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
             "associated_organization_id": "1",
             "associated_material_id": "2",

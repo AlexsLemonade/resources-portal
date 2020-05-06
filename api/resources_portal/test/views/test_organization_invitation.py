@@ -35,7 +35,9 @@ class OrganizationInvitationListTestCase(APITestCase):
             str(self.invitation_data["request_reciever"]), response.json()["request_reciever"]
         )
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="INVITE_CREATED")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
 
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
@@ -96,7 +98,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         # On acceptance, the invitation gets deleted
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="REQUEST_ACCEPTED")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_REQUEST_ACCEPTED")), 1
+        )
 
     def test_invite_approved_by_requester_suceeds(self):
         self.client.force_authenticate(user=self.invitation.requester)
@@ -116,7 +120,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         # On acceptance, the invitation gets deleted
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="INVITE_ACCEPTED")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+        )
 
     def test_request_rejected_by_request_reciever_suceeds(self):
         self.client.force_authenticate(user=self.invitation.request_reciever)
@@ -135,7 +141,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="REQUEST_REJECTED")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_REQUEST_REJECTED")), 1
+        )
 
     def test_invite_rejected_by_requester_suceeds(self):
         self.client.force_authenticate(user=self.invitation.requester)
@@ -154,7 +162,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="INVITE_REJECTED")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_REJECTED")), 1
+        )
 
     def test_request_invalid_suceeds(self):
         self.client.force_authenticate(user=self.invitation.request_reciever)
@@ -173,7 +183,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="REQUEST_INVALID")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_REQUEST_INVALID")), 1
+        )
 
     def test_invite_invalid_suceeds(self):
         self.client.force_authenticate(user=self.invitation.requester)
@@ -192,7 +204,9 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(requester in organization.members.all())
-        self.assertEqual(len(Notification.objects.filter(notification_type="INVITE_INVALID")), 1)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_INVALID")), 1
+        )
 
     def test_put_request_from_wrong_user_fails(self):
         self.client.force_authenticate(user=self.invitation.requester)
