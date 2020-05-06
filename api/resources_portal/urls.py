@@ -6,8 +6,11 @@ from django.views.generic.base import RedirectView
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
-from resources_portal.views import (
+from rest_framework_extensions.routers import ExtendedSimpleRouter
+
+from resources_portal.views import (  # grant_material_relationship,; list_grant_material_relationships,
     GrantViewSet,
+    GrantMaterialViewSet,
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
@@ -15,16 +18,19 @@ from resources_portal.views import (
     UserCreateViewSet,
     UserDocumentView,
     UserViewSet,
-    grant_material_relationship,
-    list_grant_material_relationships,
 )
 
-router = DefaultRouter(trailing_slash=False)
-router.register(r"users", UserViewSet)
-router.register(r"users", UserCreateViewSet)
-router.register(r"materials", MaterialViewSet)
-router.register(r"organizations", OrganizationViewSet)
-router.register(r"grants", GrantViewSet)
+router = ExtendedSimpleRouter(trailing_slash=False)
+router.register(r"users", UserViewSet, basename="user")
+router.register(r"users", UserCreateViewSet, basename="user")
+router.register(r"materials", MaterialViewSet, basename="material")
+router.register(r"organizations", OrganizationViewSet, basename="organization")
+router.register(r"grants", GrantViewSet, basename="grant").register(
+    r"materials",
+    GrantMaterialViewSet,
+    basename="grants-material",
+    parents_query_lookups=["grants"],
+)
 
 
 search_router = DefaultRouter(trailing_slash=False)
@@ -34,16 +40,6 @@ search_router.register(r"users", UserDocumentView, basename="search-users")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(
-        "v1/grants/<int:pk>/materials/<int:material_id>/",
-        grant_material_relationship,
-        name="grant-associate-material",
-    ),
-    path(
-        "v1/grants/<int:pk>/materials/",
-        list_grant_material_relationships,
-        name="grant-list-materials",
-    ),
     path("v1/", include(router.urls)),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

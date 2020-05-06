@@ -8,7 +8,7 @@ will use PrimaryKeyRelatedFields.
 
 from rest_framework import serializers
 
-from resources_portal.models import Material, Organization, User
+from resources_portal.models import Grant, Material, Organization, User
 
 
 class UserRelationSerializer(serializers.ModelSerializer):
@@ -60,3 +60,22 @@ class MaterialRelationSerializer(serializers.ModelSerializer):
 
     organization = serializers.PrimaryKeyRelatedField(read_only=True)
     contact_user = serializers.PrimaryKeyRelatedField(read_only=True)
+
+
+class GrantRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Grant
+        fields = (
+            "id",
+            "title",
+            "funder_id",
+            "users",
+            "organizations",
+            "materials",
+            "created_at",
+            "updated_at",
+        )
+
+    users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    organizations = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)

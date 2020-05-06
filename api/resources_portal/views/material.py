@@ -1,5 +1,7 @@
 from rest_framework import serializers, viewsets
 
+from rest_framework_extensions.mixins import NestedViewSetMixin
+
 from resources_portal.models import Material
 from resources_portal.views.user import UserSerializer
 
@@ -26,7 +28,7 @@ class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserSerializer()
 
 
-class MaterialViewSet(viewsets.ModelViewSet):
+class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all()
 
     def get_serializer_class(self):

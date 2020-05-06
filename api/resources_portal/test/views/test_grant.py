@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Grant, User
+from resources_portal.models import Grant, Material, User
 from resources_portal.test.factories import (
     GrantFactory,
     LeafGrantFactory,
@@ -84,41 +84,39 @@ class GrantMaterialsTestCase(APITestCase):
         self.grant = GrantFactory()
         self.url = reverse("grant-detail", args=[self.grant.id])
 
-    def test_get_request_returns_a_given_grant(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_get_single_material_not_allowed(self):
+        material = self.grant.materials.first()
+        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 405)
 
     def test_get_request_returns_materials(self):
-        url = reverse("grant-list-materials", args=[self.grant.id])
+        url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.json()), 2)
-
-    def test_cannot_post_to_grant_materials(self):
-        url = reverse("grant-list-materials", args=[self.grant.id])
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.json()["count"], 2)
 
     def test_post_request_associates_a_material(self):
         material = MaterialFactory()
-        url = reverse("grant-associate-material", args=[self.grant.id, material.id])
-        response = self.client.post(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        url = reverse("grants-material-list", args=[self.grant.id])
+        response = self.client.post(url, data=model_to_dict(material))
 
-        self.grant.refresh_from_db()
+        self.assertEqual(response.status_code, 201)
         self.assertIn(material, self.grant.materials.all())
 
     def test_delete_request_disassociates_a_material(self):
         material = self.grant.materials.first()
-        url = reverse("grant-associate-material", args=[self.grant.id, material.id])
+        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, 204)
 
         self.grant.refresh_from_db()
         self.assertNotIn(material, self.grant.materials.all())
+        # Verify that the material was not deleted, just its relationship
+        Material.objects.get(pk=material.id)
 
     def test_cannot_put_a_relationship(self):
         material = MaterialFactory()
-        url = reverse("grant-associate-material", args=[self.grant.id, material.id])
+        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.put(url)
         self.assertEqual(response.status_code, 405)
