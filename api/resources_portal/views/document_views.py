@@ -41,9 +41,10 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
     citation = (serializers.CharField(read_only=True),)
-    needs_shipping_info = serializers.BooleanField(read_only=True)
     embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
+    shipping_requirements = serializers.SerializerMethodField(read_only=True)
+
     organization = serializers.SerializerMethodField(read_only=True)
     mta_attachment = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
@@ -52,6 +53,9 @@ class MaterialDocumentSerializer(serializers.Serializer):
 
     def get_contact_user(self, obj):
         return loads(dumps(obj.contact_user.to_dict()))
+
+    def get_shipping_requirements(self, obj):
+        return loads(dumps(obj.shipping_requirements.to_dict()))
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
@@ -85,9 +89,9 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "citation",
             "embargo_date",
             "contact_user",
-            "needs_shipping_info",
             "imported",
             "import_source",
+            "shipping_requirements",
         )
 
 

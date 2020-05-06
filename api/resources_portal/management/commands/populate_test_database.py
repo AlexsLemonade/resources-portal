@@ -12,6 +12,7 @@ from resources_portal.models import (
     Organization,
     OrganizationInvitation,
     OrganizationUserSetting,
+    ShippingRequirements,
     User,
 )
 
@@ -36,6 +37,12 @@ class Command(BaseCommand):
         # Add users
         users_json = loads(open("./dev_data/users.json").read())
         add_class_to_database(users_json["resources_portal_user"], User)
+
+        # add shipping requirements
+        shipping_requirements_json = loads(open("./dev_data/shipping_requirements.json").read())
+        add_class_to_database(
+            shipping_requirements_json["shipping_requirements"], ShippingRequirements
+        )
 
         # add organizations
         organizations_json = loads(open("./dev_data/organizations.json").read())
