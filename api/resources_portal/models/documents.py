@@ -55,9 +55,8 @@ class MaterialDocument(Document):
     shipping_requirements = fields.ObjectField(
         properties={
             "needs_shipping_address": fields.BooleanField(),
-            "sharer_pays": fields.BooleanField(),
-            "accepts_ups_code": fields.BooleanField(),
-            "accepts_fedex_code": fields.BooleanField(),
+            "needs_payment": fields.BooleanField(),
+            "accepts_shipping_code": fields.BooleanField(),
             "accepts_reimbursement": fields.BooleanField(),
             "accepts_other_payment_methods": fields.BooleanField(),
             "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),

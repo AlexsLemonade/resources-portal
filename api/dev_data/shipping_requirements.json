@@ -3,9 +3,8 @@
       {
           "id": "1",
           "needs_shipping_address": true,
-          "sharer_pays": true,
-          "accepts_ups_code": true,
-          "accepts_fedex_code": true,
+          "needs_payment": true,
+          "accepts_shipping_code": true,
           "accepts_reimbursement": false,
           "accepts_other_payment_methods": false,
           "restrictions": "Only ships within the greater Hanover area.",
@@ -15,9 +14,8 @@
       {
           "id": "2",
           "needs_shipping_address": true,
-          "sharer_pays": false,
-          "accepts_ups_code": false,
-          "accepts_fedex_code": false,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
           "accepts_reimbursement": false,
           "accepts_other_payment_methods": false,
           "restrictions": "None. Free yourself!",
