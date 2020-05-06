@@ -180,9 +180,9 @@ export const RequestRequirements = ({ resource }) => {
 
   const requirements = []
   const MTA = 'Material Transfer Agreement'
-  if (resource.needs_abstract) requirements.push('Abstract')
-  if (resource.needs_irb) requirements.push('IRB')
-  if (resource.needs_mta) requirements.push(MTA)
+  // if (resource.needs_abstract) requirements.push('Abstract')
+  // if (resource.needs_irb) requirements.push('IRB')
+  if (Object.keys(resource.mta_attachment).length) requirements.push(MTA)
   if (Object.keys(resource.shipping_requirements).length)
     requirements.push('Shipping Information')
 
@@ -201,7 +201,7 @@ export const RequestRequirements = ({ resource }) => {
             req === MTA ? (
               <Anchor
                 key={req}
-                href={resource.mta_s3_url}
+                href={resource.mta_attachment.download_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 label={req}
