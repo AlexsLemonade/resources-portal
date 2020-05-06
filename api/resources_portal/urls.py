@@ -10,6 +10,7 @@ from resources_portal.views import (
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
+    OrganizationInvitationViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
     UserDocumentView,
@@ -21,6 +22,7 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
+router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
@@ -35,5 +37,5 @@ urlpatterns = [
     # the 'api-root' from django rest-frameworks default router
     # http://www.django-rest-framework.org/api-guide/routers/#defaultrouter
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
-    path("search/", include(search_router.urls)),
+    path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

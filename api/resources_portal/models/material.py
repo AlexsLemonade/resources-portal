@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
 from resources_portal.models.attachment import Attachment
+from resources_portal.models.shipping_requirements import ShippingRequirements
 from resources_portal.models.user import User
 
 
@@ -54,7 +55,9 @@ class Material(models.Model):
     needs_irb = models.BooleanField(default=False, null=True)
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
-    needs_shipping_info = models.BooleanField(default=False, null=False)
+    shipping_requirements = models.ForeignKey(
+        ShippingRequirements, blank=False, null=True, on_delete=models.deletion.SET_NULL
+    )
 
     import_source = models.CharField(max_length=32, null=True, choices=IMPORTED_CHOICES)
 
