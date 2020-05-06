@@ -33,8 +33,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Melanoma Reduction Plasmid',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:35.567509+00:00',
-      updated_at: '2020-05-05T21:47:35.567527+00:00',
+      created_at: '2020-05-06T20:45:44.916153+00:00',
+      updated_at: '2020-05-06T20:45:44.916180+00:00',
       organism: ['Danio rerio', 'Mus musculus'],
       has_publication: true,
       has_pre_print: false,
@@ -44,13 +44,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Expression Analysis of Zebrafish Melanoma',
       pre_print_doi: '',
       pre_print_title: '',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
@@ -59,8 +68,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         purpose: 'Reduces melanoma growth rate',
@@ -94,8 +103,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Allele Extraction Protocol',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:35.679071+00:00',
-      updated_at: '2020-05-05T21:47:35.679131+00:00',
+      created_at: '2020-05-06T20:45:44.971224+00:00',
+      updated_at: '2020-05-06T20:45:44.971251+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: false,
@@ -105,13 +114,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Extraction of t-type alleles from zebrafish samples',
       pre_print_doi: '',
       pre_print_title: '',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
@@ -120,8 +138,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         description:
@@ -137,8 +155,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Zebrafish Model Organism',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:35.790154+00:00',
-      updated_at: '2020-05-05T21:47:35.790179+00:00',
+      created_at: '2020-05-06T20:45:45.007121+00:00',
+      updated_at: '2020-05-06T20:45:45.007146+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: false,
@@ -148,13 +166,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: '',
       pre_print_doi: '',
       pre_print_title: '',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
@@ -163,8 +190,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         genotype: 'TTdDsS',
@@ -185,8 +212,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Mouse Model Organism',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:35.907636+00:00',
-      updated_at: '2020-05-05T21:47:35.907654+00:00',
+      created_at: '2020-05-06T20:45:45.044919+00:00',
+      updated_at: '2020-05-06T20:45:45.044946+00:00',
       organism: ['Mus musculus'],
       has_publication: true,
       has_pre_print: true,
@@ -197,13 +224,22 @@ export const fakeSearchMaterialsResponse = {
         'Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Initial Research on Zebrafish Morphology',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
@@ -212,8 +248,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         genotype: 'TTdDsS',
@@ -234,8 +270,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Stone Tablet (Other)',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.013091+00:00',
-      updated_at: '2020-05-05T21:47:36.013110+00:00',
+      created_at: '2020-05-06T20:45:45.083242+00:00',
+      updated_at: '2020-05-06T20:45:45.083266+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: true,
@@ -245,7 +281,6 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'The Ten Commandments',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'The Six and a Half Commandments',
-      needs_shipping_info: false,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
@@ -253,6 +288,7 @@ export const fakeSearchMaterialsResponse = {
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
       },
+      shipping_requirements: {},
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
         filename: 'PrimaryLabMTA.pdf',
@@ -260,8 +296,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         title: 'The Ten Commandments',
@@ -278,8 +314,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Zebrafish Cell Line',
       url: '',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.119259+00:00',
-      updated_at: '2020-05-05T21:47:36.119292+00:00',
+      created_at: '2020-05-06T20:45:45.117405+00:00',
+      updated_at: '2020-05-06T20:45:45.117432+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: false,
@@ -289,7 +325,6 @@ export const fakeSearchMaterialsResponse = {
       publication_title: '',
       pre_print_doi: '',
       pre_print_title: '',
-      needs_shipping_info: false,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Secundus',
@@ -297,6 +332,7 @@ export const fakeSearchMaterialsResponse = {
         published_name: 'Dr. Secundus Profarius',
         email: 'secprof@harvard.edu'
       },
+      shipping_requirements: {},
       organization: { name: 'SecondaryProfOrg', id: 4 },
       mta_attachment: {
         filename: 'PrimaryLabMTA.pdf',
@@ -304,8 +340,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         age: 'Four Months',
@@ -336,8 +372,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Zebrafish Dataset',
       url: '',
       pubmed_id: '',
-      created_at: '2020-05-05T21:47:36.196861+00:00',
-      updated_at: '2020-05-05T21:47:36.196879+00:00',
+      created_at: '2020-05-06T20:45:45.157309+00:00',
+      updated_at: '2020-05-06T20:45:45.157333+00:00',
       organism: ['Danio rerio'],
       has_publication: false,
       has_pre_print: true,
@@ -347,13 +383,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: '',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Proposal for Data Collection from Zebrafish',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {
@@ -362,8 +407,8 @@ export const fakeSearchMaterialsResponse = {
         s3_bucket: 'bucket-name',
         s3_key: 'keyname',
         download_url: 'https://s3.amazonaws.com/bucket-name/keyname',
-        created_at: '2020-05-05T21:47:35.529283+00:00',
-        updated_at: '2020-05-05T21:47:35.529315+00:00'
+        created_at: '2020-05-06T20:45:44.887972+00:00',
+        updated_at: '2020-05-06T20:45:44.888002+00:00'
       },
       additional_metadata: {
         title: 'Zebrafish Analyis',
@@ -383,8 +428,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Zebrafish PDX',
       url: '',
       pubmed_id: '',
-      created_at: '2020-05-05T21:47:36.288952+00:00',
-      updated_at: '2020-05-05T21:47:36.288977+00:00',
+      created_at: '2020-05-06T20:45:45.189997+00:00',
+      updated_at: '2020-05-06T20:45:45.190020+00:00',
       organism: ['Danio rerio', 'Mus musculus'],
       has_publication: false,
       has_pre_print: true,
@@ -394,13 +439,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Grafting to Zebrafish',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Preliminary research on Grafting to Zebrafish',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -459,8 +513,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Imported GEO Dataset',
       url: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE31712',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.372141+00:00',
-      updated_at: '2020-05-05T21:47:36.372164+00:00',
+      created_at: '2020-05-06T20:45:45.220966+00:00',
+      updated_at: '2020-05-06T20:45:45.220992+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: true,
@@ -470,7 +524,6 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Data collected from genetically modified zebrafish',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Proposal for Data Collection from Zebrafish',
-      needs_shipping_info: false,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
@@ -478,6 +531,7 @@ export const fakeSearchMaterialsResponse = {
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
       },
+      shipping_requirements: {},
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
       additional_metadata: {
@@ -498,8 +552,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Imported SRA Dataset',
       url: 'https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE37165',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.473145+00:00',
-      updated_at: '2020-05-05T21:47:36.473164+00:00',
+      created_at: '2020-05-06T20:45:45.249438+00:00',
+      updated_at: '2020-05-06T20:45:45.249472+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: true,
@@ -509,13 +563,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Data collected from genetically modified zebrafish',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Proposal for Data Collection from Zebrafish',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -537,8 +600,8 @@ export const fakeSearchMaterialsResponse = {
       url:
         'https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs000328.v2.p1',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.599839+00:00',
-      updated_at: '2020-05-05T21:47:36.599914+00:00',
+      created_at: '2020-05-06T20:45:45.294699+00:00',
+      updated_at: '2020-05-06T20:45:45.294726+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: true,
@@ -548,13 +611,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Data collected from genetically modified zebrafish',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Proposal for Data Collection from Zebrafish',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -575,8 +647,8 @@ export const fakeSearchMaterialsResponse = {
       url:
         'https://www.protocols.io/view/labyrinthulomycete-dna-extraction-protocol-n83dhyn',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.754842+00:00',
-      updated_at: '2020-05-05T21:47:36.754870+00:00',
+      created_at: '2020-05-06T20:45:45.345977+00:00',
+      updated_at: '2020-05-06T20:45:45.346004+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: true,
@@ -586,13 +658,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Extraction of t-type alleles from zebrafish samples',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Initial Research on Zebrafish Extraction',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -610,8 +691,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Imported AddGene Melanoma Reduction Plasmid',
       url: 'https://www.addgene.org/53246/',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.827290+00:00',
-      updated_at: '2020-05-05T21:47:36.827309+00:00',
+      created_at: '2020-05-06T20:45:45.387183+00:00',
+      updated_at: '2020-05-06T20:45:45.387210+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: true,
@@ -621,13 +702,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Imported Plasmid',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Initial Research on Zebrafish Plasmids',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -648,8 +738,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Jackson Labs Imported Mouse Model Organism',
       url: 'https://www.jax.org/strain/006933',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.921001+00:00',
-      updated_at: '2020-05-05T21:47:36.921069+00:00',
+      created_at: '2020-05-06T20:45:45.422737+00:00',
+      updated_at: '2020-05-06T20:45:45.422763+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: true,
@@ -660,13 +750,22 @@ export const fakeSearchMaterialsResponse = {
         'Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Initial Research on Zebrafish Morphology',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -684,8 +783,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'ATCC Imported Zebrafish Cell Line',
       url: 'https://www.atcc.org/products/all/CCL-185.aspx#generalinformation',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:36.976340+00:00',
-      updated_at: '2020-05-05T21:47:36.976358+00:00',
+      created_at: '2020-05-06T20:45:45.453015+00:00',
+      updated_at: '2020-05-06T20:45:45.453041+00:00',
       organism: ['Danio rerio'],
       has_publication: true,
       has_pre_print: true,
@@ -695,13 +794,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'Cell Line from Zebrafish Sample',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Preliminary Research',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Secundus',
         last_name: 'Profarius',
         published_name: 'Dr. Secundus Profarius',
         email: 'secprof@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: false,
+        accepts_shipping_code: false,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'None. Free yourself!',
+        created_at: '2020-05-06T20:45:44.672841+00:00',
+        updated_at: '2020-05-06T20:45:44.672871+00:00'
       },
       organization: { name: 'SecondaryProfOrg', id: 4 },
       mta_attachment: {},
@@ -724,8 +832,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'ZIRC Imported Zebrafish Model Organism',
       url: 'http://zfin.org/ZDB-GENO-100413-1',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:37.048611+00:00',
-      updated_at: '2020-05-05T21:47:37.048628+00:00',
+      created_at: '2020-05-06T20:45:45.489724+00:00',
+      updated_at: '2020-05-06T20:45:45.489745+00:00',
       organism: ['Mus musculus'],
       has_publication: true,
       has_pre_print: true,
@@ -736,13 +844,22 @@ export const fakeSearchMaterialsResponse = {
         'Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'Initial Research on Zebrafish Morphology',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Postsworth',
         last_name: 'Doktor',
         published_name: 'Dr. Postsworth Doktor',
         email: 'pdoc@harvard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
@@ -762,8 +879,8 @@ export const fakeSearchMaterialsResponse = {
       title: 'Imported Stone Tablet (Other)',
       url: 'https://www.ncbi.nlm.nih.gov/pubmed/32223680',
       pubmed_id: '32223680',
-      created_at: '2020-05-05T21:47:37.108993+00:00',
-      updated_at: '2020-05-05T21:47:37.109009+00:00',
+      created_at: '2020-05-06T20:45:45.519804+00:00',
+      updated_at: '2020-05-06T20:45:45.519829+00:00',
       organism: [],
       has_publication: true,
       has_pre_print: true,
@@ -773,13 +890,22 @@ export const fakeSearchMaterialsResponse = {
       publication_title: 'The Ten Commandments',
       pre_print_doi: '10.1109/5.771073',
       pre_print_title: 'The Six and a Half Commandments',
-      needs_shipping_info: true,
       embargo_date: '2020-01-30',
       contact_user: {
         first_name: 'Prim',
         last_name: 'Proffer',
         published_name: 'Dr. Prim Proffer',
         email: 'pprof@havard.edu'
+      },
+      shipping_requirements: {
+        needs_shipping_address: true,
+        needs_payment: true,
+        accepts_shipping_code: true,
+        accepts_reimbursement: false,
+        accepts_other_payment_methods: false,
+        restrictions: 'Only ships within the greater Hanover area.',
+        created_at: '2020-05-06T20:45:44.666439+00:00',
+        updated_at: '2020-05-06T20:45:44.666480+00:00'
       },
       organization: { name: 'PrimaryLab', id: 1 },
       mta_attachment: {},
