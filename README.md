@@ -15,7 +15,7 @@ Resources Portal. Check out the project's [documentation](http://alexslemonade.g
 Start the dev server for local development:
 
 ```bash
-cd api && docker-compose up
+docker-compose up
 ```
 
 See the [README for the API](api/README.md) for more information and commands.
