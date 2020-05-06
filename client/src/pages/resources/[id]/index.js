@@ -108,8 +108,8 @@ const PublicationInformation = ({ resource }) => (
 )
 
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const resource = fakeSearchMaterialsResponse.find(
-    (material) => material.id === query.id
+  const resource = fakeSearchMaterialsResponse.results.find(
+    (material) => material.id === parseInt(query.id, 10)
   )
   return {
     resource
