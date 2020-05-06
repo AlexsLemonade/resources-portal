@@ -12,3 +12,6 @@ class Local(Common):
     EMAIL_HOST = "localhost"
     EMAIL_PORT = 1025
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+    ELASTICSEARCH_HOST = "elasticsearch"
+    ELASTICSEARCH_PORT = 9200

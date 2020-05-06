@@ -4,6 +4,7 @@
       "username": "PrimaryProf",
       "first_name": "Prim",
       "last_name": "Proffer",
+      "published_name": "Dr. Prim Proffer",
       "password": "App1eB0ttomGene$",
       "last_login": "2020-02-19 17:15:25-07",
       "is_superuser": "False",
@@ -11,12 +12,15 @@
       "is_staff": "False",
       "is_active": "True",
       "date_joined": "2020-01-22 19:10:25-07",
-      "id": "10000000-0f5a-4165-b518-b2386a753d6f"
+      "id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "created_at": "2020-01-01 16:15:25-07",
+      "updated_at": "2020-01-01 16:15:25-07"
     },
     {
       "username": "PostDoc",
       "first_name": "Postsworth",
       "last_name": "Doktor",
+      "published_name": "Dr. Postsworth Doktor",
       "password": "Malc0mInPlasmiddle!",
       "last_login": "2020-03-12 04:15:25-07",
       "is_superuser": "False",
@@ -24,12 +28,15 @@
       "is_staff": "False",
       "is_active": "True",
       "date_joined": "2020-01-01 16:15:25-07",
-      "id": "20000000-a55d-42b7-b53e-056956e18b8c"
+      "id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "created_at": "2020-01-01 16:15:25-07",
+      "updated_at": "2020-01-01 16:15:25-07"
     },
     {
       "username": "SecondaryProf",
       "first_name": "Secundus",
       "last_name": "Profarius",
+      "published_name": "Dr. Secundus Profarius",
       "password": "PDXG0nG!veItToYa",
       "last_login": "2020-03-31 09:11:25-07",
       "is_superuser": "False",
@@ -37,7 +44,9 @@
       "is_staff": "False",
       "is_active": "True",
       "date_joined": "2020-03-26 04:12:25-07",
-      "id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+      "id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "created_at": "2020-01-01 16:15:25-07",
+      "updated_at": "2020-01-01 16:15:25-07"
     }
   ],
   "resources_portal_user_groups": [

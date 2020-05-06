@@ -1,3 +1,8 @@
+from resources_portal.views.document_views import (
+    MaterialDocumentView,
+    OrganizationDocumentView,
+    UserDocumentView,
+)
 from resources_portal.views.grant import (
     GrantViewSet,
     grant_material_relationship,

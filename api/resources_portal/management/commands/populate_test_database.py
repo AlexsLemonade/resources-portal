@@ -1,13 +1,16 @@
 from json import loads
 
 from django.core.management.base import BaseCommand
+from django.utils import dateparse
 
 from resources_portal.models import (
+    Attachment,
     Grant,
     Material,
     MaterialRequest,
     MaterialShareEvent,
     Organization,
+    OrganizationInvitation,
     OrganizationUserSetting,
     User,
 )
@@ -18,7 +21,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         def add_class_to_database(class_json, Class):
+            print(f"Inserting {Class.__name__} into database...")
             for element in class_json:
+                if "updated_at" in element:
+                    element["updated_at"] = dateparse.parse_datetime(element["updated_at"])
+                if "created_at" in element:
+                    element["created_at"] = dateparse.parse_datetime(element["created_at"])
+                if "date_joined" in element:
+                    element["date_joined"] = dateparse.parse_datetime(element["date_joined"])
+
                 element_in_class = Class(**element)
                 element_in_class.save()
 
@@ -30,6 +41,11 @@ class Command(BaseCommand):
         organizations_json = loads(open("./dev_data/organizations.json").read())
         add_class_to_database(organizations_json["organizations"], Organization)
 
+        # add attachments
+        attachments_json = loads(open("./dev_data/attachments.json").read())
+        add_class_to_database(attachments_json["attachments"], Attachment)
+
+        # add materials
         materials_json = loads(open("./dev_data/materials.json").read())
         add_class_to_database(materials_json["materials"], Material)
 
@@ -45,6 +61,11 @@ class Command(BaseCommand):
 
         # add requests
         add_class_to_database(materials_json["materials_requests"], MaterialRequest)
+
+        # add organization invitations
+        add_class_to_database(
+            organizations_json["organization_invitations"], OrganizationInvitation
+        )
 
         # add relation of organizations and members
         for i in organizations_json["organizations_members"]:

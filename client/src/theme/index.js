@@ -1,6 +1,73 @@
+import React from 'react'
 import { normalizeColor } from 'grommet/utils'
+import { Blank } from 'grommet-icons'
+
+const applyAll = (...rules) => rules.concat()
+const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
+
+const DownArrow = (props) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <Blank {...props}>
+    <polygon points="4,8 20,8 12,16" stroke="#000" fill="#000" />
+  </Blank>
+)
 
 const theme = {
+  anchor: {
+    fontWeight: 400,
+    extend: (props) => applyWhen(props.bold, 'font-weight: 600')
+  },
+  textInput: {
+    extend: (props) => applyWhen(props.focus, 'box-shadow: none;')
+  },
+  select: {
+    icons: {
+      margin: 'none',
+      color: 'black-tint-40',
+      down: DownArrow
+    },
+    control: {
+      extend: (props) =>
+        applyAll(
+          applyWhen(
+            props.open && !props.plain,
+            `background-color: ${normalizeColor('black-tint-80', props.theme)};`
+          ),
+          applyWhen(
+            props.plain,
+            `
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          ),
+          applyWhen(
+            !props.disabled && !props.plain,
+            `
+            &:hover {
+              background-color: ${normalizeColor('black-tint-80', props.theme)};
+            }
+
+            input {
+              border-top-right-radius: 0;
+              border-bottom-right-radius: 0;
+              background-color:  ${normalizeColor('white', props.theme)};
+            }
+            `
+          ),
+          applyWhen(
+            props.disabled,
+            `
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            background-color: ${normalizeColor('black-tint-95', props.theme)};
+            `
+          )
+        )
+    },
+    options: {
+      text: {
+        color: 'black'
+      }
+    }
+  },
   button: {
     border: {
       radius: '4px',
@@ -25,64 +92,110 @@ const theme = {
       opacity: 1
     },
     extend: (props) =>
-      !props.role &&
-      !props.plain &&
-      `
-        ${
-          !props.primary &&
-          !props.disabled &&
+      applyAll(
+        applyWhen(
+          !props.plain && !props.role,
           `
-          ;
-          color: ${normalizeColor('brand', props.theme)};
-          &:hover, &:active {
-            box-shadow: none;
-            background-color: ${normalizeColor('turteal', props.theme)};
+          ${applyWhen(
+            !props.primary && !props.disabled,
+            `
+            color: ${normalizeColor('brand', props.theme)};
+            &:hover, &:active {
+              box-shadow: none;
+              background-color: ${normalizeColor('turteal', props.theme)};
+              color: ${normalizeColor('white', props.theme)};
+            }
+            &:active {
+              box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+            }
+          `
+          )}
+          ${applyWhen(
+            !props.primary && props.disabled,
+            `
+            color: ${normalizeColor('black-tint-60', props.theme)};
+            background-color: ${normalizeColor('white', props.theme)};
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            `
+          )}
+          ${applyWhen(
+            props.primary && !props.disabled,
+            `
             color: ${normalizeColor('white', props.theme)};
-          }
-          &:active {
-            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
-          }
-        `
-        }
-        ${
-          !props.primary &&
-          props.disabled &&
+            &:hover, &:active {
+              box-shadow: none;
+              background-color: ${normalizeColor(
+                'turteal-shade-20',
+                props.theme
+              )};
+            }
+            &:active {
+              box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
+            }
+           `
+          )}
+          ${applyWhen(
+            props.primary && props.disabled,
+            `
+            color: ${normalizeColor('white', props.theme)};
+            background-color: ${normalizeColor('black-tint-60', props.theme)};
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+            `
+          )}
           `
-          ;
+        ),
+        applyWhen(
+          props.plain && props.role === 'menuitem',
+          `
+          background-color: transparent;
+
+          > div {
+            padding: 4px 8px;
+          }
+
+          ${applyWhen(
+            !props.selected,
+            `
+            &:hover {
+              background-color: ${normalizeColor('black-tint-90', props.theme)};
+
+              span {
+                color: ${normalizeColor('brand', props.theme)};
+              }
+            }
+            `
+          )}
+          ${applyWhen(
+            props.selected || props.active,
+            `
+            background-color: ${normalizeColor('brand', props.theme)};
+
+            span {
+              color: ${normalizeColor('white', props.theme)};
+            }
+            `
+          )}
+          `
+        ),
+        applyWhen(
+          props.plain && !props.role && !props.colorValue,
+          `
+          color: ${normalizeColor('brand', props.theme)};
+
+          input {
+            color: ${normalizeColor('black', props.theme)};
+          }
+
+          `
+        ),
+        applyWhen(
+          props.plain && !props.role && props.disabled,
+          `
           color: ${normalizeColor('black-tint-60', props.theme)};
-          background-color: ${normalizeColor('white', props.theme)};
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-        `
-        }
-        ${
-          props.primary &&
-          !props.disabled &&
+
           `
-          ;
-          color: ${normalizeColor('white', props.theme)};
-          &:hover, &:active {
-            box-shadow: none;
-            background-color: ${normalizeColor(
-              'turteal-shade-20',
-              props.theme
-            )};
-          }
-          &:active {
-            box-shadow: 0 3px 4px 0 rgba(0,0,0,0.5);
-          }
-        `
-        }
-        ${
-          props.primary &&
-          props.disabled &&
-          `
-          ;
-          color: ${normalizeColor('white', props.theme)};
-          background-color: ${normalizeColor('black-tint-60', props.theme)};
-          border-color: ${normalizeColor('black-tint-60', props.theme)};
-        `
-        }
-      `
+        )
+      )
   },
   tabs: {
     gap: '91px',
@@ -164,6 +277,7 @@ const theme = {
   },
   chart: {},
   checkBox: {
+    color: 'brand',
     check: {
       radius: '4px'
     },
@@ -171,6 +285,21 @@ const theme = {
     toggle: {
       radius: '16px',
       size: '32px'
+    },
+    border: {
+      width: '1px',
+      color: {
+        dark: 'black-tint-80',
+        light: 'black-tint-80'
+      }
+    },
+    hover: {
+      border: {
+        color: {
+          dark: 'black-tint-60',
+          light: 'black-tint-60'
+        }
+      }
     }
   },
   clock: {
@@ -229,10 +358,9 @@ const theme = {
   diagram: {
     line: {}
   },
-  email: 'd.mejia@alexslemonade.org',
   formField: {
     border: {
-      color: 'active-background',
+      color: 'black-tint-60',
       error: {
         color: {
           dark: 'white',
@@ -275,14 +403,12 @@ const theme = {
     },
     label: {
       margin: {
-        horizontal: 'none',
+        horizontal: 'xsmall',
         vertical: 'xsmall'
       },
-      size: 'small'
+      size: 'medium'
     },
-    margin: {
-      bottom: 'small'
-    },
+    margin: 'medium',
     round: '4px'
   },
   global: {
@@ -376,6 +502,7 @@ const theme = {
       'black-tint-40': '#666666',
       'black-tint-60': '#999999',
       'black-tint-80': '#CCCCCC',
+      'black-tint-90': '#E5E5E5',
       'black-tint-95': '#F2F2F2',
       white: '#FDFDFD',
       info: '#002F6C', // alexs-navy-base
@@ -436,7 +563,8 @@ const theme = {
       'text-xweak': {
         dark: '#999999',
         light: '#666666'
-      }
+      },
+      focus: 'brand'
     },
     control: {
       border: {
@@ -446,6 +574,13 @@ const theme = {
     drop: {
       border: {
         radius: '4px'
+      },
+      extend: (props) => `
+        border: 1px solid ${normalizeColor('black-tint-60', props.theme)};
+        margin-top: 4px;
+      `,
+      active: {
+        background: 'red'
       }
     },
     edgeSize: {
@@ -455,9 +590,15 @@ const theme = {
       none: '0px',
       responsiveBreakpoint: 'small',
       small: '8px',
-      xlarge: '64px',
+      xlarge: '48px',
+      gutter: '40px',
       xsmall: '4px',
       xxsmall: '2px'
+    },
+    elevation: {
+      light: {
+        medium: '0 2px 18px 1px rgba(0, 0, 0, 0.1)'
+      }
     },
     font: {
       family: 'Lato',
@@ -471,7 +612,7 @@ const theme = {
     },
     input: {
       padding: '8px',
-      weight: 600
+      weight: 400
     },
     selected: {
       background: 'selected-background',
@@ -480,7 +621,7 @@ const theme = {
     size: {
       full: '100%',
       large: '512px',
-      medium: '256px',
+      medium: '224px',
       small: '128px',
       xlarge: `${8 * 130}px`,
       xsmall: '64px',
@@ -491,139 +632,141 @@ const theme = {
   },
   heading: {
     font: {
-      family: 'Arvo',
+      family: 'Lato',
       weight: 'bold'
     },
+    extend: (props) =>
+      props.serif ? `font-family: 'Arvo'; font-weight: 400` : null,
     level: {
       '1': {
         large: {
           height: '59px',
-          maxWidth: '875px',
+          maxWidth: null,
           size: '55px'
         },
         medium: {
-          height: '37px',
-          maxWidth: '533px',
-          size: '33px'
+          height: 1.5,
+          maxWidth: null,
+          size: '67px'
         },
         small: {
           height: '27px',
-          maxWidth: '363px',
+          maxWidth: null,
           size: '23px'
         },
         xlarge: {
           height: '80px',
-          maxWidth: '1216px',
+          maxWidth: null,
           size: '76px'
         }
       },
       '2': {
         large: {
           height: '40px',
-          maxWidth: '576px',
+          maxWidth: null,
           size: '36px'
         },
         medium: {
-          height: '32px',
-          maxWidth: '448px',
-          size: '28px'
+          height: 1.5,
+          maxWidth: null,
+          size: '50px'
         },
         small: {
           height: '24px',
-          maxWidth: '320px',
+          maxWidth: null,
           size: '20px'
         },
         xlarge: {
           height: '48px',
-          maxWidth: '704px',
+          maxWidth: null,
           size: '44px'
         }
       },
       '3': {
         large: {
           height: '32px',
-          maxWidth: '448px',
+          maxWidth: null,
           size: '28px'
         },
         medium: {
-          height: '27px',
-          maxWidth: '363px',
-          size: '23px'
+          height: 1.5,
+          maxWidth: null,
+          size: '38px'
         },
         small: {
           height: '21px',
-          maxWidth: '277px',
+          maxWidth: null,
           size: '17px'
         },
         xlarge: {
           height: '37px',
-          maxWidth: '533px',
+          maxWidth: null,
           size: '33px'
         }
       },
       '4': {
         large: {
           height: '24px',
-          maxWidth: '320px',
+          maxWidth: null,
           size: '20px'
         },
         medium: {
-          height: '21px',
-          maxWidth: '277px',
-          size: '17px'
+          height: 1.5,
+          maxWidth: null,
+          size: '28px'
         },
         small: {
           height: '19px',
-          maxWidth: '235px',
+          maxWidth: null,
           size: '15px'
         },
         xlarge: {
           height: '27px',
-          maxWidth: '363px',
+          maxWidth: null,
           size: '23px'
         }
       },
       '5': {
         large: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         },
         medium: {
-          height: '15px',
-          maxWidth: '171px',
-          size: '11px'
+          height: 1.524,
+          maxWidth: null,
+          size: '21px'
         },
         small: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         },
         xlarge: {
           height: '15px',
-          maxWidth: '171px',
+          maxWidth: null,
           size: '11px'
         }
       },
       '6': {
         large: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         medium: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         small: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         },
         xlarge: {
           height: '13px',
-          maxWidth: '149px',
+          maxWidth: null,
           size: '9px'
         }
       }
@@ -640,37 +783,54 @@ const theme = {
   paragraph: {
     large: {
       height: '19px',
-      maxWidth: '235px',
+      maxWidth: undefined,
       size: '15px'
     },
     medium: {
       height: '24px',
-      maxWidth: '192px',
+      maxWidth: undefined,
       size: '16px'
     },
     small: {
       height: '16px',
-      maxWidth: '171px',
+      maxWidth: undefined,
       size: '12px'
     },
     xlarge: {
       height: '21px',
-      maxWidth: '277px',
+      maxWidth: undefined,
       size: '17px'
     },
     xxlarge: {
       height: '27px',
-      maxWidth: '363px',
+      maxWidth: undefined,
       size: '23px'
     }
   },
   radioButton: {
-    size: '16px'
+    color: 'black-tint-80',
+    size: '16px',
+    border: {
+      width: '1px',
+      color: {
+        dark: 'black-tint-80',
+        light: 'black-tint-80'
+      }
+    },
+    hover: {
+      border: {
+        color: {
+          dark: 'black-tint-60',
+          light: 'black-tint-60'
+        }
+      }
+    }
   },
   rounding: 4,
   scale: 1,
   spacing: 16,
   text: {
+    extend: (props) => applyWhen(props.italic, 'font-style: italic'),
     large: {
       height: '19px',
       maxWidth: '235px',

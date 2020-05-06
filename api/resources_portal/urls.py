@@ -8,9 +8,12 @@ from rest_framework.routers import DefaultRouter
 
 from resources_portal.views import (
     GrantViewSet,
+    MaterialDocumentView,
     MaterialViewSet,
+    OrganizationDocumentView,
     OrganizationViewSet,
     UserCreateViewSet,
+    UserDocumentView,
     UserViewSet,
     grant_material_relationship,
     list_grant_material_relationships,
@@ -23,6 +26,11 @@ router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
 router.register(r"grants", GrantViewSet)
 
+
+search_router = DefaultRouter(trailing_slash=False)
+search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
+search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
+search_router.register(r"users", UserDocumentView, basename="search-users")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -42,4 +50,5 @@ urlpatterns = [
     # the 'api-root' from django rest-frameworks default router
     # http://www.django-rest-framework.org/api-guide/routers/#defaultrouter
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
+    path("search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

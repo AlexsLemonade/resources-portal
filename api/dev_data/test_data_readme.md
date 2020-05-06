@@ -1,6 +1,8 @@
 The test data can be imported with the following command:
 
-```docker-compose run --rm api python3 manage.py populate_test_database```
+```
+docker-compose run --rm api python3 manage.py populate_test_database
+```
 
 The test data describes the following situation:
 
@@ -20,7 +22,7 @@ There are two grants:
 - A grant for tumor growth research, co-owned by PrimaryProf and SecondaryProf
 
 There are seventeen materials:
-	Eight listed materials:
+	Eight listed materials (four of which require an MTA):
 	Four contributed by PrimaryProf:
 	- A Plasmid
 	- A Protocol
@@ -50,3 +52,9 @@ The following notifcation settings are in place:
 - SecondaryProf: all notifcations on for SecondaryProfOrg
 
 The Protocol was requested by SecondaryProf and transferred to him by PostDoc.
+
+There are four orgainzation invitations:
+- A pending request from PrimProf to join SecondaryProfOrg, managed by SecProf
+- A accepted request for PostDoc to join PrimaryLab, managed by PrimProf
+- A rejected request for SecProf to join PrimaryLab, managed by PrimProf
+- A invalid request for SecProf to join PrimaryLab, managed by PostDoc. This would have become invalid because PostDoc lost permissions to invite/approve requests to join the organizations

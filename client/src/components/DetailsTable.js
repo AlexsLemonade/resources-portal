@@ -9,7 +9,10 @@ import {
 } from 'grommet'
 import styled from 'styled-components'
 
-function DetailsTable({ data, className }) {
+let DetailsTable = ({ data, className }) => {
+  const handleArray = (value) =>
+    Array.isArray(value) ? value.join(', ') : value
+
   return (
     <Table className={className}>
       <TableHeader>
@@ -25,7 +28,9 @@ function DetailsTable({ data, className }) {
               <Text weight="bold">{datum.label}</Text>
             </TableCell>
             <TableCell pad="medium" align="left">
-              <Text>{datum.value}</Text>
+              <Text italic={!datum.value}>
+                {datum.value ? handleArray(datum.value) : 'Not specified'}
+              </Text>
             </TableCell>
           </TableRow>
         ))}

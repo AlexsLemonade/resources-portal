@@ -1,13 +1,22 @@
 import React from 'react'
+
+// import resources
+import CellLine from './CellLine'
+import Plasmid from './Plasmid'
+import Protocol from './Protocol'
 import Dataset from './Dataset'
+import ModelOrganism from './ModelOrganism'
+import Pdx from './Pdx'
+import Other from './Other'
 
 export const Mappings = {
-  CELL_LINE: null,
-  PLASMID: null,
-  PROTOCOL: null,
+  CELL_LINE: CellLine,
+  PLASMID: Plasmid,
+  PROTOCOL: Protocol,
   DATASET: Dataset,
-  MOUSE_MODEL: null,
-  ZEBRAFISH_MODEL: null
+  MODEL_ORGANISM: ModelOrganism,
+  PDX: Pdx,
+  OTHER: Other
 }
 
 function findResourceComponent(category) {
