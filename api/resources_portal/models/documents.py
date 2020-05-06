@@ -54,6 +54,19 @@ class MaterialDocument(Document):
         properties={"name": fields.TextField(), "id": fields.IntegerField()}
     )
 
+    shipping_requirements = fields.ObjectField(
+        properties={
+            "needs_shipping_address": fields.BooleanField(),
+            "needs_payment": fields.BooleanField(),
+            "accepts_shipping_code": fields.BooleanField(),
+            "accepts_reimbursement": fields.BooleanField(),
+            "accepts_other_payment_methods": fields.BooleanField(),
+            "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "created_at": fields.DateField(),
+            "updated_at": fields.DateField(),
+        }
+    )
+
     mta_attachment = fields.ObjectField(
         properties={
             "filename": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
@@ -76,7 +89,6 @@ class MaterialDocument(Document):
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
-    needs_shipping_info = fields.BooleanField()
     pubmed_id = fields.TextField()
     created_at = fields.DateField()
     updated_at = fields.DateField()
