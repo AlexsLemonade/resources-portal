@@ -10,6 +10,7 @@ from resources_portal.views import (
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
+    OrganizationInvitationViewSet,
     OrganizationViewSet,
     UserCreateViewSet,
     UserDocumentView,
@@ -21,6 +22,7 @@ router.register(r"users", UserViewSet)
 router.register(r"users", UserCreateViewSet)
 router.register(r"materials", MaterialViewSet)
 router.register(r"organizations", OrganizationViewSet)
+router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
