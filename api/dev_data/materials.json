@@ -52,7 +52,7 @@
       "updated_at": "2020-01-30 16:12:25-07",
       "imported": false,
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Allele Extraction Protocol",
@@ -81,7 +81,7 @@
       "updated_at": "2020-01-30 16:12:25-07",
       "imported": false,
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Zebrafish Model Organism",
@@ -116,7 +116,7 @@
       "updated_at": "2020-01-30 16:12:25-07",
       "imported": false,
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Mouse Model Organism",
@@ -151,7 +151,7 @@
       "citation": "Docktor, Postworth. \"Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma.\". March 15, 2020.",
       "additional_info": "This paper was co-authored by Prim Proffer.",
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Stone Tablet (Other)",
@@ -181,7 +181,7 @@
       "updated_at": "2020-01-30 16:12:25-07",
       "imported": false,
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": false
+      "shipping_requirements_id": null
     },
     {
       "title": "Zebrafish Cell Line",
@@ -226,7 +226,7 @@
       "citation": "",
       "additional_info": "",
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": false
+      "shipping_requirements_id": null
     },
     {
       "title": "Zebrafish Dataset",
@@ -261,7 +261,7 @@
       "citation": "",
       "additional_info": "This paper was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Zebrafish PDX",
@@ -336,7 +336,7 @@
       "citation": "Proffer, Prim. \"Grafting to Zebrafish\". March 15, 2020.",
       "additional_info": "This tablet was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Imported GEO Dataset",
@@ -368,7 +368,7 @@
       "additional_info": "This paper was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
       "import_source": "GEO",
-      "needs_shipping_info": false
+      "shipping_requirements_id": null
     },
     {
       "title": "Imported SRA Dataset",
@@ -396,7 +396,7 @@
       "additional_info": "This paper was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
       "import_source": "SRA",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Imported dbGaP Dataset",
@@ -424,7 +424,7 @@
       "additional_info": "This paper was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
       "import_source": "DBGAP",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Imported Protocol",
@@ -450,7 +450,7 @@
       "additional_info": "This paper was co-authored by Prim Proffer.",
       "embargo_date": "2020-01-30",
       "import_source": "PROTOCOLS_IO",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Imported AddGene Melanoma Reduction Plasmid",
@@ -479,7 +479,7 @@
       "additional_info": "This paper was co-authored by Prim Proffer.",
       "embargo_date": "2020-01-30",
       "import_source": "ADDGENE",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Jackson Labs Imported Mouse Model Organism",
@@ -506,7 +506,7 @@
       "additional_info": "This paper was co-authored by Prim Proffer.",
       "embargo_date": "2020-01-30",
       "import_source": "JACKSON_LABS",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "ATCC Imported Zebrafish Cell Line",
@@ -539,7 +539,7 @@
       "additional_info": "This paper was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
       "import_source": "ATCC",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "2"
     },
     {
       "title": "ZIRC Imported Zebrafish Model Organism",
@@ -568,7 +568,7 @@
       "additional_info": "This paper was co-authored by Prim Proffer.",
       "embargo_date": "2020-01-30",
       "import_source": "ZIRC",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     },
     {
       "title": "Imported Stone Tablet (Other)",
@@ -595,7 +595,7 @@
       "additional_info": "This tablet was co-authored by Postworth Docktor.",
       "embargo_date": "2020-01-30",
       "import_source": "OTHER",
-      "needs_shipping_info": true
+      "shipping_requirements_id": "1"
     }
   ],
   "materials_requests": [
