@@ -35,6 +35,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
     has_publication = serializers.BooleanField(read_only=True)
     has_pre_print = serializers.BooleanField(read_only=True)
     additional_info = serializers.CharField(read_only=True)
+    needs_mta = serializers.BooleanField(read_only=True)
+    needs_irb = serializers.BooleanField(read_only=True)
     contact_name = serializers.CharField(read_only=True)
     contact_email = serializers.CharField(read_only=True)
     publication_title = serializers.CharField(read_only=True)
