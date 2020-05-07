@@ -1,5 +1,3 @@
-import logging
-
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -9,10 +7,6 @@ from computedfields.models import ComputedFieldsModel, computed
 from resources_portal.models.material import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-logger.addHandler(logging.StreamHandler())
 
 
 class Notification(ComputedFieldsModel):
@@ -87,6 +81,6 @@ class Notification(ComputedFieldsModel):
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     if created:
-        logger.info(
-            f'One day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
+        print(
+            f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
         )
