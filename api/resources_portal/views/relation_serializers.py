@@ -57,6 +57,7 @@ class MaterialRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
+        ordering = ["-created_at"]
 
     organization = serializers.PrimaryKeyRelatedField(read_only=True)
     contact_user = serializers.PrimaryKeyRelatedField(read_only=True)
