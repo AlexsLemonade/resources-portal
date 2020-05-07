@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
 from resources_portal.models import Grant
 from resources_portal.views.relation_serializers import (
@@ -36,6 +37,11 @@ class GrantListSerializer(GrantSerializer):
     materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
+class OwnsGrant(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user in obj.users.all()
+
+
 class GrantViewSet(viewsets.ModelViewSet):
     queryset = Grant.objects.all()
 
@@ -44,3 +50,13 @@ class GrantViewSet(viewsets.ModelViewSet):
             return GrantListSerializer
 
         return GrantDetailSerializer
+
+    def get_permissions(self):
+        if self.action == "list":
+            permission_classes = [IsAdminUser]
+        elif self.action == "create":
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsAuthenticated, OwnsGrant]
+
+        return [permission() for permission in permission_classes]

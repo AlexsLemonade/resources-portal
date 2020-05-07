@@ -8,9 +8,9 @@ from rest_framework.routers import DefaultRouter
 
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
-from resources_portal.views import (  # grant_material_relationship,; list_grant_material_relationships,
-    GrantViewSet,
+from resources_portal.views import (
     GrantMaterialViewSet,
+    GrantViewSet,
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
@@ -20,7 +20,6 @@ from resources_portal.views import (  # grant_material_relationship,; list_grant
     UserDocumentView,
     UserViewSet,
 )
-
 
 router = ExtendedSimpleRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="user")

@@ -116,7 +116,6 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.GrantMaterialAssociation"
 
-    # Can I pass contact_user and organization along here?
     material = factory.SubFactory(MaterialFactory)
     grant = factory.SubFactory(LeafGrantFactory)
 
