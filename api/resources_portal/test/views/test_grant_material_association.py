@@ -75,7 +75,7 @@ class GrantMaterialsTestCase(APITestCase):
         organization = self.grant.organizations.first()
         self.client.force_authenticate(user=organization.owner)
 
-        # Organization's owener is a new user by default.
+        # Organization's owner is a new user by default.
         material = MaterialFactory(contact_user=organization.owner, organization=organization)
         url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.post(url, data=model_to_dict(material))
