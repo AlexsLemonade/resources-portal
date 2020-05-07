@@ -86,7 +86,7 @@ class GrantMaterialsTestCase(APITestCase):
         user = self.grant.users.first()
         self.client.force_authenticate(user=user)
 
-        # Organization's owener is a new user by default.
+        # Organization's owner is a new user by default.
         material = MaterialFactory(contact_user=user)
         # user owns material's organization, his grant just isn't associated with that org.
         material.organization.owner = user
