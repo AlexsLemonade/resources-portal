@@ -2,7 +2,7 @@
 
 These serializers do not use nested relationships themselves, so that
 if a grant object links to a user and the user links to the grant, the
-JSON won't recur infinitely. For any relationships, these seializers
+JSON won't recur infinitely. For any relationships, these serializers
 will use PrimaryKeyRelatedFields.
 """
 
