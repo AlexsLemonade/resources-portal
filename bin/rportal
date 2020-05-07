@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+
+commands = {
+    "up": "docker-compose --env-file ./docker-compose.env up",
+    "down": "docker-compose --env-file ./docker-compose.env down",
+    "build": "docker-compose --env-file ./docker-compose.env build",
+    "rebuild-index": "docker-compose run --rm api ./manage.py search_index --rebuild",
+}
+
+choices = [choice for choice in commands.keys()]
+
+parser = argparse.ArgumentParser(description="Resources Portal Helper Commands.")
+parser.add_argument("command", help="The command you want to run", choices=commands)
+args = parser.parse_args()
+
+try:
+    command = commands[args.command]
+    os.system(command)
+except KeyError:
+    print("Unknown Command")
