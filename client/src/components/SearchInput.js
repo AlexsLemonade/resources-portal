@@ -14,7 +14,7 @@ export default function SearchInput({ onChange, size = 'medium' }) {
     setSearchTerm
   } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
-  const [inputValue, setInputValue] = React.useState(query.search)
+  const [inputValue, setInputValue] = React.useState(query.search || '')
   const resourceCategoryOptions = sortedObjectKeys(Mappings).map((mapping) => {
     return {
       label: getReadable(mapping.key),
