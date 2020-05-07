@@ -30,12 +30,9 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
-            invitation.delete()
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
-        notified_user = User
-        associated_user = User
         if invitation.invite_or_request == "INVITE":
             notified_user = invitation.request_reciever
             associated_user = invitation.requester
@@ -100,6 +97,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             request.user == invitation.request_reciever
             and invitation.invite_or_request == "REQUEST"
         )
+
         if not (requester_accepting or request_reciever_approving):
             return Response(
                 data={

@@ -95,7 +95,6 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         response = self.client.put(self.url, invitation_json)
 
-        # On acceptance, the invitation gets deleted
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(requester in organization.members.all())
         self.assertEqual(
@@ -117,7 +116,6 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         response = self.client.put(self.url, invitation_json)
 
-        # On acceptance, the invitation gets deleted
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(requester in organization.members.all())
         self.assertEqual(

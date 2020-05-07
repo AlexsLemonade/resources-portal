@@ -7,6 +7,7 @@
             "associated_organization_id": "4",
             "associated_material_id": "",
             "associated_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+            "email": "burt_reynolds@mustache.com",
             "created_at": "2020-01-30 16:12:25-07"
         },
         {
@@ -16,6 +17,7 @@
             "associated_organization_id": "1",
             "associated_material_id": "",
             "associated_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+            "email": "mjmoonman@heehee.org",
             "created_at": "2020-01-30 16:12:25-07"
         },
         {
@@ -25,6 +27,7 @@
             "associated_organization_id": "1",
             "associated_material_id": "2",
             "associated_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+            "email": "jasonstatham@chasingbacon.org",
             "created_at": "2020-01-30 16:12:25-07"
         },
         {
@@ -34,6 +37,7 @@
             "associated_organization_id": "1",
             "associated_material_id": "",
             "associated_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+            "email": "paulastartes@spiceitup.com",
             "created_at": "2020-01-30 16:12:25-07"
         },
         {
@@ -43,6 +47,7 @@
             "associated_organization_id": "1",
             "associated_material_id": "2",
             "associated_user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+            "email": "geraltwitcher@cointoss.com",
             "created_at": "2020-01-30 16:12:25-07"
         }
     ]
