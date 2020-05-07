@@ -90,13 +90,11 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         invitation_json["status"] = "ACCEPTED"
 
         invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
-        requester = invitation.requester
-        organization = invitation.organization
 
         response = self.client.put(self.url, invitation_json)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(requester in organization.members.all())
+        self.assertTrue(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORG_REQUEST_ACCEPTED")), 1
         )
@@ -153,13 +151,11 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         invitation_json["status"] = "REJECTED"
 
         invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
-        requester = invitation.requester
-        organization = invitation.organization
 
         response = self.client.put(self.url, invitation_json)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(requester in organization.members.all())
+        self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORG_INVITE_REJECTED")), 1
         )
@@ -195,13 +191,11 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         invitation_json["status"] = "INVALID"
 
         invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
-        requester = invitation.requester
-        organization = invitation.organization
 
         response = self.client.put(self.url, invitation_json)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(requester in organization.members.all())
+        self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORG_INVITE_INVALID")), 1
         )

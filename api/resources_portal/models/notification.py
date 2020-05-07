@@ -50,9 +50,7 @@ class Notification(ComputedFieldsModel):
         Material, blank=False, null=True, on_delete=models.CASCADE
     )
 
-    @computed(models.EmailField(blank=False, null=False))
-    def email(self):
-        return self.notified_user.email
+    email = models.EmailField(blank=False, null=True)
 
     @computed(models.TextField(null=False, blank=False))
     def message(self):
@@ -81,6 +79,7 @@ class Notification(ComputedFieldsModel):
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     if created:
+        instance.email = instance.notified_user.email
         print(
             f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
         )
