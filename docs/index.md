@@ -14,7 +14,7 @@ Resources Portal. Check out the project's [documentation](http://ccdl.github.io/
 Start the dev server for local development:
 
 ```bash
-docker-compose up
+docker-compose --env-file ./docker-compose.env up
 ```
 
 Create a superuser to login to the admin:

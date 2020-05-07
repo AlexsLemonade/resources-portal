@@ -7,7 +7,7 @@ All commands from this README should be run from the `api/` directory.
 Start the dev server for local development:
 
 ```bash
-docker-compose up
+docker-compose --env-file ./docker-compose.env up
 ```
 
 Run a command inside the docker container:
