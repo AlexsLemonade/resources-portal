@@ -180,8 +180,8 @@ export const RequestRequirements = ({ resource }) => {
 
   const requirements = []
   const MTA = 'Material Transfer Agreement'
-  // if (resource.needs_abstract) requirements.push('Abstract')
-  // if (resource.needs_irb) requirements.push('IRB')
+  if (resource.needs_abstract) requirements.push('Abstract')
+  if (resource.needs_irb) requirements.push('IRB')
   if (Object.keys(resource.mta_attachment).length) requirements.push(MTA)
   if (Object.keys(resource.shipping_requirements).length)
     requirements.push('Shipping Information')
