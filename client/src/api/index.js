@@ -1,5 +1,3 @@
-import fetch from 'node-fetch'
-
 export const host = process.env.API_HOST
 export const version = process.env.API_VERSION
 export const path = host && version ? `${host}/${version}/` : false
@@ -25,7 +23,7 @@ const request = async (endpoint, query, headers, method = 'GET') => {
     const apiResponse = await fetch(getURL(endpoint, query), {
       method,
       headers: {
-        'Content-Type': 'application/json',
+        'content-type': 'application/json',
         ...headers
       }
     })
