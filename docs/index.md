@@ -9,24 +9,29 @@ Resources Portal. Check out the project's [documentation](http://ccdl.github.io/
 
 - [Docker](https://docs.docker.com/docker-for-mac/install/)
 
+## Optional
+
+You can run the `rportal` command with `./bin/rportal` from the root directory of this project.
+Optionally you can add this project's `/bin` folder to your path and then call it directly.
+
 # Initialize the project
 
 Start the dev server for local development:
 
 ```bash
-docker-compose --env-file ./docker-compose.env up
+rportal up
 ```
 
 Create a superuser to login to the admin:
 
 ```bash
-docker-compose --env-file ./docker-compose.env run --rm api ./manage.py createsuperuser
+rportal createsuperuser
 ```
 
 # Making migrations
 
 ```bash
-docker-compose --env-file ./docker-compose.env run --rm api ./manage.py makemigrations resources_portal
+rportal makemigrations
 ```
 
 # Visualizing the data model
@@ -34,7 +39,7 @@ docker-compose --env-file ./docker-compose.env run --rm api ./manage.py makemigr
 This project includes [django-extensions graph_models command](https://django-extensions.readthedocs.io/en/latest/graph_models.html).
 
 ```bash
-docker-compose --env-file ./docker-compose.env run --rm api ./manage.py graph_models -a -g > model.dot
+rportal graph-models
 ```
 
 At the moment png exports are not setup but these can be generated from the `.dot` file.

@@ -11,6 +11,7 @@ Resources Portal. Check out the project's [documentation](http://alexslemonade.g
 - [Docker](https://docs.docker.com/docker-for-mac/install/)
 
 ## Optional
+
 You can run the `rportal` command with `./bin/rportal` from the root directory of this project.
 Optionally you can add this project's `/bin` folder to your path and then call it directly.
 

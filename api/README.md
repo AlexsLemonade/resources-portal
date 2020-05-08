@@ -13,7 +13,7 @@ rportal up
 Run a command inside the docker container:
 
 ```bash
-docker-compose --env-file ./docker-compose.env run --rm api [command]
+rportal run-api [command]
 ```
 
 i.e. the tests:
@@ -26,7 +26,7 @@ The dev server runs by default on port 8000 with the docs being served at 8001.
 If these ports are already in use on your local machine, you can run them at different ports with:
 
 ```bash
-PORT=8002 DOCS_PORT=8003 --env-file ./docker-compose.env docker-compose run --rm api [command]
+HTTP_PORT=8002 DOCS_PORT=8003 rportal up
 ```
 
 A postgres commmand line client can be started by running:
