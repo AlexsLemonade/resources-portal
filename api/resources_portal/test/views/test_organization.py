@@ -120,7 +120,7 @@ class TestSingleOrganizationTestCase(APITestCase):
 
         new_owner = UserFactory()
         new_owner_json = {"id": new_owner.id}
-        # The lab gets sold to a new owner or something...
+        # Ahhh! A user is trying to steal the lab!!!
         organization_json["owner"] = new_owner_json
 
         response = self.client.put(self.url, organization_json)
