@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import User
-from resources_portal.test.factories import OrganizationFactory, UserFactory, UserFactory
+from resources_portal.test.factories import OrganizationFactory, UserFactory
 
 fake = Faker()
 

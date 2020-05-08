@@ -1,11 +1,10 @@
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import User, Organization
+from resources_portal.models import Organization
 from resources_portal.test.factories import (
     OrganizationFactory,
     PersonalOrganizationFactory,
