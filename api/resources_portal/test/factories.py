@@ -44,6 +44,10 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
     owner = factory.SubFactory(UserFactory)
     name = "test_organization"
 
+    @factory.post_generation
+    def organizations(self, create, extracted, **kwargs):
+        self.members.add(self.owner)
+
 
 class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
     class Meta:
