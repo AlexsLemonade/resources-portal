@@ -45,7 +45,7 @@ class GrantMaterialsTestCase(APITestCase):
         user = self.grant.users.first()
         organization = self.grant.organizations.first()
 
-        # Organization's owener is a new user by default.
+        # Organization's owner is a new user by default.
         organization.owner = user
         organization.save()
 
