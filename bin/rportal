@@ -3,6 +3,12 @@
 import argparse
 import os
 
+# exit if not called from project root
+if not os.path.exists("./bin/rportal"):
+    print("Please call rportal from the project's root")
+    exit()
+
+# list of available commands
 commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
@@ -20,10 +26,13 @@ commands = {
     "env": "cat ./docker-compose.env",
 }
 
-parser = argparse.ArgumentParser(description="Resources Portal Helper Commands.")
+parser = argparse.ArgumentParser(
+    description="Resources Portal Helper Commands. Expected to be called from project root.",
+    usage="rportal [command] [command and args for run-api or manage-api]",
+)
 parser.add_argument("command", help="The command you want to run", choices=commands)
 parser.add_argument(
-    "command_args", help="The command and args for manage-api or run-api", nargs=argparse.REMAINDER
+    "command_args", help="The command and args for manage-api or run-api", nargs=argparse.REMAINDER,
 )
 args = parser.parse_args()
 
