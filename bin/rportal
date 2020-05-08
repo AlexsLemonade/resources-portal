@@ -13,14 +13,20 @@ commands = {
     "test-api": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"',
     "makemigrations": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"',
     "postgres-cli": "./run_psql_client.sh",
+    "createsuperuser": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py createsuperuser",
+    "graph-models": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py graph_models -a -g > model.dot",
+    "run-api": "docker-compose --env-file ./docker-compose.env run --rm api {}",
+    "manage-api": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py {}",
+    "env": "cat ./docker-compose.env",
 }
 
 parser = argparse.ArgumentParser(description="Resources Portal Helper Commands.")
 parser.add_argument("command", help="The command you want to run", choices=commands)
+parser.add_argument("command_args", nargs=argparse.REMAINDER)
 args = parser.parse_args()
 
 try:
     command = commands[args.command]
-    os.system(command)
+    os.system(command.format(" ".join(args.command_args)))
 except KeyError:
     print("Unknown Command")
