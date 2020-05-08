@@ -1,6 +1,6 @@
 # Resources Portal API
 
-All commands from this README should be run from the `api/` directory.
+All commands from this README should be run from the project's root directory.
 
 ## Local Development
 
