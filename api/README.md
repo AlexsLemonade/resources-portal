@@ -7,7 +7,7 @@ All commands from this README should be run from the project's root directory.
 Start the dev server for local development:
 
 ```bash
-docker-compose --env-file ./docker-compose.env up
+rportal up
 ```
 
 Run a command inside the docker container:
@@ -32,7 +32,7 @@ PORT=8002 DOCS_PORT=8003 --env-file ./docker-compose.env docker-compose run --rm
 A postgres commmand line client can be started by running:
 
 ```
-./run_psql_client.sh
+rportal postgres-cli
 ```
 
 ## Example Local Requests
