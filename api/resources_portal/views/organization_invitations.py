@@ -1,7 +1,7 @@
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
-from resources_portal.models import Organization, OrganizationInvitation, User
+from resources_portal.models import Notification, Organization, OrganizationInvitation, User
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -28,16 +28,25 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganizationInvitationSerializer
 
     def update_organizations(self, new_status, invitation):
-        old_status = invitation.status
-        if old_status == "PENDING" and new_status == "ACCEPTED":
+        if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
-            # TODO: Add notification of acceptance
-        elif old_status == "PENDING" and new_status == "REJECTED":
-            pass
-            # TODO: Add notification of rejection
-        elif old_status == "PENDING" and new_status == "INVALID":
-            pass
-            # TODO: Add notification of invalid request reciever
+
+        notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
+
+        if invitation.invite_or_request == "INVITE":
+            notified_user = invitation.request_reciever
+            associated_user = invitation.requester
+        else:
+            notified_user = invitation.requester
+            associated_user = invitation.request_reciever
+
+        notification = Notification(
+            notification_type=notification_type,
+            notified_user=notified_user,
+            associated_user=associated_user,
+            associated_organization=invitation.organization,
+        )
+        notification.save()
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -57,6 +66,23 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
+        if request.data["invite_or_request"] == "INVITE":
+            notification = Notification(
+                notification_type="ORG_INVITE_CREATED",
+                notified_user=request.user,
+                associated_user=request_reciever,
+                associated_organization=organization,
+            )
+            notification.save()
+        else:
+            notification = Notification(
+                notification_type="ORG_REQUEST_CREATED",
+                notified_user=request_reciever,
+                associated_user=request.user,
+                associated_organization=organization,
+            )
+            notification.save()
+
         return super(OrganizationInvitationViewSet, self).create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
@@ -71,6 +97,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             request.user == invitation.request_reciever
             and invitation.invite_or_request == "REQUEST"
         )
+
         if not (requester_accepting or request_reciever_approving):
             return Response(
                 data={
@@ -88,8 +115,11 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             )
 
         new_status = request.data["status"]
+        response_status = super(OrganizationInvitationViewSet, self).update(
+            request, *args, **kwargs
+        )
         self.update_organizations(new_status, invitation)
-        return super(OrganizationInvitationViewSet, self).update(request, *args, **kwargs)
+        return response_status
 
     def delete(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

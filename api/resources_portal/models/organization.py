@@ -10,7 +10,7 @@ from resources_portal.models.user import User
 class Organization(models.Model):
     class Meta:
         db_table = "organizations"
-        get_latest_by = "created_at"
+        get_latest_by = "updated_at"
 
         permissions = (
             ("add_resources", "add_resources"),
