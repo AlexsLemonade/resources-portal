@@ -73,42 +73,41 @@ export const SearchResultsFilters = () => {
           ))}
         </Box>
       )}
-      {facets.has_publication ||
-        (facets.has_pre_print && (
-          <Box
-            margin={{ top: 'small' }}
-            pad={{ vertical: 'small' }}
-            border={{
-              side: 'top',
-              size: 'small',
-              color: 'black-tint-95'
-            }}
-          >
-            <Text weight="bold" margin={{ bottom: 'small' }}>
-              Publication Information
-            </Text>
-            {facets.has_publication && (
-              <CheckBox
-                label={`Includes Publication (${facets.has_publication})`}
-                checked={hasFacet('has_publication')}
-                onChange={({ target: { checked } }) => {
-                  toggleFacet(checked, 'has_publication')
-                  goToSearchResults(true)
-                }}
-              />
-            )}
-            {facets.has_pre_print && (
-              <CheckBox
-                label={`Includes Pre-print (${facets.has_pre_print})`}
-                checked={hasFacet('has_pre_print')}
-                onChange={({ target: { checked } }) => {
-                  toggleFacet(checked, 'has_pre_print')
-                  goToSearchResults(true)
-                }}
-              />
-            )}
-          </Box>
-        ))}
+      {('has_publication' in facets || 'has_pre_print' in facets) && (
+        <Box
+          margin={{ top: 'small' }}
+          pad={{ vertical: 'small' }}
+          border={{
+            side: 'top',
+            size: 'small',
+            color: 'black-tint-95'
+          }}
+        >
+          <Text weight="bold" margin={{ bottom: 'small' }}>
+            Publication Information
+          </Text>
+          {'has_publication' in facets && (
+            <CheckBox
+              label={`Includes Publication (${facets.has_publication['1']})`}
+              checked={hasFacet('has_publication')}
+              onChange={({ target: { checked } }) => {
+                toggleFacet(checked, 'has_publication')
+                goToSearchResults(true)
+              }}
+            />
+          )}
+          {'has_pre_print' in facets && (
+            <CheckBox
+              label={`Includes Pre-print (${facets.has_pre_print['1']})`}
+              checked={hasFacet('has_pre_print')}
+              onChange={({ target: { checked } }) => {
+                toggleFacet(checked, 'has_pre_print')
+                goToSearchResults(true)
+              }}
+            />
+          )}
+        </Box>
+      )}
     </Box>
   )
 }
