@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Grid } from 'grommet'
 
 import { searchQueryIsEmpty } from '../helpers/searchQueryIsEmpty'
-import { searchResources } from '../api/search'
+import api from '../api'
 
 import SearchInput from '../components/SearchInput'
 import { SearchResultsLimit } from '../components/SearchResultsLimit'
@@ -55,14 +55,16 @@ Search.getInitialProps = async ({ pathname, query }) => {
   // navigate to new page with new search query
   // default the size of the page to 10 results
   const searchQuery = { limit: 10, ...query }
-  const response = !searchQueryIsEmpty(query)
-    ? await searchResources({ limit: '10', ...query })
-    : false
+
+  if (searchQueryIsEmpty(query))
+    return { pathname, query: searchQuery, response: false }
+
+  const apiResponse = await api.search.resources(searchQuery)
 
   return {
     pathname,
     query: searchQuery,
-    response
+    response: apiResponse.isOk ? apiResponse.response : false
   }
 }
 
