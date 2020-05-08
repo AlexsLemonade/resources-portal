@@ -19,6 +19,7 @@ while (datetime.now() - start < max_time) and not success:
     except Exception:
         pass
 
-    print("Waiting on elasticsearch to start....")
+    if not success:
+        print("Waiting on elasticsearch to start....")
 
-    time.sleep(1)
+        time.sleep(1)

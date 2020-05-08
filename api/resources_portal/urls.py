@@ -6,7 +6,11 @@ from django.views.generic.base import RedirectView
 from rest_framework.authtoken import views
 from rest_framework.routers import DefaultRouter
 
+from rest_framework_extensions.routers import ExtendedSimpleRouter
+
 from resources_portal.views import (
+    GrantMaterialViewSet,
+    GrantViewSet,
     MaterialDocumentView,
     MaterialViewSet,
     OrganizationDocumentView,
@@ -17,12 +21,18 @@ from resources_portal.views import (
     UserViewSet,
 )
 
-router = DefaultRouter(trailing_slash=False)
-router.register(r"users", UserViewSet)
-router.register(r"users", UserCreateViewSet)
-router.register(r"materials", MaterialViewSet)
-router.register(r"organizations", OrganizationViewSet)
+router = ExtendedSimpleRouter(trailing_slash=False)
+router.register(r"users", UserViewSet, basename="user")
+router.register(r"users", UserCreateViewSet, basename="user")
+router.register(r"materials", MaterialViewSet, basename="material")
+router.register(r"organizations", OrganizationViewSet, basename="organization")
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
+router.register(r"grants", GrantViewSet, basename="grant").register(
+    r"materials",
+    GrantMaterialViewSet,
+    basename="grants-material",
+    parents_query_lookups=["grants"],
+)
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")

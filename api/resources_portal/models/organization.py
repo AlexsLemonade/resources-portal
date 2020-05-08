@@ -30,6 +30,7 @@ class Organization(models.Model):
     )
 
     members = models.ManyToManyField(User, through="OrganizationUserAssociation")
+    grants = models.ManyToManyField("Grant", through="GrantOrganizationAssociation")
 
 
 @receiver(post_save, sender="resources_portal.Organization")

@@ -66,6 +66,8 @@ class Material(models.Model):
         "Organization", blank=False, null=False, on_delete=models.CASCADE, related_name="materials"
     )
 
+    grants = models.ManyToManyField("Grant", through="GrantMaterialAssociation")
+
     organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
     contact_name = models.TextField(blank=True, null=True)
     contact_email = models.TextField(blank=True, null=True)
