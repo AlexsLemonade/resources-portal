@@ -35,7 +35,7 @@ class OwnsGrantAndMaterial(BasePermission):
 class GrantMaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all().order_by("-created_at")
 
-    http_method_names = ["get", "post", "delete", "head"]
+    http_method_names = ["get", "post", "delete", "head", "options"]
 
     def get_serializer_class(self):
         if self.action == "retrieve":
