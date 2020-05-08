@@ -7,13 +7,13 @@ commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
     "build": "docker-compose --env-file ./docker-compose.env build",
-    "rebuild-index": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py search_index --rebuild",
-    "populate-db": "docker-compose --env-file ./docker-compose.env run --rm api python3 manage.py populate_test_database",
+    "rebuild-index": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"',
+    "populate-db": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"',
     "recreate-schema": "./recreate_schema.sh",
-    "test-api": "docker-compose run --env-file ./docker-compose.env --rm api ./run_tests.sh",
+    "test-api": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"',
+    "makemigrations": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"',
+    "postgres-cli": "./run_psql_client.sh",
 }
-
-choices = [choice for choice in commands.keys()]
 
 parser = argparse.ArgumentParser(description="Resources Portal Helper Commands.")
 parser.add_argument("command", help="The command you want to run", choices=commands)
