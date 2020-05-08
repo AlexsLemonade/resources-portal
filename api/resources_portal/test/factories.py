@@ -42,6 +42,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     owner = factory.SubFactory(UserFactory)
+    name = "test_organization"
 
 
 class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
