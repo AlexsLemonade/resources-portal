@@ -19,7 +19,7 @@ docker-compose --env-file ./docker-compose.env run --rm api [command]
 i.e. the tests:
 
 ```
-docker-compose --env-file ./docker-compose.env run --rm api ./run_tests.sh
+rportal test-api
 ```
 
 The dev server runs by default on port 8000 with the docs being served at 8001.
