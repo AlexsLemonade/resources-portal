@@ -1,7 +1,7 @@
 The test data can be imported with the following command:
 
 ```
-docker-compose run --rm api python3 manage.py populate_test_database
+rportal populate-db
 ```
 
 The test data describes the following situation:

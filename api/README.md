@@ -1,38 +1,38 @@
 # Resources Portal API
 
-All commands from this README should be run from the `api/` directory.
+All commands from this README should be run from the project's root directory.
 
 ## Local Development
 
 Start the dev server for local development:
 
 ```bash
-docker-compose up
+rportal up
 ```
 
 Run a command inside the docker container:
 
 ```bash
-docker-compose run --rm api [command]
+rportal run-api [command]
 ```
 
 i.e. the tests:
 
 ```
-docker-compose run --rm api ./run_tests.sh
+rportal test-api
 ```
 
 The dev server runs by default on port 8000 with the docs being served at 8001.
 If these ports are already in use on your local machine, you can run them at different ports with:
 
 ```bash
-PORT=8002 DOCS_PORT=8003 docker-compose run --rm api [command]
+HTTP_PORT=8002 DOCS_PORT=8003 rportal up
 ```
 
 A postgres commmand line client can be started by running:
 
 ```
-./run_psql_client.sh
+rportal postgres-cli
 ```
 
 ## Example Local Requests
