@@ -15,7 +15,7 @@ Resources Portal. Check out the project's [documentation](http://alexslemonade.g
 Start the dev server for local development:
 
 ```bash
-docker-compose up
+docker-compose --env-file ./docker-compose.env up
 ```
 
 See the [README for the API](api/README.md) for more information and commands.
@@ -33,7 +33,7 @@ Currently we do not have a staging or production stack, but a development stack 
 To populate the dev database with some realistic data, please run:
 
 ```bash
-docker-compose run --rm api python3 manage.py populate_test_database
+docker-compose --env-file ./docker-compose.env run --rm api python3 manage.py populate_test_database
 ```
 
 To clear the database, run:
