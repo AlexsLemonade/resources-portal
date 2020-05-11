@@ -177,7 +177,7 @@ Content-Type application/json
 
 ## Performing a Search on Users
 
-The search endpoint will return Users matching the search.
+The search endpoint will return users matching the search.
 
 **Request**:
 
