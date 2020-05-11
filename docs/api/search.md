@@ -42,6 +42,7 @@ Note that only Materials are filterable.
 Ordering can be performed on the ```created_at``` and ```updated_at``` fields of any object, as well as the following fields:
 
 Material: "title", "category"
+
 Organization: "name"
 
 To order your results by title, the request would be:

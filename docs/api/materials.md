@@ -18,7 +18,7 @@ additional_metadata      | json      | Additional details about the material in 
 title                    | string    | The title of the material.
 needs_mta                | boolean   | Boolean specifying whether the material needs a Material Transfer Agreement to be transferred.
 needs_irb                | boolean   | Boolean specifying whether the material needs an IRB document to be transferred.
-needs_abstract           | boolean   | Boolean specifying whether the material needs a reasearch abstract to be transferred.
+needs_abstract           | boolean   | Boolean specifying whether the material needs a research abstract to be transferred.
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
 organism                 | string[]  | The organism that the material is associated with. Nullable.
@@ -112,7 +112,7 @@ additional_metadata      | json      | Additional details about the material in 
 title                    | string    | The title of the material.
 needs_mta                | boolean   | Boolean specifying whether the material needs a Material Transfer Agreement to be transferred.
 needs_irb                | boolean   | Boolean specifying whether the material needs an IRB document to be transferred.
-needs_abstract           | boolean   | Boolean specifying whether the material needs a reasearch abstract to be transferred.
+needs_abstract           | boolean   | Boolean specifying whether the material needs a research abstract to be transferred.
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
 organism                 | string[]  | The organism that the material is associated with. Nullable.
