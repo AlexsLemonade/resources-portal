@@ -9,8 +9,8 @@ Supports creating, viewing, and updating materials.
 
 Parameters:
 
-Name       | Type         |  Description
------------|--------------|----------|------------
+Name                     | Type      | Description
+-------------------------|-----------|---
 category                 | string    | The category of material.
 url                      | string    | The URL that the material was imported from.
 pubmed_id                | string    | The PubMed ID of the associated publication.
@@ -103,8 +103,8 @@ Content-Type application/json
 
 Parameters:
 
-Name       | Type         |  Description
------------|--------------|----------|------------
+Name                     | Type      | Description
+-------------------------|-----------|---
 category                 | string    | The category of material.
 url                      | string    | The URL that the material was imported from.
 pubmed_id                | string    | The PubMed ID of the associated publication.
