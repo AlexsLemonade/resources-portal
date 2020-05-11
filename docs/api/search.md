@@ -194,16 +194,12 @@ Content-Type application/json
 {
     "results": [
         {
-            "id": 1,
-            "name": "PrimaryLab",
-            "owner": {
-                "first_name": "Prim",
-                "last_name": "Proffer",
-                "published_name": "Dr. Prim Proffer",
-                "email": "pprof@havard.edu"
-            },
-            "created_at": "2020-05-08T15:23:19.307520+00:00",
-            "updated_at": "2020-05-08T15:23:19.307533+00:00"
+            "id": "4c7f0122-3064-402e-b7db-2f7e94403a01",
+            "first_name": "",
+            "last_name": "",
+            "published_name": "",
+            "created_at": "2020-05-08T15:21:22.040058+00:00",
+            "updated_at": "2020-05-08T15:21:22.040077+00:00"
         }
     ]
 }
