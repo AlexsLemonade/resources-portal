@@ -60,11 +60,15 @@ class TestSingleOrganizationTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_unauthenticated_get_request_fails(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+
     def test_get_requires_account(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 403)
 
-    def test_put_request_fails_by_stranger(self):
+    def test_put_request_fails_by_non_owner(self):
         user = UserFactory()
         self.client.force_authenticate(user=user)
         organization_json = self.client.get(self.url).json()
@@ -75,7 +79,6 @@ class TestSingleOrganizationTestCase(APITestCase):
         organization_json["owner"] = new_member_json
         organization_json["members"].append(new_member_json)
 
-        # TODO: this should require authentication
         response = self.client.put(self.url, organization_json)
         self.assertEqual(response.status_code, 403)
 
@@ -139,7 +142,6 @@ class TestSingleOrganizationTestCase(APITestCase):
         organization_json["owner"] = new_member_json
         organization_json["members"].append(new_member_json)
 
-        # TODO: this should require authentication
         response = self.client.put(self.url, organization_json)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

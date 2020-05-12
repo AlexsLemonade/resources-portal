@@ -51,7 +51,6 @@ services:
     depends_on:
       - api
   elasticsearch:
-    container_name: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
     ports:
       - 9200:9200
