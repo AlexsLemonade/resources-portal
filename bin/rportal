@@ -1,0 +1,43 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+
+# exit if not called from project root
+if not os.path.exists("./bin/rportal"):
+    print("Please call rportal from the project's root")
+    exit()
+
+# list of available commands
+commands = {
+    "up": "docker-compose --env-file ./docker-compose.env up",
+    "down": "docker-compose --env-file ./docker-compose.env down",
+    "build": "docker-compose --env-file ./docker-compose.env build",
+    "rebuild-index": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"',
+    "populate-db": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"',
+    "recreate-schema": "./recreate_schema.sh",
+    "test-api": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"',
+    "makemigrations": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"',
+    "postgres-cli": "./run_psql_client.sh",
+    "createsuperuser": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py createsuperuser",
+    "graph-models": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py graph_models -a -g > model.dot",
+    "run-api": "docker-compose --env-file ./docker-compose.env run --rm api {}",
+    "manage-api": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py {}",
+    "env": "cat ./docker-compose.env",
+}
+
+parser = argparse.ArgumentParser(
+    description="Resources Portal Helper Commands. Expected to be called from project root.",
+    usage="rportal [command] [command and args for run-api or manage-api]",
+)
+parser.add_argument("command", help="The command you want to run", choices=commands)
+parser.add_argument(
+    "command_args", help="The command and args for manage-api or run-api", nargs=argparse.REMAINDER,
+)
+args = parser.parse_args()
+
+try:
+    command = commands[args.command]
+    os.system(command.format(" ".join(args.command_args)))
+except KeyError:
+    print("Unknown Command")

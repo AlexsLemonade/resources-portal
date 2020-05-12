@@ -10,12 +10,17 @@ Resources Portal. Check out the project's [documentation](http://alexslemonade.g
 
 - [Docker](https://docs.docker.com/docker-for-mac/install/)
 
+## Optional
+
+You can run the `rportal` command with `./bin/rportal` from the root directory of this project.
+Optionally you can add this project's `/bin` folder to your path and then call it directly.
+
 ## Local Development
 
 Start the dev server for local development:
 
 ```bash
-docker-compose up
+rportal  up
 ```
 
 See the [README for the API](api/README.md) for more information and commands.
@@ -33,13 +38,13 @@ Currently we do not have a staging or production stack, but a development stack 
 To populate the dev database with some realistic data, please run:
 
 ```bash
-docker-compose run --rm api python3 manage.py populate_test_database
+rportal populate-db
 ```
 
 To clear the database, run:
 
 ```bash
-./recreate_schema.sh
+rportal recreate-schema
 ```
 
 See the [README for the test data](api/dev_data/test_data_readme.md) for a description of the test dataset.
