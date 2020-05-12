@@ -96,4 +96,5 @@ os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
 os.environ["TF_VAR_system_version"] = args.system_version
 
 var_file_arg = "-var-file=environments/{}.tfvars".format(args.env)
-completed_command = subprocess.check_call(["terraform", "apply", var_file_arg, "-auto-approve"])
+subprocess.check_call(["terraform", "init", var_file_arg])
+subprocess.check_call(["terraform", "apply", var_file_arg, "-auto-approve"])
