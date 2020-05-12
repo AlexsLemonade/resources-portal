@@ -110,7 +110,7 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertEqual(new_owner, self.organization.owner)
         self.assertEqual(new_name, self.organization.name)
 
-        # But adding members requries a request to the nested route:
+        # But adding members requires a request to the nested route:
         self.assertNotIn(new_member, self.organization.members.all())
 
     def test_put_owner_fails_if_not_member(self):
