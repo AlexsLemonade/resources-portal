@@ -39,6 +39,9 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
     basename="grants-material",
     parents_query_lookups=["grants"],
 )
+router.register(r"grants", GrantViewSet, basename="grant").register(
+    r"users", GrantMaterialViewSet, basename="grants-material", parents_query_lookups=["grants"],
+)
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")

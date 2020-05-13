@@ -25,6 +25,8 @@ class UserRelationSerializer(serializers.ModelSerializer):
         read_only_fields = ("username", "first_name", "last_name", "created_at", "updated_at")
         extra_kwargs = {"id": {"read_only": False}}
 
+        grants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
 
 class OrganizationRelationSerializer(serializers.ModelSerializer):
     class Meta:
