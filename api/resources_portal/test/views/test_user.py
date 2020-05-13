@@ -19,12 +19,22 @@ class TestUserListTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.superuser = UserFactory(is_superuser=True)
+        self.superuser = User.objects.create_superuser("new_user", "newemail@test.com", "password")
         self.url = reverse("user-list")
         self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
         # Don't post created_at and updated_at.
         self.user_data.pop("created_at")
         self.user_data.pop("updated_at")
+
+    def test_list_request_from_admin_succeeds(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_request_from_non_admin_forbidden(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
@@ -49,7 +59,7 @@ class TestUserDetailTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
         self.second_user = UserFactory()
-        self.superuser = UserFactory(is_superuser=True)
+        self.superuser = User.objects.create_superuser("new_user", "newemail@test.com", "password")
         self.url = reverse("user-detail", kwargs={"pk": self.user.pk})
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.user.auth_token}")
 
@@ -103,3 +113,13 @@ class TestUserDetailTestCase(APITestCase):
         payload = {"first_name": new_first_name}
         response = self.client.put(self.url, payload)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_delete_request_from_admin_succeeds(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_request_from_non_admin_forbidden(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
