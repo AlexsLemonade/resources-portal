@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Material, Organization
+from resources_portal.models import Material
 from resources_portal.views.user import UserSerializer
 
 
