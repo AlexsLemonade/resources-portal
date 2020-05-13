@@ -1,5 +1,5 @@
 from django.db import transaction
-from rest_framework import mixins, serializers, viewsets
+from rest_framework import serializers, viewsets
 from rest_framework.permissions import AllowAny, BasePermission, IsAdminUser, IsAuthenticated
 
 from resources_portal.models import Organization, User
