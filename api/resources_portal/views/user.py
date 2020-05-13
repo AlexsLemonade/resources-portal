@@ -1,9 +1,8 @@
 from django.db import transaction
 from rest_framework import mixins, serializers, viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, BasePermission, IsAdminUser, IsAuthenticated
 
 from resources_portal.models import Organization, User
-from resources_portal.permissions import IsUserOrReadOnly
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("username", "created_at", "updated_at")
 
 
+class IsUserOrAdmin(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj or request.user.is_superuser
+
+
 class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
     """
     Updates and retrieves user accounts
@@ -27,7 +31,17 @@ class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.G
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (IsUserOrReadOnly,)
+
+    # The user endpoint does not support delete or list, so we don't have to worry about permissions for these
+    def get_permissions(self):
+        if self.action == "retrieve" or self.action == "update" or self.action == "partial_update":
+            permission_classes = [IsAuthenticated, IsUserOrAdmin]
+        elif self.action == "create":
+            permission_classes = []
+        else:
+            permission_classes = [IsAuthenticated]
+
+        return [permission() for permission in permission_classes]
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
