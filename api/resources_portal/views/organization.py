@@ -1,4 +1,7 @@
+import django.core.exceptions
 from rest_framework import serializers, viewsets
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
 from resources_portal.views.relation_serializers import UserRelationSerializer
@@ -10,52 +13,59 @@ class OrganizationSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "owner",
+            "name",
             "members",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "created_at", "updated_at", "members")
 
 
 class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
-    members = UserRelationSerializer(many=True)
+    members = UserRelationSerializer(many=True, read_only=True)
 
-    def update_members(self, organization, owner_id, members):
-        """If owner_id is not in members, it will be added."""
-        member_ids = [member["id"] for member in members]
+    def create(self, validated_data):
+        owner = validated_data.pop("owner")
+        validated_data["owner_id"] = owner["id"]
 
-        if owner_id not in member_ids:
-            member_ids.append(owner_id)
-
-        organization.members.set(User.objects.filter(id__in=member_ids))
+        organization = super(OrganizationSerializer, self).create(validated_data)
+        organization.members.set(User.objects.filter(pk=owner["id"]))
         organization.save()
 
         return organization
 
-    def create(self, validated_data):
-        owner = validated_data.pop("owner")
-        members = validated_data.pop("members")
-        validated_data["owner_id"] = owner["id"]
-
-        organization = super(OrganizationSerializer, self).create(validated_data)
-
-        return self.update_members(organization, owner["id"], members)
-
     def update(self, instance, validated_data):
         owner = validated_data.pop("owner")
-        members = validated_data.pop("members")
         if owner:
             validated_data["owner_id"] = owner["id"]
 
-        organization = super(OrganizationSerializer, self).update(instance, validated_data)
-
-        return self.update_members(organization, owner["id"], members)
+        return super(OrganizationSerializer, self).update(instance, validated_data)
 
 
 class OrganizationListSerializer(OrganizationSerializer):
     owner = serializers.StringRelatedField()
     members = serializers.StringRelatedField(many=True)
+
+
+class IsOwner(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj.owner
+
+
+class IsNewOwnerMember(BasePermission):
+    """The new owner must already be a member of the organization."""
+
+    def has_object_permission(self, request, view, obj):
+        try:
+            request_owner = User.objects.get(pk=request.data["owner"]["id"])
+        except django.core.exceptions.Exception:
+            # If the new owner does not exist we've got a problem.
+            return False
+
+        is_owner_changing = request_owner == obj.owner
+
+        return not is_owner_changing or request_owner in obj.members
 
 
 class OrganizationViewSet(viewsets.ModelViewSet):
@@ -66,3 +76,25 @@ class OrganizationViewSet(viewsets.ModelViewSet):
             return OrganizationListSerializer
 
         return OrganizationDetailSerializer
+
+    def get_permissions(self):
+        if self.action == "update" or self.action == "delete":
+            permission_classes = [IsAuthenticated, IsOwner]
+        else:
+            permission_classes = [IsAuthenticated]
+
+        return [permission() for permission in permission_classes]
+
+    def update(self, request, *args, **kwargs):
+        organization = self.get_object()
+        serializer = self.get_serializer(organization, data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_owner = User.objects.get(pk=serializer.validated_data["owner"]["id"])
+
+        is_owner_changing = organization.owner != new_owner
+
+        if is_owner_changing and new_owner not in organization.members.all():
+            raise ValidationError("The new owner must already be a member of the organization.")
+
+        return super(OrganizationViewSet, self).update(request, *args, **kwargs)
