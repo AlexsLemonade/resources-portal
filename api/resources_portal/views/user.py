@@ -67,11 +67,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def get_permissions(self):
-        if self.action == "list" or self.action == "destroy":
-            permission_classes = [IsAdminUser]
-        elif (
-            self.action == "retrieve" or self.action == "update" or self.action == "partial_update"
-        ):
+        if self.action == "update" or self.action == "partial_update" or self.action == "destroy":
             permission_classes = [IsAuthenticated, IsUserOrAdmin]
         elif self.action == "create":
             permission_classes = [AllowAny]

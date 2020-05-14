@@ -19,20 +19,19 @@ class TestUserListTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.superuser = User.objects.create_superuser("new_user", "newemail@test.com", "password")
         self.url = reverse("user-list")
         self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
         # Don't post created_at and updated_at.
         self.user_data.pop("created_at")
         self.user_data.pop("updated_at")
 
-    def test_list_request_from_admin_succeeds(self):
-        self.client.force_authenticate(user=self.superuser)
+    def test_list_request_succeeds(self):
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_list_request_from_non_admin_forbidden(self):
-        self.client.force_authenticate(user=self.user)
+    def test_list_request_from_unauthenticated_forbidden(self):
+        self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -64,24 +63,14 @@ class TestUserDetailTestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.user.auth_token}")
 
     def test_get_request_returns_a_given_user(self):
-        self.client.force_authenticate(user=self.user)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-    def test_get_request_from_wrong_user_forbidden(self):
         self.client.force_authenticate(user=self.second_user)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_request_from_unauthenticated_user_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_get_request_from_admin_succeeds(self):
-        self.client.force_authenticate(user=self.superuser)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_put_request_updates_a_user(self):
         self.client.force_authenticate(user=self.user)
@@ -114,12 +103,12 @@ class TestUserDetailTestCase(APITestCase):
         response = self.client.put(self.url, payload)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_request_from_admin_succeeds(self):
-        self.client.force_authenticate(user=self.superuser)
+    def test_delete_request_succeeds(self):
+        self.client.force_authenticate(user=self.user)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_request_from_non_admin_forbidden(self):
-        self.client.force_authenticate(user=self.user)
+    def test_delete_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
