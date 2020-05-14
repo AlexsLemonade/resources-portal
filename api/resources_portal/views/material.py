@@ -32,8 +32,6 @@ class MaterialDetailSerializer(MaterialSerializer):
 
 class HasAddResources(BasePermission):
     def has_object_permission(self, request, view, obj):
-        print("********************************")
-
         return request.user.has_perm("add_resources", obj.organization)
 
 
