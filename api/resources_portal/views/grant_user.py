@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Grant, GrantOrganizationAssociation, GrantUserAssociation, User
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
 class OwnsGrant(BasePermission):
@@ -28,7 +28,7 @@ class CanManageOrganizationUsers(BasePermission):
                 request.user.has_perm(
                     "add_members_and_manage_permissions", association.organization
                 )
-                and request.data["user"] in association.organization.members
+                and association.organization.members.filter(id=request.data["id"]).exists()
             ):
                 return True
 
@@ -44,11 +44,11 @@ class GrantUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         if self.action == "retrieve":
             raise MethodNotAllowed("GET", detail="Cannot get single User by Grant.")
 
-        return MaterialRelationSerializer
+        return UserRelationSerializer
 
     def get_permissions(self):
         if self.action == "create":
-            permission_classes = [IsAuthenticated, CanManageOrganizationUsers]
+            permission_classes = [IsAuthenticated, OwnsGrant, CanManageOrganizationUsers]
         else:
             permission_classes = [IsAuthenticated, OwnsGrant]
 

@@ -17,6 +17,6 @@ class Grant(models.Model):
     title = models.TextField()
     funder_id = models.CharField(max_length=80)
 
-    users = models.ManyToManyField(User, through="GrantUserAssociation")
-    organizations = models.ManyToManyField(Organization, through="GrantOrganizationAssociation")
+    users = models.ManyToManyField("User", through="GrantUserAssociation")
+    organizations = models.ManyToManyField("Organization", through="GrantOrganizationAssociation")
     materials = models.ManyToManyField("Material", through="GrantMaterialAssociation")
