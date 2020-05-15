@@ -82,11 +82,6 @@ docker pull $api_docker_image
 docker run \
        --env-file environment \
        -e DJANGO_CONFIGURATION=Production \
-       -e DATABASE_HOST=${database_host} \
-       -e DATABASE_PORT=${database_port} \
-       -e DATABASE_NAME=${database_name} \
-       -e DATABASE_USER=${database_user} \
-       -e DATABASE_PASSWORD=${database_password} \
        -e PORT=8081 \
        -v "$STATIC_VOLUMES":/tmp/www/static \
        --log-driver=awslogs \
@@ -101,11 +96,6 @@ docker run \
 docker run \
        --env-file environment \
        -e DJANGO_CONFIGURATION=Production \
-       -e DATABASE_HOST=${database_host} \
-       -e DATABASE_PORT=${database_port} \
-       -e DATABASE_NAME=${database_name} \
-       -e DATABASE_USER=${database_user} \
-       -e DATABASE_PASSWORD=${database_password} \
        -e PORT=8081 \
        -v "$STATIC_VOLUMES":/tmp/www/static \
        --log-driver=awslogs \

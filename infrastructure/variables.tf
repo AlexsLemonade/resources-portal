@@ -51,8 +51,6 @@ output "environment_variables" {
       value = "${aws_db_instance.postgres_db.address}"},
     {name = "DATABASE_USER"
       value = "${var.database_user}"},
-    {name = "DATABASE_PASSWORD"
-      value = "${var.database_password}"},
     {name = "DATABASE_PORT"
       value = "${var.database_port}"}
   ]

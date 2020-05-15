@@ -90,3 +90,25 @@ resource "aws_security_group_rule" "resources_portal_api_outbound" {
   ipv6_cidr_blocks = ["::/0"]
   security_group_id = "${aws_security_group.resources_portal_api.id}"
 }
+
+##
+# ElasticSearch
+##
+
+resource "aws_security_group" "resources_portal_es" {
+  name = "resources-portal-es-${var.user}-${var.stage}"
+  description = "resources-portal-es-${var.user}-${var.stage}"
+  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+
+  tags {
+    Name = "resources-portal-es-${var.user}-${var.stage}"
+  }
+
+  # Wide open, but inside inside the VPC
+  ingress {
+      from_port = 0
+      to_port = 0
+      protocol = "-1"
+      cidr_blocks = [ "0.0.0.0/0" ]
+  }
+}
