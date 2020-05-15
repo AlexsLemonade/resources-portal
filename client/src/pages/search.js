@@ -55,15 +55,14 @@ Search.getInitialProps = async ({ pathname, query }) => {
   // navigate to new page with new search query
   // default the size of the page to 10 results
   const searchQuery = { limit: 10, ...query }
+  const props = { pathname, query: searchQuery }
 
-  if (searchQueryIsEmpty(query))
-    return { pathname, query: searchQuery, response: false }
+  if (searchQueryIsEmpty(searchQuery)) return { ...props, response: false }
 
   const apiResponse = await api.search.resources(searchQuery)
 
   return {
-    pathname,
-    query: searchQuery,
+    ...props,
     response: apiResponse.isOk ? apiResponse.response : false
   }
 }

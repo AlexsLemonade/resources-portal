@@ -8,7 +8,10 @@ import Organism from '../../../images/organism.svg'
 import ResourceType from '../../../images/resource-type.svg'
 
 const ResourceDetailsPage = ({ resource }) => {
-  if (!resource) return <Text>This resource is not available.</Text>
+  if (!resource)
+    return (
+      <Text>This resource is not available. If this is an error... whoa</Text>
+    )
 
   return (
     <>
@@ -92,19 +95,19 @@ const PublicationInformation = ({ resource }) => (
     data={[
       {
         label: 'PubMed ID',
-        value: resource.additional_metadata.pubmedid
+        value: resource.pubmedid
       },
       {
         label: 'Publication Title',
-        value: resource.additional_metadata.publication_title
+        value: resource.publication_title
       },
       {
         label: 'Pre-print DOI',
-        value: resource.additional_metadata.pre_print_doi
+        value: resource.pre_print_doi
       },
       {
         label: 'Pre-print Title',
-        value: resource.additional_metadata.pre_print_title
+        value: resource.pre_print_title
       },
       { label: 'Citation', value: resource.additional_metadata.citation }
     ]}
@@ -112,11 +115,8 @@ const PublicationInformation = ({ resource }) => (
 )
 
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const apiResponse = api.resources.find(query.id)
-
-  const resource = apiResponse.isOk ? apiResponse.response : false
-
+  const apiResponse = await api.resources.find(query.id)
   return {
-    resource
+    resource: apiResponse.isOk ? apiResponse.response : false
   }
 }
