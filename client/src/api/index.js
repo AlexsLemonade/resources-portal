@@ -1,8 +1,10 @@
+import fetch from 'isomorphic-unfetch'
+
 export const host = process.env.API_HOST
 export const version = process.env.API_VERSION
-export const path = host && version ? `${host}/${version}/` : false
+export const path = `${host}/${version}/`
 
-const getURL = (endpoint = '', query = {}) => {
+const getAPIURL = (endpoint = '', query = {}) => {
   const search = new URLSearchParams()
 
   const appendParam = (key, val) =>
@@ -15,25 +17,25 @@ const getURL = (endpoint = '', query = {}) => {
   const url = new URL(endpoint, path)
   url.search = search
 
-  return url
+  return url.href || url
 }
 
-const request = async (endpoint, query, headers, method = 'GET') => {
+const request = async (url, { headers = {}, ...options } = {}) => {
+  const config = { ...options }
+  config.headers = {
+    'content-type': 'application/json',
+    ...headers
+  }
+
   try {
-    const apiResponse = await fetch(getURL(endpoint, query), {
-      method,
-      headers: {
-        'content-type': 'application/json',
-        ...headers
-      }
-    })
-    const response = await apiResponse.json()
+    const response = await fetch(url, config)
     return {
       isOk: true,
       status: response.status,
-      response
+      response: await response.json()
     }
   } catch (e) {
+    console.log(e)
     return {
       isOk: false,
       status: e.status,
@@ -44,9 +46,9 @@ const request = async (endpoint, query, headers, method = 'GET') => {
 
 export default {
   search: {
-    resources: (query) => request('search/materials', query, {}, 'GET')
+    resources: (query) => request(getAPIURL('search/materials', query))
   },
   resources: {
-    find: (id) => request(`materials/${id}`, {}, {}, 'GET')
+    find: (id) => request(getAPIURL(`materials/${id}`))
   }
 }

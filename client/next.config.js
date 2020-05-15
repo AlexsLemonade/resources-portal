@@ -12,6 +12,7 @@ module.exports = (phase) => {
   const env = {
     API_VERSION: 'v1',
     API_HOST: (() => {
+      if (process.env.API_HOST) return process.env.API_HOST
       if (isDevelopment) return 'http://localhost:8000'
       if (isStaging) return null
       if (isProduction) return null
