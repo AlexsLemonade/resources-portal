@@ -1,4 +1,3 @@
-data "aws_caller_identity" "current" {}
 resource "aws_elasticsearch_domain" "es" {
   domain_name = "es-${var.user}-${var.stage}"
   elasticsearch_version = "6.3"

@@ -6,6 +6,8 @@ https://github.com/AlexsLemonade/resources-portal/issues/33
 
 import argparse
 import os
+import shutil
+import signal
 import subprocess
 
 # import docker
@@ -89,18 +91,23 @@ completed_command = subprocess.check_call(["docker", "push", image_name])
 # Change dir back so terraform is run from the correct location:
 os.chdir("../infrastructure")
 
+
+environment_template_file = "api-configuration/environment.tpl"
+
+shutil.copyfile("api-configuration/environment_base", environment_template_file)
+
 # Create environment file tempalte containing secrets for API.
 # Terraform template in the remaining variables.
-with open("api-configuration/environment.tpl", "a") as env_file:
+with open(environment_template_file, "a") as env_file:
     if args.env == "dev":
         with open("api-configuration/dev-secrets") as dev_secrets:
             for line in dev_secrets.readlines():
                 env_file.write(line)
     else:
-        env_prefix = args.env + "_"
+        env_prefix = args.env.upper() + "_"
         for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
             val = os.environ.get(key)
-            env_file.write(f"${key}=${val}\n")
+            env_file.write(f"{key}='{val}'\n")
 
 
 os.environ["TF_VAR_user"] = args.user
@@ -110,5 +117,19 @@ os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
 os.environ["TF_VAR_system_version"] = args.system_version
 
 var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
-subprocess.check_call(["terraform", "init", var_file_arg])
-subprocess.check_call(["terraform", "apply", var_file_arg, "-auto-approve"])
+
+# Make sure that Terraform is allowed to shut down gracefully.
+try:
+    terraform_process = subprocess.Popen(["terraform", "init", var_file_arg])
+    terraform_process.wait()
+except KeyboardInterrupt:
+    terraform_process.send_signal(signal.SIGINT)
+    terraform_process.wait()
+
+try:
+    terraform_process = subprocess.Popen(["terraform", "apply", var_file_arg, "-auto-approve"])
+    terraform_process.wait()
+    exit(terraform_process.returncode)
+except KeyboardInterrupt:
+    terraform_process.send_signal(signal.SIGINT)
+    terraform_process.wait()

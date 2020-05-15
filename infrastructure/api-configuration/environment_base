@@ -1,0 +1,4 @@
+DJANGO_CONFIGURATION=Production
+PORT=8081
+DATABASE_HOST=${database_host}
+ELASTICSEARCH_HOST="${elasticsearch_host}"

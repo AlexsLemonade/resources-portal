@@ -56,7 +56,7 @@ data "template_file" "api_server_script_smusher" {
   }
 
   depends_on = [
-    "data.template_file.api_environment"
+    "data.template_file.api_environment",
     "aws_db_instance.postgres_db",
     "aws_security_group_rule.resources_portal_api_http",
     "aws_security_group_rule.resources_portal_api_outbound"

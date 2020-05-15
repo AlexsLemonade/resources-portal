@@ -1,8 +1,6 @@
 # The configuration contained in this file specifies AWS IAM roles and
 # permissions.
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_iam_role" "resources_portal_instance" {
   name = "resources-portal-instance-${var.user}-${var.stage}"
 

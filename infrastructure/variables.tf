@@ -1,6 +1,8 @@
 # This terraform file hosts the terraform variables used throughout
 # the project.
 
+data "aws_caller_identity" "current" {}
+
 variable "region" {
   default = "us-east-1"
 }
@@ -26,7 +28,7 @@ variable "database_user" {
 }
 
 variable "database_password" {
-  # This will be overwritten by the password in terraform.tfvars.
+  # This will be overwritten by the password in GitHub actions.
   # It's kept there so it's secret.
   default = "rppostgrespassword"
 }
@@ -41,6 +43,10 @@ variable "api_instance_type" {
 
 variable "database_instance_type" {
   default = "t2.micro"
+}
+
+variable "elasticsearch_instance_type" {
+  default = "t2.small.elasticsearch"
 }
 
 output "environment_variables" {

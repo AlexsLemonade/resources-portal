@@ -1,4 +1,5 @@
 import argparse
+import signal
 import subprocess
 
 description = """This script can be used to destroy an infrastructure stack that was created with
@@ -20,6 +21,12 @@ parser.add_argument("-u", "--user", help=user_help_text, required=True)
 
 
 args = parser.parse_args()
+var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
 
-var_file_arg = "-var-file=environments/{}.tfvars".format(args.env)
-completed_command = subprocess.check_call(["terraform", "destroy", var_file_arg, "-auto-approve"])
+# Make sure that Terraform is allowed to shut down gracefully.
+try:
+    terraform_process = subprocess.Popen(["terraform", "destroy", var_file_arg, "-auto-approve"])
+    terraform_process.wait()
+    exit(terraform_process.returncode)
+except KeyboardInterrupt:
+    terraform_process.send_signal(signal.SIGINT)
