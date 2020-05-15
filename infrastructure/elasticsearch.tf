@@ -1,5 +1,5 @@
 resource "aws_elasticsearch_domain" "es" {
-  domain_name = "es-${var.user}-${var.stage}"
+  domain_name = "rp-es-${var.user}-${var.stage}"
   elasticsearch_version = "6.3"
 
   cluster_config {
@@ -43,8 +43,8 @@ resource "aws_elasticsearch_domain" "es" {
   }
 
   tags {
-      Domain = "es-${var.user}-${var.stage}"
-      Name = "es-${var.user}-${var.stage}"
+      Domain = "resources-portal-es-${var.user}-${var.stage}"
+      Name = "resources-portal-es-${var.user}-${var.stage}"
   }
 }
 

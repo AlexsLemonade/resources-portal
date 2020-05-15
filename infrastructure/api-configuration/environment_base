@@ -1,4 +1,4 @@
 DJANGO_CONFIGURATION=Production
 PORT=8081
-DATABASE_HOST=${database_host}
-ELASTICSEARCH_HOST="${elasticsearch_host}"
+TF_VAR_database_name=resouces_portal
+TF_VAR_database_port=5432

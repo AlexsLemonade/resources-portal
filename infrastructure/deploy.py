@@ -91,23 +91,17 @@ completed_command = subprocess.check_call(["docker", "push", image_name])
 # Change dir back so terraform is run from the correct location:
 os.chdir("../infrastructure")
 
-
-environment_template_file = "api-configuration/environment.tpl"
-
-shutil.copyfile("api-configuration/environment_base", environment_template_file)
-
-# Create environment file tempalte containing secrets for API.
-# Terraform template in the remaining variables.
-with open(environment_template_file, "a") as env_file:
-    if args.env == "dev":
-        with open("api-configuration/dev-secrets") as dev_secrets:
-            for line in dev_secrets.readlines():
-                env_file.write(line)
-    else:
-        env_prefix = args.env.upper() + "_"
-        for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
-            val = os.environ.get(key)
-            env_file.write(f"{key}='{val}'\n")
+# Load environment specific variables.
+if args.env == "dev":
+    with open("api-configuration/dev-secrets") as dev_secrets:
+        for line in dev_secrets.readlines():
+            [key, val] = line.split("=")
+else:
+    env_prefix = args.env.upper() + "_"
+    for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
+        val = os.environ.get(key)
+        stripped_key = key.split(env_prefix)[-1]
+        os.environ[stripped_key] = val
 
 
 os.environ["TF_VAR_user"] = args.user

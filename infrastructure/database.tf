@@ -24,10 +24,10 @@ resource "aws_db_instance" "postgres_db" {
   engine = "postgres"
   engine_version = "9.6.11"
   auto_minor_version_upgrade = false
-  instance_class = "db.${var.database_instance_type}"
+  instance_class = "${var.database_instance_type}"
   name = "resources_portal"
-  port = "${var.database_port}"
-  username = "${var.database_user}"
+  port = "5432"
+  username = "rppostgresuser"
   password = "${var.database_password}"
 
   db_subnet_group_name = "${aws_db_subnet_group.resources_portal.name}"

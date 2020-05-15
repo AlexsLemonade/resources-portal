@@ -81,8 +81,6 @@ docker pull $api_docker_image
 # is run, so we have to pass them in programatically
 docker run \
        --env-file environment \
-       -e DJANGO_CONFIGURATION=Production \
-       -e PORT=8081 \
        -v "$STATIC_VOLUMES":/tmp/www/static \
        --log-driver=awslogs \
        --log-opt awslogs-region=${region} \
@@ -95,8 +93,6 @@ docker run \
 # Start the API image.
 docker run \
        --env-file environment \
-       -e DJANGO_CONFIGURATION=Production \
-       -e PORT=8081 \
        -v "$STATIC_VOLUMES":/tmp/www/static \
        --log-driver=awslogs \
        --log-opt awslogs-region=${region} \

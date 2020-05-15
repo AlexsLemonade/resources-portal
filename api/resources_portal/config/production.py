@@ -28,3 +28,8 @@ class Production(Common):
             "PORT": os.getenv("DATABASE_PORT"),
         }
     }
+
+    # Elastic Search
+    ELASTICSEARCH_DSL = {
+        "default": {"hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"), "timeout": 60}
+    }
