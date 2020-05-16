@@ -10,6 +10,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FacetedSearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
+    PostFilterFilteringFilterBackend,
 )
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
@@ -172,7 +173,9 @@ class MaterialDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
         FacetedSearchFilterBackend,
+        PostFilterFilteringFilterBackend,
     ]
+
     lookup_field = "id"
 
     # Define search fields
@@ -236,14 +239,13 @@ class MaterialDocumentView(DocumentViewSet):
     }
     faceted_search_param = "facet"
 
-    def list(self, request, *args, **kwargs):
-        # If a single faceted_search_field is in the request, make it global.
-        # response.data["facets"] will then include all terms for that facet.
-        applied_facets = set(request.query_params) & set(self.faceted_search_fields)
-        if len(applied_facets) == 1:
-            facet = applied_facets.pop()
-            self.faceted_search_fields[facet]["global"] = True
+    # Specify post filter fields
+    post_filter_fields = {
+        "category_pf": {"field": "category"},
+        "organism_pf": {"field": "organism"},
+    }
 
+    def list(self, request, *args, **kwargs):
         response = super(MaterialDocumentView, self).list(request, args, kwargs)
         response.data["facets"] = self.transform_es_facets(response.data["facets"])
         return response
