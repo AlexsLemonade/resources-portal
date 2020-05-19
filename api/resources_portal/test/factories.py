@@ -4,14 +4,7 @@ import factory
 from factory import post_generation
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Organization, User
-from resources_portal.test.association_factories import (
-    GrantMaterialAssociationFactory,
-    GrantOrganizationAssociationFactory,
-    GrantUserAssociationFactory,
-    OrganizationMaterialAssociationFactory,
-    OrganizationUserAssociationFactory,
-)
+from resources_portal.models import Organization, OrganizationMaterialAssociation, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -56,6 +49,14 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
         self.members.add(self.owner)
 
 
+class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationUserAssociation"
+
+    user = factory.SubFactory(UserFactory)
+    organization = factory.SubFactory(PersonalOrganizationFactory)
+
+
 class OrganizationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Organization"
@@ -63,8 +64,6 @@ class OrganizationFactory(factory.django.DjangoModelFactory):
     name = "test_organization"
     owner = factory.SubFactory(UserFactory)
     membership1 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
-    material1 = factory.RelatedFactory(OrganizationMaterialAssociationFactory, "organization")
-    material2 = factory.RelatedFactory(OrganizationMaterialAssociationFactory, "organization")
 
     @post_generation
     def post(self, create, extracted, **kwargs):
@@ -81,6 +80,11 @@ class MaterialFactory(factory.django.DjangoModelFactory):
 
     contact_user = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        newOrg = Organization.objects.get(id=self.organization.id)
+        OrganizationMaterialAssociation.objects.get_or_create(material=self, organization=newOrg)
 
 
 class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
@@ -108,6 +112,38 @@ class LeafGrantFactory(factory.django.DjangoModelFactory):
 
     title = "Young Investigator's Grant"
     funder_id = "1234567890"
+
+
+class GrantUserAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantUserAssociation"
+
+    user = factory.SubFactory(UserFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class GrantOrganizationAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantOrganizationAssociation"
+
+    organization = factory.SubFactory(PersonalOrganizationFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.GrantMaterialAssociation"
+
+    material = factory.SubFactory(MaterialFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+
+class OrganizationMaterialAssociationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationMaterialAssociation"
+
+    material = factory.SubFactory(MaterialFactory)
+    organization = factory.SubFactory(PersonalOrganizationFactory)
 
 
 class GrantFactory(LeafGrantFactory):

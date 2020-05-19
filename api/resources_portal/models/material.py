@@ -1,5 +1,7 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.shipping_requirements import ShippingRequirements

@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import User
-from resources_portal.test.factories import OrganizationFactory, UserFactory
+from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
 
@@ -18,17 +18,21 @@ class OrganizationMaterialsTestCase(APITestCase):
 
     def setUp(self):
         self.organization = OrganizationFactory()
-        self.url = reverse("organization-detail", args=[self.organization.id])
+        self.material1 = MaterialFactory()
+        self.material2 = MaterialFactory()
 
-    def test_get_single_material_not_allowed(self):
+    def test_get_material_with_uuid_not_found(self):
         self.client.force_authenticate(user=self.organization.members.first())
-        material = self.organization.members.first()
-        url = reverse("organizations-materials-detail", args=[self.organization.id, material.id])
+        url = reverse("organizations-materials-detail", args=[self.organization.id, 1])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 404)
 
-    def test_get_request_returns_members(self):
+    def test_get_request_returns_materials(self):
         self.client.force_authenticate(user=self.organization.members.first())
+
+        self.organization.materials.add(self.material1)
+        self.organization.materials.add(self.material2)
+
         url = reverse("organizations-materials-list", args=[self.organization.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

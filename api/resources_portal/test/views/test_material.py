@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Material
+from resources_portal.models import Material, OrganizationMaterialAssociation
 from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
@@ -35,6 +35,12 @@ class TestMaterialListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(self.material.category, response.json()["category"])
+        new_material = Material.objects.get(pk=response.json()["id"])
+        self.assertTrue(
+            OrganizationMaterialAssociation.objects.filter(
+                material=new_material, organization=self.organization
+            ).exists()
+        )
 
     def test_post_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
@@ -61,6 +67,8 @@ class TestSingleMaterialTestCase(APITestCase):
         self.user = UserFactory()
         self.user_without_perms = UserFactory()
         self.organization = OrganizationFactory(owner=self.user)
+        self.organization2 = OrganizationFactory(owner=self.user)
+        self.organization_without_perms = OrganizationFactory()
         self.material = MaterialFactory(contact_user=self.user, organization=self.organization)
         self.url = reverse("material-detail", args=[self.material.id])
 
@@ -82,6 +90,37 @@ class TestSingleMaterialTestCase(APITestCase):
 
         material = Material.objects.get(pk=self.material.id)
         self.assertEqual(material.url, new_url)
+
+    def test_put_request_can_update_organization(self):
+        self.client.force_authenticate(user=self.user)
+        material_json = self.client.get(self.url).json()
+
+        material_json["organization"] = self.organization2.id
+        material_json["contact_user"] = material_json["contact_user"]["id"]
+
+        response = self.client.put(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertFalse(
+            OrganizationMaterialAssociation.objects.filter(
+                material=self.material, organization=self.organization
+            ).exists()
+        )
+        self.assertTrue(
+            OrganizationMaterialAssociation.objects.filter(
+                material=self.material, organization=self.organization2
+            ).exists()
+        )
+
+    def test_put_request_on_organization_without_permissions_for_both_orgs_fails(self):
+        self.client.force_authenticate(user=self.user)
+        material_json = self.client.get(self.url).json()
+
+        material_json["organization"] = self.organization_without_perms.id
+        material_json["contact_user"] = material_json["contact_user"]["id"]
+
+        response = self.client.put(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)

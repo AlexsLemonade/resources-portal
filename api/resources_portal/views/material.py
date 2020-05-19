@@ -1,5 +1,4 @@
 from rest_framework import serializers, status, viewsets
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
@@ -62,29 +61,35 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = MaterialSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        material = super(MaterialViewSet, self).create(request, *args, **kwargs)
+        if not request.user.has_perm(
+            "add_resources", Organization.objects.get(pk=request.data["organization"])
+        ):
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        response = super(MaterialViewSet, self).create(request, *args, **kwargs)
 
         organization = serializer.validated_data["organization"]
+        material = Material.objects.get(pk=response.data["id"])
         OrganizationMaterialAssociation.objects.get_or_create(
             organization=organization, material=material
         )
+
+        return response
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
         serializer = self.get_serializer(material, data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        new_organization = Organization.objects.get(
-            pk=serializer.validated_data["organization"]["id"]
-        )
+        new_organization = serializer.validated_data["organization"]
 
         if material.organization != new_organization:
             if not request.user.has_perm("add_resources", new_organization):
-                raise PermissionDenied(
-                    detail=f"You do not have permission to add resources to {new_organization}"
-                )
+                return Response(status=status.HTTP_403_FORBIDDEN)
             else:
-                OrganizationMaterialAssociation.get(material=material.id).delete()
+                OrganizationMaterialAssociation.objects.get(
+                    material=material, organization=material.organization
+                ).delete()
                 OrganizationMaterialAssociation.objects.get_or_create(
                     organization=new_organization, material=material
                 )
