@@ -37,6 +37,36 @@ A list of all filterable fields for a given search will be returned with the sea
 ```
 Note that only Materials are filterable.
 
+### Post Filters
+
+Post Filters are filters that are not applied to the facet aggregations. They are useful for iteratively creating a search query.
+Filters return facets with aggregations that show how many *are* contained in the search results.
+Post Filters return facets with aggregations that show how many *would* be contained in the search result if included - in addition to what is contained in the results.
+
+The Materials search endpoint currently supports two Post Filter parameters: ```category_pf```` and ```organism_pf```.
+They accept the same values as the ```category``` and ```organism``` filters respectively.
+
+For example the request:  ```search/materials?search=zebrafish&category_pf=DATASET```
+Would give the following reponse:
+```json
+"facets": {
+    "category": {
+        "DATASET": 4,
+        "MODEL_ORGANISM": 4,
+        "CELL_LINE": 2,
+        "OTHER": 2,
+        "PLASMID": 2,
+        "PROTOCOL": 2,
+        "PDX": 1
+    }
+},
+"results": [Array of 4 materials where category=DATASET]
+```
+As you can see above the facets contain the aggregation counts for all material categories and is not limited to only ```DATASET```
+Those aggregation counts are affected by the search parameter and any other filtering included in the request. Only the Post Filters are ommited during aggregation.
+
+Note: Post Filters can be combined with other Filters but Filters will always be applied before Post Filters.
+
 ### Ordering
 
 Ordering can be performed on the ```created_at``` and ```updated_at``` fields of any object, as well as the following fields:
