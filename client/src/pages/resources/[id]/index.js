@@ -10,7 +10,9 @@ import ResourceType from '../../../images/resource-type.svg'
 const ResourceDetailsPage = ({ resource }) => {
   if (!resource)
     return (
-      <Text>This resource is not available. If this is an error... whoa</Text>
+      <Text>
+        This resource is not currently available. Please try again soon.
+      </Text>
     )
 
   return (
