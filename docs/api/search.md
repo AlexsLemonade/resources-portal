@@ -43,7 +43,7 @@ Post Filters are filters that are not applied to the facet aggregations. They ar
 Filters return facets with aggregations that show how many *are* contained in the search results.
 Post Filters return facets with aggregations that show how many *would* be contained in the search result if included - in addition to what is contained in the results.
 
-The Materials search endpoint currently supports two Post Filter parameters: ```category_pf```` and ```organism_pf```.
+The Materials search endpoint currently supports two Post Filter parameters: ```category_pf``` and ```organism_pf```.
 They accept the same values as the ```category``` and ```organism``` filters respectively.
 
 For example the request:  ```search/materials?search=zebrafish&category_pf=DATASET```
@@ -60,7 +60,7 @@ Would give the following reponse:
         "PDX": 1
     }
 },
-"results": [Array of 4 materials where category=DATASET]
+"results": ["Array of 4 materials where category=DATASET"]
 ```
 As you can see above the facets contain the aggregation counts for all material categories and is not limited to only ```DATASET```
 Those aggregation counts are affected by the search parameter and any other filtering included in the request. Only the Post Filters are ommited during aggregation.
