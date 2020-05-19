@@ -7,7 +7,7 @@ services:
       - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
   api:
     container_name: '${API_NAME}'
-    network_mode: service:client
+    network_mode: '${API_NETWORK}'
     restart: always
     environment:
       - DJANGO_SECRET_KEY=local

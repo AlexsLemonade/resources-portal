@@ -8,21 +8,30 @@ if not os.path.exists("./bin/rportal"):
     print("Please call rportal from the project's root")
     exit()
 
+# every docker-compose run api command looks like this
+run_api = "API_NETWORK=resources-portal_default docker-compose --env-file ./docker-compose.env run --rm api {}"
+
 # list of available commands
 commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
     "build": "docker-compose --env-file ./docker-compose.env build",
-    "rebuild-index": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"',
-    "populate-db": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"',
+    "rebuild-index": run_api.format(
+        'bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"'
+    ),
+    "populate-db": run_api.format(
+        'bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"'
+    ),
     "recreate-schema": "./recreate_schema.sh",
-    "test-api": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"',
-    "makemigrations": 'docker-compose --env-file ./docker-compose.env run --rm api bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"',
+    "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"'),
+    "makemigrations": run_api.format(
+        'bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"'
+    ),
     "postgres-cli": "./run_psql_client.sh",
-    "createsuperuser": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py createsuperuser",
-    "graph-models": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py graph_models -a -g > model.dot",
-    "run-api": "docker-compose --env-file ./docker-compose.env run --rm api {}",
-    "manage-api": "docker-compose --env-file ./docker-compose.env run --rm api ./manage.py {}",
+    "createsuperuser": run_api.format("./manage.py createsuperuser"),
+    "graph-models": run_api.format("./manage.py graph_models -a -g > model.dot"),
+    "run-api": run_api,
+    "manage-api": run_api.format("./manage.py {}"),
     "env": "cat ./docker-compose.env",
 }
 
