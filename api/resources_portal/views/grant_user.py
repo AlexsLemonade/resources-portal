@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Grant, GrantOrganizationAssociation, GrantUserAssociation, User
+from resources_portal.models import Grant, GrantUserAssociation, User
 from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
