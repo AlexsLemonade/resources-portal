@@ -1,0 +1,62 @@
+version: '2'
+
+services:
+  postgres:
+    image: postgres:11.6
+    volumes:
+      - ./api/volumes_postgres/volumes_postgres:/var/lib/postgresql/data
+  api:
+    container_name: '${API_NAME}'
+    network_mode: '${API_NETWORK}'
+    restart: always
+    environment:
+      - DJANGO_SECRET_KEY=local
+    image: api
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+      args:
+        PORT: '${API_PORT}'
+    command: >
+      bash -c 'python wait_for_postgres.py &&
+               python3 wait_for_elasticsearch.py &&
+               ./manage.py migrate &&
+               ./manage.py runserver 0.0.0.0:${API_PORT}'
+    volumes:
+      - ./api:/home/user/code
+    depends_on:
+      - postgres
+      - elasticsearch
+  documentation:
+    restart: always
+    image: squidfunk/mkdocs-material
+    volumes:
+      - ${PWD}:/docs
+    ports:
+      - '${DOCS_PORT}:8000'
+  client:
+    image: node:14.2
+    ports:
+      - '${API_PORT}:${API_PORT}'
+      - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
+      - '${CLIENT_PORT}:${CLIENT_PORT}'
+    environment:
+      API_HOST: 'http://localhost:${API_PORT}'
+    command: >
+      bash -c 'cd /home/user/code &&
+               yarn &&
+               yarn dev -p ${CLIENT_PORT} &&
+               yarn storybook --quiet -p ${STORYBOOK_PORT}'
+    volumes:
+      - ./client:/home/user/code
+      - ./client/node_modules:/home/user/code/node_modules
+      - ./client/.next:/home/user/code/.next
+  elasticsearch:
+    container_name: '${ES_NAME}'
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    ports:
+      - '${ES_PORT}:${ES_PORT}'
+    environment:
+      discovery.type: single-node
+    depends_on:
+      - postgres
