@@ -71,32 +71,6 @@ class GrantUsersTestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(self.org_1_member, self.grant.users.all())
 
-    def test_post_request_on_non_first_organization_succeeds(self):
-        self.client.force_authenticate(user=self.owner_2)
-
-        url = reverse("grants-user-list", args=[self.grant.id])
-        response = self.client.post(url, data={"id": self.org_2_member.id})
-
-        self.assertEqual(response.status_code, 201)
-        self.assertIn(self.org_2_member, self.grant.users.all())
-
-    def test_post_request_on_user_not_in_associated_organization_fails(self):
-        self.client.force_authenticate(user=self.owner_1)
-
-        url = reverse("grants-user-list", args=[self.grant.id])
-        response = self.client.post(url, data={"id": self.user_without_perms.id})
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_post_request_from_user_without_organization_permissions_fails(self):
-        self.client.force_authenticate(user=self.owner_1)
-
-        url = reverse("grants-user-list", args=[self.grant.id])
-        # Owner 1 does not have add members permissions for org 2
-        response = self.client.post(url, data={"id": self.org_2_member.id})
-
-        self.assertEqual(response.status_code, 403)
-
     def test_post_request_fails_if_unauthenticated(self):
         self.client.force_authenticate(user=None)
 
