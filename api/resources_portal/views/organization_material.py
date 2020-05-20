@@ -1,12 +1,10 @@
-from rest_framework import status, viewsets
-from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
-from rest_framework.permissions import BasePermission, IsAuthenticated
-from rest_framework.response import Response
+from rest_framework import viewsets
+from rest_framework.exceptions import MethodNotAllowed
+from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Material, Organization, OrganizationMaterialAssociation
-from resources_portal.views.material import MaterialSerializer
+from resources_portal.models import Material
 from resources_portal.views.relation_serializers import MaterialRelationSerializer
 
 
