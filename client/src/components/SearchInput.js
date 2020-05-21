@@ -15,6 +15,9 @@ export default function SearchInput({ onChange, size = 'medium' }) {
   } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
   const [inputValue, setInputValue] = React.useState(query.search || '')
+  const [selectWidth, setSelectWith] = React.useState(
+    resourceType === 'ALL' ? '60px' : '156px'
+  )
 
   const handleSubmit = () => {
     removeFacet('category')
@@ -26,7 +29,11 @@ export default function SearchInput({ onChange, size = 'medium' }) {
   }
 
   // this is just the help make the select look more like the designs
-  const selectWidth = resourceType === 'ALL' ? '60px' : '156px'
+  const resourceCategoryOptions = [
+    'ALL',
+    ...sortedObjectKeys(Mappings).map((map) => map.key)
+  ].map((option) => ({ value: option, label: getReadable(option) }))
+
   return (
     <Box direction="row">
       <Box
@@ -40,9 +47,11 @@ export default function SearchInput({ onChange, size = 'medium' }) {
           plain
           size={size}
           value={resourceType}
-          options={['ALL', ...sortedObjectKeys(Mappings).map((map) => map.key)]}
-          labelKey={getReadable}
+          valueKey="value"
+          options={resourceCategoryOptions}
+          labelKey="label"
           onChange={({ option: { value } }) => {
+            setSelectWith(value === 'ALL' ? '60px' : '156px')
             setResourceType(value)
           }}
         />
