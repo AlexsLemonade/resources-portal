@@ -1,6 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed, PermissionDenied, ValidationError
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin

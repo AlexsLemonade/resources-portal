@@ -7,7 +7,6 @@ from faker import Faker
 
 from resources_portal.models import User
 from resources_portal.test.factories import OrganizationFactory, UserFactory
-from resources_portal.views.relation_serializers import OrganizationRelationSerializer
 
 fake = Faker()
 
