@@ -1,5 +1,10 @@
 import os
 
+import boto3
+import requests
+from elasticsearch.connection import RequestsHttpConnection
+from requests_aws4auth import AWS4Auth
+
 from resources_portal.config.common import Common
 
 
@@ -29,7 +34,28 @@ class Production(Common):
         }
     }
 
+    session = boto3.session.Session()
+    credentials = session.get_credentials()
+    # I don't know why there's no region here, but availability zone
+    # minus a or b is the region! It's a bit of a hack but the
+    # alternative is to pass the region into the app as an env var.
+    region = requests.get(
+        "http://169.254.169.254/latest/meta-data/placement/availability-zone"
+    ).text[:-1]
+    aws_auth = AWS4Auth(
+        credentials.access_key,
+        credentials.secret_key,
+        region,
+        "es",
+        session_token=credentials.token,
+    )
     # Elastic Search
     ELASTICSEARCH_DSL = {
-        "default": {"hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"), "timeout": 60}
+        "default": {
+            "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
+            "port": 443,
+            "http_auth": aws_auth,
+            "connection_class": RequestsHttpConnection,
+            "use_ssl": True,
+        }
     }

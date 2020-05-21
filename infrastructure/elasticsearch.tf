@@ -1,6 +1,6 @@
 resource "aws_elasticsearch_domain" "es" {
   domain_name = "rp-es-${var.user}-${var.stage}"
-  elasticsearch_version = "6.3"
+  elasticsearch_version = "6.4"
 
   cluster_config {
     instance_type = "${var.elasticsearch_instance_type}"
@@ -29,10 +29,10 @@ resource "aws_elasticsearch_domain" "es" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "*"
+        "AWS": "${aws_iam_role.resources_portal_instance.arn}"
       },
       "Action": "es:*",
-      "Resource": "arn:aws:es:us-east-1:${data.aws_caller_identity.current.account_id}:domain/es-${var.user}-${var.stage}/*"
+      "Resource": "arn:aws:es:us-east-1:${data.aws_caller_identity.current.account_id}:domain/rp-es-${var.user}-${var.stage}/*"
     }
   ]
 }
