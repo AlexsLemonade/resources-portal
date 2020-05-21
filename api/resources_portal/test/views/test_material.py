@@ -35,7 +35,6 @@ class TestMaterialListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(self.material.category, response.json()["category"])
-        new_material = Material.objects.get(pk=response.json()["id"])
 
     def test_post_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
@@ -95,6 +94,8 @@ class TestSingleMaterialTestCase(APITestCase):
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertTrue(self.material in self.organization2.materials.all())
 
     def test_put_request_on_organization_without_permissions_for_both_orgs_fails(self):
         self.client.force_authenticate(user=self.user)
