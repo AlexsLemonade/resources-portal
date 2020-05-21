@@ -10,6 +10,7 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FacetedSearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
+    PostFilterFilteringFilterBackend,
 )
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
@@ -172,7 +173,9 @@ class MaterialDocumentView(DocumentViewSet):
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
         FacetedSearchFilterBackend,
+        PostFilterFilteringFilterBackend,
     ]
+
     lookup_field = "id"
 
     # Define search fields
@@ -235,6 +238,12 @@ class MaterialDocumentView(DocumentViewSet):
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
     }
     faceted_search_param = "facet"
+
+    # Specify post filter fields
+    post_filter_fields = {
+        "category_pf": {"field": "category"},
+        "organism_pf": {"field": "organism"},
+    }
 
     def list(self, request, *args, **kwargs):
         response = super(MaterialDocumentView, self).list(request, args, kwargs)

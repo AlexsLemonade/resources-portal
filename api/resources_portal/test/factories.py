@@ -44,6 +44,10 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
     owner = factory.SubFactory(UserFactory)
     name = "test_organization"
 
+    @factory.post_generation
+    def organizations(self, create, extracted, **kwargs):
+        self.members.add(self.owner)
+
 
 class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -53,9 +57,17 @@ class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
     organization = factory.SubFactory(PersonalOrganizationFactory)
 
 
-class OrganizationFactory(PersonalOrganizationFactory):
+class OrganizationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Organization"
+
+    name = "test_organization"
+    owner = factory.SubFactory(UserFactory)
     membership1 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
-    membership2 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        self.members.add(self.owner)
 
 
 class MaterialFactory(factory.django.DjangoModelFactory):

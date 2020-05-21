@@ -38,3 +38,5 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         # when a new organization is created, assign permission to it's owner
         assign_perm("approve_requests", instance.owner, instance)
+        assign_perm("add_resources", instance.owner, instance)
+        assign_perm("add_members_and_manage_permissions", instance.owner, instance)
