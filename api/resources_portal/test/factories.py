@@ -4,7 +4,7 @@ import factory
 from factory import post_generation
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Organization, OrganizationMaterialAssociation, User
+from resources_portal.models import Organization, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -81,11 +81,6 @@ class MaterialFactory(factory.django.DjangoModelFactory):
     contact_user = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)
 
-    @post_generation
-    def post(self, create, extracted, **kwargs):
-        newOrg = Organization.objects.get(id=self.organization.id)
-        OrganizationMaterialAssociation.objects.get_or_create(material=self, organization=newOrg)
-
 
 class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -136,14 +131,6 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 
     material = factory.SubFactory(MaterialFactory)
     grant = factory.SubFactory(LeafGrantFactory)
-
-
-class OrganizationMaterialAssociationFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "resources_portal.OrganizationMaterialAssociation"
-
-    material = factory.SubFactory(MaterialFactory)
-    organization = factory.SubFactory(PersonalOrganizationFactory)
 
 
 class GrantFactory(LeafGrantFactory):

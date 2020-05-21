@@ -4,7 +4,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Material, Organization, OrganizationMaterialAssociation
+from resources_portal.models import Material, Organization
 from resources_portal.views.user import UserSerializer
 
 
@@ -66,15 +66,7 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        response = super(MaterialViewSet, self).create(request, *args, **kwargs)
-
-        organization = serializer.validated_data["organization"]
-        material = Material.objects.get(pk=response.data["id"])
-        OrganizationMaterialAssociation.objects.get_or_create(
-            organization=organization, material=material
-        )
-
-        return response
+        return super(MaterialViewSet, self).create(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
@@ -86,12 +78,5 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         if material.organization != new_organization:
             if not request.user.has_perm("add_resources", new_organization):
                 return Response(status=status.HTTP_403_FORBIDDEN)
-            else:
-                OrganizationMaterialAssociation.objects.get(
-                    material=material, organization=material.organization
-                ).delete()
-                OrganizationMaterialAssociation.objects.get_or_create(
-                    organization=new_organization, material=material
-                )
 
         return super(MaterialViewSet, self).update(request, *args, **kwargs)

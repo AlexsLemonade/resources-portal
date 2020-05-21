@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Material, OrganizationMaterialAssociation
+from resources_portal.models import Material
 from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
@@ -36,11 +36,6 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(self.material.category, response.json()["category"])
         new_material = Material.objects.get(pk=response.json()["id"])
-        self.assertTrue(
-            OrganizationMaterialAssociation.objects.filter(
-                material=new_material, organization=self.organization
-            ).exists()
-        )
 
     def test_post_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
@@ -100,17 +95,6 @@ class TestSingleMaterialTestCase(APITestCase):
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        self.assertFalse(
-            OrganizationMaterialAssociation.objects.filter(
-                material=self.material, organization=self.organization
-            ).exists()
-        )
-        self.assertTrue(
-            OrganizationMaterialAssociation.objects.filter(
-                material=self.material, organization=self.organization2
-            ).exists()
-        )
 
     def test_put_request_on_organization_without_permissions_for_both_orgs_fails(self):
         self.client.force_authenticate(user=self.user)
