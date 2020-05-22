@@ -20,6 +20,8 @@ class GrantUsersTestCase(APITestCase):
         self.user_without_perms = UserFactory()
         self.org_1_member = UserFactory()
         self.org_2_member = UserFactory()
+        self.admin = UserFactory()
+        self.admin.is_superuser = True
 
         self.grant = GrantFactory()
 
@@ -61,6 +63,15 @@ class GrantUsersTestCase(APITestCase):
         url = reverse("grants-user-list", args=[self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
+
+    def test_post_request_succeeds_if_from_admin(self):
+        self.client.force_authenticate(user=self.admin)
+
+        url = reverse("grants-user-list", args=[self.grant.id])
+        response = self.client.post(url, data={"id": self.org_1_member.id})
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIn(self.org_1_member, self.grant.users.all())
 
     def test_post_request_associates_a_user(self):
         self.client.force_authenticate(user=self.owner_1)

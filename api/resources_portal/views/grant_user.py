@@ -9,17 +9,17 @@ from resources_portal.models import Grant, GrantUserAssociation, User
 from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
-class OwnsGrant(BasePermission):
+class OwnsGrantOrIsAdmin(BasePermission):
     def has_permission(self, request, view):
         grant = Grant.objects.get(pk=view.kwargs["parent_lookup_grants"])
 
-        return request.user in grant.users.all()
+        return (request.user in grant.users.all()) or request.user.is_superuser
 
 
 class GrantUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-created_at")
 
-    permission_classes = [IsAuthenticated, OwnsGrant]
+    permission_classes = [IsAuthenticated, OwnsGrantOrIsAdmin]
 
     http_method_names = ["get", "post", "delete", "head", "options"]
 
