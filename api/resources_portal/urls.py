@@ -32,10 +32,10 @@ router.register(r"organizations", OrganizationViewSet, basename="organization").
     parents_query_lookups=["organization"],
 )
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
-    r"members",
+    r"grants",
     OrganizationGrantViewSet,
     basename="organizations-grants",
-    parents_query_lookups=["organization"],
+    parents_query_lookups=["organizations"],
 )
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 router.register(r"grants", GrantViewSet, basename="grant").register(

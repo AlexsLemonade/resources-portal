@@ -5,10 +5,29 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Material
-from resources_portal.test.factories import GrantFactory, MaterialFactory, UserFactory
+from resources_portal.models import Grant
+from resources_portal.test.factories import GrantFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
+
+
+def transform_grant_json(grant_json):
+    user_list = []
+    for user in grant_json["users"]:
+        user_list.append(user.id)
+    grant_json["users"] = user_list
+
+    organization_list = []
+    for org in grant_json["organizations"]:
+        organization_list.append(org.id)
+    grant_json["organizations"] = organization_list
+
+    material_list = []
+    for material in grant_json["materials"]:
+        material_list.append(material.id)
+    grant_json["materials"] = material_list
+
+    return grant_json
 
 
 class OrganizationGrantTestCase(APITestCase):
@@ -18,107 +37,138 @@ class OrganizationGrantTestCase(APITestCase):
 
     def setUp(self):
         self.grant = GrantFactory()
-        self.url = reverse("grant-detail", args=[self.grant.id])
+        self.grant2 = GrantFactory()
 
-    def test_get_single_material_not_allowed(self):
-        self.client.force_authenticate(user=self.grant.users.first())
-        material = self.grant.materials.first()
-        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        self.organization1 = self.grant.organizations.first()
+        self.org_1_member = UserFactory()
+        self.organization1.members.add(self.org_1_member)
+        self.organization1.grants.add(self.grant2)
+        self.organization1.save()
+
+        self.grant.users.add(self.organization1.owner)
+        self.grant.save()
+
+        self.organization2 = self.grant.organizations.last()
+        self.url = reverse("organization-detail", args=[self.grant.id])
+
+    def test_get_single_organization_not_allowed(self):
+        self.client.force_authenticate(user=self.organization1.owner)
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
 
-    def test_get_request_returns_materials(self):
-        self.client.force_authenticate(user=self.grant.users.first())
-        url = reverse("grants-material-list", args=[self.grant.id])
+    def test_get_request_from_owner_returns_grants(self):
+        self.client.force_authenticate(user=self.organization1.owner)
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 2)
 
-    def test_get_fails_if_not_owner(self):
-        user = UserFactory()
-        self.client.force_authenticate(user=user)
-        url = reverse("grants-material-list", args=[self.grant.id])
+    def test_get_request_from_member_returns_grants(self):
+        self.client.force_authenticate(user=self.org_1_member)
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 2)
+
+    def test_get_fails_if_not_member_or_owner(self):
+        self.client.force_authenticate(user=self.organization1.owner)
+        url = reverse("organizations-grants-list", args=[self.organization2.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    def test_post_request_associates_a_material(self):
-        user = self.grant.users.first()
-        organization = self.grant.organizations.first()
+    def test_get_fails_if_not_authenticated(self):
+        self.client.force_authenticate(user=None)
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
 
-        # Organization's owner is a new user by default.
-        organization.owner = user
-        organization.save()
+    def test_post_request_associates_a_grant(self):
+        self.client.force_authenticate(user=self.organization1.owner)
 
-        self.client.force_authenticate(user=user)
+        grant = GrantFactory()
+        grant.users.add(self.organization1.owner)
+        grant.save()
 
-        material = MaterialFactory(contact_user=user, organization=organization)
-        url = reverse("grants-material-list", args=[self.grant.id])
-        response = self.client.post(url, data=model_to_dict(material))
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        grant_json = transform_grant_json(model_to_dict(grant))
+        response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 201)
-        self.assertIn(material, self.grant.materials.all())
-
-    def test_post_fails_if_not_material_owner(self):
-        user = self.grant.users.first()
-        organization = self.grant.organizations.first()
-
-        self.client.force_authenticate(user=user)
-
-        # Organization's owner is a new user by default.
-        material = MaterialFactory(contact_user=user, organization=organization)
-        url = reverse("grants-material-list", args=[self.grant.id])
-        response = self.client.post(url, data=model_to_dict(material))
-
-        self.assertEqual(response.status_code, 403)
+        self.assertIn(grant, self.organization1.grants.all())
 
     def test_post_fails_if_not_grant_owner(self):
-        organization = self.grant.organizations.first()
-        self.client.force_authenticate(user=organization.owner)
+        self.client.force_authenticate(user=self.organization1.owner)
+        grant = GrantFactory()
 
-        # Organization's owner is a new user by default.
-        material = MaterialFactory(contact_user=organization.owner, organization=organization)
-        url = reverse("grants-material-list", args=[self.grant.id])
-        response = self.client.post(url, data=model_to_dict(material))
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        grant_json = transform_grant_json(model_to_dict(grant))
+        response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 403)
 
-    def test_post_fails_if_grant_not_associated(self):
-        user = self.grant.users.first()
-        self.client.force_authenticate(user=user)
+    def test_post_fails_if_not_organization_owner(self):
+        self.client.force_authenticate(user=self.organization2.owner)
 
-        # Organization's owner is a new user by default.
-        material = MaterialFactory(contact_user=user)
-        # user owns material's organization, his grant just isn't associated with that org.
-        material.organization.owner = user
-        url = reverse("grants-material-list", args=[self.grant.id])
-        response = self.client.post(url, data=model_to_dict(material))
+        grant = GrantFactory()
+        grant.users.add(self.organization1.owner)
+        grant.save()
+
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        grant_json = transform_grant_json(model_to_dict(grant))
+        response = self.client.post(url, data=grant_json)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_post_fails_if_not_authenticated(self):
+        self.client.force_authenticate(user=None)
+
+        grant = GrantFactory()
+
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+        grant_json = transform_grant_json(model_to_dict(grant))
+        response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 403)
 
     def test_delete_request_disassociates_a_material(self):
-        self.client.force_authenticate(user=self.grant.users.first())
-        material = self.grant.materials.first()
-        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        self.client.force_authenticate(user=self.organization1.owner)
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
 
         self.grant.refresh_from_db()
-        self.assertNotIn(material, self.grant.materials.all())
-        # Verify that the material was not deleted, just its relationship
-        Material.objects.get(pk=material.id)
+        self.assertNotIn(self.grant, self.organization1.grants.all())
+        # Verify that the grant was not deleted, just its relationship
+        Grant.objects.get(pk=self.grant.id)
 
     def test_delete_fails_if_not_grant_owner(self):
-        user = UserFactory()
-        self.client.force_authenticate(user=user)
+        self.client.force_authenticate(user=self.organization1.owner)
+        grant = GrantFactory()
+        self.organization1.grants.add(grant)
+        self.organization1.save()
 
-        material = self.grant.materials.first()
-        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, grant.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_fails_if_not_organization_owner(self):
+        self.client.force_authenticate(user=self.organization2.owner)
+
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_fails_if_unauthenticated(self):
+        self.client.force_authenticate(user=None)
+
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 403)
 
     def test_cannot_put_a_relationship(self):
-        self.client.force_authenticate(user=self.grant.users.first())
-        material = MaterialFactory()
-        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        self.client.force_authenticate(user=self.organization1.owner)
+        grant = GrantFactory()
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, grant.id])
         response = self.client.put(url)
         self.assertEqual(response.status_code, 405)

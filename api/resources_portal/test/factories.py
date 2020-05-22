@@ -137,5 +137,6 @@ class GrantFactory(LeafGrantFactory):
     user1 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
     user2 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
     organization = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
     material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")

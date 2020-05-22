@@ -18,8 +18,12 @@ class IsMemberOfOrganization(BasePermission):
 
 class OwnsGrantAndOrganization(BasePermission):
     def has_permission(self, request, view):
-        grant = Grant.objects.get(pk=request.data["id"])
-        organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
+        if view.action == "create":
+            grant = Grant.objects.get(pk=request.data["id"])
+            organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
+        else:
+            grant = Grant.objects.get(pk=view.kwargs["pk"])
+            organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
 
         return request.user in grant.users.all() and request.user == organization.owner
 
@@ -36,7 +40,7 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return GrantRelationSerializer
 
     def get_permissions(self):
-        if self.action == "create" or self.action == "delete":
+        if self.action == "create" or self.action == "destroy":
             permission_classes = [IsAuthenticated, OwnsGrantAndOrganization]
         else:
             permission_classes = [IsAuthenticated, IsMemberOfOrganization]
@@ -53,7 +57,7 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         organization = Organization.objects.get(pk=kwargs["parent_lookup_organizations"])
-        grant = Grant.objects.get(pk=request.data["id"])
+        grant = Grant.objects.get(pk=kwargs["pk"])
 
         association = GrantOrganizationAssociation.objects.get(
             grant=grant, organization=organization
