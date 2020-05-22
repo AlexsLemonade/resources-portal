@@ -11,3 +11,4 @@ from resources_portal.views.organization import OrganizationViewSet
 from resources_portal.views.organization_invitations import OrganizationInvitationViewSet
 from resources_portal.views.organization_member import OrganizationMemberViewSet
 from resources_portal.views.user import UserViewSet
+from resources_portal.views.user_organizations import UserOrganizationViewSet
