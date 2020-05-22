@@ -15,6 +15,7 @@ from resources_portal.views import (
     MaterialViewSet,
     OrganizationDocumentView,
     OrganizationInvitationViewSet,
+    OrganizationMemberViewSet,
     OrganizationViewSet,
     UserDocumentView,
     UserViewSet,
@@ -23,7 +24,12 @@ from resources_portal.views import (
 router = ExtendedSimpleRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"materials", MaterialViewSet, basename="material")
-router.register(r"organizations", OrganizationViewSet, basename="organization")
+router.register(r"organizations", OrganizationViewSet, basename="organization").register(
+    r"members",
+    OrganizationMemberViewSet,
+    basename="organizations-members",
+    parents_query_lookups=["organization"],
+)
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"materials",

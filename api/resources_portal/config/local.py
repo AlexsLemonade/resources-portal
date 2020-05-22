@@ -15,3 +15,11 @@ class Local(Common):
 
     ELASTICSEARCH_HOST = "elasticsearch"
     ELASTICSEARCH_PORT = 9200
+
+    # CORS
+    CORS_ORIGIN_WHITELIST = [
+        "http://localhost:7000",
+        "http://127.0.0.1:7000",
+    ]
+
+    CSRF_TRUSTED_ORIGINS = ["localhost", "127.0.0.1"]

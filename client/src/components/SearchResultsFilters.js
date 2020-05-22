@@ -4,6 +4,8 @@ import { getReadable } from '../helpers/readableNames'
 import { sortedObjectKeysByValues } from '../helpers/sortObjectKeys'
 import { useSearchResources } from '../hooks/useSearchResources'
 
+const facetIsEmpty = (f) => Object.keys(f).length === 0
+
 export const SearchResultsFilters = () => {
   const {
     response: { facets },
@@ -29,7 +31,7 @@ export const SearchResultsFilters = () => {
           }}
         />
       </Box>
-      {facets.category && (
+      {!facetIsEmpty(facets.category) && (
         <Box margin={{ top: 'small' }} pad={{ vertical: 'small' }}>
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Resource Types
@@ -47,7 +49,7 @@ export const SearchResultsFilters = () => {
           ))}
         </Box>
       )}
-      {facets.organism && (
+      {!facetIsEmpty(facets.organism) && (
         <Box
           margin={{ top: 'small' }}
           pad={{ vertical: 'small' }}
