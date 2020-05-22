@@ -17,14 +17,12 @@ from resources_portal.views import (
     OrganizationInvitationViewSet,
     OrganizationMemberViewSet,
     OrganizationViewSet,
-    UserCreateViewSet,
     UserDocumentView,
     UserViewSet,
 )
 
 router = ExtendedSimpleRouter(trailing_slash=False)
 router.register(r"users", UserViewSet, basename="user")
-router.register(r"users", UserCreateViewSet, basename="user")
 router.register(r"materials", MaterialViewSet, basename="material")
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
     r"members",
