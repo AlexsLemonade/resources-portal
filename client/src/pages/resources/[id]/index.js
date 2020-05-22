@@ -1,74 +1,83 @@
 import React from 'react'
 import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
-import { fakeSearchMaterialsResponse } from '../../../helpers/testData'
+import api from '../../../api'
 import { ResourceDetails } from '../../../components/resources'
 import DetailsTable from '../../../components/DetailsTable'
 import Organism from '../../../images/organism.svg'
 import ResourceType from '../../../images/resource-type.svg'
 
-const ResourceDetailsPage = ({ resource }) => (
-  <>
-    <Box
-      direction="row"
-      justify="between"
-      align="center"
-      margin={{ bottom: 'large' }}
-    >
-      <Box pad="large">
-        <Heading level="5" margin={{ top: '0', bottom: 'large' }}>
-          <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
-            <Anchor label={resource.title} />
-          </Link>
-        </Heading>
+const ResourceDetailsPage = ({ resource }) => {
+  if (!resource)
+    return (
+      <Text>
+        This resource is not currently available. Please try again soon.
+      </Text>
+    )
 
-        <Box direction="row">
-          <ResourceType />
-          <Text margin={{ left: 'small', right: 'xlarge' }}>
-            {resource.category}
-          </Text>
+  return (
+    <>
+      <Box
+        direction="row"
+        justify="between"
+        align="center"
+        margin={{ bottom: 'large' }}
+      >
+        <Box pad="large">
+          <Heading level="5" margin={{ top: '0', bottom: 'large' }}>
+            <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
+              <Anchor label={resource.title} />
+            </Link>
+          </Heading>
 
-          <Organism />
-          <Text margin={{ left: 'small' }}>
-            {resource.additional_metadata.organism}
-          </Text>
+          <Box direction="row">
+            <ResourceType />
+            <Text margin={{ left: 'small', right: 'xlarge' }}>
+              {resource.category}
+            </Text>
+
+            <Organism />
+            <Text margin={{ left: 'small' }}>
+              {resource.additional_metadata.organism}
+            </Text>
+          </Box>
         </Box>
+        <div>
+          <Link
+            href="/resources/[id]/request"
+            as={`/resources/${resource.id}/request`}
+          >
+            <Button label="Request" primary />
+          </Link>
+        </div>
       </Box>
+
       <div>
-        <Link
-          href="/resources/[id]/request"
-          as={`/resources/${resource.id}/request`}
-        >
-          <Button label="Request" primary />
-        </Link>
+        <Tabs>
+          <Tab title="Resource Details">
+            <TabHeading title="Resource Details" />
+            <ResourceDetails resource={resource} />
+          </Tab>
+          <Tab title="Publication Information">
+            <TabHeading title="Publication Information" />
+
+            <PublicationInformation resource={resource} />
+          </Tab>
+          <Tab title="Contact Submitter">
+            <Box alvign="center" pad="large" gap="large">
+              TODO: Contact Submitter
+            </Box>
+          </Tab>
+          <Tab title="Request Requirements">
+            <Box alvign="center" pad="large" gap="large">
+              TODO: Request Requirements
+            </Box>
+          </Tab>
+        </Tabs>
       </div>
-    </Box>
-
-    <div>
-      <Tabs>
-        <Tab title="Resource Details">
-          <TabHeading title="Resource Details" />
-          <ResourceDetails resource={resource} />
-        </Tab>
-        <Tab title="Publication Information">
-          <TabHeading title="Publication Information" />
-
-          <PublicationInformation resource={resource} />
-        </Tab>
-        <Tab title="Contact Submitter">
-          <Box alvign="center" pad="large" gap="large">
-            TODO: Contact Submitter
-          </Box>
-        </Tab>
-        <Tab title="Request Requirements">
-          <Box alvign="center" pad="large" gap="large">
-            TODO: Request Requirements
-          </Box>
-        </Tab>
-      </Tabs>
-    </div>
-  </>
-)
+    </>
+  )
+}
 
 export default ResourceDetailsPage
 
@@ -88,19 +97,19 @@ const PublicationInformation = ({ resource }) => (
     data={[
       {
         label: 'PubMed ID',
-        value: resource.additional_metadata.pubmedid
+        value: resource.pubmedid
       },
       {
         label: 'Publication Title',
-        value: resource.additional_metadata.publication_title
+        value: resource.publication_title
       },
       {
         label: 'Pre-print DOI',
-        value: resource.additional_metadata.pre_print_doi
+        value: resource.pre_print_doi
       },
       {
         label: 'Pre-print Title',
-        value: resource.additional_metadata.pre_print_title
+        value: resource.pre_print_title
       },
       { label: 'Citation', value: resource.additional_metadata.citation }
     ]}
@@ -108,10 +117,8 @@ const PublicationInformation = ({ resource }) => (
 )
 
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const resource = fakeSearchMaterialsResponse.results.find(
-    (material) => material.id === parseInt(query.id, 10)
-  )
+  const apiResponse = await api.resources.find(query.id)
   return {
-    resource
+    resource: apiResponse.isOk ? apiResponse.response : false
   }
 }

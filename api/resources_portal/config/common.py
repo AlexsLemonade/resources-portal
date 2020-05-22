@@ -27,12 +27,14 @@ class Common(Configuration):
         "django_elasticsearch_dsl_drf",  # elasticsearch rest api
         "drf_yasg",
         "computedfields",  # Allows for computed fields on models
+        "corsheaders",
         # Your apps
         "resources_portal",
     )
 
     # https://docs.djangoproject.com/en/2.0/topics/http/middleware/
     MIDDLEWARE = (
+        "corsheaders.middleware.CorsMiddleware",
         "django.middleware.security.SecurityMiddleware",
         "django.contrib.sessions.middleware.SessionMiddleware",
         "django.middleware.common.CommonMiddleware",
