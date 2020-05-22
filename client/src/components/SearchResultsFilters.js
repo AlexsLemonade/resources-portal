@@ -15,6 +15,7 @@ export const SearchResultsFilters = () => {
     hasAnyFacet,
     goToSearchResults
   } = useSearchResources()
+
   return (
     <Box>
       <Box direction="row" align="baseline" justify="between">
@@ -88,7 +89,7 @@ export const SearchResultsFilters = () => {
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Publication Information
           </Text>
-          {'has_publication' in facets && (
+          {'has_publication' in facets && facets.has_publication['1'] && (
             <CheckBox
               label={`Includes Publication (${facets.has_publication['1']})`}
               checked={hasFacet('has_publication')}
@@ -98,7 +99,7 @@ export const SearchResultsFilters = () => {
               }}
             />
           )}
-          {'has_pre_print' in facets && (
+          {'has_pre_print' in facets && facets.has_pre_print['1'] && (
             <CheckBox
               label={`Includes Pre-print (${facets.has_pre_print['1']})`}
               checked={hasFacet('has_pre_print')}
