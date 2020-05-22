@@ -108,6 +108,11 @@ class TestUserDetailTestCase(APITestCase):
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
+    def test_user_cannot_delete_another_user(self):
+        self.client.force_authenticate(user=self.second_user)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_delete_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
