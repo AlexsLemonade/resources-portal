@@ -10,6 +10,7 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from resources_portal.views import (
     GrantMaterialViewSet,
+    GrantUserViewSet,
     GrantViewSet,
     MaterialDocumentView,
     MaterialViewSet,
@@ -17,7 +18,6 @@ from resources_portal.views import (
     OrganizationInvitationViewSet,
     OrganizationMemberViewSet,
     OrganizationViewSet,
-    UserCreateViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
@@ -31,7 +31,6 @@ router.register(r"users", UserViewSet, basename="user").register(
     basename="users-organizations",
     parents_query_lookups=["user"],
 )
-router.register(r"users", UserCreateViewSet, basename="user")
 router.register(r"materials", MaterialViewSet, basename="material")
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
     r"members",
@@ -45,6 +44,9 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
     GrantMaterialViewSet,
     basename="grants-material",
     parents_query_lookups=["grants"],
+)
+router.register(r"grants", GrantViewSet, basename="grant").register(
+    r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
 
 search_router = DefaultRouter(trailing_slash=False)

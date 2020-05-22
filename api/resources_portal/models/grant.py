@@ -1,8 +1,5 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
-
 
 class Grant(models.Model):
     class Meta:
@@ -17,6 +14,6 @@ class Grant(models.Model):
     title = models.TextField()
     funder_id = models.CharField(max_length=80)
 
-    users = models.ManyToManyField(User, through="GrantUserAssociation")
-    organizations = models.ManyToManyField(Organization, through="GrantOrganizationAssociation")
+    users = models.ManyToManyField("User", through="GrantUserAssociation")
+    organizations = models.ManyToManyField("Organization", through="GrantOrganizationAssociation")
     materials = models.ManyToManyField("Material", through="GrantMaterialAssociation")
