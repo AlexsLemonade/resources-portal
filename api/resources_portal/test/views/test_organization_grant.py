@@ -11,25 +11,6 @@ from resources_portal.test.factories import GrantFactory, UserFactory
 fake = Faker()
 
 
-def transform_grant_json(grant_json):
-    user_list = []
-    for user in grant_json["users"]:
-        user_list.append(user.id)
-    grant_json["users"] = user_list
-
-    organization_list = []
-    for org in grant_json["organizations"]:
-        organization_list.append(org.id)
-    grant_json["organizations"] = organization_list
-
-    material_list = []
-    for material in grant_json["materials"]:
-        material_list.append(material.id)
-    grant_json["materials"] = material_list
-
-    return grant_json
-
-
 class OrganizationGrantTestCase(APITestCase):
     """
     Tests /organizations/<id>/grants operations.
@@ -90,32 +71,44 @@ class OrganizationGrantTestCase(APITestCase):
         grant.users.add(self.organization1.owner)
         grant.save()
 
-        url = reverse("organizations-grants-list", args=[self.organization1.id])
-        grant_json = transform_grant_json(model_to_dict(grant))
-        response = self.client.post(url, data=grant_json)
+        org_grant_url = reverse("organizations-grants-list", args=[self.organization1.id])
+        grant_url = reverse("grant-detail", args=[grant.id])
+        grant_json = self.client.get(grant_url).json()
+
+        response = self.client.post(org_grant_url, data=grant_json)
 
         self.assertEqual(response.status_code, 201)
         self.assertIn(grant, self.organization1.grants.all())
 
     def test_post_fails_if_not_grant_owner(self):
-        self.client.force_authenticate(user=self.organization1.owner)
         grant = GrantFactory()
+        grant.save()
 
+        self.client.force_authenticate(user=grant.users.first())
+        grant_url = reverse("grant-detail", args=[grant.id])
+        grant_json = self.client.get(grant_url).json()
+
+        self.client.force_authenticate(user=self.organization1.owner)
         url = reverse("organizations-grants-list", args=[self.organization1.id])
-        grant_json = transform_grant_json(model_to_dict(grant))
+
         response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 403)
 
     def test_post_fails_if_not_organization_owner(self):
-        self.client.force_authenticate(user=self.organization2.owner)
-
         grant = GrantFactory()
         grant.users.add(self.organization1.owner)
         grant.save()
 
+        # sign in as org1 owner so we can get grant
+        self.client.force_authenticate(user=self.organization1.owner)
+        grant_url = reverse("grant-detail", args=[grant.id])
+        grant_json = self.client.get(grant_url).json()
+
+        # then sign in as owner to diff org
+        self.client.force_authenticate(user=self.organization2.owner)
         url = reverse("organizations-grants-list", args=[self.organization1.id])
-        grant_json = transform_grant_json(model_to_dict(grant))
+
         response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 403)
@@ -126,7 +119,9 @@ class OrganizationGrantTestCase(APITestCase):
         grant = GrantFactory()
 
         url = reverse("organizations-grants-list", args=[self.organization1.id])
-        grant_json = transform_grant_json(model_to_dict(grant))
+        grant_url = reverse("grant-detail", args=[grant.id])
+        grant_json = self.client.get(grant_url).json()
+
         response = self.client.post(url, data=grant_json)
 
         self.assertEqual(response.status_code, 403)

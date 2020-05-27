@@ -18,12 +18,16 @@ class IsMemberOfOrganization(BasePermission):
 
 class OwnsGrantAndOrganization(BasePermission):
     def has_permission(self, request, view):
+
+        organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
+
+        if not request.user == organization.owner:
+            return False
+
         if view.action == "create":
             grant = Grant.objects.get(pk=request.data["id"])
-            organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
         else:
             grant = Grant.objects.get(pk=view.kwargs["pk"])
-            organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
 
         return request.user in grant.users.all() and request.user == organization.owner
 
