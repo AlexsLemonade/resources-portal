@@ -35,6 +35,16 @@ class HasAddResources(BasePermission):
         return request.user.has_perm("add_resources", obj.organization)
 
 
+class HasDeleteResources(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm("delete_resources", obj.organization)
+
+
+class HasEditResources(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm("edit_resources", obj.organization)
+
+
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all()
 
@@ -45,13 +55,12 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return MaterialSerializer
 
     def get_permissions(self):
-        if (
-            self.action == "create"
-            or self.action == "update"
-            or self.action == "partial_update"
-            or self.action == "destroy"
-        ):
+        if self.action == "create":
             permission_classes = [HasAddResources, IsAuthenticated]
+        elif self.action == "destroy":
+            permission_classes = [HasDeleteResources, IsAuthenticated]
+        elif self.action == "update" or self.action == "partial_update":
+            permission_classes = [HasEditResources, IsAuthenticated]
         else:
             permission_classes = []
 

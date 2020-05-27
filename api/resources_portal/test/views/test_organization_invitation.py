@@ -41,17 +41,10 @@ class OrganizationInvitationListTestCase(APITestCase):
 
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
+            "add_members", self.invitation.request_reciever, self.invitation.organization,
         )
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        assign_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
-        )
 
     def test_post_request_from_incorrect_user_fails(self):
         self.client.force_authenticate(user=None)
