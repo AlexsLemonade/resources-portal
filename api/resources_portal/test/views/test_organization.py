@@ -91,6 +91,7 @@ class TestSingleOrganizationTestCase(APITestCase):
         organization_json = self.client.get(self.url).json()
 
         new_owner = UserFactory()
+        old_owner = self.organization.owner
         # The new owner must belong to the organization already.
         self.organization.members.add(new_owner)
         new_owner_json = {"id": new_owner.id}
@@ -112,6 +113,10 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertIn(new_owner, self.organization.members.all())
         self.assertEqual(new_owner, self.organization.owner)
         self.assertEqual(new_name, self.organization.name)
+
+        # The owner has owner perms, old owner is downgraded to member
+        self.assertTrue(new_owner.has_perm("add_members", self.organization))
+        self.assertFalse(old_owner.has_perm("add_members", self.organization))
 
         # But adding members requires a request to the nested route:
         self.assertNotIn(new_member, self.organization.members.all())

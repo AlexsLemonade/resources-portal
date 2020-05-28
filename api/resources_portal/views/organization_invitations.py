@@ -2,6 +2,7 @@ from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
 from resources_portal.models import Notification, Organization, OrganizationInvitation, User
+from resources_portal.models.organization import assign_member_perms
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -30,6 +31,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
+            assign_member_perms(invitation.requester, invitation.organization)
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
@@ -59,7 +61,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         invite_or_request = serializer.validated_data["invite_or_request"]
 
         if invite_or_request == "INVITE" and not request_reciever.has_perm(
-            "add_members_and_manage_permissions", organization
+            "add_members", organization
         ):
             return Response(
                 data={"detail": f"{request_reciever} does not have permission to add members"},
