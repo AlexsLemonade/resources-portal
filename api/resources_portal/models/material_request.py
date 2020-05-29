@@ -14,7 +14,7 @@ class MaterialRequest(models.Model):
 
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),
-        ("ACCEPTED", "ACCEPTED"),
+        ("APPROVED", "APPROVED"),
         ("REJECTED", "REJECTED"),
         ("INVALID", "INVALID"),
     )

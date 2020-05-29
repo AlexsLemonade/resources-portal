@@ -24,20 +24,16 @@ class TestMaterialRequestListTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("material-request-list")
         self.request = MaterialRequestFactory()
+        self.material_request_data = model_to_dict(self.request)
 
         self.sharer = self.request.material.contact_user
         self.organization = OrganizationFactory()
-        self.organization.materials.add(self.request.material)
+        self.request.material.organization = self.organization
+        self.request.material.save()
+
         self.organization.members.add(self.sharer)
-
-        self.client.force_authenticate(user=self.sharer)
-        self.material_request_data = self.client.get(
-            reverse("material-request-detail", args=[self.request.id])
-        ).json()
-
-        import pdb
-
-        pdb.set_trace()
+        self.organization.assign_member_perms(self.sharer)
+        self.organization.assign_owner_perms(self.sharer)
 
         self.user_without_perms = UserFactory()
 
@@ -51,7 +47,6 @@ class TestMaterialRequestListTestCase(APITestCase):
         response = self.client.post(self.url, self.material_request_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        self.assertEqual(self.request.material.id, response.json()["material_id"])
         self.assertEqual(
             len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 1
         )
@@ -66,11 +61,6 @@ class TestMaterialRequestListTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_request_without_perms_fails(self):
-        self.client.force_authenticate(user=self.request.requester)
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
@@ -81,7 +71,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def setUp(self):
         self.request = MaterialRequestFactory()
         self.url = reverse("material-request-detail", args=[self.request.id])
-        self.material_request_json = self.client.get(self.url).json()
+        self.material_request_data = model_to_dict(self.request)
 
         self.request2 = MaterialRequestFactory()
 
@@ -89,6 +79,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.organization = OrganizationFactory()
         self.organization.materials.add(self.request.material)
         self.organization.members.add(self.sharer)
+        self.organization.assign_member_perms(self.sharer)
+        self.organization.assign_owner_perms(self.sharer)
 
         self.user_without_perms = UserFactory()
 
@@ -103,74 +95,56 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_request_without_perms_fails(self):
-        self.client.force_authenticate(user=self.request.requester)
-        url = reverse("material-request-detail", args=[self.request2.id])
+        self.client.force_authenticate(user=self.user_without_perms)
+        url = reverse("material-request-detail", args=[self.request.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_request_from_unauthenticated_fails(self):
-        self.client.force_authenticate(user=self.request.requester)
+        self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
 
-        self.material_request_json["status"] = "APPROVED"
-        self.material_request_json["executed_mta_attachment"] = AttachmentFactory().id
+        self.material_request_data["status"] = "APPROVED"
+        self.material_request_data["executed_mta_attachment"] = AttachmentFactory().id
 
-        response = self.client.put(self.url, self.material_request_json)
+        response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.status, "APPROVED")
 
     def test_put_request_from_requester_updates_a_material_request(self):
-        self.client.force_authenticate(user=self.sharer)
+        self.client.force_authenticate(user=self.request.requester)
 
         irb_attachment = AttachmentFactory()
 
-        self.material_request_json["irb_attachment"] = irb_attachment.id
-        self.material_request_json["requester_signed_mta_attachment"] = AttachmentFactory().id
+        self.material_request_data["irb_attachment"] = irb_attachment.id
+        self.material_request_data["requester_signed_mta_attachment"] = AttachmentFactory().id
 
-        response = self.client.put(self.url, self.material_request_json)
+        response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.irb_attachment, irb_attachment)
 
-    def test_put_request_from_sharer_on_non_sharer_fields_fails(self):
-        self.client.force_authenticate(user=self.sharer)
-
-        self.material_request_json["irb_attachment"] = AttachmentFactory().id
-        self.material_request_json["requester_signed_mta_attachment"] = AttachmentFactory().id
-
-        response = self.client.put(self.url, self.material_request_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_put_request_from_requester_on_non_requester_fields_fails(self):
-        self.client.force_authenticate(user=self.sharer)
-
-        self.material_request_json["status"] = "APPROVED"
-        self.material_request_json["executed_mta_attachment"] = AttachmentFactory().id
-
-        response = self.client.put(self.url, self.material_request_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
 
-        self.material_request_json["status"] = "APPROVED"
+        self.material_request_data["status"] = "APPROVED"
 
-        response = self.client.put(self.url, self.material_request_json)
+        response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
 
-        self.material_request_json["status"] = "APPROVED"
+        self.material_request_data["status"] = "APPROVED"
 
-        response = self.client.put(self.url, self.material_request_json)
+        response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_request_deletes_a_material(self):
