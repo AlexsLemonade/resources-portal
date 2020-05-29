@@ -6,7 +6,6 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Organization, OrganizationUserAssociation, User
-from resources_portal.models.organization import remove_member_perms
 from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
@@ -45,6 +44,6 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         association = OrganizationUserAssociation.objects.get(organization=organization, user=user)
 
         association.delete()
-        remove_member_perms(user, organization)
+        organization.remove_member_perms(user)
 
         return Response(status=204)

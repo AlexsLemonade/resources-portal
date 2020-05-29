@@ -44,30 +44,26 @@ class Organization(models.Model):
     members = models.ManyToManyField(User, through="OrganizationUserAssociation")
     grants = models.ManyToManyField("Grant", through="GrantOrganizationAssociation")
 
+    def assign_owner_perms(self, user):
+        for permission in OWNER_PERMISSIONS:
+            assign_perm(permission[0], user, self)
 
-def assign_owner_perms(user, organization):
-    for permission in OWNER_PERMISSIONS:
-        assign_perm(permission[0], user, organization)
+    def remove_owner_perms(self, user):
+        for permission in OWNER_PERMISSIONS:
+            remove_perm(permission[0], user, self)
 
+    def assign_member_perms(self, user):
+        for permission in MEMBER_PERMISSIONS:
+            assign_perm(permission[0], user, self)
 
-def remove_owner_perms(user, organization):
-    for permission in OWNER_PERMISSIONS:
-        remove_perm(permission[0], user, organization)
-
-
-def assign_member_perms(user, organization):
-    for permission in MEMBER_PERMISSIONS:
-        assign_perm(permission[0], user, organization)
-
-
-def remove_member_perms(user, organization):
-    for permission in MEMBER_PERMISSIONS:
-        remove_perm(permission[0], user, organization)
+    def remove_member_perms(self, user):
+        for permission in MEMBER_PERMISSIONS:
+            remove_perm(permission[0], user, self)
 
 
 @receiver(post_save, sender="resources_portal.Organization")
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         # when a new organization is created, assign permission to it's owner
-        assign_member_perms(instance.owner, instance)
-        assign_owner_perms(instance.owner, instance)
+        instance.assign_member_perms(instance.owner)
+        instance.assign_owner_perms(instance.owner)

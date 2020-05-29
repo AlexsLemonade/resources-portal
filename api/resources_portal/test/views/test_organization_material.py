@@ -19,7 +19,7 @@ class OrganizationMaterialsTestCase(APITestCase):
         self.material1 = MaterialFactory()
         self.material2 = MaterialFactory()
 
-    def test_get_material_with_uuid_not_found(self):
+    def test_get_material_with_id_not_found(self):
         self.client.force_authenticate(user=self.organization.members.first())
         url = reverse("organizations-materials-detail", args=[self.organization.id, 1])
         response = self.client.get(url)
@@ -35,9 +35,3 @@ class OrganizationMaterialsTestCase(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 2)
-
-    def test_get_request_from_unauthenticated_fails(self):
-        self.client.force_authenticate(user=None)
-        url = reverse("organizations-materials-list", args=[self.organization.id])
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
