@@ -13,7 +13,7 @@ class OrganizationMaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     http_method_names = ["get", "head", "options"]
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = []
 
     def get_serializer_class(self):
         if self.action == "retrieve":

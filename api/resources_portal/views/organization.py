@@ -4,7 +4,6 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
-from resources_portal.models.organization import assign_owner_perms, remove_owner_perms
 from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
@@ -99,7 +98,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
             raise ValidationError("The new owner must already be a member of the organization.")
 
         if is_owner_changing:
-            remove_owner_perms(organization.owner, organization)
-            assign_owner_perms(new_owner, organization)
+            organization.remove_owner_perms(organization.owner)
+            organization.assign_owner_perms(new_owner)
 
         return super(OrganizationViewSet, self).update(request, *args, **kwargs)
