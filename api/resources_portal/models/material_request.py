@@ -12,6 +12,13 @@ class MaterialRequest(models.Model):
 
     objects = models.Manager()
 
+    STATUS_CHOICES = (
+        ("PENDING", "PENDING"),
+        ("ACCEPTED", "ACCEPTED"),
+        ("REJECTED", "REJECTED"),
+        ("INVALID", "INVALID"),
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -48,5 +55,4 @@ class MaterialRequest(models.Model):
 
     is_active = models.BooleanField(default=True)
 
-    # TODO: add possible choices for status
-    status = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")
