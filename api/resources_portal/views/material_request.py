@@ -5,11 +5,9 @@ from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthentica
 from rest_framework.response import Response
 
 from resources_portal.models import Material, MaterialRequest, Notification, User
-from resources_portal.views.relation_serializers import (
-    MaterialRelationSerializer,
-    OrganizationRelationSerializer,
-    UserRelationSerializer,
-)
+from resources_portal.views.attachment import AttachmentSerializer
+from resources_portal.views.material import MaterialSerializer
+from resources_portal.views.user import UserSerializer
 
 
 class Requirements(enum.Enum):
@@ -44,16 +42,30 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
-    pass
-
-
-class MaterialRequestListSerializer(MaterialRequestSerializer):
-    pass
+    assigned_to = UserSerializer()
+    requester = UserSerializer()
+    material = MaterialSerializer()
+    executed_mta_attachment = AttachmentSerializer()
+    irb_attachment = AttachmentSerializer()
+    requester_signed_mta_attachment = AttachmentSerializer()
 
 
 class CanViewRequests(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.has_perm("view_requests", obj.material.organization)
+
+
+class CanViewRequestsOrIsRequester(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.user.has_perm("view_requests", obj.material.organization)
+            or request.user == obj.requester
+        )
+
+
+class CanApproveRequests(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.has_perm("approve_requests", obj.material.organization)
 
 
 class CanApproveRequestsOrIsRequester(BasePermission):
@@ -79,14 +91,24 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return MaterialRequestDetailSerializer
 
     def get_permissions(self):
-        if self.action == "list" or self.action == "retrieve":
-            permission_classes = [IsAuthenticated, CanViewRequests]
+        if self.action == "list":
+            permission_classes = [
+                IsAuthenticated,
+                CanViewRequests,
+            ]
+        elif self.action == "retrieve":
+            permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
         elif self.action == "update" or self.action == "partial-update":
             permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
         elif self.action == "delete":
-            permission_classes = [IsAuthenticated, IsRequester]
+            permission_classes = [
+                IsAuthenticated,
+                IsRequester,
+            ]
         else:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [
+                IsAuthenticated,
+            ]
 
         return [permission() for permission in permission_classes]
 
@@ -116,6 +138,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer = MaterialRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        material = Material.objects.get(serializer.validated_data["material"])
+        serializer.validated_data["assigned_to"] = material.contact_user.id
+
         response = super(MaterialRequestViewSet, self).create(request, *args, **kwargs)
 
         sharer = User.objects.get(pk=response.data["assigned_to_id"])
@@ -136,14 +161,16 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(material_request, data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        response = super(MaterialRequestViewSet, self).create(request, *args, **kwargs)
+        changed_fields = {request.data.keys()} - {serializer.validated_data}
 
         if request.user == material_request.requester:
-            if not set(request.data.keys()).issubset(REQUESTER_MODIFIABLE_FIELDS):
+            if not changed_fields.issubset(REQUESTER_MODIFIABLE_FIELDS):
                 return Response(status=403)
         else:
-            if not set(request.data.keys()).issubset(SHARER_MODIFIABLE_FIELDS):
+            if not changed_fields.issubset(SHARER_MODIFIABLE_FIELDS):
                 return Response(status=403)
+
+        response = super(MaterialRequestViewSet, self).update(request, *args, **kwargs)
 
         response.data["requirements"] = self.get_material_requirements()
 
