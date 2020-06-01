@@ -32,8 +32,6 @@ class MaterialSerializer(serializers.ModelSerializer):
             "shipping_requirements",
             "import_source",
             "grants",
-            "contact_name",
-            "contact_email",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",

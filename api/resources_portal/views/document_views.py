@@ -39,8 +39,6 @@ class MaterialDocumentSerializer(serializers.Serializer):
     additional_info = serializers.CharField(read_only=True)
     needs_mta = serializers.BooleanField(read_only=True)
     needs_irb = serializers.BooleanField(read_only=True)
-    contact_name = serializers.CharField(read_only=True)
-    contact_email = serializers.CharField(read_only=True)
     publication_title = serializers.CharField(read_only=True)
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
@@ -84,8 +82,6 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "has_publication",
             "has_pre_print",
             "additional_info",
-            "contact_name",
-            "contact_email",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",
@@ -224,8 +220,6 @@ class MaterialDocumentView(DocumentViewSet):
         "pubmed_id": None,
         "organism": None,
         "additional_info": None,
-        "contact_name": None,
-        "contact_email": None,
         "contact_user.published_name": None,
         "publication_title": None,
         "pre_print_doi": None,
