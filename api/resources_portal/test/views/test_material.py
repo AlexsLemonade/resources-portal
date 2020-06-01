@@ -121,3 +121,10 @@ class TestSingleMaterialTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.user)
+        material_id = self.material.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Material.deleted_objects.filter(id=material_id).count(), 1)

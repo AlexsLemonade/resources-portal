@@ -3,11 +3,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from guardian.shortcuts import assign_perm
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.user import User
 
 
-class Organization(models.Model):
+class Organization(SafeDeleteModel):
     class Meta:
         db_table = "organizations"
         get_latest_by = "updated_at"
@@ -18,7 +20,9 @@ class Organization(models.Model):
             ("approve_requests", "approve_requests"),
         )
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

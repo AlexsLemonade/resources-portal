@@ -1,12 +1,15 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
+
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.shipping_requirements import ShippingRequirements
 from resources_portal.models.user import User
 
 
-class Material(models.Model):
+class Material(SafeDeleteModel):
     class Meta:
         db_table = "materials"
         get_latest_by = "created_at"
@@ -34,7 +37,10 @@ class Material(models.Model):
         ("OTHER", "OTHER"),
     )
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
