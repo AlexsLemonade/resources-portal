@@ -38,7 +38,6 @@ class Material(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    title = models.TextField()
     category = models.CharField(max_length=32, choices=CATEGORY_CHOICES)
     url = models.TextField(blank=True, null=True)
     pubmed_id = models.CharField(max_length=32, blank=True)
@@ -69,8 +68,6 @@ class Material(models.Model):
     grants = models.ManyToManyField("Grant", through="GrantMaterialAssociation")
 
     organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
-    contact_name = models.TextField(blank=True, null=True)
-    contact_email = models.TextField(blank=True, null=True)
     publication_title = models.TextField(blank=True, null=True)
     pre_print_doi = models.TextField(blank=True, null=True)
     pre_print_title = models.TextField(blank=True, null=True)

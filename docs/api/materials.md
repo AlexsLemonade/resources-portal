@@ -5,7 +5,7 @@ Supports creating, viewing, and updating materials.
 
 **Request**:
 
-`POST` `/organizations/`
+`POST` `/materials/`
 
 Parameters:
 
@@ -22,8 +22,6 @@ needs_abstract           | boolean   | Boolean specifying whether the material n
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
 organism                 | string[]  | The organism that the material is associated with. Nullable.
-contact_name             | string    | The associated user. Nullable.
-contact_email            | string    | The associated user's email. Nullable.
 publication_title        | string    | The title of the associated publication. Nullable.
 pre_print_doi            | string    | The DOI of the associated pre-print document. Nullable.
 pre_print_title          | string    | The title of the associated pre-print document. Nullable.
@@ -39,7 +37,7 @@ shipping_requirements_id | integer   | The ID of the shipping requerements. Null
 
 - Not Authorization Protected
 
-## Get an organization's information
+## Get a material's information
 
 **Request**:
 
@@ -95,11 +93,11 @@ Content-Type application/json
 }
 ```
 
-## Update an organization
+## Update a material
 
 **Request**:
 
-`PUT/PATCH` `/organizations/id`
+`PUT/PATCH` `/materials/id`
 
 Parameters:
 
@@ -116,8 +114,6 @@ needs_abstract           | boolean   | Boolean specifying whether the material n
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
 organism                 | string[]  | The organism that the material is associated with. Nullable.
-contact_name             | string    | The associated user. Nullable.
-contact_email            | string    | The associated user's email. Nullable.
 publication_title        | string    | The title of the associated publication. Nullable.
 pre_print_doi            | string    | The DOI of the associated pre-print document. Nullable.
 pre_print_title          | string    | The title of the associated pre-print document. Nullable.

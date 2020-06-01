@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material
+from resources_portal.views.relation_serializers import (
+    AttachmentRelationSerializer,
+    ShippingRequirementsRelationSerializer,
+)
 from resources_portal.views.user import UserSerializer
 
 
@@ -20,6 +24,22 @@ class MaterialSerializer(serializers.ModelSerializer):
             "pubmed_id",
             "additional_metadata",
             "contact_user",
+            "mta_attachment",
+            "needs_mta",
+            "needs_irb",
+            "needs_abstract",
+            "imported",
+            "shipping_requirements",
+            "import_source",
+            "grants",
+            "contact_name",
+            "contact_email",
+            "publication_title",
+            "pre_print_doi",
+            "pre_print_title",
+            "citation",
+            "additional_info",
+            "embargo_date",
             "created_at",
             "updated_at",
         )
@@ -28,6 +48,8 @@ class MaterialSerializer(serializers.ModelSerializer):
 
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserSerializer()
+    mta_attachment = AttachmentRelationSerializer()
+    shipping_requirements = ShippingRequirementsRelationSerializer()
 
 
 class HasAddResources(BasePermission):
