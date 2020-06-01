@@ -78,7 +78,7 @@ class Material(ComputedFieldsModel):
 
     @computed(models.BooleanField(null=False))
     def needs_mta(self):
-        return self.mta_attachment is None
+        return not (self.mta_attachment is None)
 
     def has_publication(self):
         return not (self.pubmed_id == "")
