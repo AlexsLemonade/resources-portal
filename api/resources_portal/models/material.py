@@ -1,14 +1,12 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
-from computedfields.models import ComputedFieldsModel, computed
-
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.shipping_requirements import ShippingRequirements
 from resources_portal.models.user import User
 
 
-class Material(ComputedFieldsModel):
+class Material(models.Model):
     class Meta:
         db_table = "materials"
         get_latest_by = "created_at"
@@ -76,7 +74,6 @@ class Material(ComputedFieldsModel):
     additional_info = models.TextField(blank=True, null=True)
     embargo_date = models.DateField(blank=True, null=True)
 
-    @computed(models.BooleanField(null=False))
     def needs_mta(self):
         return not (self.mta_attachment is None)
 
