@@ -1,12 +1,14 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 
+from computedfields.models import ComputedFieldsModel, computed
+
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.shipping_requirements import ShippingRequirements
 from resources_portal.models.user import User
 
 
-class Material(models.Model):
+class Material(ComputedFieldsModel):
     class Meta:
         db_table = "materials"
         get_latest_by = "created_at"
@@ -50,7 +52,6 @@ class Material(models.Model):
 
     title = models.TextField(blank=False, null=False, help_text="The title of the material.")
 
-    needs_mta = models.BooleanField(default=False, null=True)
     needs_irb = models.BooleanField(default=False, null=True)
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
@@ -74,6 +75,10 @@ class Material(models.Model):
     citation = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     embargo_date = models.DateField(blank=True, null=True)
+
+    @computed(models.BooleanField(null=False))
+    def needs_mta(self):
+        return self.mta_attachment is None
 
     def has_publication(self):
         return not (self.pubmed_id == "")
