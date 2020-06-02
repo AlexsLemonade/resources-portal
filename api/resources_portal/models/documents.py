@@ -97,11 +97,6 @@ class MaterialDocument(Document):
     imported = fields.BooleanField()
     import_source = fields.TextField()
 
-    # These fields are optional, so we need to have the redundancy with the referenced
-    # contact_user above.
-    contact_name = fields.TextField()
-    contact_email = fields.TextField()
-
     publication_title = fields.TextField()
     pre_print_doi = fields.TextField()
     pre_print_title = fields.TextField()
