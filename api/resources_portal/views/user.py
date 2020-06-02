@@ -1,9 +1,8 @@
 from django.db import transaction
-from rest_framework import mixins, serializers, viewsets
-from rest_framework.permissions import AllowAny
+from rest_framework import serializers, viewsets
+from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
-from resources_portal.permissions import IsUserOrReadOnly
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -18,16 +17,6 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("username", "created_at", "updated_at")
-
-
-class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
-    """
-    Updates and retrieves user accounts
-    """
-
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = (IsUserOrReadOnly,)
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
@@ -52,21 +41,37 @@ class CreateUserSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
 
-class UserCreateViewSet(mixins.CreateModelMixin, viewsets.GenericViewSet):
-    """
-    Creates user accounts
-    """
+class IsUserOrAdmin(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user == obj or request.user.is_superuser
 
+
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
-    serializer_class = CreateUserSerializer
-    permission_classes = (AllowAny,)
+    serializer_class = UserSerializer
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        response = super(UserCreateViewSet, self).create(request, args, kwargs)
+        response = super(UserViewSet, self).create(request, args, kwargs)
 
         # Every user should have their own organization.
         user = User.objects.get(id=response.data["id"])
         Organization.objects.create(owner=user)
 
         return response
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateUserSerializer
+
+        return UserSerializer
+
+    def get_permissions(self):
+        if self.action == "update" or self.action == "partial_update" or self.action == "destroy":
+            permission_classes = [IsAuthenticated, IsUserOrAdmin]
+        elif self.action == "create":
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+
+        return [permission() for permission in permission_classes]

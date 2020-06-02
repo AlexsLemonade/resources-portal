@@ -10,12 +10,14 @@ from django_elasticsearch_dsl_drf.filter_backends import (
     FacetedSearchFilterBackend,
     FilteringFilterBackend,
     OrderingFilterBackend,
+    PostFilterFilteringFilterBackend,
 )
 from django_elasticsearch_dsl_drf.pagination import LimitOffsetPagination as ESLimitOffsetPagination
 from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from elasticsearch_dsl import TermsFacet
+from elasticsearch_dsl.query import Q
 from six import iteritems
 
 from resources_portal.models import Material, Organization, User
@@ -37,8 +39,6 @@ class MaterialDocumentSerializer(serializers.Serializer):
     additional_info = serializers.CharField(read_only=True)
     needs_mta = serializers.BooleanField(read_only=True)
     needs_irb = serializers.BooleanField(read_only=True)
-    contact_name = serializers.CharField(read_only=True)
-    contact_email = serializers.CharField(read_only=True)
     publication_title = serializers.CharField(read_only=True)
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
@@ -82,8 +82,6 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "has_publication",
             "has_pre_print",
             "additional_info",
-            "contact_name",
-            "contact_email",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",
@@ -94,6 +92,42 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "import_source",
             "shipping_requirements",
         )
+
+
+class MaterialFacetedSearchFilterBackend(FacetedSearchFilterBackend):
+    """
+    This is a modification to the FacetedSearchFilterBackend.
+    The main difference is we don't want the search result filters to be too narrow.
+    So we will only have the aggregates be filtered by the query params that are not for that aggregate.
+    In order to support this move any filter you want to show extra aggreates to post_filter_fields so
+    they aren't filtered out of the facet aggregations by default.
+
+    So if we are calulating the aggregates for `category` we apply all filters from `organism` etc
+    but not the requested categories.
+    """
+
+    def aggregate(self, request, queryset, view):
+        post_filter_fields = view.post_filter_fields.keys()
+        query_params = request.query_params.copy()
+        __facets = self.construct_facets(request, view)
+        for __field, __facet in iteritems(__facets):
+            agg = __facet["facet"].get_aggregation()
+            agg_filter = Q("match_all")
+
+            # loop over each query param and add to aggregate filter
+            # skip if query param is aleady applied (if it is not in post filters)
+            # skip if query param is the current facet aggregation
+            for query_field in query_params:
+                if query_field != __field and query_field in post_filter_fields:
+                    query_values = query_params.getlist(query_field, [])
+                    agg_filter = agg_filter + Q("terms", **{query_field: query_values})
+
+            # add the aggregate to the queryset
+            queryset.aggs.bucket("_filter_" + __field, "filter", filter=agg_filter).bucket(
+                __field, agg
+            )
+
+        return queryset
 
 
 ##
@@ -171,8 +205,10 @@ class MaterialDocumentView(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
-        FacetedSearchFilterBackend,
+        MaterialFacetedSearchFilterBackend,
+        PostFilterFilteringFilterBackend,
     ]
+
     lookup_field = "id"
 
     # Define search fields
@@ -184,8 +220,6 @@ class MaterialDocumentView(DocumentViewSet):
         "pubmed_id": None,
         "organism": None,
         "additional_info": None,
-        "contact_name": None,
-        "contact_email": None,
         "contact_user.published_name": None,
         "publication_title": None,
         "pre_print_doi": None,
@@ -196,14 +230,18 @@ class MaterialDocumentView(DocumentViewSet):
     # Define filtering fields
     filter_fields = {
         "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-        "category": "category",
         "organization": {"field": "name"},
         "title": "title",
-        "organism": "organism",
         "contact_user.email": "contact_user.email",
         "contact_user.published_name": "contact_user.published_name",
-        "has_publication": "has_publication",
-        "has_pre_print": "has_pre_print",
+    }
+
+    # Define post filter fields
+    post_filter_fields = {
+        "category": {"field": "category"},
+        "organism": {"field": "organism"},
+        "has_publication": {"field": "has_publication"},
+        "has_pre_print": {"field": "has_pre_print"},
     }
 
     # Define ordering fields

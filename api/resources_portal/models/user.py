@@ -16,6 +16,8 @@ class User(AbstractUser):
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
 
+    grants = models.ManyToManyField("Grant", through="GrantUserAssociation")
+
     def save(self, *args, **kwargs):
         self.id = uuid.UUID(str(self.id))
         super(User, self).save(*args, **kwargs)

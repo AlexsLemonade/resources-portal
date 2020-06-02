@@ -4,6 +4,8 @@ import { getReadable } from '../helpers/readableNames'
 import { sortedObjectKeysByValues } from '../helpers/sortObjectKeys'
 import { useSearchResources } from '../hooks/useSearchResources'
 
+const facetIsEmpty = (f) => Object.keys(f).length === 0
+
 export const SearchResultsFilters = () => {
   const {
     response: { facets },
@@ -13,6 +15,7 @@ export const SearchResultsFilters = () => {
     hasAnyFacet,
     goToSearchResults
   } = useSearchResources()
+
   return (
     <Box>
       <Box direction="row" align="baseline" justify="between">
@@ -29,7 +32,7 @@ export const SearchResultsFilters = () => {
           }}
         />
       </Box>
-      {facets.category && (
+      {!facetIsEmpty(facets.category) && (
         <Box margin={{ top: 'small' }} pad={{ vertical: 'small' }}>
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Resource Types
@@ -47,7 +50,7 @@ export const SearchResultsFilters = () => {
           ))}
         </Box>
       )}
-      {facets.organism && (
+      {!facetIsEmpty(facets.organism) && (
         <Box
           margin={{ top: 'small' }}
           pad={{ vertical: 'small' }}
@@ -86,7 +89,7 @@ export const SearchResultsFilters = () => {
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Publication Information
           </Text>
-          {'has_publication' in facets && (
+          {'has_publication' in facets && facets.has_publication['1'] && (
             <CheckBox
               label={`Includes Publication (${facets.has_publication['1']})`}
               checked={hasFacet('has_publication')}
@@ -96,7 +99,7 @@ export const SearchResultsFilters = () => {
               }}
             />
           )}
-          {'has_pre_print' in facets && (
+          {'has_pre_print' in facets && facets.has_pre_print['1'] && (
             <CheckBox
               label={`Includes Pre-print (${facets.has_pre_print['1']})`}
               checked={hasFacet('has_pre_print')}

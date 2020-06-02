@@ -42,7 +42,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     owner = factory.SubFactory(UserFactory)
-    name = "test_organization"
+    name = factory.Sequence(lambda n: f"test_organization{n}")
 
     @factory.post_generation
     def organizations(self, create, extracted, **kwargs):
@@ -136,6 +136,7 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 class GrantFactory(LeafGrantFactory):
     user1 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
     user2 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
-    organization = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    organization1 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
     material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
