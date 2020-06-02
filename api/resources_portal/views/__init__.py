@@ -9,6 +9,7 @@ from resources_portal.views.grant_user import GrantUserViewSet
 from resources_portal.views.material import MaterialViewSet
 from resources_portal.views.material_request import MaterialRequestViewSet
 from resources_portal.views.organization import OrganizationViewSet
+from resources_portal.views.organization_grant import OrganizationGrantViewSet
 from resources_portal.views.organization_invitations import OrganizationInvitationViewSet
 from resources_portal.views.organization_material import OrganizationMaterialViewSet
 from resources_portal.views.organization_member import OrganizationMemberViewSet

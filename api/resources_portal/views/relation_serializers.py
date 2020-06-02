@@ -8,7 +8,14 @@ will use PrimaryKeyRelatedFields.
 
 from rest_framework import serializers
 
-from resources_portal.models import Attachment, Grant, Material, Organization, User
+from resources_portal.models import (
+    Attachment,
+    Grant,
+    Material,
+    Organization,
+    ShippingRequirements,
+    User,
+)
 
 
 class UserRelationSerializer(serializers.ModelSerializer):
@@ -95,5 +102,22 @@ class AttachmentRelationSerializer(serializers.ModelSerializer):
             "s3_key",
             "sequence_map_for",
             "deleted",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+
+class ShippingRequirementsRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShippingRequirements
+        fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "needs_shipping_address",
+            "needs_payment",
+            "accepts_shipping_code",
+            "accepts_reimbursement",
+            "accepts_other_payment_methods",
+            "restrictions",
         )
         read_only_fields = ("id", "created_at", "updated_at")
