@@ -1,11 +1,9 @@
-import enum
-
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
-from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
-from resources_portal.models import Material, MaterialRequest, Notification, User
+from resources_portal.models import MaterialRequest, Notification
 from resources_portal.views.material import MaterialSerializer
 from resources_portal.views.relation_serializers import AttachmentRelationSerializer
 from resources_portal.views.user import UserSerializer
