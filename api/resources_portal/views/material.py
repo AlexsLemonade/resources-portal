@@ -9,7 +9,6 @@ from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     ShippingRequirementsRelationSerializer,
 )
-
 from resources_portal.views.user import UserSerializer
 
 
