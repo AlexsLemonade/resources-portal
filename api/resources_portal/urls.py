@@ -19,6 +19,7 @@ from resources_portal.views import (
     OrganizationInvitationViewSet,
     OrganizationMaterialViewSet,
     OrganizationMemberViewSet,
+    OrganizationUserSettingViewSet,
     OrganizationViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
@@ -62,6 +63,12 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
+router.register(
+    r"organization-user-settings",
+    OrganizationUserSettingViewSet,
+    basename="organization-user-setting",
+)
+
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")

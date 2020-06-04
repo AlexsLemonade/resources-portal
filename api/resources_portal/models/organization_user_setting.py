@@ -21,6 +21,9 @@ class OrganizationUserSetting(models.Model):
     request_approval_determined_notif = models.BooleanField(default=True)
     request_assigned_notif = models.BooleanField(default=True)
     reminder_notif = models.BooleanField(default=True)
+    transfer_requested_notif = models.BooleanField(default=True)
+    transfer_updated_notif = models.BooleanField(default=True)
+    perms_granted_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
         User,
