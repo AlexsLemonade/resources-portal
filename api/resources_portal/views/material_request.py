@@ -151,18 +151,24 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         if request.user == material_request.requester:
             if "irb_attachment" in request.data:
                 material_request.irb_attachment = serializer.validated_data["irb_attachment"]
+
             if "requester_signed_mta_attachment" in request.data:
                 material_request.requester_signed_mta_attachment = serializer.validated_data[
                     "requester_signed_mta_attachment"
                 ]
+
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
                     return Response(status=403)
                 else:
                     material_request.status = serializer.validated_data["status"]
+
         else:
             if "status" in request.data:
+                if serializer.validated_data["status"] == "CANCELLED":
+                    return Response(status=403)
                 material_request.status = serializer.validated_data["status"]
+
             if "executed_mta_attachment" in request.data:
                 material_request.executed_mta_attachment = serializer.validated_data[
                     "executed_mta_attachment"
