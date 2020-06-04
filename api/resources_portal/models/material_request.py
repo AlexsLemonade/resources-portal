@@ -17,6 +17,7 @@ class MaterialRequest(models.Model):
         ("APPROVED", "APPROVED"),
         ("REJECTED", "REJECTED"),
         ("INVALID", "INVALID"),
+        ("CANCELLED", "CANCELLED"),
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

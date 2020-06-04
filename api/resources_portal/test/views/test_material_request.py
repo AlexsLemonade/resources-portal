@@ -84,6 +84,9 @@ class TestSingleMaterialRequestTestCase(APITestCase):
 
         self.user_without_perms = UserFactory()
 
+        self.admin = UserFactory()
+        self.admin.is_staff = True
+
     def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)
         response = self.client.get(self.url)
@@ -148,7 +151,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_request_deletes_a_material(self):
-        self.client.force_authenticate(user=self.request.requester)
+        self.client.force_authenticate(user=self.admin)
         request_id = self.request.id
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

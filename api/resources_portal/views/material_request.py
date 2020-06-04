@@ -1,16 +1,18 @@
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from resources_portal.models import MaterialRequest, Notification
-from resources_portal.views.material import MaterialSerializer
-from resources_portal.views.relation_serializers import AttachmentRelationSerializer
-from resources_portal.views.user import UserSerializer
+from resources_portal.views.relation_serializers import (
+    AttachmentRelationSerializer,
+    MaterialRelationSerializer,
+    UserRelationSerializer,
+)
 
 SHARER_MODIFIABLE_FIELDS = {"status", "executed_mta_attachment"}
 
-REQUESTER_MODIFIABLE_FIELDS = {"irb_attachment", "requester_signed_mta_attachment"}
+REQUESTER_MODIFIABLE_FIELDS = {"irb_attachment", "requester_signed_mta_attachment", "status"}
 
 
 class MaterialRequestSerializer(serializers.ModelSerializer):
@@ -33,9 +35,9 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
-    assigned_to = UserSerializer()
-    requester = UserSerializer()
-    material = MaterialSerializer()
+    assigned_to = UserRelationSerializer()
+    requester = UserRelationSerializer()
+    material = MaterialRelationSerializer()
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
@@ -67,11 +69,6 @@ class CanApproveRequestsOrIsRequester(BasePermission):
         )
 
 
-class IsRequester(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user == obj.requester
-
-
 class MaterialRequestViewSet(viewsets.ModelViewSet):
     queryset = MaterialRequest.objects.all()
 
@@ -92,10 +89,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         elif self.action == "update" or self.action == "partial-update":
             permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
         elif self.action == "destroy":
-            permission_classes = [
-                IsAuthenticated,
-                IsRequester,
-            ]
+            permission_classes = [IsAuthenticated, IsAdminUser]
         else:
             permission_classes = [
                 IsAuthenticated,
@@ -147,6 +141,10 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
+
+        if material_request.status == "CANCELLED" or material_request.status == "REJECTED":
+            return Response(status=403)
+
         serializer = MaterialRequestSerializer(material_request, data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -157,6 +155,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 material_request.requester_signed_mta_attachment = serializer.validated_data[
                     "requester_signed_mta_attachment"
                 ]
+            if "status" in request.data and request.data["status"] != material_request.status:
+                if serializer.validated_data["status"] != "CANCELLED":
+                    return Response(status=403)
+                else:
+                    material_request.status = serializer.validated_data["status"]
         else:
             if "status" in request.data:
                 material_request.status = serializer.validated_data["status"]
