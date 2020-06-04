@@ -6,6 +6,18 @@ class Attachment(models.Model):
         db_table = "attachments"
         get_latest_by = "updated_at"
 
+        permissions = (
+            ("view_attachment", "view_attachment"),
+            ("modify_attachment", "modify_attachment"),
+        )
+
+    ATTACHMENT_TYPES = (
+        ("MTA", "MTA"),
+        ("SIGNED_MTA", "SIGNED_MTA"),
+        ("IRB", "IRB"),
+        ("SEQUENCE_MAP", "SEQUENCE_MAP"),
+    )
+
     objects = models.Manager()
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -15,6 +27,7 @@ class Attachment(models.Model):
     description = models.TextField(
         blank=True, null=True, help_text="A description for the attachment."
     )
+    attachment_type = models.CharField(max_length=32, choices=ATTACHMENT_TYPES, null=False)
 
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
