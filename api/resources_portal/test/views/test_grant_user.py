@@ -34,8 +34,8 @@ class GrantUsersTestCase(APITestCase):
         self.organization_2 = self.grant.organizations.last()
         self.organization_2.members.add(self.org_2_member)
 
-        assign_perm("add_members_and_manage_permissions", self.owner_1, self.organization_1)
-        assign_perm("add_members_and_manage_permissions", self.owner_2, self.organization_2)
+        assign_perm("add_members", self.owner_1, self.organization_1)
+        assign_perm("add_members", self.owner_2, self.organization_2)
 
         self.url = reverse("grant-detail", args=[self.grant.id])
 

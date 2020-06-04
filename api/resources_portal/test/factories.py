@@ -98,7 +98,7 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
         new = User.objects.get(id=self.request_reciever.id)
         newOrg = Organization.objects.get(id=self.organization.id)
 
-        assign_perm("add_members_and_manage_permissions", new, newOrg)
+        assign_perm("add_members", new, newOrg)
 
 
 class LeafGrantFactory(factory.django.DjangoModelFactory):

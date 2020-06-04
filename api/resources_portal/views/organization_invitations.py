@@ -30,6 +30,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
+            invitation.organization.assign_member_perms(invitation.requester)
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
@@ -59,7 +60,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         invite_or_request = serializer.validated_data["invite_or_request"]
 
         if invite_or_request == "INVITE" and not request_reciever.has_perm(
-            "add_members_and_manage_permissions", organization
+            "add_members", organization
         ):
             return Response(
                 data={"detail": f"{request_reciever} does not have permission to add members"},

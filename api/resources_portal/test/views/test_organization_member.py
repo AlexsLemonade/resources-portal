@@ -64,7 +64,10 @@ class OrganizationMembersTestCase(APITestCase):
         self.organization.refresh_from_db()
         self.assertNotIn(user, self.organization.members.all())
         # Verify that the user was not deleted, just its relationship
-        User.objects.get(pk=user.id)
+        user = User.objects.get(pk=user.id)
+
+        # User loses permissions
+        self.assertFalse(user.has_perm("add_resources", self.organization))
 
     def test_delete_by_owner(self):
         member = UserFactory()
@@ -76,6 +79,7 @@ class OrganizationMembersTestCase(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
         self.assertNotIn(member, self.organization.members.all())
+        self.assertFalse(member.has_perm("add_resources", self.organization))
 
     def test_delete_fails_for_non_owner(self):
         """user1 fails to remove user2"""

@@ -17,6 +17,7 @@ from resources_portal.views import (
     OrganizationDocumentView,
     OrganizationGrantViewSet,
     OrganizationInvitationViewSet,
+    OrganizationMaterialViewSet,
     OrganizationMemberViewSet,
     OrganizationViewSet,
     UserDocumentView,
@@ -37,6 +38,12 @@ router.register(r"organizations", OrganizationViewSet, basename="organization").
     r"members",
     OrganizationMemberViewSet,
     basename="organizations-members",
+    parents_query_lookups=["organization"],
+)
+router.register(r"organizations", OrganizationViewSet, basename="organization").register(
+    r"materials",
+    OrganizationMaterialViewSet,
+    basename="organizations-materials",
     parents_query_lookups=["organization"],
 )
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(

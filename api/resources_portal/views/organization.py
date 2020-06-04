@@ -97,4 +97,8 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         if is_owner_changing and new_owner not in organization.members.all():
             raise ValidationError("The new owner must already be a member of the organization.")
 
+        if is_owner_changing:
+            organization.remove_owner_perms(organization.owner)
+            organization.assign_owner_perms(new_owner)
+
         return super(OrganizationViewSet, self).update(request, *args, **kwargs)
