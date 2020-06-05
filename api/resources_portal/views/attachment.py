@@ -4,11 +4,7 @@ from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthentica
 from guardian.shortcuts import assign_perm
 
 from resources_portal.models import Attachment, MaterialRequest
-from resources_portal.views.relation_serializers import (
-    MaterialSerializer,
-    OrganizationRelationSerializer,
-    UserRelationSerializer,
-)
+from resources_portal.views.relation_serializers import MaterialRelationSerializer
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -20,33 +16,37 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "description",
             "s3_bucket",
             "s3_key",
-            "sequence_map_for",
             "deleted",
             "created_at",
             "updated_at",
+            "sequence_map_for",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
 
 class AttachmentDetailSerializer(AttachmentSerializer):
-    sequence_map_for = MaterialSerializer()
+    sequence_map_for = MaterialRelationSerializer()
 
 
-class HasViewAttachment(BasePermission):
+class HasViewAttachmentOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("view_attachment", obj)
+        return request.user.has_perm("view_attachment", obj) or request.user.is_superuser
 
 
-class HasModifyAttachment(BasePermission):
+class HasModifyAttachmentOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("modify_attachment", obj)
+        return request.user.has_perm("modify_attachment", obj) or request.user.is_superuser
 
 
-class HasActiveMaterialRequest(BasePermission):
+class HasActiveMaterialRequestOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
+        import pdb
+
+        pdb.set_trace()
         return (
             MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
+            or MaterialRequest.objects.filter(assigned_to=request.user, is_active=True).exists()
+            or request.user.is_superuser
         )
 
 
@@ -60,16 +60,21 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         return AttachmentDetailSerializer
 
     def get_permissions(self):
-        if self.action == "list" or self.action == "retrieve":
-            permission_classes = [IsAuthenticated, HasViewAttachment, IsAdminUser]
+        if self.action == "list":
+            permission_classes = [IsAuthenticated, IsAdminUser]
+        elif self.action == "retrieve":
+            permission_classes = [IsAuthenticated, HasViewAttachmentOrIsAdminUser]
         elif self.action == "create":
-            permission_classes = [IsAuthenticated, HasActiveMaterialRequest, IsAdminUser]
+            permission_classes = [IsAuthenticated, HasActiveMaterialRequestOrIsAdminUser]
         else:
-            permission_classes = [IsAuthenticated, HasModifyAttachment, IsAdminUser]
+            permission_classes = [IsAuthenticated, HasModifyAttachmentOrIsAdminUser]
 
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        import pdb
+
+        pdb.set_trace()
         response = super(AttachmentViewSet, self).create(request, *args, **kwargs)
 
         attachment = Attachment.objects.get(pk=response.data["id"])
@@ -77,15 +82,4 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         assign_perm("view_attachment", request.user, attachment)
         assign_perm("modify_attachment", request.user, attachment)
 
-    def update(self, request, *args, **kwargs):
-        material = self.get_object()
-        serializer = self.get_serializer(material, data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        new_organization = serializer.validated_data["organization"]
-
-        if material.organization != new_organization:
-            if not request.user.has_perm("add_resources", new_organization):
-                return Response(status=status.HTTP_403_FORBIDDEN)
-
-        return super(MaterialViewSet, self).update(request, *args, **kwargs)
+        return response

@@ -6,10 +6,7 @@ class Attachment(models.Model):
         db_table = "attachments"
         get_latest_by = "updated_at"
 
-        permissions = (
-            ("view_attachment", "view_attachment"),
-            ("modify_attachment", "modify_attachment"),
-        )
+        permissions = (("modify_attachment", "modify_attachment"),)
 
     ATTACHMENT_TYPES = (
         ("MTA", "MTA"),
@@ -33,12 +30,12 @@ class Attachment(models.Model):
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
     sequence_map_for = models.ForeignKey(
-        "resources_portal.Material",
-        blank=False,
+        "Material",
+        blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name="sequence_maps",
-        help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
+        default="",
     )
 
     deleted = models.BooleanField(default=False)

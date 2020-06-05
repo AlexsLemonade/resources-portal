@@ -3,6 +3,8 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from guardian.shortcuts import assign_perm
+
 from resources_portal.models import MaterialRequest, Notification
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
@@ -150,12 +152,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         if request.user == material_request.requester:
             if "irb_attachment" in request.data:
-                material_request.irb_attachment = serializer.validated_data["irb_attachment"]
+                irb = serializer.validated_data["irb_attachment"]
+                material_request.irb_attachment = irb
+                # allow the assignee read access to the attachment
+                assign_perm("view_attachment", material_request.assigned_to, irb)
 
             if "requester_signed_mta_attachment" in request.data:
-                material_request.requester_signed_mta_attachment = serializer.validated_data[
-                    "requester_signed_mta_attachment"
-                ]
+                signed_mta = serializer.validated_data["requester_signed_mta_attachment"]
+                material_request.requester_signed_mta_attachment = signed_mta
+                assign_perm("view_attachment", material_request.assigned_to, signed_mta)
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
@@ -170,9 +175,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 material_request.status = serializer.validated_data["status"]
 
             if "executed_mta_attachment" in request.data:
-                material_request.executed_mta_attachment = serializer.validated_data[
-                    "executed_mta_attachment"
-                ]
+                executed_mta = serializer.validated_data["executed_mta_attachment"]
+                material_request.executed_mta_attachment = executed_mta
+                assign_perm("view_attachment", material_request.assigned_to, executed_mta)
 
         material_request.save()
 
