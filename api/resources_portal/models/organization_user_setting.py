@@ -1,6 +1,5 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
 
@@ -34,7 +33,7 @@ class OrganizationUserSetting(models.Model):
     )
 
     organization = models.ForeignKey(
-        Organization,
+        "Organization",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
