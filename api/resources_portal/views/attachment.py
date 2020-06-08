@@ -40,9 +40,6 @@ class HasModifyAttachmentOrIsAdminUser(BasePermission):
 
 class HasActiveMaterialRequestOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        import pdb
-
-        pdb.set_trace()
         return (
             MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
             or MaterialRequest.objects.filter(assigned_to=request.user, is_active=True).exists()
@@ -72,9 +69,6 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
-        import pdb
-
-        pdb.set_trace()
         response = super(AttachmentViewSet, self).create(request, *args, **kwargs)
 
         attachment = Attachment.objects.get(pk=response.data["id"])

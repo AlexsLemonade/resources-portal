@@ -31,9 +31,9 @@ class Attachment(models.Model):
 
     sequence_map_for = models.ForeignKey(
         "Material",
-        blank=True,
+        blank=False,
         null=True,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="sequence_maps",
         default="",
     )
