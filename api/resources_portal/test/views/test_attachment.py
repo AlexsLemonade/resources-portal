@@ -22,6 +22,7 @@ class TestAttachmentListTestCase(APITestCase):
         self.attachment = AttachmentFactory()
         self.attachment_data = model_to_dict(self.attachment)
         self.attachment_data.pop("id")
+        self.attachment_data.pop("sequence_map_for")
 
         self.material_request = MaterialRequestFactory()
 
@@ -50,10 +51,10 @@ class TestAttachmentListTestCase(APITestCase):
         response = self.client.post(self.url, self.attachment_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_post_request_from_user_without_any_material_request_succeeds(self):
+    def test_post_request_from_user_without_any_material_request_fails(self):
         self.client.force_authenticate(user=self.user_without_request)
         response = self.client.post(self.url, self.attachment_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
@@ -61,15 +62,13 @@ class TestAttachmentListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
-class TestSingleGrantTestCase(APITestCase):
+class TestSingleAttachmentTestCase(APITestCase):
     """
-    Tests /grants detail operations.
+    Tests /attachment detail operations.
     """
 
     def setUp(self):
         self.attachment = AttachmentFactory()
-        self.attachment_data = model_to_dict(self.attachment)
-        self.attachment_data.pop("id")
 
         self.url = reverse("attachment-detail", args=[self.attachment.id])
 
@@ -101,6 +100,8 @@ class TestSingleGrantTestCase(APITestCase):
     def test_put_request_updates_a_attachment(self):
         self.client.force_authenticate(user=self.user)
         attachment_json = self.client.get(self.url).json()
+
+        attachment_json["sequence_map_for"] = attachment_json["sequence_map_for"]["id"]
 
         filename = "new_filename"
         attachment_json["filename"] = filename
@@ -145,8 +146,15 @@ class TestSingleGrantTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Attachment.objects.filter(id=attachment_id).count(), 0)
 
-    def test_delete_request_from_non_admin_succeeds(self):
+    def test_delete_request_from_user_succeeds(self):
         self.client.force_authenticate(user=self.user)
+
+        response = self.client.delete(self.url)
+
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_request_from_unauthorized_fails(self):
+        self.client.force_authenticate(user=self.user_without_request)
 
         response = self.client.delete(self.url)
 

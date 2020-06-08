@@ -1,5 +1,6 @@
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
+from rest_framework.response import Response
 
 from guardian.shortcuts import assign_perm
 
@@ -30,31 +31,22 @@ class AttachmentDetailSerializer(AttachmentSerializer):
 
 class HasViewAttachmentOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("view_attachment", obj) or request.user.is_superuser
+        return request.user.has_perm("view_attachment", obj) or request.user.is_staff
 
 
 class HasModifyAttachmentOrIsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("modify_attachment", obj) or request.user.is_superuser
-
-
-class HasActiveMaterialRequestOrIsAdminUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return (
-            MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or MaterialRequest.objects.filter(assigned_to=request.user, is_active=True).exists()
-            or request.user.is_superuser
-        )
+        return request.user.has_perm("modify_attachment", obj) or request.user.is_staff
 
 
 class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return AttachmentSerializer
+        if self.action == "retrieve":
+            return AttachmentDetailSerializer
 
-        return AttachmentDetailSerializer
+        return AttachmentSerializer
 
     def get_permissions(self):
         if self.action == "list":
@@ -62,13 +54,20 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         elif self.action == "retrieve":
             permission_classes = [IsAuthenticated, HasViewAttachmentOrIsAdminUser]
         elif self.action == "create":
-            permission_classes = [IsAuthenticated, HasActiveMaterialRequestOrIsAdminUser]
+            permission_classes = [IsAuthenticated]
         else:
             permission_classes = [IsAuthenticated, HasModifyAttachmentOrIsAdminUser]
 
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+        if not (
+            MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
+            or MaterialRequest.objects.filter(assigned_to=request.user, is_active=True).exists()
+            or request.user.is_staff
+        ):
+            return Response(status=403)
+
         response = super(AttachmentViewSet, self).create(request, *args, **kwargs)
 
         attachment = Attachment.objects.get(pk=response.data["id"])

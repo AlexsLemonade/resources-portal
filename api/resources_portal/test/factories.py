@@ -109,6 +109,7 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
     description = "A file for testing"
     s3_bucket = "https://bucket-name.s3.region.amazonaws.com/keyname"
     s3_key = "s3 key"
+    sequence_map_for = factory.SubFactory(MaterialFactory)
 
 
 class MaterialRequestFactory(factory.django.DjangoModelFactory):

@@ -31,11 +31,11 @@ class Attachment(models.Model):
 
     sequence_map_for = models.ForeignKey(
         "Material",
-        blank=False,
+        blank=True,
         null=True,
         on_delete=models.SET_NULL,
         related_name="sequence_maps",
-        default="",
+        default=None,
     )
 
     deleted = models.BooleanField(default=False)
