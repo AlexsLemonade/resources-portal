@@ -4,7 +4,7 @@ import factory
 from factory import post_generation
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Material, Organization, OrganizationUserSetting, User
+from resources_portal.models import Organization, OrganizationUserSetting, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
