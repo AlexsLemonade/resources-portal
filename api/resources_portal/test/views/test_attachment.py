@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Attachment, User
+from resources_portal.models import Attachment
 from resources_portal.test.factories import AttachmentFactory, MaterialRequestFactory, UserFactory
 
 fake = Faker()
