@@ -1,8 +1,5 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
-
 
 class OrganizationUserSetting(models.Model):
     """ This model will store individual settings for each user and organization """
@@ -26,7 +23,7 @@ class OrganizationUserSetting(models.Model):
     perms_granted_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
-        User,
+        "User",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
@@ -34,7 +31,7 @@ class OrganizationUserSetting(models.Model):
     )
 
     organization = models.ForeignKey(
-        Organization,
+        "Organization",
         blank=False,
         null=False,
         on_delete=models.CASCADE,

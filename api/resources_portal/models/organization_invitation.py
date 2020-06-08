@@ -1,6 +1,5 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
 
@@ -30,7 +29,7 @@ class OrganizationInvitation(models.Model):
     )
     request_reciever = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(
-        Organization, blank=False, null=False, on_delete=models.CASCADE
+        "Organization", blank=False, null=False, on_delete=models.CASCADE
     )
 
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")

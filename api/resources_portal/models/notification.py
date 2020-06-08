@@ -4,7 +4,10 @@ from django.dispatch import receiver
 
 from computedfields.models import ComputedFieldsModel, computed
 
-from resources_portal.models import Material, Organization, OrganizationUserSetting, User
+from resources_portal.models.material import Material
+from resources_portal.models.organization import Organization
+from resources_portal.models.organization_user_setting import OrganizationUserSetting
+from resources_portal.models.user import User
 
 
 class Notification(ComputedFieldsModel):
@@ -49,6 +52,8 @@ class Notification(ComputedFieldsModel):
     )
 
     email = models.EmailField(blank=False, null=True)
+
+    delivered = models.BooleanField(null=True)
 
     @computed(models.TextField(null=False, blank=False))
     def message(self):
@@ -105,11 +110,18 @@ NOTIFICATION_SETTING_DICT = {
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     if created:
         # Check if user has settings turned on for this notificiation
-        user_setting = OrganizationUserSetting.objects.get(
-            user=instance.notified_user, organization=instance.associated_organization
-        )
-        if getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
-            instance.email = instance.notified_user.email
-            print(
-                f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
+        if instance.notified_user in instance.associated_organization.members.all():
+            user_setting = OrganizationUserSetting.objects.get(
+                user=instance.notified_user, organization=instance.associated_organization
             )
+            if not getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
+                instance.delivered = False
+                instance.save()
+                return
+
+        instance.email = instance.notified_user.email
+        print(
+            f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
+        )
+        instance.delivered = True
+        instance.save()

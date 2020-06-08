@@ -4,7 +4,7 @@ import factory
 from factory import post_generation
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Organization, User
+from resources_portal.models import Organization, OrganizationUserSetting, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -95,10 +95,13 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
 
     @post_generation
     def post(self, create, extracted, **kwargs):
-        new = User.objects.get(id=self.request_reciever.id)
+        request_reciever = User.objects.get(id=self.request_reciever.id)
+        requester = User.objects.get(id=self.requester.id)
         newOrg = Organization.objects.get(id=self.organization.id)
 
-        assign_perm("add_members", new, newOrg)
+        OrganizationUserSetting.objects.get_or_create(user=request_reciever, organization=newOrg)
+
+        assign_perm("add_members", request_reciever, newOrg)
 
 
 class LeafGrantFactory(factory.django.DjangoModelFactory):
