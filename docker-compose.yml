@@ -11,6 +11,7 @@ services:
     restart: always
     environment:
       - DJANGO_SECRET_KEY=local
+      - OAUTH_CLIENT_SECRET=get_this_on_githib
     image: api
     build:
       context: ./api

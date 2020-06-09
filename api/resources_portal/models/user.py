@@ -13,6 +13,7 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_name = models.TextField()
+    orcid = models.TextField(unique=True)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
 
