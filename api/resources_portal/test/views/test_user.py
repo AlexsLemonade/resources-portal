@@ -105,15 +105,8 @@ class TestUserDetailTestCase(APITestCase):
 
     def test_delete_request_succeeds(self):
         self.client.force_authenticate(user=self.user)
-        user_id = self.user.id
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-
-        self.assertEqual(User.objects.filter(id=user_id).count(), 0)
-        self.assertEqual(User.deleted_objects.filter(id=user_id).count(), 1)
-
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_user_cannot_delete_another_user(self):
         self.client.force_authenticate(user=self.second_user)
@@ -124,3 +117,10 @@ class TestUserDetailTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.user)
+        user_id = self.user.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.deleted_objects.filter(id=user_id).count(), 1)
