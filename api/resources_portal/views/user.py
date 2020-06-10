@@ -61,14 +61,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
         return response
 
-    def destroy(self, request, *args, **kwargs):
-        user = User.objects.get(pk=kwargs["pk"])
-        self.check_object_permissions(request, user)
-        user.deleted = True
-        user.save()
-
-        return Response(status=204)
-
     def get_serializer_class(self):
         if self.action == "create":
             return CreateUserSerializer

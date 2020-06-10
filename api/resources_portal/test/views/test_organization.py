@@ -149,10 +149,9 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.client.force_authenticate(user=self.organization.owner)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(Organization.objects.count(), 0)
 
-    def test_delete_only_soft_deletes(self):
-        self.client.force_authenticate(user=self.organization.owner)
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Organization.objects.count(), 0)
         self.assertEqual(Organization.deleted_objects.count(), 1)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

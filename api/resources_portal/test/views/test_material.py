@@ -110,7 +110,12 @@ class TestSingleMaterialTestCase(APITestCase):
         material_id = self.material.id
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
         self.assertEqual(Material.objects.filter(id=material_id).count(), 0)
+        self.assertEqual(Material.deleted_objects.filter(id=material_id).count(), 1)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
@@ -121,10 +126,3 @@ class TestSingleMaterialTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_delete_only_soft_deletes_objects(self):
-        self.client.force_authenticate(user=self.user)
-        material_id = self.material.id
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Material.deleted_objects.filter(id=material_id).count(), 1)

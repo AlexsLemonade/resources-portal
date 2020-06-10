@@ -220,6 +220,10 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(OrganizationInvitation.objects.filter(id=invitation_id).count(), 0)
+        self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_request_from_non_requester_fails(self):
         self.client.force_authenticate(user=self.invitation.request_reciever)
@@ -230,10 +234,3 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_delete_request_only_soft_deletes_objects(self):
-        self.client.force_authenticate(user=self.invitation.requester)
-        invitation_id = self.invitation.id
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)
