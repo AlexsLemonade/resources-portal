@@ -44,7 +44,6 @@ class Material(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    title = models.TextField()
     category = models.CharField(max_length=32, choices=CATEGORY_CHOICES)
     url = models.TextField(blank=True, null=True)
     pubmed_id = models.CharField(max_length=32, blank=True)
@@ -57,7 +56,6 @@ class Material(SafeDeleteModel):
 
     title = models.TextField(blank=False, null=False, help_text="The title of the material.")
 
-    needs_mta = models.BooleanField(default=False, null=True)
     needs_irb = models.BooleanField(default=False, null=True)
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
@@ -75,14 +73,15 @@ class Material(SafeDeleteModel):
     grants = models.ManyToManyField("Grant", through="GrantMaterialAssociation")
 
     organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
-    contact_name = models.TextField(blank=True, null=True)
-    contact_email = models.TextField(blank=True, null=True)
     publication_title = models.TextField(blank=True, null=True)
     pre_print_doi = models.TextField(blank=True, null=True)
     pre_print_title = models.TextField(blank=True, null=True)
     citation = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     embargo_date = models.DateField(blank=True, null=True)
+
+    def needs_mta(self):
+        return not (self.mta_attachment is None)
 
     def has_publication(self):
         return not (self.pubmed_id == "")

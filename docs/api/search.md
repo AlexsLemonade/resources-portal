@@ -98,8 +98,6 @@ Content-Type application/json
             "additional_info": "This paper was co-authored by Postworth Docktor.",
             "needs_mta": false,
             "needs_irb": false,
-            "contact_name": null,
-            "contact_email": "pprof@harvard.edu",
             "publication_title": "Data collected from genetically modified zebrafish",
             "pre_print_doi": "10.1109/5.771073",
             "pre_print_title": "Proposal for Data Collection from Zebrafish",
@@ -130,7 +128,6 @@ Content-Type application/json
                 "title": "GEO Zebrafish Analysis",
                 "description": "This dataset has interesting implications for future research.",
                 "number_samples": "15",
-                "contact_name": "Prim Proffer"
             },
             "imported": true,
             "import_source": "SRA"

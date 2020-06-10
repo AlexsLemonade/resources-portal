@@ -44,5 +44,6 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         association = OrganizationUserAssociation.objects.get(organization=organization, user=user)
 
         association.delete()
+        organization.remove_member_perms(user)
 
         return Response(status=204)
