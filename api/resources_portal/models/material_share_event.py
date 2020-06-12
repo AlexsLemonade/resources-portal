@@ -1,15 +1,20 @@
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
+
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialShareEvent(models.Model):
+class MaterialShareEvent(SafeDeleteModel):
     class Meta:
         db_table = "material_share_events"
         get_latest_by = "created_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

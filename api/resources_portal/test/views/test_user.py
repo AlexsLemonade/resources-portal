@@ -117,3 +117,10 @@ class TestUserDetailTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.user)
+        user_id = self.user.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.deleted_objects.filter(id=user_id).count(), 1)

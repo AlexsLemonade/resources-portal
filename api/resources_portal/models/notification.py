@@ -3,13 +3,15 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from computedfields.models import ComputedFieldsModel, computed
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.material import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
 
-class Notification(ComputedFieldsModel):
+class Notification(ComputedFieldsModel, SafeDeleteModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
@@ -28,7 +30,9 @@ class Notification(ComputedFieldsModel):
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
     )
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
 
