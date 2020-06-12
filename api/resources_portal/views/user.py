@@ -1,7 +1,6 @@
 from django.db import transaction
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
-from rest_framework.response import Response
 
 from resources_portal.models import Organization, User
 
