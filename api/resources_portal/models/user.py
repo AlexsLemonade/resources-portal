@@ -36,6 +36,10 @@ class User(AbstractUser):
         self.id = uuid.UUID(str(self.id))
         super(User, self).save(*args, **kwargs)
 
+    def delete(self):
+        self.deleted = True
+        self.save()
+
     def __str__(self):
         return str(self.id)
 

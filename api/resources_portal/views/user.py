@@ -1,6 +1,7 @@
 from django.db import transaction
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
+from rest_framework.response import Response
 
 from resources_portal.models import Organization, User
 
@@ -59,14 +60,6 @@ class UserViewSet(viewsets.ModelViewSet):
         Organization.objects.create(owner=user)
 
         return response
-
-    def destroy(self, request, *args, **kwargs):
-        user = User.objects.get(pk=kwargs["pk"])
-        self.check_object_permissions(request, user)
-        user.deleted = True
-        user.save()
-
-        return Response(status=204)
 
     def get_serializer_class(self):
         if self.action == "create":

@@ -33,7 +33,7 @@ class Attachment(SafeDeleteModel):
         help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
     )
 
-    deleted = models.BooleanField(default=False)
+    s3_resource_deleted = models.BooleanField(default=False)
 
     @property
     def download_url(self):
