@@ -27,6 +27,7 @@ class Common(Configuration):
         "django_elasticsearch_dsl_drf",  # elasticsearch rest api
         "drf_yasg",
         "computedfields",  # Allows for computed fields on models
+        "safedelete",  # soft-deletes objects
         "corsheaders",
         # Your apps
         "resources_portal",

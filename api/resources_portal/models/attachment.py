@@ -1,12 +1,17 @@
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-class Attachment(models.Model):
+
+class Attachment(SafeDeleteModel):
     class Meta:
         db_table = "attachments"
         get_latest_by = "updated_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -28,7 +33,7 @@ class Attachment(models.Model):
         help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
     )
 
-    deleted = models.BooleanField(default=False)
+    s3_resource_deleted = models.BooleanField(default=False)
 
     @property
     def download_url(self):
