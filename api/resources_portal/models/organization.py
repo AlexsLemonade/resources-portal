@@ -3,6 +3,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from guardian.shortcuts import assign_perm, remove_perm
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
@@ -24,14 +26,16 @@ MEMBER_PERMISSIONS = (
 )
 
 
-class Organization(models.Model):
+class Organization(SafeDeleteModel):
     class Meta:
         db_table = "organizations"
         get_latest_by = "updated_at"
 
         permissions = OWNER_PERMISSIONS + MEMBER_PERMISSIONS
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

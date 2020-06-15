@@ -206,3 +206,27 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         response = self.client.put(self.url, invitation_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_deletes_invitation(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_id = self.invitation.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(OrganizationInvitation.objects.filter(id=invitation_id).count(), 0)
+
+    def test_delete_request_from_non_requester_fails(self):
+        self.client.force_authenticate(user=self.invitation.request_reciever)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_id = self.invitation.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)

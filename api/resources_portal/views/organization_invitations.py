@@ -131,7 +131,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         self.update_organizations(new_status, invitation)
         return response_status
 
-    def delete(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
@@ -144,4 +144,4 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        return super(OrganizationInvitationViewSet, self).delete(request, *args, **kwargs)
+        return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kwargs)
