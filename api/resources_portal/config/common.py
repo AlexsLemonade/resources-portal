@@ -42,6 +42,7 @@ class Common(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        # "resources_portal.middleware.oauth.OAuthRejectedMiddleWare",
         "resources_portal.middleware.oauth.OAuthMiddleWare",
     )
 
