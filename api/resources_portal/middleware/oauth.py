@@ -97,19 +97,3 @@ class OAuthMiddleWare:
 
             response = self.get_response(request)
             return response
-
-
-class OAuthRejectedMiddleWare:
-
-    """ Rejects requests which are unauthorized"""
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        if not ("error" in request.GET.keys()):
-            response = self.get_response(request)
-            return response
-        else:
-            error = request.GET["error"]
-            return Response(error)
