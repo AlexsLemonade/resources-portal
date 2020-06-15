@@ -57,12 +57,6 @@ class UserViewSet(viewsets.ModelViewSet):
         # Every user should have their own organization.
         user = User.objects.get(id=response.data["id"])
 
-        # Grants can be passed in the user creation URL.
-        if "grants" in kwargs.keys():
-            for grant_id in kwargs["grants"]:
-                grant = Grant.objects.get(pk=grant_id)
-                user.grants.add(grant)
-
         Organization.objects.create(owner=user)
 
         return response

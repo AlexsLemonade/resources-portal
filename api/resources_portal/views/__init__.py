@@ -1,4 +1,3 @@
-from resources_portal.views.auth import AuthorizationViewSet
 from resources_portal.views.document_views import (
     MaterialDocumentView,
     OrganizationDocumentView,

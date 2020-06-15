@@ -1,9 +1,4 @@
-import os
-import xml.etree.ElementTree as ET
-
 from django.contrib.auth import login
-from django.shortcuts import redirect
-from rest_framework.response import Response
 
 import furl
 import orcid
