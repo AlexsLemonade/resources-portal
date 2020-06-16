@@ -110,6 +110,10 @@ class OrganizationUserSettingFactory(factory.django.DjangoModelFactory):
     organization = factory.SubFactory(OrganizationFactory)
     user = factory.SubFactory(UserFactory)
 
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        self.organization.members.add(self.user)
+
 
 class AttachmentFactory(factory.django.DjangoModelFactory):
     class Meta:

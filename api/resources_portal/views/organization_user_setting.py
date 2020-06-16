@@ -1,12 +1,7 @@
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
-from rest_framework.response import Response
 
 from resources_portal.models import Organization, OrganizationUserSetting, User
-from resources_portal.views.relation_serializers import (
-    OrganizationRelationSerializer,
-    UserRelationSerializer,
-)
 
 
 class OrganizationUserSettingSerializer(serializers.ModelSerializer):

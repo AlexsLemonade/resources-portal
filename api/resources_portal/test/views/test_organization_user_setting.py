@@ -53,9 +53,6 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         settings_json["new_request_notif"] = False
         settings_json["change_in_request_status_notif"] = False
 
-        settings_json["user"] = settings_json["user"]
-        settings_json["organization"] = settings_json["organization"]
-
         response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -91,7 +88,7 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         self.client.force_authenticate(user=self.invitation.requester)
         invitation_json = self.client.get(self.invitation_url).json()
         invitation_json["status"] = "ACCEPTED"
-        response = self.client.put(self.invitation_url, invitation_json)
+        self.client.put(self.invitation_url, invitation_json)
 
         self.assertTrue(
             OrganizationUserSetting.objects.filter(
