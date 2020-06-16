@@ -8,7 +8,7 @@ import resources_portal.models.user
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("resources_portal", "0001_initial"),
+        ("resources_portal", "0002_auto_20200608_1832"),
     ]
 
     operations = [

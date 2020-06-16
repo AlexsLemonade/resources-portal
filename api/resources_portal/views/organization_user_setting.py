@@ -2,12 +2,17 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
-from resources_portal.models import OrganizationUserSetting
-from resources_portal.views.organization import OrganizationSerializer
-from resources_portal.views.user import UserSerializer
+from resources_portal.models import Organization, OrganizationUserSetting, User
+from resources_portal.views.relation_serializers import (
+    OrganizationRelationSerializer,
+    UserRelationSerializer,
+)
 
 
 class OrganizationUserSettingSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all())
+
     class Meta:
         model = OrganizationUserSetting
         fields = (
@@ -25,11 +30,6 @@ class OrganizationUserSettingSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created_at", "updated_at", "user", "organization")
 
 
-class OrganizationUserSettingDetailSerializer(OrganizationUserSettingSerializer):
-    organization = OrganizationSerializer()
-    user = UserSerializer()
-
-
 class IsUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user == obj.user
@@ -42,8 +42,4 @@ class OrganizationUserSettingViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, IsUser]
 
-    def get_serializer_class(self):
-        if self.action == "list":
-            return Response(status=403)
-
-        return OrganizationUserSettingDetailSerializer
+    serializer_class = OrganizationUserSettingSerializer

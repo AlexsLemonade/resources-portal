@@ -103,6 +103,14 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
         assign_perm("add_members", request_reciever, newOrg)
 
 
+class OrganizationUserSettingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationUserSetting"
+
+    organization = factory.SubFactory(OrganizationFactory)
+    user = factory.SubFactory(UserFactory)
+
+
 class AttachmentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Attachment"

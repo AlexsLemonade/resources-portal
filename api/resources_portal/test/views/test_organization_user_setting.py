@@ -4,102 +4,104 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Material
-from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
+from resources_portal.models import OrganizationUserSetting
+from resources_portal.test.factories import (
+    OrganizationInvitationFactory,
+    OrganizationUserSettingFactory,
+    UserFactory,
+)
 
 fake = Faker()
 
 
 class TestSingleOrganizationUserSettingTestCase(APITestCase):
     """
-    Tests /materials detail operations.
+    Tests /organization-user-setting detail operations.
     """
 
     def setUp(self):
-        self.user = UserFactory()
-        self.user_without_perms = UserFactory()
-        self.organization = OrganizationFactory(owner=self.user)
-        self.organization2 = OrganizationFactory(owner=self.user)
-        self.organization_without_perms = OrganizationFactory()
-        self.material = MaterialFactory(contact_user=self.user, organization=self.organization)
-        self.url = reverse("material-detail", args=[self.material.id])
+        self.settings = OrganizationUserSettingFactory()
+        self.user = self.settings.user
+        self.organization = self.settings.organization
+        self.url = reverse("organization-user-setting-detail", args=[self.settings.id])
+        self.different_user = UserFactory()
 
-    def test_get_request_returns_a_given_material(self):
-        self.client.force_authenticate(user=None)
+        self.invitation = OrganizationInvitationFactory(
+            requester=self.different_user, organization=self.organization
+        )
+        self.invitation_url = reverse("invitation-detail", args=[self.invitation.id])
+
+    def test_get_request_returns_a_users_settings(self):
+        self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_put_request_updates_a_material(self):
+    def test_get_request_from_different_user_fails(self):
+        self.client.force_authenticate(user=self.different_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_put_request_updates_settings(self):
         self.client.force_authenticate(user=self.user)
-        material_json = self.client.get(self.url).json()
+        settings_json = self.client.get(self.url).json()
 
-        new_url = fake.url()
-        material_json["url"] = new_url
-        material_json["contact_user"] = material_json["contact_user"]["id"]
+        settings_json["new_request_notif"] = False
+        settings_json["change_in_request_status_notif"] = False
 
-        response = self.client.put(self.url, material_json)
+        settings_json["user"] = settings_json["user"]
+        settings_json["organization"] = settings_json["organization"]
+
+        response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        material = Material.objects.get(pk=self.material.id)
-        self.assertEqual(material.url, new_url)
+        settings = OrganizationUserSetting.objects.get(pk=self.settings.id)
+        self.assertEqual(settings.new_request_notif, False)
+        self.assertEqual(settings.change_in_request_status_notif, False)
 
-    def test_put_request_can_update_organization(self):
+    def test_put_request_from_different_user_fails(self):
         self.client.force_authenticate(user=self.user)
-        material_json = self.client.get(self.url).json()
+        settings_json = self.client.get(self.url).json()
 
-        material_json["organization"] = self.organization2.id
-        material_json["contact_user"] = material_json["contact_user"]["id"]
+        self.client.force_authenticate(user=self.different_user)
 
-        response = self.client.put(self.url, material_json)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        settings_json["new_request_notif"] = False
+        settings_json["change_in_request_status_notif"] = False
 
-        self.assertTrue(self.material in self.organization2.materials.all())
-
-    def test_put_request_on_organization_without_permissions_for_both_orgs_fails(self):
-        self.client.force_authenticate(user=self.user)
-        material_json = self.client.get(self.url).json()
-
-        material_json["organization"] = self.organization_without_perms.id
-        material_json["contact_user"] = material_json["contact_user"]["id"]
-
-        response = self.client.put(self.url, material_json)
+        response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_put_request_without_permission_forbidden(self):
-        self.client.force_authenticate(user=self.user_without_perms)
-        material_json = self.client.get(self.url).json()
+    def test_put_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=self.user)
+        settings_json = self.client.get(self.url).json()
 
-        new_url = fake.url()
-        material_json["url"] = new_url
-        material_json["contact_user"] = material_json["contact_user"]["id"]
-
-        response = self.client.put(self.url, material_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_put_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
-        material_json = self.client.get(self.url).json()
 
-        new_url = fake.url()
-        material_json["url"] = new_url
-        material_json["contact_user"] = material_json["contact_user"]["id"]
+        settings_json["new_request_notif"] = False
+        settings_json["change_in_request_status_notif"] = False
 
-        response = self.client.put(self.url, material_json)
+        response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_request_deletes_a_material(self):
-        self.client.force_authenticate(user=self.user)
-        material_id = self.material.id
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Material.objects.filter(id=material_id).count(), 0)
+    def test_new_member_added_to_organization_creates_settings(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_json = self.client.get(self.invitation_url).json()
+        invitation_json["status"] = "ACCEPTED"
+        response = self.client.put(self.invitation_url, invitation_json)
 
-    def test_delete_request_without_permission_forbidden(self):
-        self.client.force_authenticate(user=self.user_without_perms)
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(
+            OrganizationUserSetting.objects.filter(
+                user=self.different_user, organization=self.invitation.organization
+            ).exists()
+        )
 
-    def test_delete_request_from_unauthenticated_forbidden(self):
-        self.client.force_authenticate(user=None)
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def test_owner_has_settings_when_organization_created(self):
+        self.assertTrue(
+            OrganizationUserSetting.objects.filter(
+                user=self.organization.owner, organization=self.organization
+            ).exists()
+        )
