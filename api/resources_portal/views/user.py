@@ -13,32 +13,11 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "orcid",
             "created_at",
             "updated_at",
         )
         read_only_fields = ("username", "created_at", "updated_at")
-
-
-class CreateUserSerializer(serializers.ModelSerializer):
-    def create(self, validated_data):
-        # call create_user on user object. Without this
-        # the password will be stored in plain text.
-        user = User.objects.create_user(**validated_data)
-        return user
-
-    class Meta:
-        model = User
-        fields = (
-            "id",
-            "username",
-            "password",
-            "first_name",
-            "last_name",
-            "email",
-            "auth_token",
-        )
-        read_only_fields = ("auth_token",)
-        extra_kwargs = {"password": {"write_only": True}}
 
 
 class IsUserOrAdmin(BasePermission):
@@ -50,27 +29,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        response = super(UserViewSet, self).create(request, args, kwargs)
-
-        # Every user should have their own organization.
-        user = User.objects.get(id=response.data["id"])
-        Organization.objects.create(owner=user)
-
-        return response
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return CreateUserSerializer
-
-        return UserSerializer
+    http_method_names = ["get", "delete", "put", "patch", "head", "options"]
 
     def get_permissions(self):
         if self.action == "update" or self.action == "partial_update" or self.action == "destroy":
             permission_classes = [IsAuthenticated, IsUserOrAdmin]
-        elif self.action == "create":
-            permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
 

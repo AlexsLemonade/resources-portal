@@ -5,6 +5,7 @@ import orcid
 import requests
 
 from resources_portal.models.grant import Grant
+from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
 CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
@@ -77,6 +78,8 @@ class OAuthMiddleWare:
                     last_name=last_name,
                     email=email,
                 )
+
+                Organization.objects.create(owner=user)
 
                 grant_ids = request.GET.getlist("grant_id")
 
