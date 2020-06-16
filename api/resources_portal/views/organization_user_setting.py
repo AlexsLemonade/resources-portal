@@ -45,6 +45,6 @@ class OrganizationUserSettingViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["get", "put", "patch", "head", "options"]
 
-    permission_classes = [IsAuthenticated, IsUser]
+    permission_classes = [IsAuthenticated, IsUser, IsInOrganization]
 
     serializer_class = OrganizationUserSettingSerializer
