@@ -35,6 +35,7 @@ class Attachment(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="sequence_maps",
+        help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
         default=None,
     )
 

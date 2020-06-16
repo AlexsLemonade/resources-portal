@@ -22,7 +22,6 @@ class TestAttachmentListTestCase(APITestCase):
         self.attachment = AttachmentFactory()
         self.attachment_data = model_to_dict(self.attachment)
         self.attachment_data.pop("id")
-        self.attachment_data.pop("sequence_map_for")
 
         self.material_request = MaterialRequestFactory()
 
@@ -100,8 +99,6 @@ class TestSingleAttachmentTestCase(APITestCase):
     def test_put_request_updates_a_attachment(self):
         self.client.force_authenticate(user=self.user)
         attachment_json = self.client.get(self.url).json()
-
-        attachment_json["sequence_map_for"] = attachment_json["sequence_map_for"]["id"]
 
         filename = "new_filename"
         attachment_json["filename"] = filename
