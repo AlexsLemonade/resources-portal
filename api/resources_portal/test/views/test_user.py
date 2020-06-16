@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -6,7 +5,7 @@ from rest_framework.test import APITestCase
 import factory
 from faker import Faker
 
-from resources_portal.models import Organization, User
+from resources_portal.models import User
 from resources_portal.test.factories import UserFactory
 
 fake = Faker()
