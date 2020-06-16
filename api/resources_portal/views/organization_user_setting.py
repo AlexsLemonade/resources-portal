@@ -35,6 +35,11 @@ class IsUser(BasePermission):
         return request.user == obj.user
 
 
+class IsInOrganization(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user in obj.organization.members.all()
+
+
 class OrganizationUserSettingViewSet(viewsets.ModelViewSet):
     queryset = OrganizationUserSetting.objects.all()
 

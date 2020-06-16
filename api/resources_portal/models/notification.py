@@ -57,7 +57,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
 
     email = models.EmailField(blank=False, null=True)
 
-    delivered = models.BooleanField(null=True)
+    delivered = models.BooleanField(default=False)
 
     @computed(models.TextField(null=False, blank=False))
     def message(self):
@@ -119,8 +119,6 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
                 user=instance.notified_user, organization=instance.associated_organization
             )
             if not getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
-                instance.delivered = False
-                instance.save()
                 return
 
         instance.email = instance.notified_user.email
