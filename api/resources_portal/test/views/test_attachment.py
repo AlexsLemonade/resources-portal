@@ -28,6 +28,11 @@ class TestAttachmentListTestCase(APITestCase):
         self.user = self.material_request.requester
         self.user_without_request = UserFactory()
 
+        self.user_in_org = UserFactory()
+        org = self.material_request.material.organization
+        org.members.add(self.user_in_org)
+        assign_perm("approve_requests", self.user_in_org, org)
+
         self.admin = UserFactory()
         self.admin.is_staff = True
 
@@ -38,6 +43,11 @@ class TestAttachmentListTestCase(APITestCase):
 
     def test_post_request_from_user_with_material_request_open_succeeds(self):
         self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, self.attachment_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_request_from_user_in_organization_with_active_material_request_succeeds(self):
+        self.client.force_authenticate(user=self.user_in_org)
         response = self.client.post(self.url, self.attachment_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

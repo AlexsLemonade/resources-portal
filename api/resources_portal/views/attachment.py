@@ -26,7 +26,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 
 class AttachmentDetailSerializer(AttachmentSerializer):
-    sequence_map_for = MaterialRelationSerializer()
+    sequence_map_for = MaterialRelationSerializer(many=False, read_only=True)
 
 
 class HasViewAttachmentOrIsAdminUser(BasePermission):
@@ -39,14 +39,24 @@ class HasModifyAttachmentOrIsAdminUser(BasePermission):
         return request.user.has_perm("modify_attachment", obj) or request.user.is_staff
 
 
+def user_has_perms_for_organization_with_active_material_request(user):
+    for organization in user.organizations.all():
+        if user.has_perm("approve_requests", organization):
+            for material in organization.materials.all():
+                for request in material.requests.all():
+                    if request.is_active:
+                        return True
+    return False
+
+
 class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
-            return AttachmentDetailSerializer
+        if self.action == "list":
+            return AttachmentSerializer
 
-        return AttachmentSerializer
+        return AttachmentDetailSerializer
 
     def get_permissions(self):
         if self.action == "list":
@@ -61,9 +71,10 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
+
         if not (
             MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or MaterialRequest.objects.filter(assigned_to=request.user, is_active=True).exists()
+            or user_has_perms_for_organization_with_active_material_request(request.user)
             or request.user.is_staff
         ):
             return Response(status=403)
