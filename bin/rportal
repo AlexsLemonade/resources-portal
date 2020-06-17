@@ -23,7 +23,7 @@ commands = {
         'bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"'
     ),
     "recreate-schema": "./recreate_schema.sh",
-    "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"'),
+    "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh {}"'),
     "makemigrations": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"'
     ),

@@ -96,6 +96,8 @@ if args.env == "dev":
     with open("api-configuration/dev-secrets") as dev_secrets:
         for line in dev_secrets.readlines():
             [key, val] = line.split("=")
+            # Test this!
+            os.environ[key] = val
 else:
     env_prefix = args.env.upper() + "_"
     for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
@@ -112,13 +114,28 @@ os.environ["TF_VAR_system_version"] = args.system_version
 
 var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
 
+init_bucket = f'-backend-config="bucket=resources-portal-tfstate-{args.env}"'
+init_key = f'-backend-config="key=terraform-{args.user}.tfstate"'
+
 # Make sure that Terraform is allowed to shut down gracefully.
 try:
-    terraform_process = subprocess.Popen(["terraform", "init", var_file_arg])
+    command = [
+        "terraform",
+        "init",
+        init_bucket,
+        init_key,
+        '-backend-config="dynamodb_table=resources-portal-terraform-lock"',
+        var_file_arg,
+        "-force-copy",
+    ]
+    print(command)
+    terraform_process = subprocess.Popen(command)
     terraform_process.wait()
 except KeyboardInterrupt:
     terraform_process.send_signal(signal.SIGINT)
     terraform_process.wait()
+
+exit()
 
 try:
     terraform_process = subprocess.Popen(["terraform", "apply", var_file_arg, "-auto-approve"])
