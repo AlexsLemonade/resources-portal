@@ -1,0 +1,25 @@
+name: Deploy the staging stack for the API
+
+# Temporary for testing
+on: push
+# on:
+#   push:
+#     branches:
+#       - dev
+
+jobs:
+  deploy:
+    name: Deploy Staging API
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Deploy
+        run: cd infrastructure && python3 deploy.py -e staging -u deployer
+        env:
+          DATABASE_PASSWORD: ${{ secrets.STAGING_DATABASE_PASSWORD }}
+          DJANGO_SECRET_KEY: ${{ secrets.STAGING_DJANGO_SECRET_KEY }}
