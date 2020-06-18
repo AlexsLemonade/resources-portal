@@ -17,6 +17,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 0.12.26
 
       - name: Deploy
         run: cd infrastructure && python3 deploy.py -e staging -u deployer -d ccdlstaging -v $(git rev-parse HEAD)
