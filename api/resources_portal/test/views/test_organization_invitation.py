@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
-from guardian.shortcuts import assign_perm, remove_perm
+from guardian.shortcuts import remove_perm
 
 from resources_portal.models import Notification, OrganizationInvitation
 from resources_portal.test.factories import OrganizationInvitationFactory
@@ -41,17 +41,10 @@ class OrganizationInvitationListTestCase(APITestCase):
 
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
+            "add_members", self.invitation.request_reciever, self.invitation.organization,
         )
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        assign_perm(
-            "add_members_and_manage_permissions",
-            self.invitation.request_reciever,
-            self.invitation.organization,
-        )
 
     def test_post_request_from_incorrect_user_fails(self):
         self.client.force_authenticate(user=None)
@@ -213,3 +206,27 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
 
         response = self.client.put(self.url, invitation_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_deletes_invitation(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_id = self.invitation.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(OrganizationInvitation.objects.filter(id=invitation_id).count(), 0)
+
+    def test_delete_request_from_non_requester_fails(self):
+        self.client.force_authenticate(user=self.invitation.request_reciever)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.invitation.requester)
+        invitation_id = self.invitation.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)

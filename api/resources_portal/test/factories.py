@@ -42,7 +42,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     owner = factory.SubFactory(UserFactory)
-    name = "test_organization"
+    name = factory.Sequence(lambda n: f"test_organization{n}")
 
     @factory.post_generation
     def organizations(self, create, extracted, **kwargs):
@@ -98,7 +98,31 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
         new = User.objects.get(id=self.request_reciever.id)
         newOrg = Organization.objects.get(id=self.organization.id)
 
-        assign_perm("add_members_and_manage_permissions", new, newOrg)
+        assign_perm("add_members", new, newOrg)
+
+
+class AttachmentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Attachment"
+
+    filename = "attachment_file"
+    description = "A file for testing"
+    s3_bucket = "https://bucket-name.s3.region.amazonaws.com/keyname"
+    s3_key = "s3 key"
+
+
+class MaterialRequestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.MaterialRequest"
+
+    assigned_to = factory.SubFactory(UserFactory)
+    requester = factory.SubFactory(UserFactory)
+
+    executed_mta_attachment = factory.SubFactory(AttachmentFactory)
+    irb_attachment = factory.SubFactory(AttachmentFactory)
+    requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
+
+    material = factory.SubFactory(MaterialFactory)
 
 
 class LeafGrantFactory(factory.django.DjangoModelFactory):
@@ -136,6 +160,7 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 class GrantFactory(LeafGrantFactory):
     user1 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
     user2 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
-    organization = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    organization1 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
+    organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
     material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")

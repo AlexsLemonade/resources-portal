@@ -1,15 +1,17 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 
-class Grant(models.Model):
+class Grant(SafeDeleteModel):
     class Meta:
         db_table = "grants"
         get_latest_by = "created_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -17,6 +19,6 @@ class Grant(models.Model):
     title = models.TextField()
     funder_id = models.CharField(max_length=80)
 
-    users = models.ManyToManyField(User, through="GrantUserAssociation")
-    organizations = models.ManyToManyField(Organization, through="GrantOrganizationAssociation")
+    users = models.ManyToManyField("User", through="GrantUserAssociation")
+    organizations = models.ManyToManyField("Organization", through="GrantOrganizationAssociation")
     materials = models.ManyToManyField("Material", through="GrantMaterialAssociation")

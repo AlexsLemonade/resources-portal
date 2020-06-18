@@ -1,17 +1,22 @@
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
+
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
 
-class OrganizationUserSetting(models.Model):
+class OrganizationUserSetting(SafeDeleteModel):
     """ This model will store individual settings for each user and organization """
 
     class Meta:
         db_table = "organization_user_setting"
         get_latest_by = "created_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
