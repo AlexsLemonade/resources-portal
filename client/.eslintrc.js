@@ -43,6 +43,6 @@ module.exports = {
     'react/no-multi-comp': 0,
     'import/no-mutable-exports': 0,
     'react/jsx-props-no-spreading': 'warn',
-    'no-console': 'warn'
+    'no-console': 0
   }
 }
