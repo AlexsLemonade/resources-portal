@@ -24,8 +24,8 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "resources_portal_instance_profile" {
-  name  = "resources-portal-instance-profile-${var.user}-${var.stage}"
-  role = "${aws_iam_role.resources_portal_instance.name}"
+  name = "resources-portal-instance-profile-${var.user}-${var.stage}"
+  role = aws_iam_role.resources_portal_instance.name
 }
 
 resource "aws_iam_policy" "resources_portal_cloudwatch" {
@@ -64,8 +64,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch" {
-  role = "${aws_iam_role.resources_portal_instance.name}"
-  policy_arn = "${aws_iam_policy.resources_portal_cloudwatch.arn}"
+  role = aws_iam_role.resources_portal_instance.name
+  policy_arn = aws_iam_policy.resources_portal_cloudwatch.arn
 }
 
 
@@ -102,6 +102,6 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "elasticsearch" {
-  role = "${aws_iam_role.resources_portal_instance.name}"
-  policy_arn = "${aws_iam_policy.resources_portal_elasticsearch.arn}"
+  role = aws_iam_role.resources_portal_instance.name
+  policy_arn = aws_iam_policy.resources_portal_elasticsearch.arn
 }

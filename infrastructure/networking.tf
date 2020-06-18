@@ -3,7 +3,7 @@
 
 provider "aws" {
   version = "2.66.0"
-  region = "${var.region}"
+  region = var.region
 }
 
 resource "aws_vpc" "resources_portal_vpc" {
@@ -11,7 +11,7 @@ resource "aws_vpc" "resources_portal_vpc" {
   enable_dns_support = true
   enable_dns_hostnames = true
 
-  tags {
+  tags = {
     Name = "resources-portal-${var.user}-${var.stage}"
   }
 }
@@ -19,10 +19,10 @@ resource "aws_vpc" "resources_portal_vpc" {
 resource "aws_subnet" "resources_portal_1a" {
   availability_zone = "${var.region}a"
   cidr_block = "10.0.0.0/17"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
   map_public_ip_on_launch = true
 
-  tags {
+  tags = {
     Name = "resources-portal-1a-${var.user}-${var.stage}"
   }
 }
@@ -30,17 +30,17 @@ resource "aws_subnet" "resources_portal_1a" {
 resource "aws_subnet" "resources_portal_1b" {
   availability_zone = "${var.region}b"
   cidr_block = "10.0.128.0/17"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
   # Unsure if this should be set to true
   map_public_ip_on_launch = true
 
-  tags {
+  tags = {
     Name = "resources-portal-1b-${var.user}-${var.stage}"
   }
 }
 
 resource "aws_internet_gateway" "resources_portal" {
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
   tags = {
     Name = "resources-portal-${var.user}-${var.stage}"
@@ -50,33 +50,33 @@ resource "aws_internet_gateway" "resources_portal" {
 # Note: this is a insecure practice long term, however it's
 # necessary to access it from lab machines.
 resource "aws_route_table" "resources_portal" {
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.resources_portal.id}"
+    gateway_id = aws_internet_gateway.resources_portal.id
   }
 
-  tags {
+  tags = {
     Name = "resources-portal-${var.user}-${var.stage}"
   }
 }
 
 resource "aws_route_table_association" "resources_portal_1a" {
-  subnet_id      = "${aws_subnet.resources_portal_1a.id}"
-  route_table_id = "${aws_route_table.resources_portal.id}"
+  subnet_id = aws_subnet.resources_portal_1a.id
+  route_table_id = aws_route_table.resources_portal.id
 }
 
 resource "aws_route_table_association" "resources_portal_1b" {
-  subnet_id      = "${aws_subnet.resources_portal_1b.id}"
-  route_table_id = "${aws_route_table.resources_portal.id}"
+  subnet_id = aws_subnet.resources_portal_1b.id
+  route_table_id = aws_route_table.resources_portal.id
 }
 
 resource "aws_db_subnet_group" "resources_portal" {
   name = "resources-portal-${var.user}-${var.stage}"
-  subnet_ids = ["${aws_subnet.resources_portal_1a.id}", "${aws_subnet.resources_portal_1b.id}"]
+  subnet_ids = [aws_subnet.resources_portal_1a.id, aws_subnet.resources_portal_1b.id]
 
-  tags {
+  tags = {
     Name = "Resources Portal DB Subnet ${var.user}-${var.stage}"
   }
 }
@@ -85,13 +85,13 @@ resource "aws_db_subnet_group" "resources_portal" {
 resource "aws_eip" "resources_portal_api_ip" {
   vpc = true
 
-  tags {
+  tags = {
     Name = "Resources Portal API Elastic IP ${var.user}-${var.stage}"
   }
 }
 
 output "elastic_ip_address" {
-  value = "${aws_eip.resources_portal_api_ip.public_ip}"
+  value = aws_eip.resources_portal_api_ip.public_ip
 }
 
 
@@ -115,8 +115,8 @@ resource "aws_lb" "resources_portal_api_load_balancer" {
 
   # Only one subnet is allowed and the API lives in 1a.
   subnet_mapping {
-    subnet_id = "${aws_subnet.resources_portal_1a.id}"
-    allocation_id = "${aws_eip.resources_portal_api_ip.id}"
+    subnet_id = aws_subnet.resources_portal_1a.id
+    allocation_id = aws_eip.resources_portal_api_ip.id
   }
 }
 
@@ -124,24 +124,24 @@ resource "aws_lb_target_group" "api-http" {
   name = "dr-api-${var.user}-${var.stage}-http"
   port = 80
   protocol = "TCP"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness = []
 }
 
 resource "aws_lb_listener" "api-http" {
-  load_balancer_arn = "${aws_lb.resources_portal_api_load_balancer.arn}"
+  load_balancer_arn = aws_lb.resources_portal_api_load_balancer.arn
   protocol = "TCP"
   port = 80
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.api-http.arn}"
+    target_group_arn = aws_lb_target_group.api-http.arn
     type = "forward"
   }
 }
 
 resource "aws_lb_target_group_attachment" "api-http" {
-  target_group_arn = "${aws_lb_target_group.api-http.arn}"
-  target_id = "${aws_instance.api_server_1.id}"
+  target_group_arn = aws_lb_target_group.api-http.arn
+  target_id = aws_instance.api_server_1.id
   port = 80
 }
 
@@ -149,23 +149,23 @@ resource "aws_lb_target_group" "api-https" {
   name = "dr-api-${var.user}-${var.stage}-https"
   port = 443
   protocol = "TCP"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness = []
 }
 
 resource "aws_lb_listener" "api-https" {
-  load_balancer_arn = "${aws_lb.resources_portal_api_load_balancer.arn}"
+  load_balancer_arn = aws_lb.resources_portal_api_load_balancer.arn
   protocol = "TCP"
   port = 443
 
   default_action {
-    target_group_arn = "${aws_lb_target_group.api-https.arn}"
+    target_group_arn = aws_lb_target_group.api-https.arn
     type = "forward"
   }
 }
 
 resource "aws_lb_target_group_attachment" "api-https" {
-  target_group_arn = "${aws_lb_target_group.api-https.arn}"
-  target_id = "${aws_instance.api_server_1.id}"
+  target_group_arn = aws_lb_target_group.api-https.arn
+  target_id = aws_instance.api_server_1.id
   port = 443
 }

@@ -10,13 +10,13 @@ data "template_file" "api_environment" {
   template = "${file("api-configuration/environment.tpl")}"
 
   vars {
-    django_secret_key = "${var.django_secret_key}"
-    database_host = "${aws_db_instance.postgres_db.address}"
-    database_port = "${aws_db_instance.postgres_db.port}"
-    database_user = "${aws_db_instance.postgres_db.username}"
-    database_name = "${aws_db_instance.postgres_db.name}"
-    database_password = "${var.database_password}"
-    elasticsearch_host = "${aws_elasticsearch_domain.es.endpoint}"
+    django_secret_key = var.django_secret_key
+    database_host = aws_db_instance.postgres_db.address
+    database_port = aws_db_instance.postgres_db.port
+    database_user = aws_db_instance.postgres_db.username
+    database_name = aws_db_instance.postgres_db.name
+    database_password = var.database_password
+    elasticsearch_host = aws_elasticsearch_domain.es.endpoint
   }
 
   depends_on = [
@@ -37,15 +37,15 @@ data "template_file" "api_server_script_smusher" {
   template = "${file("api-configuration/api-server-instance-user-data.tpl.sh")}"
 
   vars {
-    nginx_config = "${data.local_file.api_nginx_config.content}"
-    api_environment = "${data.template_file.api_environment.rendered}"
-    user = "${var.user}"
-    stage = "${var.stage}"
-    region = "${var.region}"
-    dockerhub_repo = "${var.dockerhub_repo}"
-    system_version = "${var.system_version}"
-    log_group = "${aws_cloudwatch_log_group.resources_portal_log_group.name}"
-    log_stream = "${aws_cloudwatch_log_stream.log_stream_api.name}"
+    nginx_config = data.local_file.api_nginx_config.content
+    api_environment = data.template_file.api_environment.rendered
+    user = var.user
+    stage = var.stage
+    region = var.region
+    dockerhub_repo = var.dockerhub_repo
+    system_version = var.system_version
+    log_group = aws_cloudwatch_log_group.resources_portal_log_group.name
+    log_stream = aws_cloudwatch_log_stream.log_stream_api.name
   }
 
   depends_on = [
@@ -59,6 +59,7 @@ data "template_file" "api_server_script_smusher" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
+  owners = ["aws-marketplace"]
 
   filter {
     name   = "name"
@@ -75,19 +76,19 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "api_server_1" {
-  ami = "${data.aws_ami.ubuntu.id}"
-  instance_type = "${var.api_instance_type}"
+  ami = data.aws_ami.ubuntu.id
+  instance_type = var.api_instance_type
   availability_zone = "${var.region}a"
-  vpc_security_group_ids = ["${aws_security_group.resources_portal_api.id}"]
-  iam_instance_profile = "${aws_iam_instance_profile.resources_portal_instance_profile.name}"
-  subnet_id = "${aws_subnet.resources_portal_1a.id}"
+  vpc_security_group_ids = [aws_security_group.resources_portal_api.id]
+  iam_instance_profile = aws_iam_instance_profile.resources_portal_instance_profile.name
+  subnet_id = aws_subnet.resources_portal_1a.id
   depends_on = [
     "aws_db_instance.postgres_db",
     "aws_security_group_rule.resources_portal_api_http",
     "aws_security_group_rule.resources_portal_api_outbound"
   ]
-  user_data = "${data.template_file.api_server_script_smusher.rendered}"
-  key_name = "${aws_key_pair.resources_portal.key_name}"
+  user_data = data.template_file.api_server_script_smusher.rendered
+  key_name = aws_key_pair.resources_portal.key_name
 
   tags = {
     Name = "Resources Portal API ${var.user}-${var.stage}"
@@ -102,5 +103,5 @@ resource "aws_instance" "api_server_1" {
 }
 
 output "api_server_1_ip" {
-  value = "${aws_instance.api_server_1.public_ip}"
+  value = aws_instance.api_server_1.public_ip
 }

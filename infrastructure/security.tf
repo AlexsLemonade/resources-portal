@@ -17,7 +17,7 @@ resource "aws_security_group" "resources_portal_db" {
   description = "resources_portal_db-${var.user}-${var.stage}"
   vpc_id = "${aws_vpc.resources_portal_vpc.id}"
 
-  tags {
+  tags = {
     Name = "resources-portal-db-${var.user}-${var.stage}"
   }
 }
@@ -49,7 +49,7 @@ resource "aws_security_group" "resources_portal_api" {
   description = "resources-portal-api-${var.user}-${var.stage}"
   vpc_id = "${aws_vpc.resources_portal_vpc.id}"
 
-  tags {
+  tags = {
     Name = "resources-portal-api-${var.user}-${var.stage}"
   }
 }
@@ -100,7 +100,7 @@ resource "aws_security_group" "resources_portal_es" {
   description = "resources-portal-es-${var.user}-${var.stage}"
   vpc_id = "${aws_vpc.resources_portal_vpc.id}"
 
-  tags {
+  tags = {
     Name = "resources-portal-es-${var.user}-${var.stage}"
   }
 

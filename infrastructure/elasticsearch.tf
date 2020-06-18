@@ -42,7 +42,7 @@ resource "aws_elasticsearch_domain" "es" {
       automated_snapshot_start_hour = 23
   }
 
-  tags {
+  tags = {
       Domain = "resources-portal-es-${var.user}-${var.stage}"
       Name = "resources-portal-es-${var.user}-${var.stage}"
   }
