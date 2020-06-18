@@ -3,15 +3,15 @@ resource "aws_elasticsearch_domain" "es" {
   elasticsearch_version = "6.4"
 
   cluster_config {
-    instance_type = "${var.elasticsearch_instance_type}"
+    instance_type = var.elasticsearch_instance_type
   }
 
   vpc_options {
       subnet_ids = [
-          "${aws_subnet.resources_portal_1a.id}"
+          aws_subnet.resources_portal_1a.id
       ]
       security_group_ids = [
-          "${aws_security_group.resources_portal_es.id}"
+          aws_security_group.resources_portal_es.id
       ]
   }
 
@@ -49,5 +49,5 @@ resource "aws_elasticsearch_domain" "es" {
 }
 
 output "elasticsearch_endpoint" {
-  value = "${aws_elasticsearch_domain.es.endpoint}"
+  value = aws_elasticsearch_domain.es.endpoint
 }

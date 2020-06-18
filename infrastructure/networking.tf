@@ -125,7 +125,7 @@ resource "aws_lb_target_group" "api-http" {
   port = 80
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
-  stickiness = {
+  stickiness {
     enabled = false
   }
 }
@@ -152,7 +152,7 @@ resource "aws_lb_target_group" "api-https" {
   port = 443
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
-  stickiness = {
+  stickiness {
     enabled = false
   }
 }

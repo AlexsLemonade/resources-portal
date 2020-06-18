@@ -36,7 +36,7 @@ data "template_file" "api_environment" {
 data "template_file" "api_server_script_smusher" {
   template = "${file("api-configuration/api-server-instance-user-data.tpl.sh")}"
 
-  vars {
+  vars = {
     nginx_config = data.local_file.api_nginx_config.content
     api_environment = data.template_file.api_environment.rendered
     user = var.user
@@ -83,9 +83,9 @@ resource "aws_instance" "api_server_1" {
   iam_instance_profile = aws_iam_instance_profile.resources_portal_instance_profile.name
   subnet_id = aws_subnet.resources_portal_1a.id
   depends_on = [
-    "aws_db_instance.postgres_db",
-    "aws_security_group_rule.resources_portal_api_http",
-    "aws_security_group_rule.resources_portal_api_outbound"
+    aws_db_instance.postgres_db,
+    aws_security_group_rule.resources_portal_api_http,
+    aws_security_group_rule.resources_portal_api_outbound
   ]
   user_data = data.template_file.api_server_script_smusher.rendered
   key_name = aws_key_pair.resources_portal.key_name
