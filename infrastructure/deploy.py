@@ -89,6 +89,17 @@ def build_and_push_docker_image(args):
         ],
     )
 
+    completed_command = subprocess.check_call(
+        [
+            "docker",
+            "login",
+            "--user",
+            os.environ["DOCKER_ID"],
+            "--password",
+            os.environ["DOCKER_PASSWORD"],
+        ]
+    )
+
     completed_command = subprocess.check_call(["docker", "push", image_name])
 
     # Change dir back so terraform is run from the correct location:

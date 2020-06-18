@@ -23,3 +23,5 @@ jobs:
         env:
           DATABASE_PASSWORD: ${{ secrets.STAGING_DATABASE_PASSWORD }}
           DJANGO_SECRET_KEY: ${{ secrets.STAGING_DJANGO_SECRET_KEY }}
+          DOCKER_ID: ${{ secrets.DOCKER_ID }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
