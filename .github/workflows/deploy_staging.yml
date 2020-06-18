@@ -19,7 +19,7 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Deploy
-        run: cd infrastructure && python3 deploy.py -e staging -u deployer
+        run: cd infrastructure && python3 deploy.py -e staging -u deployer -d ccdlstaging -v $(git rev-parse HEAD)
         env:
           DATABASE_PASSWORD: ${{ secrets.STAGING_DATABASE_PASSWORD }}
           DJANGO_SECRET_KEY: ${{ secrets.STAGING_DJANGO_SECRET_KEY }}
