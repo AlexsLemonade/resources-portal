@@ -127,6 +127,7 @@ resource "aws_lb_target_group" "api-http" {
   vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness {
     enabled = false
+    type = "lb_cookie"
   }
 }
 
@@ -154,6 +155,7 @@ resource "aws_lb_target_group" "api-https" {
   vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness {
     enabled = false
+    type = "lb_cookie"
   }
 }
 

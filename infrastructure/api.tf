@@ -96,7 +96,7 @@ resource "aws_instance" "api_server_1" {
 
   # I think these are the defaults provided in terraform examples.
   # They should be removed or revisited.
-  root_block_device = {
+  root_block_device {
     volume_type = "gp2"
     volume_size = 100
   }
