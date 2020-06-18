@@ -59,7 +59,7 @@ data "template_file" "api_server_script_smusher" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners = ["amazon"]
+  owners = ["190047108236"]
 
   filter {
     name   = "name"

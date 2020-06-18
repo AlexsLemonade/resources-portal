@@ -47,7 +47,7 @@ resource "aws_security_group_rule" "resources_portal_db_tcp" {
 resource "aws_security_group" "resources_portal_api" {
   name = "resources-portal-api-${var.user}-${var.stage}"
   description = "resources-portal-api-${var.user}-${var.stage}"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
   tags = {
     Name = "resources-portal-api-${var.user}-${var.stage}"
