@@ -36,13 +36,13 @@ resource "aws_db_instance" "postgres_db" {
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
   # Only the prod's bucket prefix is empty.
-  skip_final_snapshot = "${var.stage == "prod" ? false : true}"
-  final_snapshot_identifier = "${var.stage == "prod" ? "resources-portal-prod-snapshot" : "none"}"
+  skip_final_snapshot = var.stage == "prod" ? false : true
+  final_snapshot_identifier = var.stage == "prod" ? "resources-portal-prod-snapshot" : "none"
 
   vpc_security_group_ids = [aws_security_group.resources_portal_db.id]
   multi_az = true
   publicly_accessible = true
 
-  backup_retention_period  = "${var.stage == "prod" ? "7" : "0"}"
+  backup_retention_period  = var.stage == "prod" ? "7" : "0"
 
 }

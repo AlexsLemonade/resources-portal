@@ -9,7 +9,7 @@ data "local_file" "api_nginx_config" {
 data "template_file" "api_environment" {
   template = "${file("api-configuration/environment.tpl")}"
 
-  vars {
+  vars = {
     django_secret_key = var.django_secret_key
     database_host = aws_db_instance.postgres_db.address
     database_port = aws_db_instance.postgres_db.port
@@ -20,8 +20,8 @@ data "template_file" "api_environment" {
   }
 
   depends_on = [
-    "aws_db_instance.postgres_db",
-    "aws_elasticsearch_domain.es"
+    aws_db_instance.postgres_db,
+    aws_elasticsearch_domain.es
   ]
 }
 
@@ -49,10 +49,10 @@ data "template_file" "api_server_script_smusher" {
   }
 
   depends_on = [
-    "data.template_file.api_environment",
-    "aws_db_instance.postgres_db",
-    "aws_security_group_rule.resources_portal_api_http",
-    "aws_security_group_rule.resources_portal_api_outbound"
+    data.template_file.api_environment,
+    aws_db_instance.postgres_db,
+    aws_security_group_rule.resources_portal_api_http,
+    aws_security_group_rule.resources_portal_api_outbound
   ]
 
 }
