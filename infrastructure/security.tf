@@ -15,7 +15,7 @@ resource "aws_key_pair" "resources_portal" {
 resource "aws_security_group" "resources_portal_db" {
   name = "resources-portal_db-${var.user}-${var.stage}"
   description = "resources_portal_db-${var.user}-${var.stage}"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
   tags = {
     Name = "resources-portal-db-${var.user}-${var.stage}"
@@ -28,7 +28,7 @@ resource "aws_security_group_rule" "resources_portal_db_outbound" {
   to_port = 65535
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_db.id}"
+  security_group_id = aws_security_group.resources_portal_db.id
 }
 
 resource "aws_security_group_rule" "resources_portal_db_tcp" {
@@ -36,8 +36,8 @@ resource "aws_security_group_rule" "resources_portal_db_tcp" {
   from_port = 5432
   to_port = 5432
   protocol = "tcp"
-  source_security_group_id = "${aws_security_group.resources_portal_api.id}"
-  security_group_id = "${aws_security_group.resources_portal_db.id}"
+  source_security_group_id = aws_security_group.resources_portal_api.id
+  security_group_id = aws_security_group.resources_portal_db.id
 }
 
 ##
@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "resources_portal_api_ssh" {
   to_port = 22
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_http" {
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "resources_portal_api_http" {
   to_port = 80
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_https" {
@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "resources_portal_api_https" {
   to_port = 443
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_outbound" {
@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "resources_portal_api_outbound" {
   protocol = "all"
   cidr_blocks = ["0.0.0.0/0"]
   ipv6_cidr_blocks = ["::/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 ##
@@ -98,7 +98,7 @@ resource "aws_security_group_rule" "resources_portal_api_outbound" {
 resource "aws_security_group" "resources_portal_es" {
   name = "resources-portal-es-${var.user}-${var.stage}"
   description = "resources-portal-es-${var.user}-${var.stage}"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
   tags = {
     Name = "resources-portal-es-${var.user}-${var.stage}"
