@@ -4,12 +4,15 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Material, Organization
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     ShippingRequirementsRelationSerializer,
 )
 from resources_portal.views.user import UserSerializer
+
+logger = get_and_configure_logger(__name__)
 
 
 class MaterialSerializer(serializers.ModelSerializer):

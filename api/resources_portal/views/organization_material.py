@@ -3,8 +3,11 @@ from rest_framework.exceptions import MethodNotAllowed
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Material
 from resources_portal.views.relation_serializers import MaterialRelationSerializer
+
+logger = get_and_configure_logger(__name__)
 
 
 class OrganizationMaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

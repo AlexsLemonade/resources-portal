@@ -1,12 +1,15 @@
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Grant
 from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
     OrganizationRelationSerializer,
     UserRelationSerializer,
 )
+
+logger = get_and_configure_logger(__name__)
 
 
 class GrantSerializer(serializers.ModelSerializer):

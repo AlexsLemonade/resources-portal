@@ -6,6 +6,10 @@ from datetime import datetime, timedelta
 
 import requests
 
+from resources_portal.config.logging import get_and_configure_logger
+
+logger = get_and_configure_logger(__name__)
+
 port = os.getenv("ELASTICSEARCH_PORT", "9200")
 
 start = datetime.now()
@@ -22,10 +26,10 @@ while (datetime.now() - start < max_time) and not success:
         pass
 
     if not success:
-        print("Waiting on elasticsearch to start....")
+        logger.info("Waiting on elasticsearch to start....")
 
         time.sleep(1)
 
 if datetime.now() - start > max_time:
-    print("Elasticsearch never came up.")
+    logger.info("Elasticsearch never came up.")
     exit(1)

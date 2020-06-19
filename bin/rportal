@@ -3,9 +3,13 @@
 import argparse
 import os
 
+from resources_portal.config.logging import get_and_configure_logger
+
+logger = get_and_configure_logger(__name__)
+
 # exit if not called from project root
 if not os.path.exists("./bin/rportal"):
-    print("Please call rportal from the project's root")
+    logger.error("Please call rportal from the project's root")
     exit()
 
 # Docker compose uses the current directory in the network name. We
@@ -54,4 +58,4 @@ try:
     command = commands[args.command]
     os.system(command.format(" ".join(args.command_args)))
 except KeyError:
-    print("Unknown Command")
+    logger.error("Unknown Command")

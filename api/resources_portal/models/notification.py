@@ -6,9 +6,12 @@ from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models.material import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
+
+logger = get_and_configure_logger(__name__)
 
 
 class Notification(ComputedFieldsModel, SafeDeleteModel):
@@ -96,6 +99,6 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     if created:
         instance.email = instance.notified_user.email
-        print(
+        logger.info(
             f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
         )

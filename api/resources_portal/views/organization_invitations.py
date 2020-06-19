@@ -1,7 +1,10 @@
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Notification, Organization, OrganizationInvitation, User
+
+logger = get_and_configure_logger(__name__)
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):

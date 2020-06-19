@@ -3,6 +3,7 @@ from json import loads
 from django.core.management.base import BaseCommand
 from django.utils import dateparse
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import (
     Attachment,
     Grant,
@@ -17,13 +18,15 @@ from resources_portal.models import (
     User,
 )
 
+logger = get_and_configure_logger(__name__)
+
 
 class Command(BaseCommand):
     help = "Populates the database with test data"
 
     def handle(self, *args, **options):
         def add_class_to_database(class_json, Class):
-            print(f"Inserting {Class.__name__} into database...")
+            logger.info(f"Inserting {Class.__name__} into database...")
             for element in class_json:
                 if "updated_at" in element:
                     element["updated_at"] = dateparse.parse_datetime(element["updated_at"])

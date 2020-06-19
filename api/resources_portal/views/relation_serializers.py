@@ -8,6 +8,7 @@ will use PrimaryKeyRelatedFields.
 
 from rest_framework import serializers
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import (
     Attachment,
     Grant,
@@ -16,6 +17,8 @@ from resources_portal.models import (
     ShippingRequirements,
     User,
 )
+
+logger = get_and_configure_logger(__name__)
 
 
 class UserRelationSerializer(serializers.ModelSerializer):

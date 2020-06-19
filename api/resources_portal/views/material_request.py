@@ -3,12 +3,15 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import MaterialRequest, Notification
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
 )
+
+logger = get_and_configure_logger(__name__)
 
 SHARER_MODIFIABLE_FIELDS = {"status", "executed_mta_attachment"}
 

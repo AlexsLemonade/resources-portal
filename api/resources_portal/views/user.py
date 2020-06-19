@@ -2,7 +2,10 @@ from django.db import transaction
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import AllowAny, BasePermission, IsAuthenticated
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Organization, User
+
+logger = get_and_configure_logger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):
