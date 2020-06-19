@@ -1,3 +1,7 @@
+import os
+import urllib
+
+from django.conf import settings
 from django.contrib.auth import login
 
 import furl
@@ -8,30 +12,26 @@ from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
-CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
-CLIENT_SECRET = "1aaa0a94-5605-4cd8-95a4-6724c2f7fd42"
-
-# os.getenv("OAUTH_CLIENT_SECRET"),
-# Need to set up this secret on the github.
-# Kurt, a little help with this?
+CLIENT_ID = settings.CLIENT_ID
+CLIENT_SECRET = settings.CLIENT_SECRET
 
 
 def remove_code_parameter_from_uri(url):
     url_obj = furl.furl(url)
     url_obj.remove(["code"])
-    return url_obj.url
+    return urllib.parse.unquote(url_obj.url)
 
 
 class OAuthMiddleWare:
 
     """ Intercepts requests containing a "code" parameter provided by ORCID OAuth.
-    The authorization code is checked against ORCID and will provide a access token."""
+    The authorization code is checked against ORCID and will provide an access token."""
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        if not ("code" in request.GET.keys()):
+        if "code" not in request.GET.keys():
             response = self.get_response(request)
             return response
         else:

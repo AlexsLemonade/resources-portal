@@ -49,5 +49,5 @@ elasticsearch==6.4.0
 drf_yasg
 
 # Orcid
-orcid
+orcid==1.0.3
 furl==2.1.0
