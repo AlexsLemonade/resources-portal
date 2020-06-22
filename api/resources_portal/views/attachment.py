@@ -2,8 +2,6 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from guardian.shortcuts import assign_perm
-
 from resources_portal.models import Attachment, MaterialRequest
 from resources_portal.views.relation_serializers import MaterialRelationSerializer
 
