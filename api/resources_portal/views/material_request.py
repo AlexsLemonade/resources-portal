@@ -134,6 +134,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             notified_user=material_request.assigned_to,
             associated_user=request.user,
             associated_material=material,
+            associated_organization=material.organization,
         )
         notification.save()
 

@@ -8,6 +8,7 @@ from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.material import Material
 from resources_portal.models.organization import Organization
+from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
 
 
@@ -56,6 +57,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
 
     email = models.EmailField(blank=False, null=True)
 
+    delivered = models.BooleanField(default=False)
+
     @computed(models.TextField(null=False, blank=False))
     def message(self):
 
@@ -92,10 +95,35 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             raise ValueError(f'"{self.notification_type}" is not a valid notification type')
 
 
+NOTIFICATION_SETTING_DICT = {
+    "ORG_REQUEST_CREATED": "request_assigned_notif",
+    "ORG_INVITE_CREATED": "new_request_notif",
+    "ORG_INVITE_ACCEPTED": "change_in_request_status_notif",
+    "ORG_REQUEST_ACCEPTED": "change_in_request_status_notif",
+    "ORG_INVITE_REJECTED": "change_in_request_status_notif",
+    "ORG_REQUEST_REJECTED": "change_in_request_status_notif",
+    "ORG_INVITE_INVALID": "change_in_request_status_notif",
+    "ORG_REQUEST_INVALID": "change_in_request_status_notif",
+    "MTA_UPLOADED": "transfer_updated_notif",
+    "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
+    "TRANSFER_REQUESTED": "transfer_requested_notif",
+}
+
+
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     if created:
+        # Check if user has settings turned on for this notificiation
+        if instance.notified_user in instance.associated_organization.members.all():
+            user_setting = OrganizationUserSetting.objects.get(
+                user=instance.notified_user, organization=instance.associated_organization
+            )
+            if not getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
+                return
+
         instance.email = instance.notified_user.email
         print(
             f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
         )
+        instance.delivered = True
+        instance.save()
