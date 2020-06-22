@@ -2,8 +2,11 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-class Attachment(models.Model):
+
+class Attachment(SafeDeleteModel):
     class Meta:
         db_table = "attachments"
         get_latest_by = "updated_at"
@@ -16,6 +19,9 @@ class Attachment(models.Model):
     )
 
     objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,7 +44,7 @@ class Attachment(models.Model):
         default=None,
     )
 
-    deleted = models.BooleanField(default=False)
+    s3_resource_deleted = models.BooleanField(default=False)
 
     @property
     def download_url(self):

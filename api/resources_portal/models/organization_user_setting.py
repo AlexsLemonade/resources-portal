@@ -1,17 +1,19 @@
 from django.db import models
 
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 
-class OrganizationUserSetting(models.Model):
+class OrganizationUserSetting(SafeDeleteModel):
     """ This model will store individual settings for each user and organization """
 
     class Meta:
         db_table = "organization_user_setting"
         get_latest_by = "created_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -21,9 +23,12 @@ class OrganizationUserSetting(models.Model):
     request_approval_determined_notif = models.BooleanField(default=True)
     request_assigned_notif = models.BooleanField(default=True)
     reminder_notif = models.BooleanField(default=True)
+    transfer_requested_notif = models.BooleanField(default=True)
+    transfer_updated_notif = models.BooleanField(default=True)
+    perms_granted_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
-        User,
+        "User",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
@@ -31,7 +36,7 @@ class OrganizationUserSetting(models.Model):
     )
 
     organization = models.ForeignKey(
-        Organization,
+        "Organization",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
