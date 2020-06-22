@@ -82,14 +82,19 @@ class TestSingleAttachmentTestCase(APITestCase):
         self.url = reverse("attachment-detail", args=[self.attachment.id])
 
         self.material_request = MaterialRequestFactory()
+        self.organization = self.material_request.material.organization
 
         self.user = self.material_request.requester
-        assign_perm("view_attachment", self.user, self.attachment)
-        assign_perm("modify_attachment", self.user, self.attachment)
+        self.organization.members.add(self.user)
+
         self.user_without_request = UserFactory()
+
+        assign_perm("approve_requests", self.user, self.organization)
+        assign_perm("view_requests", self.user, self.organization)
 
         self.admin = UserFactory()
         self.admin.is_staff = True
+        self.admin.save()
 
     def test_get_request_from_user_with_perms_succeeds(self):
         self.client.force_authenticate(user=self.user)

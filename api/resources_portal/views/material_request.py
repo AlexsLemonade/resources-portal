@@ -154,13 +154,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             if "irb_attachment" in request.data:
                 irb = serializer.validated_data["irb_attachment"]
                 material_request.irb_attachment = irb
+                irb.material_request = material_request
+                irb.save()
                 # allow the assignee read access to the attachment
-                assign_perm("view_attachment", material_request.assigned_to, irb)
 
             if "requester_signed_mta_attachment" in request.data:
                 signed_mta = serializer.validated_data["requester_signed_mta_attachment"]
                 material_request.requester_signed_mta_attachment = signed_mta
-                assign_perm("view_attachment", material_request.assigned_to, signed_mta)
+                signed_mta.material_request = material_request
+                signed_mta.save()
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
@@ -177,7 +179,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             if "executed_mta_attachment" in request.data:
                 executed_mta = serializer.validated_data["executed_mta_attachment"]
                 material_request.executed_mta_attachment = executed_mta
-                assign_perm("view_attachment", material_request.assigned_to, executed_mta)
+                executed_mta.material_request = material_request
+                executed_mta.save()
 
         material_request.save()
 

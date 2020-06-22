@@ -1,12 +1,12 @@
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Attachment(models.Model):
     class Meta:
         db_table = "attachments"
         get_latest_by = "updated_at"
-
-        permissions = (("modify_attachment", "modify_attachment"),)
 
     ATTACHMENT_TYPES = (
         ("MTA", "MTA"),
@@ -30,8 +30,7 @@ class Attachment(models.Model):
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
     sequence_map_for = models.ForeignKey(
-        "Material",
-        blank=True,
+        "resources_portal.Material",
         null=True,
         on_delete=models.SET_NULL,
         related_name="sequence_maps",
