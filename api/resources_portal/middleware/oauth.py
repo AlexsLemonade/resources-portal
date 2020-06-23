@@ -13,7 +13,7 @@ from resources_portal.models.user import User
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
-OAUTH_ENVIRONMENT = settings.OAUTH_ENVIRONMENT
+OAUTH_URL = settings.OAUTH_ENVIRONMENT
 
 
 def remove_code_parameter_from_uri(url):
@@ -49,20 +49,13 @@ class OAuthMiddleWare:
             }
 
             # get user orcid info
-            if OAUTH_ENVIRONMENT == "SANDBOX":
-                URL = "https://sandbox.orcid.org/oauth/token"
-            else:
-                URL = "https://orcid.org/oauth/token"
-
-            response = requests.post(URL, data=data, headers={"accept": "application/json"})
+            response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
             response_json = response.json()
 
-            user_queryset = User.objects.filter(orcid=response_json["orcid"])
+            user = User.objects.filter(orcid=response_json["orcid"]).first()
 
             # Create user if neccessary
-            if user_queryset.exists():
-                user = user_queryset.first()
-            else:
+            if not user:
                 email = request.GET.get("email")
 
                 # Get first and last name
@@ -93,9 +86,7 @@ class OAuthMiddleWare:
                 user.save()
 
             # login user
-            login(
-                request, user_queryset.first(), backend="django.contrib.auth.backends.ModelBackend"
-            )
+            login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
             response = self.get_response(request)
             return response

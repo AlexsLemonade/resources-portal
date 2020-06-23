@@ -17,7 +17,7 @@ class Local(Common):
     ELASTICSEARCH_PORT = 9200
 
     # OAuth
-    OAUTH_ENVIRONENT = "SANDBOX"
+    OAUTH_URL = "https://sandbox.orcid.org/oauth/token"
 
     # CORS
     CORS_ORIGIN_WHITELIST = [
