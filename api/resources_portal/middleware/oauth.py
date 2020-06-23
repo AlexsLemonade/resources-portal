@@ -13,6 +13,7 @@ from resources_portal.models.user import User
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
+OAUTH_ENVIRONMENT = settings.OAUTH_ENVIRONMENT
 
 
 def remove_code_parameter_from_uri(url):
@@ -48,7 +49,11 @@ class OAuthMiddleWare:
             }
 
             # get user orcid info
-            URL = "https://sandbox.orcid.org/oauth/token"
+            if OAUTH_ENVIRONMENT == "SANDBOX":
+                URL = "https://sandbox.orcid.org/oauth/token"
+            else:
+                URL = "https://orcid.org/oauth/token"
+
             response = requests.post(URL, data=data, headers={"accept": "application/json"})
             response_json = response.json()
 

@@ -16,6 +16,9 @@ class Local(Common):
     ELASTICSEARCH_HOST = "elasticsearch"
     ELASTICSEARCH_PORT = 9200
 
+    # OAuth
+    OAUTH_ENVIRONENT = "SANDBOX"
+
     # CORS
     CORS_ORIGIN_WHITELIST = [
         "http://localhost:7000",
