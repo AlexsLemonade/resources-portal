@@ -109,7 +109,7 @@ output "elastic_ip_address" {
 # need a static IP address to point DNS to.
 resource "aws_lb" "resources_portal_api_load_balancer" {
   # Extra short because there is a 32 char limit on this name
-  name = "DR-api-${var.user}-${var.stage}"
+  name = "RP-api-${var.user}-${var.stage}"
   internal = false
   load_balancer_type = "network"
 
