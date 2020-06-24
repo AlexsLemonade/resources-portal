@@ -6,15 +6,6 @@ resource "aws_elasticsearch_domain" "es" {
     instance_type = var.elasticsearch_instance_type
   }
 
-  vpc_options {
-      subnet_ids = [
-          aws_subnet.resources_portal_1a.id
-      ]
-      security_group_ids = [
-          aws_security_group.resources_portal_es.id
-      ]
-  }
-
   ebs_options {
       ebs_enabled = true
     # This depends on the instance type, else you'll get this error:
@@ -29,7 +20,7 @@ resource "aws_elasticsearch_domain" "es" {
     {
       "Effect": "Allow",
       "Principal": {
-        "AWS": "${aws_iam_role.resources_portal_instance.arn}"
+        "AWS": "*"
       },
       "Action": "es:*",
       "Resource": "arn:aws:es:us-east-1:${data.aws_caller_identity.current.account_id}:domain/rp-es-${var.user}-${var.stage}/*"

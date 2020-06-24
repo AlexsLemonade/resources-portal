@@ -106,9 +106,9 @@ resource "aws_security_group" "resources_portal_es" {
 
   # Wide open, but inside inside the VPC
   ingress {
-      from_port = 0
-      to_port = 0
-      protocol = "-1"
-      cidr_blocks = [ "0.0.0.0/0" ]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    security_groups = [aws_security_group.resources_portal_api.id]
   }
 }

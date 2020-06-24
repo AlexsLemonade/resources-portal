@@ -102,6 +102,8 @@ docker run \
        --name=resources_portal_api \
        -d $api_docker_image
 
+docker exec resources_portal_api python3 manage.py search_index --rebuild -f;
+
 # Don't leave secrets lying around.
 rm -f environment
 

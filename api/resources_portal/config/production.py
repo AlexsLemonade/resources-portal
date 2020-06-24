@@ -2,8 +2,6 @@ import os
 
 import boto3
 import requests
-from elasticsearch.connection import RequestsHttpConnection
-from requests_aws4auth import AWS4Auth
 
 from resources_portal.config.common import Common
 
@@ -42,20 +40,10 @@ class Production(Common):
     region = requests.get(
         "http://169.254.169.254/latest/meta-data/placement/availability-zone"
     ).text[:-1]
-    aws_auth = AWS4Auth(
-        credentials.access_key,
-        credentials.secret_key,
-        region,
-        "es",
-        session_token=credentials.token,
-    )
-    # Elastic Search
     ELASTICSEARCH_DSL = {
         "default": {
             "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
             "port": 443,
-            "http_auth": aws_auth,
-            "connection_class": RequestsHttpConnection,
             "use_ssl": True,
         }
     }

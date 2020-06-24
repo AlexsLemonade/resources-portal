@@ -89,18 +89,17 @@ def build_and_push_docker_image(args):
         ],
     )
 
+    docker_login_command = ["docker", "login"]
+
+    if "DOCKER_ID" in os.environ:
+        docker_login_command.extend(["--username", os.environ["DOCKER_ID"]])
+
+        if "DOCKER_PASSWORD" in os.environ:
+            docker_login_command.extend(["--username", os.environ["DOCKER_PASSWORD"]])
+
     try:
-        completed_command = subprocess.check_call(
-            [
-                "docker",
-                "login",
-                "--username",
-                os.environ["DOCKER_ID"],
-                "--password",
-                os.environ["DOCKER_PASSWORD"],
-            ]
-        )
-    except Exception as e:
+        completed_command = subprocess.check_call(docker_login_command)
+    except subprocess.CalledProcessError as e:
         print("Failed to login to docker.")
         return completed_command
 
