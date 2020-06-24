@@ -1,14 +1,8 @@
 import uuid
-from unittest.mock import patch
 
 from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase
 
 from faker import Faker
-
-from resources_portal.models import User
-from resources_portal.test.factories import GrantFactory
 
 fake = Faker()
 
