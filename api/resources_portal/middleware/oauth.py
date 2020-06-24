@@ -76,7 +76,8 @@ class OAuthMiddleWare:
                     email=email,
                 )
 
-                Organization.objects.create(owner=user)
+                org = Organization.objects.create(owner=user)
+                user.organizations.add(org)
 
                 grant_ids = request.GET.getlist("grant_id")
 

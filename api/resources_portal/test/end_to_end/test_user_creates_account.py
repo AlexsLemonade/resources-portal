@@ -38,10 +38,6 @@ class TestUserCreatesAccount(APITestCase):
         # Client is now logged in as user, get user ID from session data
         user = User.objects.get(pk=self.client.session["_auth_user_id"])
 
-        import pdb
-
-        pdb.set_trace()
-
         # Create resource on personal organization
         material = MaterialFactory(contact_user=user, organization=user.organizations.first())
         material_data = model_to_dict(material)
@@ -50,8 +46,8 @@ class TestUserCreatesAccount(APITestCase):
 
         # Resource assertions
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(material.contact_user, response.data["contact_user"])
-        self.assertEqual(material.organization, response.data["organization"])
+        self.assertEqual(material.contact_user.id, response.data["contact_user"])
+        self.assertEqual(material.organization.id, response.data["organization"])
 
         # User assertions
         self.assertEqual(user.email, MOCK_EMAIL)
