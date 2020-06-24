@@ -11,6 +11,9 @@ class Production(Common):
     ALLOWED_HOSTS = ["*"]
     INSTALLED_APPS += ("gunicorn",)
 
+    # OAuth
+    OAUTH_URL = "https://orcid.org/oauth/token"
+
     # https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#cache-control
     # Response can be cached by browser and any intermediary caches (i.e. it is "public") for up to 1 day
     # 86400 = (60 seconds x 60 minutes x 24 hours)
