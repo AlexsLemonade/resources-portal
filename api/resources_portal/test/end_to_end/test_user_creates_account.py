@@ -5,11 +5,10 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.models import Material, User
+from resources_portal.models import User
 from resources_portal.test.factories import GrantFactory, MaterialFactory
 from resources_portal.test.mocks import (
     MOCK_EMAIL,
-    ORCID_AUTHORIZATION_DICT,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
