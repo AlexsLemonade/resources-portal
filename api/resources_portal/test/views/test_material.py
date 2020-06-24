@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
+from guardian.shortcuts import assign_perm
 
 from resources_portal.models import Material
 from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
@@ -65,6 +66,8 @@ class TestSingleMaterialTestCase(APITestCase):
         self.organization_without_perms = OrganizationFactory()
         self.material = MaterialFactory(contact_user=self.user, organization=self.organization)
         self.url = reverse("material-detail", args=[self.material.id])
+
+        assign_perm("delete_resources", self.user, self.organization)
 
     def test_get_request_returns_a_given_material(self):
         self.client.force_authenticate(user=None)
