@@ -1,8 +1,5 @@
 import os
 
-import boto3
-import requests
-
 from resources_portal.config.common import Common
 
 
@@ -32,14 +29,6 @@ class Production(Common):
         }
     }
 
-    session = boto3.session.Session()
-    credentials = session.get_credentials()
-    # I don't know why there's no region here, but availability zone
-    # minus a or b is the region! It's a bit of a hack but the
-    # alternative is to pass the region into the app as an env var.
-    region = requests.get(
-        "http://169.254.169.254/latest/meta-data/placement/availability-zone"
-    ).text[:-1]
     ELASTICSEARCH_DSL = {
         "default": {
             "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
