@@ -1,7 +1,13 @@
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
-from resources_portal.models import Notification, Organization, OrganizationInvitation, User
+from resources_portal.models import (
+    Notification,
+    Organization,
+    OrganizationInvitation,
+    OrganizationUserSetting,
+    User,
+)
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -31,6 +37,9 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
             invitation.organization.assign_member_perms(invitation.requester)
+            OrganizationUserSetting.objects.get_or_create(
+                user=invitation.requester, organization=invitation.organization
+            )
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 

@@ -3,9 +3,6 @@ from django.db import models
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
-
 
 class OrganizationUserSetting(SafeDeleteModel):
     """ This model will store individual settings for each user and organization """
@@ -26,9 +23,12 @@ class OrganizationUserSetting(SafeDeleteModel):
     request_approval_determined_notif = models.BooleanField(default=True)
     request_assigned_notif = models.BooleanField(default=True)
     reminder_notif = models.BooleanField(default=True)
+    transfer_requested_notif = models.BooleanField(default=True)
+    transfer_updated_notif = models.BooleanField(default=True)
+    perms_granted_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
-        User,
+        "User",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
@@ -36,7 +36,7 @@ class OrganizationUserSetting(SafeDeleteModel):
     )
 
     organization = models.ForeignKey(
-        Organization,
+        "Organization",
         blank=False,
         null=False,
         on_delete=models.CASCADE,
