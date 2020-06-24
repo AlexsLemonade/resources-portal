@@ -13,7 +13,7 @@ from resources_portal.models.user import User
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
-OAUTH_URL = settings.OAUTH_ENVIRONMENT
+OAUTH_URL = settings.OAUTH_URL
 
 
 def remove_code_parameter_from_uri(url):

@@ -54,7 +54,7 @@ class Common(Configuration):
     # OAuth
     CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
     CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
-    OAUTH_ENVIRONMENT = os.getenv("OAUTH_ENIVRONMENT", "https://sandbox.orcid.org/oauth/token")
+    OAUTH_URL = os.getenv("OAUTH_ENIVRONMENT", "https://sandbox.orcid.org/oauth/token")
 
     # Email
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

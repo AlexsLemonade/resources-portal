@@ -1,49 +1,17 @@
 from unittest.mock import patch
 
-from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import User
 from resources_portal.test.factories import GrantFactory
-
-MOCK_AUTHORIZATION_CODE = "mock"
-MOCK_EMAIL = "test@mock.com"
-
-AUTHORIZATION_DICT = {
-    "name": "Elong Musket",
-    "orcid": "1234-Iwan-naGo-t0maRs",
-    "access_token": "CyBe-RTru-KIn-SpAce",
-    "refresh_token": "Pl3A-SeBuY-mYSt0-kS",
-}
-
-SUMMARY_DICT = {"name": {"given-names": {"value": "Elong"}, "family-name": {"value": "Musket"}}}
-
-
-class MockAuthorizationResponse:
-    def __init__(self, json_data, status_code):
-        self.json_data = json_data
-        self.status_code = status_code
-
-    def json(self):
-        return self.json_data
-
-
-class MockRecordResponse:
-    def __init__(self, summary):
-        self.summary = summary
-
-    def read_record_public(self, client_id, client_secret, sandbox):
-        return self.summary
-
-
-# This method will be used by the mock to replace requests.get
-def generate_mock_authorization_response(*args, **kwargs):
-    return MockAuthorizationResponse(AUTHORIZATION_DICT, 200)
-
-
-def generate_mock_orcid_record_response(*args, **kwargs):
-    return MockRecordResponse(SUMMARY_DICT)
+from resources_portal.test.mocks import (
+    AUTHORIZATION_DICT,
+    MOCK_EMAIL,
+    generate_mock_authorization_response,
+    generate_mock_orcid_record_response,
+    get_mock_url,
+)
 
 
 class TestOAuthUserCreation(APITestCase):
@@ -55,16 +23,7 @@ class TestOAuthUserCreation(APITestCase):
         self.grant1 = GrantFactory()
         self.grant2 = GrantFactory()
 
-        self.grant_ids = [self.grant1.id, self.grant2.id]
-
-        base_url = reverse("user-list")
-        self.url = (
-            f"{base_url}"
-            f"?code={MOCK_AUTHORIZATION_CODE}"
-            f"&email={MOCK_EMAIL}"
-            f"&grant_id={self.grant_ids[0]}"
-            f"&grant_id={self.grant_ids[1]}"
-        )
+        self.url = get_mock_url([self.grant1, self.grant2])
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_authorization_response)
