@@ -29,6 +29,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("MTA_UPLOADED", "MTA_UPLOADED"),
         ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
+        ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
     )
 
     objects = SafeDeleteManager()
@@ -87,6 +88,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f"material transfer requests in {self.associated_organization.name}.",
             "TRANSFER_REQUESTED": lambda: f"{self.associated_user.username} requested transfer of "
             f'"{self.associated_material.title}".',
+            "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
         }
 
         try:
@@ -107,6 +109,7 @@ NOTIFICATION_SETTING_DICT = {
     "MTA_UPLOADED": "transfer_updated_notif",
     "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
     "TRANSFER_REQUESTED": "transfer_requested_notif",
+    "TRANSFER_APPROVED": "transfer_approved_notif",
 }
 
 

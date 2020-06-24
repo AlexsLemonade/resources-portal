@@ -5,7 +5,15 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.models import Material, User
+from resources_portal.management.commands.populate_test_database import populate_test_database
+from resources_portal.models import (
+    Attachment,
+    Material,
+    MaterialRequest,
+    Notification,
+    Organization,
+    User,
+)
 from resources_portal.test.factories import GrantFactory, MaterialFactory
 from resources_portal.test.mocks import (
     MOCK_EMAIL,
@@ -34,30 +42,90 @@ class TestResourceListedAndRequested(APITestCase):
     """
 
     def setUp(self):
-        self.grant1 = GrantFactory()
-        self.grant2 = GrantFactory()
+        populate_test_database()
+
+        self.primary_prof = User.objects.get(username="PrimaryProf")
+        self.secondary_prof = User.objects.get(username="SecondaryProf")
+        self.post_doc = User.objects.get(username="PostDoc")
+
+        self.primary_lab = Organization.objects.get(name="PrimaryLab")
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_oauth_flow_creates_new_user(self, mock_auth_request, mock_record_request):
-        # Create user with ORCID
-        self.client.get(get_mock_oauth_url([self.grant1, self.grant2]))
+        # PrimaryProf lists new resource on PrimaryLab
+        self.client.force_authenticate(user=self.primary_prof)
 
-        # Client is now logged in as user, get user ID from session data
-        user = User.objects.get(pk=self.client.session["_auth_user_id"])
-
-        # Create resource on personal organization
-        material = MaterialFactory(contact_user=user, organization=user.organizations.first())
+        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
         material_data = model_to_dict(material)
 
         response = self.client.post(reverse("material-list"), material_data, format="json")
 
-        # Resource assertions
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(material.contact_user.id, response.data["contact_user"])
-        self.assertEqual(material.organization.id, response.data["organization"])
 
-        # User assertions
-        self.assertEqual(user.email, MOCK_EMAIL)
-        self.assertTrue(self.grant1 in user.grants.all())
-        self.assertTrue(self.grant2 in user.grants.all())
+        # SecondaryProf requests that resource
+        self.client.force_authenticate(user=self.secondary_prof)
+
+        request = MaterialRequest(material=material, requester=self.secondary_prof)
+
+        response = self.client.post(
+            reverse("material-request-list"), model_to_dict(request), format="json"
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 1
+        )
+
+        # Postdoc approves the request
+        self.client.force_authenticate(user=self.post_doc)
+
+        response = self.client.put(self.url, {"status": "APPROVED"})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
+
+        # SecondaryProf uploads the signed MTA
+        self.client.force_authenticate(user=self.secondary_prof)
+
+        signed_mta = Attachment(
+            filename="signed_mta",
+            description="Transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        signed_mta_data = model_to_dict(signed_mta)
+
+        response = self.client.post(self.url, signed_mta_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.put(self.url, {"requester_signed_mta_attachment": signed_mta_data})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(Notification.objects.filter(notification_type="MTA_UPLOADED")), 1)
+
+        # Postdoc uploads the executed MTA
+        self.client.force_authenticate(user=self.post_doc)
+
+        executed_mta = Attachment(
+            filename="executed_mta",
+            description="Executed transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        executed_mta_data = model_to_dict(executed_mta)
+
+        response = self.client.post(self.url, executed_mta_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.put(self.url, {"executed_mta_attachment": executed_mta_data})
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Final checks
+        self.assertEqual(len(Notification.objects.all()), 3)
