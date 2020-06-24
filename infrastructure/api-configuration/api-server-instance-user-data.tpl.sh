@@ -37,17 +37,11 @@ if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
 
     # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
     sleep 180
-
-    # Certbot has a 5-deploy-a-week limit. By adding a second fake
-    # domain to this, we trick certbot into thinking these are
-    # different so they use different counts for that limit.
-    # RANDOM_API=$(( ( RANDOM % 8 ) + 2 )) # 2 to 9
     BASE_URL="resources.alexslemonade.org"
     if [[ ${stage} == "staging" ]]; then
         certbot --nginx -d api.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-        # certbot --nginx -d api.staging.$BASE_URL -d api$RANDOM_API.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
     elif [[ ${stage} == "prod" ]]; then
-        certbot --nginx -d api.$BASE_URL -d api$RANDOM_API.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
+        certbot --nginx -d api.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
     fi
 fi
 
