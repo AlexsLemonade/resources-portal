@@ -34,7 +34,7 @@ def user_has_perm_on_active_material_request(user, perm):
 
     # Uses prefetch_related to retrieve all related objects in a single query
     for organization in user.organizations.all().prefetch_related("materials"):
-        if user.has_perm(perm, organization):
+        if checker.has_perm(perm, organization):
             for material in organization.materials.all().prefetch_related("requests"):
                 for request in material.requests.all():
                     if request.is_active:
