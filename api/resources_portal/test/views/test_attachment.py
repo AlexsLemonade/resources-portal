@@ -84,7 +84,9 @@ class TestSingleAttachmentTestCase(APITestCase):
         self.material_request = MaterialRequestFactory()
         self.organization = self.material_request.material.organization
 
-        self.user = self.material_request.requester
+        self.requester = self.material_request.requester
+
+        self.user = UserFactory()
         self.organization.members.add(self.user)
 
         self.user_without_request = UserFactory()
@@ -98,6 +100,11 @@ class TestSingleAttachmentTestCase(APITestCase):
 
     def test_get_request_from_user_with_perms_succeeds(self):
         self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_request_from_requester_with_perms_succeeds(self):
+        self.client.force_authenticate(user=self.requester)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
