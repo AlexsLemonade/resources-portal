@@ -1,132 +1,104 @@
 {
   "grants": [
     {
-      "id": "1",
-      "created_at": "2020-01-30 16:12:25-07",
-      "updated_at": "2020-03-30 16:12:25-07",
       "title": "Grant for Research in Melanoma Treatment",
       "funder_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
-      "id": "2",
-      "created_at": "2020-01-30 16:12:25-07",
-      "updated_at": "2020-03-30 16:12:25-07",
       "title": "Grant for Research in Tumor Growth",
       "funder_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }
   ],
   "grants_materials": [
     {
-      "id": "1",
       "grant_id": "1",
       "material_id": "1"
     },
     {
-      "id": "2",
       "grant_id": "1",
       "material_id": "2"
     },
     {
-      "id": "3",
       "grant_id": "1",
       "material_id": "3"
     },
     {
-      "id": "4",
       "grant_id": "1",
       "material_id": "4"
     },
     {
-      "id": "5",
       "grant_id": "2",
       "material_id": "5"
     },
     {
-      "id": "6",
       "grant_id": "2",
       "material_id": "6"
     },
     {
-      "id": "7",
       "grant_id": "2",
       "material_id": "7"
     },
     {
-      "id": "8",
       "grant_id": "2",
       "material_id": "8"
     },
     {
-      "id": "9",
       "grant_id": "2",
       "material_id": "9"
     },
     {
-      "id": "10",
       "grant_id": "2",
       "material_id": "10"
     },
     {
-      "id": "11",
       "grant_id": "2",
       "material_id": "11"
     },
     {
-      "id": "12",
       "grant_id": "2",
       "material_id": "12"
     },
     {
-      "id": "13",
       "grant_id": "2",
       "material_id": "13"
     },
     {
-      "id": "14",
       "grant_id": "2",
       "material_id": "14"
     },
     {
-      "id": "15",
       "grant_id": "2",
       "material_id": "15"
     },
     {
-      "id": "16",
       "grant_id": "2",
       "material_id": "16"
     },
     {
-      "id": "17",
       "grant_id": "2",
       "material_id": "17"
     }
   ],
   "grants_organizations": [
     {
-      "id": "1",
       "grant_id": "1",
       "organization_id": "1"
     },
     {
-      "id": "2",
       "grant_id": "2",
       "organization_id": "4"
     }
   ],
   "grants_users": [
     {
-      "id": "1",
       "grant_id": "1",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
-      "id": "2",
       "grant_id": "2",
       "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
-      "id": "3",
       "grant_id": "2",
       "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }

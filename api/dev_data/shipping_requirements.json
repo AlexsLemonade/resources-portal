@@ -1,26 +1,20 @@
 {
   "shipping_requirements": [
       {
-          "id": "1",
           "needs_shipping_address": true,
           "needs_payment": true,
           "accepts_shipping_code": true,
           "accepts_reimbursement": false,
           "accepts_other_payment_methods": false,
-          "restrictions": "Only ships within the greater Hanover area.",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "restrictions": "Only ships within the greater Hanover area."
       },
       {
-          "id": "2",
           "needs_shipping_address": true,
           "needs_payment": false,
           "accepts_shipping_code": false,
           "accepts_reimbursement": false,
           "accepts_other_payment_methods": false,
-          "restrictions": "None. Free yourself!",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "restrictions": "None. Free yourself!"
       }
   ]
 }
