@@ -6,22 +6,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.management.commands.populate_test_database import populate_test_database
-from resources_portal.models import (
-    Attachment,
-    Material,
-    MaterialRequest,
-    Notification,
-    Organization,
-    User,
-)
-from resources_portal.test.factories import GrantFactory, MaterialFactory
-from resources_portal.test.mocks import (
-    MOCK_EMAIL,
-    ORCID_AUTHORIZATION_DICT,
-    generate_mock_orcid_authorization_response,
-    generate_mock_orcid_record_response,
-    get_mock_oauth_url,
-)
+from resources_portal.models import Attachment, MaterialRequest, Notification, Organization, User
+from resources_portal.test.factories import MaterialFactory
 
 
 class TestResourceListedAndRequested(APITestCase):
@@ -54,9 +40,7 @@ class TestResourceListedAndRequested(APITestCase):
 
         Notification.objects.all().delete()
 
-    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
-    @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_resource_listed_and_requested(self, mock_auth_request, mock_record_request):
+    def test_resource_listed_and_requested(self):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
