@@ -47,3 +47,7 @@ django-elasticsearch-dsl==6.4.2
 elasticsearch-dsl==6.4.0
 elasticsearch==6.4.0
 drf_yasg
+
+# Orcid
+orcid==1.0.3
+furl==2.1.0
