@@ -98,7 +98,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     queryset = MaterialRequest.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
+        if self.action == "list":
             return MaterialRequestSerializer
 
         return MaterialRequestDetailSerializer
@@ -193,6 +193,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     return Response(status=403)
                 else:
                     material_request.status = serializer.validated_data["status"]
+
         else:
             if "status" in request.data:
                 if serializer.validated_data["status"] == "CANCELLED":

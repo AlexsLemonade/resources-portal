@@ -60,12 +60,8 @@ class TestResourceListedAndRequested(APITestCase):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        material = Material.objects.first()
-        material.contact_user = self.primary_prof
-        material.organization = self.primary_lab
+        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
         material_data = model_to_dict(material)
-
-        material_data.pop("id")
 
         grant_list = []
         for grant in material_data["grants"]:
