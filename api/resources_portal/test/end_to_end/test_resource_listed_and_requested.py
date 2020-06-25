@@ -52,12 +52,26 @@ class TestResourceListedAndRequested(APITestCase):
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_oauth_flow_creates_new_user(self, mock_auth_request, mock_record_request):
+    def test_resource_listed_and_requested(self, mock_auth_request, mock_record_request):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
+        material = Material.objects.first()
+        material.contact_user = self.primary_prof
+        material.organization = self.primary_lab
         material_data = model_to_dict(material)
+
+        material_data.pop("id")
+
+        grant_list = []
+        for grant in material_data["grants"]:
+            grant_list.append(grant.id)
+
+        material_data["grants"] = grant_list
+
+        import pdb
+
+        pdb.set_trace()
 
         response = self.client.post(reverse("material-list"), material_data, format="json")
 
