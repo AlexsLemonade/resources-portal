@@ -61,9 +61,6 @@ def populate_test_database():
     grants_json = loads(open("./dev_data/grants.json").read())
     add_class_to_database(grants_json["grants"], Grant)
 
-    # add user settings
-    add_class_to_database(users_json["organization_user_setting"], OrganizationUserSetting)
-
     # add share events
     add_class_to_database(materials_json["materials_share_events"], MaterialShareEvent)
 

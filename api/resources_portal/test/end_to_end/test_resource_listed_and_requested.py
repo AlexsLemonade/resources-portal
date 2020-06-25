@@ -50,6 +50,10 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.primary_lab = Organization.objects.get(name="PrimaryLab")
 
+        self.primary_lab.assign_member_perms(self.post_doc)
+
+        Notification.objects.all().delete()
+
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_resource_listed_and_requested(self, mock_auth_request, mock_record_request):
@@ -69,10 +73,6 @@ class TestResourceListedAndRequested(APITestCase):
 
         material_data["grants"] = grant_list
 
-        import pdb
-
-        pdb.set_trace()
-
         response = self.client.post(reverse("material-list"), material_data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -86,6 +86,8 @@ class TestResourceListedAndRequested(APITestCase):
             reverse("material-request-list"), model_to_dict(request), format="json"
         )
 
+        request_id = response.data["id"]
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
@@ -93,9 +95,11 @@ class TestResourceListedAndRequested(APITestCase):
         )
 
         # Postdoc approves the request
+        request_url = reverse("material-request-detail", args=[request_id])
+
         self.client.force_authenticate(user=self.post_doc)
 
-        response = self.client.put(self.url, {"status": "APPROVED"})
+        response = self.client.put(request_url, {"status": "APPROVED"})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -113,10 +117,12 @@ class TestResourceListedAndRequested(APITestCase):
 
         signed_mta_data = model_to_dict(signed_mta)
 
-        response = self.client.post(self.url, signed_mta_data, format="json")
+        response = self.client.post(reverse("attachment-list"), signed_mta_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.put(self.url, {"requester_signed_mta_attachment": signed_mta_data})
+        signed_mta_id = response.data["id"]
+
+        response = self.client.put(request_url, {"requester_signed_mta_attachment": signed_mta_id})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -134,10 +140,12 @@ class TestResourceListedAndRequested(APITestCase):
 
         executed_mta_data = model_to_dict(executed_mta)
 
-        response = self.client.post(self.url, executed_mta_data, format="json")
+        response = self.client.post(reverse("attachment-list"), executed_mta_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        response = self.client.put(self.url, {"executed_mta_attachment": executed_mta_data})
+        executed_mta_id = response.data["id"]
+
+        response = self.client.put(request_url, {"executed_mta_attachment": executed_mta_id})
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
