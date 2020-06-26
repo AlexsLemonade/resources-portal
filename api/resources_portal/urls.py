@@ -9,14 +9,19 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from resources_portal.views import (
+    AttachmentViewSet,
     GrantMaterialViewSet,
     GrantUserViewSet,
     GrantViewSet,
     MaterialDocumentView,
+    MaterialRequestViewSet,
     MaterialViewSet,
     OrganizationDocumentView,
+    OrganizationGrantViewSet,
     OrganizationInvitationViewSet,
+    OrganizationMaterialViewSet,
     OrganizationMemberViewSet,
+    OrganizationUserSettingViewSet,
     OrganizationViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
@@ -38,6 +43,18 @@ router.register(r"organizations", OrganizationViewSet, basename="organization").
     basename="organizations-members",
     parents_query_lookups=["organization"],
 )
+router.register(r"organizations", OrganizationViewSet, basename="organization").register(
+    r"materials",
+    OrganizationMaterialViewSet,
+    basename="organizations-materials",
+    parents_query_lookups=["organization"],
+)
+router.register(r"organizations", OrganizationViewSet, basename="organization").register(
+    r"grants",
+    OrganizationGrantViewSet,
+    basename="organizations-grants",
+    parents_query_lookups=["organizations"],
+)
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"materials",
@@ -48,6 +65,14 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
+router.register(r"attachments", AttachmentViewSet, basename="attachment")
+router.register(
+    r"organization-user-settings",
+    OrganizationUserSettingViewSet,
+    basename="organization-user-setting",
+)
+
+router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
 
 search_router = DefaultRouter(trailing_slash=False)
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")

@@ -1,7 +1,13 @@
 from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
-from resources_portal.models import Notification, Organization, OrganizationInvitation, User
+from resources_portal.models import (
+    Notification,
+    Organization,
+    OrganizationInvitation,
+    OrganizationUserSetting,
+    User,
+)
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -30,6 +36,10 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
+            invitation.organization.assign_member_perms(invitation.requester)
+            OrganizationUserSetting.objects.get_or_create(
+                user=invitation.requester, organization=invitation.organization
+            )
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
@@ -59,7 +69,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         invite_or_request = serializer.validated_data["invite_or_request"]
 
         if invite_or_request == "INVITE" and not request_reciever.has_perm(
-            "add_members_and_manage_permissions", organization
+            "add_members", organization
         ):
             return Response(
                 data={"detail": f"{request_reciever} does not have permission to add members"},
@@ -121,7 +131,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         self.update_organizations(new_status, invitation)
         return response_status
 
-    def delete(self, request, *args, **kwargs):
+    def destroy(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
@@ -134,4 +144,4 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        return super(OrganizationInvitationViewSet, self).delete(request, *args, **kwargs)
+        return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kwargs)

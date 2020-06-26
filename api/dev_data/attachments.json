@@ -3,38 +3,26 @@
       {
           "filename": "PrimaryLabMTA.pdf",
           "description": "The MTA used by PrimaryLab.",
-          "id": "1",
           "s3_bucket": "bucket-name",
-          "s3_key": "keyname",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "s3_key": "keyname"
       },
       {
           "filename": "RequesterSignedMTA.pdf",
           "description": "The MTA used by PrimaryLab, signed by SecondaryProf.",
-          "id": "2",
           "s3_bucket": "bucket-name",
-          "s3_key": "keyname",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "s3_key": "keyname"
       },
       {
           "filename": "ExecutedMTA.pdf",
           "description": "The MTA used by PrimaryLab, signed by SecondaryProf and PrimProf.",
-          "id": "3",
           "s3_bucket": "bucket-name",
-          "s3_key": "keyname",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "s3_key": "keyname"
       },
       {
           "filename": "SignedIRB.pdf",
           "description": "The signed IRB from SecondaryProf's institution.",
-          "id": "4",
           "s3_bucket": "bucket-name",
-          "s3_key": "keyname",
-          "created_at": "2020-01-30 16:12:25-07",
-          "updated_at": "2020-01-30 16:12:25-07"
+          "s3_key": "keyname"
       }
   ]
 }

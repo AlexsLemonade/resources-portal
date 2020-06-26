@@ -4,7 +4,7 @@ import factory
 from factory import post_generation
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Organization, User
+from resources_portal.models import Organization, OrganizationUserSetting, User
 
 
 class UserFactory(factory.django.DjangoModelFactory):
@@ -14,6 +14,9 @@ class UserFactory(factory.django.DjangoModelFactory):
 
     id = factory.Faker("uuid4")
     username = factory.Sequence(lambda n: f"testuser{n}")
+    orcid = factory.Faker("uuid4")
+    refresh_token = "a refresh token"
+    access_token = "a access token"
     password = factory.Faker(
         "password", length=10, special_chars=True, digits=True, upper_case=True, lower_case=True,
     )
@@ -21,6 +24,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
     is_active = True
+    is_superuser = False
     is_staff = False
 
     created_at = timezone.now()
@@ -95,10 +99,49 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
 
     @post_generation
     def post(self, create, extracted, **kwargs):
-        new = User.objects.get(id=self.request_reciever.id)
+        request_reciever = User.objects.get(id=self.request_reciever.id)
         newOrg = Organization.objects.get(id=self.organization.id)
 
-        assign_perm("add_members_and_manage_permissions", new, newOrg)
+        OrganizationUserSetting.objects.get_or_create(user=request_reciever, organization=newOrg)
+
+        assign_perm("add_members", request_reciever, newOrg)
+
+
+class OrganizationUserSettingFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.OrganizationUserSetting"
+
+    organization = factory.SubFactory(OrganizationFactory)
+    user = factory.SubFactory(UserFactory)
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        self.organization.members.add(self.user)
+
+
+class AttachmentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Attachment"
+
+    filename = "attachment_file"
+    description = "A file for testing"
+    s3_bucket = "https://bucket-name.s3.region.amazonaws.com/keyname"
+    s3_key = "s3 key"
+
+
+class MaterialRequestFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.MaterialRequest"
+
+    assigned_to = factory.SubFactory(UserFactory)
+    requester = factory.SubFactory(UserFactory)
+
+    executed_mta_attachment = factory.SubFactory(AttachmentFactory)
+    irb_attachment = factory.SubFactory(AttachmentFactory)
+    requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
+    is_active = True
+
+    material = factory.SubFactory(MaterialFactory)
 
 
 class LeafGrantFactory(factory.django.DjangoModelFactory):

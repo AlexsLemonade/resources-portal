@@ -1,16 +1,29 @@
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
+
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialRequest(models.Model):
+class MaterialRequest(SafeDeleteModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
 
-    objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
+
+    STATUS_CHOICES = (
+        ("PENDING", "PENDING"),
+        ("APPROVED", "APPROVED"),
+        ("REJECTED", "REJECTED"),
+        ("INVALID", "INVALID"),
+        ("CANCELLED", "CANCELLED"),
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -48,5 +61,4 @@ class MaterialRequest(models.Model):
 
     is_active = models.BooleanField(default=True)
 
-    # TODO: add possible choices for status
-    status = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")

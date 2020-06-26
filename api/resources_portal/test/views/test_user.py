@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import check_password
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -6,7 +5,7 @@ from rest_framework.test import APITestCase
 import factory
 from faker import Faker
 
-from resources_portal.models import Organization, User
+from resources_portal.models import User
 from resources_portal.test.factories import UserFactory
 
 fake = Faker()
@@ -35,19 +34,9 @@ class TestUserListTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_post_request_with_no_data_fails(self):
+    def test_post_not_allowed(self):
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_post_request_with_valid_data_succeeds(self):
-        response = self.client.post(self.url, self.user_data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        user = User.objects.get(pk=response.data.get("id"))
-        self.assertEqual(user.username, self.user_data.get("username"))
-        self.assertTrue(check_password(self.user_data.get("password"), user.password))
-
-        self.assertIsNotNone(Organization.objects.get(owner=user))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
 class TestUserDetailTestCase(APITestCase):
@@ -58,7 +47,11 @@ class TestUserDetailTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
         self.second_user = UserFactory()
-        self.superuser = User.objects.create_superuser("new_user", "newemail@test.com", "password")
+
+        self.superuser = UserFactory()
+        self.superuser.is_superuser = True
+        self.superuser.save()
+
         self.url = reverse("user-detail", kwargs={"pk": self.user.pk})
         self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.user.auth_token}")
 
@@ -74,9 +67,12 @@ class TestUserDetailTestCase(APITestCase):
 
     def test_put_request_updates_a_user(self):
         self.client.force_authenticate(user=self.user)
+
         new_first_name = fake.first_name()
-        payload = {"first_name": new_first_name}
-        response = self.client.put(self.url, payload)
+        user_json = self.client.get(self.url).json()
+        user_json["first_name"] = new_first_name
+
+        response = self.client.put(self.url, user_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         user = User.objects.get(pk=self.user.id)
@@ -84,23 +80,32 @@ class TestUserDetailTestCase(APITestCase):
 
     def test_put_request_from_wrong_user_forbidden(self):
         self.client.force_authenticate(user=self.second_user)
+
         new_first_name = fake.first_name()
-        payload = {"first_name": new_first_name}
-        response = self.client.put(self.url, payload)
+        user_json = self.client.get(self.url).json()
+        user_json["first_name"] = new_first_name
+
+        response = self.client.put(self.url, user_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
+
         new_first_name = fake.first_name()
-        payload = {"first_name": new_first_name}
-        response = self.client.put(self.url, payload)
+        user_json = self.client.get(self.url).json()
+        user_json["first_name"] = new_first_name
+
+        response = self.client.put(self.url, user_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_from_admin_succeeds(self):
         self.client.force_authenticate(user=self.superuser)
+
         new_first_name = fake.first_name()
-        payload = {"first_name": new_first_name}
-        response = self.client.put(self.url, payload)
+        user_json = self.client.get(self.url).json()
+        user_json["first_name"] = new_first_name
+
+        response = self.client.put(self.url, user_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_request_succeeds(self):
@@ -117,3 +122,10 @@ class TestUserDetailTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_request_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.user)
+        user_id = self.user.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(User.deleted_objects.filter(id=user_id).count(), 1)

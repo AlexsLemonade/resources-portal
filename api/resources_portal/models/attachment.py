@@ -1,12 +1,25 @@
 from django.db import models
 
+from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
+from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-class Attachment(models.Model):
+
+class Attachment(SafeDeleteModel):
     class Meta:
         db_table = "attachments"
         get_latest_by = "updated_at"
 
+    ATTACHMENT_TYPES = (
+        ("MTA", "MTA"),
+        ("SIGNED_MTA", "SIGNED_MTA"),
+        ("IRB", "IRB"),
+        ("SEQUENCE_MAP", "SEQUENCE_MAP"),
+    )
+
     objects = models.Manager()
+    objects = SafeDeleteManager()
+    deleted_objects = SafeDeleteDeletedManager()
+    _safedelete_policy = SOFT_DELETE
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,20 +28,21 @@ class Attachment(models.Model):
     description = models.TextField(
         blank=True, null=True, help_text="A description for the attachment."
     )
+    attachment_type = models.CharField(max_length=32, choices=ATTACHMENT_TYPES, null=False)
 
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
     sequence_map_for = models.ForeignKey(
         "resources_portal.Material",
-        blank=False,
         null=True,
         on_delete=models.SET_NULL,
         related_name="sequence_maps",
         help_text="The cell line this seq_map is for. Only valid for seq_map attachments.",
+        default=None,
     )
 
-    deleted = models.BooleanField(default=False)
+    s3_resource_deleted = models.BooleanField(default=False)
 
     @property
     def download_url(self):

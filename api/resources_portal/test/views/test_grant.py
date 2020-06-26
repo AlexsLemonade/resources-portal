@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import User
+from resources_portal.models import Grant, User
 from resources_portal.test.factories import GrantFactory, UserFactory
 
 fake = Faker()
@@ -94,3 +94,10 @@ class TestSingleGrantTestCase(APITestCase):
         grant_json["title"] = "New Title"
         response = self.client.put(self.url, grant_json)
         self.assertEqual(response.status_code, 403)
+
+    def test_delete_only_soft_deletes_objects(self):
+        self.client.force_authenticate(user=self.grant.users.first())
+        grant_id = self.grant.id
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Grant.deleted_objects.filter(id=grant_id).count(), 1)

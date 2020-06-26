@@ -22,6 +22,14 @@ i.e. the tests:
 rportal test-api
 ```
 
+Note that the tests are run with the Django unittest runner, so specific modules, classes, or methods may be specified in the standard unittest manner: https://docs.python.org/3/library/unittest.html#unittest-test-discovery.
+For example:
+```
+rportal test-api resources_portal.test.serializers.test_grant.TestGrantSerializer
+```
+
+will run all the tests in the TestGrantSerializer class.
+
 The dev server runs by default on port 8000 with the docs being served at 8001.
 If these ports are already in use on your local machine, you can run them at different ports with:
 
