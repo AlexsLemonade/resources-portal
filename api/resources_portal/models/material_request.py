@@ -1,6 +1,5 @@
 from django.db import models
 
-from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -9,7 +8,7 @@ from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialRequest(ComputedFieldsModel, SafeDeleteModel):
+class MaterialRequest(SafeDeleteModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
@@ -60,10 +59,11 @@ class MaterialRequest(ComputedFieldsModel, SafeDeleteModel):
 
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")
 
-    @computed(
-        models.ForeignKey(
-            User, blank=False, null=False, on_delete=models.CASCADE, related_name="assignments"
-        )
+    assigned_to = models.ForeignKey(
+        User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
-    def assigned_to(self):
-        return self.material.contact_user
+
+    def save(self, *args, **kwargs):
+        if self.assigned_to == None:
+            self.assigned_to = self.material.contact_user
+        super().save(*args, **kwargs)
