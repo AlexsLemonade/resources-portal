@@ -64,6 +64,6 @@ class MaterialRequest(SafeDeleteModel):
     )
 
     def save(self, *args, **kwargs):
-        if self.assigned_to == None:
+        if self.assigned_to is None:
             self.assigned_to = self.material.contact_user
         super().save(*args, **kwargs)
