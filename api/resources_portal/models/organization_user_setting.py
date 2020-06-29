@@ -26,6 +26,7 @@ class OrganizationUserSetting(SafeDeleteModel):
     transfer_requested_notif = models.BooleanField(default=True)
     transfer_updated_notif = models.BooleanField(default=True)
     perms_granted_notif = models.BooleanField(default=True)
+    misc_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
         "User",

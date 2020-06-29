@@ -46,4 +46,10 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         association.delete()
         organization.remove_member_perms(user)
 
+        # If any materials are assigned to the user leaving organization, reassign them to the owner of the organization
+        for material in organization.materials.all():
+            if material.contact_user == user:
+                material.contact_user = organization.owner
+                material.save()
+
         return Response(status=204)

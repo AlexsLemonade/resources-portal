@@ -1,0 +1,208 @@
+from unittest.mock import patch
+
+from django.forms.models import model_to_dict
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import APITestCase
+
+from resources_portal.management.commands.populate_test_database import populate_test_database
+from resources_portal.models import (
+    Attachment,
+    Material,
+    MaterialRequest,
+    Notification,
+    Organization,
+    OrganizationInvitation,
+    User,
+)
+from resources_portal.test.factories import MaterialFactory
+from resources_portal.test.mocks import (
+    MOCK_EMAIL,
+    generate_mock_orcid_authorization_response,
+    generate_mock_orcid_record_response,
+    get_mock_oauth_url,
+)
+
+
+class TestNewMemberJoinsALab(APITestCase):
+    """
+    Tests the flow of a new member joining the organization and being assigned materials.
+    The flow of the test is as follows:
+    1. Create account (NewMember)
+    2. PrimaryProf invites NewMember to join PrimaryLab.
+    3. NewMember accepts the invitation to join PrimaryLab.
+    4. PostDoc is removed from PrimaryLab. All materials assigned to him become assigned to PrimaryProf.
+    5. PrimaryProf assigns half of the materials to NewMember.
+    6. SecondaryProf requests a resource assigned to NewMember.
+    7. NewMember is notified that the material has been requested.
+    8. NewMember approves the request and uploads executed MTA/IRB.
+
+    During the test, the following notifications (and no more) will be sent:
+
+    1. NewMember is notified that she has been invited to join PrimaryLab.
+    2. The PrimaryProf receives a notification that NewMember accepted her invitation.
+    4. The Postdoc receives a notification that they have been removed from the organization.
+    5. NewMember receives a notification that a resource was requested.
+    6. SecondaryProf is notified that her request was approved.
+    """
+
+    def setUp(self):
+        populate_test_database()
+
+        self.primary_prof = User.objects.get(username="PrimaryProf")
+        self.secondary_prof = User.objects.get(username="SecondaryProf")
+        self.post_doc = User.objects.get(username="PostDoc")
+
+        self.primary_lab = Organization.objects.get(name="PrimaryLab")
+
+        self.primary_lab.assign_member_perms(self.post_doc)
+
+        Notification.objects.all().delete()
+
+    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
+    @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
+    def test_new_member_joins_a_lab(self):
+        # Create account (NewMember)
+        self.client.get(get_mock_oauth_url())
+
+        # Client is now logged in as user, get user ID from session data
+        new_member = User.objects.get(pk=self.client.session["_auth_user_id"])
+
+        # PrimaryProf invites NewMember to join PrimaryLab
+        self.client.force_authenticate(user=self.primary_prof)
+
+        invitation = OrganizationInvitation(
+            organization=self.primary_lab, request_reciever=new_member, requester=self.primary_prof
+        )
+
+        response = self.client.post(
+            reverse("invitation-list"), model_to_dict(invitation), format="json"
+        )
+
+        invitation_id = response.data["id"]
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
+
+        # NewMember accepts the invitation to join PrimaryLab
+        self.client.force_authenticate(user=self.post_doc)
+
+        response = self.client.put(
+            reverse("invitation-detail", args=[invitation_id]), {"status": "APPROVED"}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+        )
+
+        # PostDoc is removed from PrimaryLab
+        self.client.force_authenticate(user=self.primary_prof)
+
+        url = reverse("organizations-members-detail", args=[self.primary_lab.id, self.post_doc.id])
+        response = self.client.delete(url)
+
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(len(Notification.objects.filter(notification_type="REMOVED_FROM_ORG")), 1)
+
+        # All materials assigned to PostDoc will be reassigned to the owner when PostDoc leaves the organization.
+        for material in self.primary_lab.materials.all():
+            self.assertTrue(material.contact_user == self.primary_prof)
+
+        # PrimaryProf assigns half of the materials to NewMember.
+        material_url = reverse("organizations-materials-list", args=[self.primary_lab.id])
+        response = self.client.get(material_url)
+
+        import pdb
+
+        pdb.set_trace()
+
+        num_materials = len(response.json())
+
+        # Rounds down number of materials assigned to new_member
+        for i in range(int(num_materials / 2)):
+            material_json = response.json()[i]
+            material_json["contact_user"] = new_member.id
+
+            response = self.client.put(self.url, material_json)
+
+            material = Material.objects.get(pk=material_json["id"])
+
+            self.assertEqual(material.contact_user, new_member)
+
+        # SecondaryProf requests a resource assigned to NewMember
+        self.client.force_authenticate(user=self.secondary_prof)
+
+        request = MaterialRequest(material=material, requester=self.secondary_prof)
+
+        response = self.client.post(
+            reverse("material-request-list"), model_to_dict(request), format="json"
+        )
+
+        request_id = response.data["id"]
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # NewMember has been notified that the material has been requested
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_REQUESTED", notified_user=new_member
+                )
+            ),
+            1,
+        )
+
+        # NewMember approves the request and uploads executed MTA/IRB
+        self.client.force_authenticate(user=new_member)
+
+        # Post mta attachment
+        executed_mta = Attachment(
+            filename="executed_mta",
+            description="Executed transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        executed_mta_data = model_to_dict(executed_mta)
+
+        response = self.client.post(reverse("attachment-list"), executed_mta_data, format="json")
+        executed_mta_id = response.data["id"]
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # Post irb attachment
+        executed_irb = Attachment(
+            filename="executed_mta",
+            description="Executed transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        executed_irb_data = model_to_dict(executed_irb)
+
+        response = self.client.post(reverse("attachment-list"), executed_irb_data, format="json")
+        executed_irb_id = response.data["id"]
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # PUT updates to request
+        request_update_data = {
+            "status": "APPROVED",
+            "executed_mta_attachment": executed_mta_id,
+            "irb_attachment": executed_irb_id,
+        }
+
+        response = self.client.put(
+            reverse("material-request-detail", args=[request_id]), request_update_data
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
+
+        # Final checks
+        self.assertEqual(len(Notification.objects.all()), 3)

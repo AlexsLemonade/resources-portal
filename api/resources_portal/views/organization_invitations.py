@@ -27,6 +27,15 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
             "request_reciever",
             "requester",
         )
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "invite_or_request",
+            "organization",
+            "request_reciever",
+            "requester",
+        )
 
 
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
