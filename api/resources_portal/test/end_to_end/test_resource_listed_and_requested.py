@@ -63,10 +63,9 @@ class TestResourceListedAndRequested(APITestCase):
         response = self.client.post(
             reverse("material-request-list"), model_to_dict(request), format="json"
         )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         request_id = response.data["id"]
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
             len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 1
