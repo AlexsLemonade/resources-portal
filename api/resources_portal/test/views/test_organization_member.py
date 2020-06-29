@@ -69,6 +69,8 @@ class OrganizationMembersTestCase(APITestCase):
         # Verify that the user was not deleted, just its relationship
         user = User.objects.get(pk=user.id)
 
+        user_assigned_material.refresh_from_db()
+
         # User loses permissions
         self.assertFalse(user.has_perm("add_resources", self.organization))
 
@@ -89,6 +91,9 @@ class OrganizationMembersTestCase(APITestCase):
         url = reverse("organizations-members-detail", args=[self.organization.id, member.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
+
+        member_assigned_material.refresh_from_db()
+
         self.assertNotIn(member, self.organization.members.all())
         self.assertFalse(member.has_perm("add_resources", self.organization))
 

@@ -15,9 +15,7 @@ from resources_portal.models import (
     OrganizationInvitation,
     User,
 )
-from resources_portal.test.factories import MaterialFactory
 from resources_portal.test.mocks import (
-    MOCK_EMAIL,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -119,10 +117,6 @@ class TestNewMemberJoinsALab(APITestCase):
         # PrimaryProf assigns half of the materials to NewMember.
         material_url = reverse("organizations-materials-list", args=[self.primary_lab.id])
         response = self.client.get(material_url)
-
-        import pdb
-
-        pdb.set_trace()
 
         materials_json = response.json()["results"]
 
