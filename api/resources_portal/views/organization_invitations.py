@@ -14,6 +14,7 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
     requester = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     request_reciever = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all())
+    invite_or_request = serializers.CharField()
 
     class Meta:
         model = OrganizationInvitation
@@ -31,7 +32,6 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "updated_at",
-            "invite_or_request",
             "organization",
             "request_reciever",
             "requester",

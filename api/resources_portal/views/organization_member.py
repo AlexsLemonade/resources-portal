@@ -5,7 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Organization, OrganizationUserAssociation, User
+from resources_portal.models import Notification, Organization, OrganizationUserAssociation, User
 from resources_portal.views.relation_serializers import UserRelationSerializer
 
 
@@ -51,5 +51,13 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             if material.contact_user == user:
                 material.contact_user = organization.owner
                 material.save()
+
+        notification = Notification(
+            notification_type="REMOVED_FROM_ORG",
+            notified_user=user,
+            associated_user=request.user,
+            associated_organization=organization,
+        )
+        notification.save()
 
         return Response(status=204)

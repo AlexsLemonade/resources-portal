@@ -41,9 +41,9 @@ class TestNewMemberJoinsALab(APITestCase):
 
     1. NewMember is notified that she has been invited to join PrimaryLab.
     2. The PrimaryProf receives a notification that NewMember accepted her invitation.
-    4. The Postdoc receives a notification that they have been removed from the organization.
-    5. NewMember receives a notification that a resource was requested.
-    6. SecondaryProf is notified that her request was approved.
+    3. The Postdoc receives a notification that they have been removed from the organization.
+    4. NewMember receives a notification that a resource was requested.
+    5. SecondaryProf is notified that her request was approved.
     """
 
     def setUp(self):
@@ -61,9 +61,9 @@ class TestNewMemberJoinsALab(APITestCase):
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_new_member_joins_a_lab(self):
+    def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
         # Create account (NewMember)
-        self.client.get(get_mock_oauth_url())
+        self.client.get(get_mock_oauth_url([]))
 
         # Client is now logged in as user, get user ID from session data
         new_member = User.objects.get(pk=self.client.session["_auth_user_id"])
@@ -72,26 +72,28 @@ class TestNewMemberJoinsALab(APITestCase):
         self.client.force_authenticate(user=self.primary_prof)
 
         invitation = OrganizationInvitation(
-            organization=self.primary_lab, request_reciever=new_member, requester=self.primary_prof
+            organization=self.primary_lab,
+            request_reciever=self.primary_prof,
+            requester=new_member,
+            invite_or_request="INVITE",
         )
 
         response = self.client.post(
             reverse("invitation-list"), model_to_dict(invitation), format="json"
         )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         invitation_id = response.data["id"]
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
         )
 
         # NewMember accepts the invitation to join PrimaryLab
-        self.client.force_authenticate(user=self.post_doc)
+        self.client.force_authenticate(user=new_member)
 
-        response = self.client.put(
-            reverse("invitation-detail", args=[invitation_id]), {"status": "APPROVED"}
+        response = self.client.patch(
+            reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -122,14 +124,16 @@ class TestNewMemberJoinsALab(APITestCase):
 
         pdb.set_trace()
 
-        num_materials = len(response.json())
+        materials_json = response.json()["results"]
 
         # Rounds down number of materials assigned to new_member
-        for i in range(int(num_materials / 2)):
-            material_json = response.json()[i]
+        for i in range(int(len(materials_json) / 2)):
+            material_json = materials_json[i]
             material_json["contact_user"] = new_member.id
 
-            response = self.client.put(self.url, material_json)
+            response = self.client.put(
+                reverse("material-detail", args=[material_json["id"]]), material_json
+            )
 
             material = Material.objects.get(pk=material_json["id"])
 
@@ -205,4 +209,4 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 3)
+        self.assertEqual(len(Notification.objects.all()), 5)
