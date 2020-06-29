@@ -29,6 +29,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("MTA_UPLOADED", "MTA_UPLOADED"),
         ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
+        ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
+        ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
     )
 
     objects = SafeDeleteManager()
@@ -87,6 +89,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f"material transfer requests in {self.associated_organization.name}.",
             "TRANSFER_REQUESTED": lambda: f"{self.associated_user.username} requested transfer of "
             f'"{self.associated_material.title}".',
+            "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
+            "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
         }
 
         try:
@@ -95,6 +99,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             raise ValueError(f'"{self.notification_type}" is not a valid notification type')
 
 
+# This enumerates the types of notifications so users can silence the types they don't want.
 NOTIFICATION_SETTING_DICT = {
     "ORG_REQUEST_CREATED": "request_assigned_notif",
     "ORG_INVITE_CREATED": "new_request_notif",
@@ -107,6 +112,8 @@ NOTIFICATION_SETTING_DICT = {
     "MTA_UPLOADED": "transfer_updated_notif",
     "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
     "TRANSFER_REQUESTED": "transfer_requested_notif",
+    "TRANSFER_APPROVED": "transfer_approved_notif",
+    "TRANSFER_REJECTED": "transfer_rejected_notif",
 }
 
 
