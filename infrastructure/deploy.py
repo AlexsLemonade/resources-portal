@@ -200,7 +200,9 @@ def restart_api_if_still_running(args, api_ip_address):
     # Handle the small edge case where we're able to ssh onto the API
     # but it hasn't finished it's init script. If this happens we're
     # successful because the init script will run this script for us.
-    if os.path.isfile("start_api_with_migrations.sh"):
+    script_is_present = run_remote_command(api_ip_address, "test -e start_api_with_migrations.sh")
+
+    if script_is_present == 0:
         return run_remote_command(api_ip_address, "sudo bash start_api_with_migrations.sh")
     else:
         print("API start script not written yet, letting the init script run it instead.")
