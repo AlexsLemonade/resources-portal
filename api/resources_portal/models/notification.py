@@ -31,6 +31,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
         ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
         ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
+        ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
     )
 
     objects = SafeDeleteManager()
@@ -91,6 +92,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f'"{self.associated_material.title}".',
             "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
             "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
+            "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
         }
 
         try:
@@ -114,6 +116,7 @@ NOTIFICATION_SETTING_DICT = {
     "TRANSFER_REQUESTED": "transfer_requested_notif",
     "TRANSFER_APPROVED": "transfer_approved_notif",
     "TRANSFER_REJECTED": "transfer_rejected_notif",
+    "REMOVED_FROM_ORG": "misc_notif",
 }
 
 
