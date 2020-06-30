@@ -6,8 +6,10 @@ https://github.com/AlexsLemonade/resources-portal/issues/33
 
 import argparse
 import os
+import re
 import signal
 import subprocess
+import time
 
 from init_terraform import init_terraform
 
@@ -52,7 +54,7 @@ def build_and_push_docker_image(args):
     # This could be configurable, but there isn't much point.
     HTTP_PORT = 8081
 
-    image_name = f"{args.dockerhub_repo}/resources_portal_api:{args.system_version}"
+    image_name = f"{args.dockerhub_repo}/resources_portal_api"
 
     # Hopefully this gets answered and we can use docker-py:
     # https://github.com/docker/docker-py/issues/2526
@@ -148,12 +150,48 @@ def run_terraform(args):
     var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
 
     try:
-        terraform_process = subprocess.Popen(["terraform", "apply", var_file_arg, "-auto-approve"])
+        terraform_process = subprocess.Popen(
+            ["terraform", "apply", var_file_arg, "-auto-approve"], stdout=subprocess.PIPE
+        )
+        output = ""
+        for line in iter(terraform_process.stdout.readline, b""):
+            decoded_line = line.decode("utf-8")
+            print(decoded_line, end="")
+            output += decoded_line
+
         terraform_process.wait()
-        return terraform_process.returncode
+
+        return terraform_process.returncode, output
     except KeyboardInterrupt:
         terraform_process.send_signal(signal.SIGINT)
         terraform_process.wait()
+
+
+def run_remote_command(ip_address, command):
+    if args.env == "dev":
+        key_args = ["-i", "resources-portal-key.pem"]
+    else:
+        key_args = []
+    completed_command = subprocess.check_call(
+        ["ssh"] + key_args + ["-o", "StrictHostKeyChecking=no", "ubuntu@" + ip_address, command],
+    )
+
+    return completed_command
+
+
+def restart_api_if_still_running(args, api_ip_address):
+    try:
+        run_remote_command(api_ip_address, "echo The API is still up! Restarting it!")
+    except subprocess.CalledProcessError:
+        print("Seems like the API isn't up yet, which means it got cylced.")
+        return 0
+
+    run_remote_command(api_ip_address, "docker rm -f $(docker ps -a -q) 2>/dev/null || true")
+
+    print("Waiting for API container to stop.")
+    time.sleep(30)
+
+    return run_remote_command(api_ip_address, "sudo bash start_api_with_migrations.sh")
 
 
 if __name__ == "__main__":
@@ -171,6 +209,25 @@ if __name__ == "__main__":
     if init_code != 0:
         exit(init_code)
 
+    terraform_code, terraform_output = run_terraform(args)
+    if terraform_code != 0:
+        exit(terraform_code)
+
+    ip_address_match = re.match(
+        r".*\napi_server_1_ip = (\d+\.\d+\.\d+\.\d+)\n.*", terraform_output, re.DOTALL
+    )
+
+    if ip_address_match:
+        api_ip_address = ip_address_match.group(1)
+    else:
+        print("Could not find the API's IP address. Something has gone wrong or changed.")
+        exit(1)
+
     # This is the last command, so the script's return code should
     # match it.
-    exit(run_terraform(args))
+    return_code = restart_api_if_still_running(args, api_ip_address)
+
+    if return_code == 0:
+        print("Deploy completed successfully!!")
+
+    exit(return_code)

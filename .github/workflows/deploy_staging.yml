@@ -19,6 +19,11 @@ jobs:
         with:
           terraform_version: 0.12.26
 
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.API_SSH_KEY }}
+
       - name: Deploy
         run: cd infrastructure && python3 deploy.py -e staging -u deployer -d ccdlstaging -v $(git rev-parse HEAD)
         env:

@@ -21,29 +21,29 @@ apt-get install nginx -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
-# if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
-#     # Create and install SSL Certificate for the API.
-#     # Only necessary on staging and prod.
-#     # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
-#     apt-get install -y software-properties-common
-#     add-apt-repository ppa:certbot/certbot
-#     apt-get update
-#     apt-get install -y python-certbot-nginx
+if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
+    # Create and install SSL Certificate for the API.
+    # Only necessary on staging and prod.
+    # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
+    apt-get install -y software-properties-common
+    add-apt-repository ppa:certbot/certbot
+    apt-get update
+    apt-get install -y python-certbot-nginx
 
-#     # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
-#     # have configured to forward mail to the #teamcontact channel in
-#     # slack. Certbot will use it for "important account
-#     # notifications".
+    # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
+    # have configured to forward mail to the #teamcontact channel in
+    # slack. Certbot will use it for "important account
+    # notifications".
 
-#     # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
-#     sleep 180
-#     BASE_URL="resources.alexslemonade.org"
-#     if [[ ${stage} == "staging" ]]; then
-#         certbot --nginx -d api.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-#     elif [[ ${stage} == "prod" ]]; then
-#         certbot --nginx -d api.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-#     fi
-# fi
+    # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
+    sleep 180
+    BASE_URL="resources.alexslemonade.org"
+    if [[ ${stage} == "staging" ]]; then
+        certbot --nginx -d api.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
+    elif [[ ${stage} == "prod" ]]; then
+        certbot --nginx -d api.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
+    fi
+fi
 
 # Install, configure and launch our CloudWatch Logs agent
 cat <<EOF >awslogs.conf
@@ -90,47 +90,14 @@ cat <<"EOF" > environment
 ${api_environment}
 EOF
 
-chown -R ubuntu /home/ubuntu
+# Install the API startup script
+cat <<"EOF" > start_api_with_migrations.sh
+${start_api_with_migrations}
+EOF
 
-STATIC_VOLUMES=/tmp/volumes_static
-mkdir -p /tmp/volumes_static
-chmod a+rwx /tmp/volumes_static
+chmod +x ./start_api_with_migrations.sh
 
-# Pull the API image.
-api_docker_image=${dockerhub_repo}/resources_portal_api:${system_version}
-docker pull $api_docker_image
-
-# Migrate first.
-# These database values are created after TF
-# is run, so we have to pass them in programatically
-docker run \
-       --env-file environment \
-       -v "$STATIC_VOLUMES":/tmp/www/static \
-       --log-driver=awslogs \
-       --log-opt awslogs-region=${region} \
-       --log-opt awslogs-group=${log_group} \
-       --log-opt awslogs-stream=${log_stream} \
-       -p 8081:8081 \
-       --name=resources_portal_migrations \
-       $api_docker_image python3 manage.py migrate
-
-# Start the API image.
-docker run \
-       --env-file environment \
-       -v "$STATIC_VOLUMES":/tmp/www/static \
-       --log-driver=awslogs \
-       --log-opt awslogs-region=${region} \
-       --log-opt awslogs-group=${log_group} \
-       --log-opt awslogs-stream=${log_stream} \
-       -p 8081:8081 \
-       --name=resources_portal_api \
-       -d $api_docker_image
-
-docker exec resources_portal_api python3 manage.py search_index --rebuild -f;
-docker exec resources_portal_api python3 manage.py collectstatic --noinput
-
-# Don't leave secrets lying around.
-rm -f environment
+./start_api_with_migrations.sh
 
 # Delete the cloudinit and syslog in production.
 export STAGE=${stage}
