@@ -231,7 +231,7 @@ if __name__ == "__main__":
 
     # Create a key file from env var
     if args.env != "dev":
-        with open(KEY_FILE_PATH) as key_file:
+        with open(KEY_FILE_PATH, "w") as key_file:
             key_file.write(os.environ["API_SSH_KEY"])
 
         os.chmod(KEY_FILE_PATH, 0o600)
@@ -241,6 +241,6 @@ if __name__ == "__main__":
     return_code = restart_api_if_still_running(args, api_ip_address)
 
     if return_code == 0:
-        print("Deploy completed successfully!!")
+        print("\nDeploy completed successfully!!")
 
     exit(return_code)
