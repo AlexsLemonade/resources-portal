@@ -11,3 +11,7 @@ nav:
   - API:
       - Authentication: 'api/authentication.md'
       - Users: 'api/users.md'
+      - Grants: 'api/grants.md'
+      - Materials: 'api/materials.md'
+      - Organizations: 'api/organizations.md'
+      - Search: 'api/search.md'
