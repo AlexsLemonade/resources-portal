@@ -12,7 +12,6 @@ from resources_portal.models import (
     MaterialRequest,
     Notification,
     Organization,
-    OrganizationInvitation,
     OrganizationUserSetting,
     User,
 )
