@@ -15,6 +15,8 @@ from init_terraform import init_terraform
 
 # import docker
 
+KEY_FILE_PATH = "resources-portal-key.pem"
+
 
 def parse_args():
     description = """This script can be used to deploy and update a `resources portal` instance stack.
@@ -168,12 +170,16 @@ def run_terraform(args):
 
 
 def run_remote_command(ip_address, command):
-    if args.env == "dev":
-        key_args = ["-i", "resources-portal-key.pem"]
-    else:
-        key_args = []
     completed_command = subprocess.check_call(
-        ["ssh"] + key_args + ["-o", "StrictHostKeyChecking=no", "ubuntu@" + ip_address, command],
+        [
+            "ssh",
+            "-i",
+            KEY_FILE_PATH,
+            "-o",
+            "StrictHostKeyChecking=no",
+            "ubuntu@" + ip_address,
+            command,
+        ],
     )
 
     return completed_command
@@ -222,6 +228,13 @@ if __name__ == "__main__":
     else:
         print("Could not find the API's IP address. Something has gone wrong or changed.")
         exit(1)
+
+    # Create a key file from env var
+    if args.env != "dev":
+        with open(KEY_FILE_PATH) as key_file:
+            key_file.write(os.environ["API_SSH_KEY"])
+
+        os.chmod(KEY_FILE_PATH, 0o600)
 
     # This is the last command, so the script's return code should
     # match it.
