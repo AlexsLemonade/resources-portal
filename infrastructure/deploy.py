@@ -203,6 +203,7 @@ def restart_api_if_still_running(args, api_ip_address):
     if os.path.isfile("start_api_with_migrations.sh"):
         return run_remote_command(api_ip_address, "sudo bash start_api_with_migrations.sh")
     else:
+        print("API start script not written yet, letting the init script run it instead.")
         return 0
 
 
