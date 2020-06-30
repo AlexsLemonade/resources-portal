@@ -33,7 +33,7 @@
             "email": "paulastartes@spiceitup.com"
         },
         {
-            "notification_type": "MTA_UPLOADED",
+            "notification_type": "SIGNED_MTA_UPLOADED",
             "notified_user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
             "associated_organization_id": "1",
             "associated_material_id": "2",

@@ -173,6 +173,12 @@ class MaterialFacetedSearchFilterBackend(FacetedSearchFilterBackend):
                 type=openapi.TYPE_STRING,
                 description="Allows filtering the results by has_pre_print",
             ),
+            openapi.Parameter(
+                name="organization.name",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by the name of the material's organization",
+            ),
         ],
         operation_description="""
 Use this endpoint to search among the materials.
@@ -225,12 +231,13 @@ class MaterialDocumentView(DocumentViewSet):
         "pre_print_doi": None,
         "pre_print_title": None,
         "citation": None,
+        "organization.name": None,
     }
 
     # Define filtering fields
     filter_fields = {
         "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-        "organization": {"field": "name"},
+        "organization": {"field": "organization.name"},
         "title": "title",
         "contact_user.email": "contact_user.email",
         "contact_user.published_name": "contact_user.published_name",
@@ -271,6 +278,7 @@ class MaterialDocumentView(DocumentViewSet):
         },
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
+        "organization": {"field": "organization.name", "facet": TermsFacet, "enabled": True},
     }
     faceted_search_param = "facet"
 

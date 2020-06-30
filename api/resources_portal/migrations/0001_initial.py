@@ -497,7 +497,7 @@ class Migration(migrations.Migration):
                             ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
                             ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
                             ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
-                            ("MTA_UPLOADED", "MTA_UPLOADED"),
+                            ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
                             ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
                             ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
                         ],
