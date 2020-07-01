@@ -35,7 +35,6 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "updated_at",
-            "material",
             "assigned_to",
             "requester",
         )
