@@ -13,6 +13,7 @@ class OrganizationInvitation(SafeDeleteModel):
     class Meta:
         db_table = "organization_invitations"
         get_latest_by = "updated_at"
+        ordering = ["updated_at"]
 
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),

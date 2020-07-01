@@ -30,6 +30,7 @@ class Organization(SafeDeleteModel):
     class Meta:
         db_table = "organizations"
         get_latest_by = "updated_at"
+        ordering = ["updated_at"]
 
         permissions = OWNER_PERMISSIONS + MEMBER_PERMISSIONS
 
