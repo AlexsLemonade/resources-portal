@@ -77,6 +77,8 @@ members    | list(string) | Yes      | A list of the IDs of members of the organ
 - All parameters are optional
 - Not Authorization Protected
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK

@@ -130,6 +130,8 @@ shipping_requirements_id | integer   | The ID of the shipping requerements. Null
 - All parameters are optional
 - Not Authorization Protected
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK

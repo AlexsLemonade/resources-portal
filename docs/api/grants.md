@@ -18,6 +18,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 
 - **[Authorization Protected](authentication.md)**
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -50,6 +52,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can get its information.
+
+**Response**:
 
 ```json
 Content-Type application/json
@@ -121,6 +125,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can update it.
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -182,6 +188,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can view the materials.
+
+**Response**:
 
 ```json
 Content-Type application/json

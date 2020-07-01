@@ -31,7 +31,14 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "material",
+            "assigned_to",
+            "requester",
+        )
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
@@ -149,6 +156,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         material = serializer.validated_data["material"]
+
+        serializer.validated_data["requester"] = request.user
 
         material_request = MaterialRequest(**serializer.validated_data)
         material_request.save()
