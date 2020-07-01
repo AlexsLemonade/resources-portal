@@ -43,12 +43,17 @@ class Common(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "resources_portal.middleware.oauth.OAuthMiddleWare",
     )
 
     ALLOWED_HOSTS = ["*"]
     ROOT_URLCONF = "resources_portal.urls"
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
     WSGI_APPLICATION = "resources_portal.wsgi.application"
+
+    # OAuth
+    CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
+    CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
 
     # Email
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

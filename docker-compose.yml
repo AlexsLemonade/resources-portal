@@ -9,8 +9,7 @@ services:
     container_name: '${API_NAME}'
     network_mode: '${API_NETWORK}'
     restart: always
-    environment:
-      - DJANGO_SECRET_KEY=local
+    env_file: api/dev-secrets
     image: api
     build:
       context: ./api

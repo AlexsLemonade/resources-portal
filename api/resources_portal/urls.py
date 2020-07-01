@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from resources_portal.views import (
+    AttachmentViewSet,
     GrantMaterialViewSet,
     GrantUserViewSet,
     GrantViewSet,
@@ -20,6 +21,7 @@ from resources_portal.views import (
     OrganizationInvitationViewSet,
     OrganizationMaterialViewSet,
     OrganizationMemberViewSet,
+    OrganizationUserSettingViewSet,
     OrganizationViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
@@ -63,6 +65,13 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
+router.register(r"attachments", AttachmentViewSet, basename="attachment")
+router.register(
+    r"organization-user-settings",
+    OrganizationUserSettingViewSet,
+    basename="organization-user-setting",
+)
+
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
 
 search_router = DefaultRouter(trailing_slash=False)
