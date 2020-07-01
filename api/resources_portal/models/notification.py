@@ -16,7 +16,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
-        ordering = ["created_at"]
+        ordering = ["created_at", "id"]
 
     NOTIFICATION_TYPES = (
         ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),

@@ -8,7 +8,7 @@ class ShippingRequirements(SafeDeleteModel):
     class Meta:
         db_table = "shipping_requirements"
         get_latest_by = "updated_at"
-        ordering = ["updated_at"]
+        ordering = ["updated_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()

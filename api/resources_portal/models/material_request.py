@@ -12,7 +12,7 @@ class MaterialRequest(SafeDeleteModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
-        ordering = ["created_at"]
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()

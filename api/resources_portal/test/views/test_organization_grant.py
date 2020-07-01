@@ -19,7 +19,9 @@ class OrganizationGrantTestCase(APITestCase):
         self.grant = GrantFactory()
         self.grant2 = GrantFactory()
 
-        self.organization1 = self.grant.organizations.first()
+        grant_orgs = self.grant.organizations.all()
+        self.organization1 = grant_orgs[0]
+        self.organization2 = grant_orgs[1]
         self.org_1_member = UserFactory()
         self.organization1.members.add(self.org_1_member)
         self.organization1.grants.add(self.grant2)
@@ -28,7 +30,6 @@ class OrganizationGrantTestCase(APITestCase):
         self.grant.users.add(self.organization1.owner)
         self.grant.save()
 
-        self.organization2 = self.grant.organizations.last()
         self.url = reverse("organization-detail", args=[self.grant.id])
 
     def test_get_single_organization_not_allowed(self):

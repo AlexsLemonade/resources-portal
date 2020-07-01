@@ -10,7 +10,7 @@ class OrganizationUserSetting(SafeDeleteModel):
     class Meta:
         db_table = "organization_user_setting"
         get_latest_by = "created_at"
-        ordering = ["created_at"]
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
