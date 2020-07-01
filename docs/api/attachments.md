@@ -15,7 +15,7 @@ filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
 s3_bucket       | string | The url of the s3_bucket where your attachment file is stored.
 s3_key          | string | The key of your s3 object.
-sequence_map_for| json   | A material object in json, the material which this attachment is a sequence map for.
+sequence_map_for| json   | A material object in json. The material which this attachment is a sequence map for.
 
 *Note:*
 
@@ -51,9 +51,9 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - The only users who can view an attachment are:
-1. Users who are part of an organization which has an active material request
-2. Users who are the `requester` on an active material request
-3. Admins
+   1. Users who are part of an organization which has an active material request
+   2. Users who are the `requester` on an active material request
+   3. Admins
 
 **Response**:
 
@@ -90,7 +90,7 @@ Content-Type application/json
 ```json
 Content-Type application/json
 200 OK
-{
+
 ...
    {
       "id":21,
@@ -104,7 +104,7 @@ Content-Type application/json
       "sequence_map_for":"None"
    }
 ...
-}
+
 ```
 
 ## Update an attachment
@@ -128,9 +128,9 @@ sequence_map_for| json   | A material object in json, the material which this at
 - All parameters are optional
 - **[Authorization Protected](authentication.md)**
 - The only users who can update an attachment are:
-1. Users who are part of an organization which has an active material request
-2. Users who are the `requester` on an active material request
-3. Admins
+   1. Users who are part of an organization which has an active material request
+   2. Users who are the `requester` on an active material request
+   3. Admins
 
 **Response**:
 
@@ -161,9 +161,9 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - The only users who can delete an attachment are:
-1. Users who are part of an organization which has an active material request
-2. Users who are the `requester` on an active material request
-3. Admins
+   1. Users who are part of an organization which has an active material request
+   2. Users who are the `requester` on an active material request
+   3. Admins
 
 **Response**:
 

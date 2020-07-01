@@ -34,7 +34,7 @@ Content-Type application/json
    "requester_signed_mta_attachment":15,
    "irb_attachment":14,
    "executed_mta_attachment":13,
-   "is_active":True,
+   "is_active":true,
    "status":"PENDING",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
 }
@@ -50,13 +50,12 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - The only users who can view a material requests are:
-1. Users who are part of the organization which owns the requested material
-2. The requester
+   1. Users who are part of the organization which owns the requested material
+   2. The requester
 
 **Response**:
 
-```
-json
+```json
 Content-Type application/json
 200 OK
 
@@ -67,7 +66,7 @@ Content-Type application/json
    "requester_signed_mta_attachment":15,
    "irb_attachment":14,
    "executed_mta_attachment":13,
-   "is_active":True,
+   "is_active":true,
    "status":"PENDING",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
 }
@@ -82,16 +81,14 @@ Content-Type application/json
 *Note:*
 
 - **[Authorization Protected](authentication.md)**
-- The only users who can list material requests are:
-1. Users who are part of the organization which owns the requested material
+- The only users who can list material requests are users who are part of the organization which owns the requested material.
 
 **Response**:
 
-```
-json
+```json
 Content-Type application/json
 200 OK
-{
+
 ...
     {
     "id":6,
@@ -100,12 +97,12 @@ Content-Type application/json
     "requester_signed_mta_attachment":15,
     "irb_attachment":14,
     "executed_mta_attachment":13,
-    "is_active":True,
+    "is_active":true,
     "status":"PENDING",
     "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
     }
 ...
-}
+
 ```
 
 ## Update a material request
@@ -129,8 +126,8 @@ is_active                      | bool   | Boolean determining if the material re
 - All parameters are optional
 - **[Authorization Protected](authentication.md)**
 - The only users who can update an attachment are:
-1. Users who are part of an organization which has an active material request
-2. The requester
+   1. Users who are part of an organization which has an active material request
+   2. The requester
 
 **Response**:
 
