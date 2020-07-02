@@ -53,7 +53,12 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_REQUESTED", email=self.request.assigned_to.email
+                )
+            ),
+            1,
         )
 
     def test_post_request_from_unauthenticated_forbidden(self):

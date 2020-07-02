@@ -36,7 +36,12 @@ class OrganizationInvitationListTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_CREATED", email=self.invitation.requester.email
+                )
+            ),
+            1,
         )
 
     def test_post_request_with_invalid_permissions_fails(self):
@@ -89,7 +94,12 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_REQUEST_ACCEPTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_REQUEST_ACCEPTED", email=self.invitation.requester.email
+                )
+            ),
+            1,
         )
 
     def test_invite_approved_by_requester_suceeds(self):
@@ -108,7 +118,13 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_ACCEPTED",
+                    email=self.invitation.request_reciever.email,
+                )
+            ),
+            1,
         )
 
     def test_request_rejected_by_request_reciever_suceeds(self):
@@ -127,7 +143,12 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_REQUEST_REJECTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_REQUEST_REJECTED", email=self.invitation.requester.email
+                )
+            ),
+            1,
         )
 
     def test_invite_rejected_by_requester_suceeds(self):
@@ -146,7 +167,13 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_REJECTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_REJECTED",
+                    email=self.invitation.request_reciever.email,
+                )
+            ),
+            1,
         )
 
     def test_request_invalid_suceeds(self):
@@ -165,7 +192,12 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_REQUEST_INVALID")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_REQUEST_INVALID", email=self.invitation.requester.email
+                )
+            ),
+            1,
         )
 
     def test_invite_invalid_suceeds(self):
@@ -184,7 +216,13 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertFalse(invitation.requester in invitation.organization.members.all())
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_INVALID")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_INVALID",
+                    email=self.invitation.request_reciever.email,
+                )
+            ),
+            1,
         )
 
     def test_put_request_from_wrong_user_fails(self):

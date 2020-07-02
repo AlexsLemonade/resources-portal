@@ -89,7 +89,12 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         request_2_id = response.data["id"]
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 2
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_REQUESTED", email=self.post_doc.email
+                )
+            ),
+            2,
         )
 
         # Upload IRBs
@@ -133,7 +138,14 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 2)
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_APPROVED", email=requester.email
+                )
+            ),
+            2,
+        )
 
         # The Requester uploads two signed MTAs
         self.client.force_authenticate(user=requester)
@@ -172,7 +184,12 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="SIGNED_MTA_UPLOADED")), 2
+            len(
+                Notification.objects.filter(
+                    notification_type="SIGNED_MTA_UPLOADED", email=self.post_doc.email
+                )
+            ),
+            2,
         )
 
         # Postdoc uploads executed MTA/IRBs
@@ -212,7 +229,12 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 2
+            len(
+                Notification.objects.filter(
+                    notification_type="EXECUTED_MTA_UPLOADED", email=self.post_doc.email
+                )
+            ),
+            2,
         )
 
         # Postdoc marks the requests fulfilled
@@ -228,7 +250,12 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="TRANSFER_FULFILLED")), 2
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_FULFILLED", email=requester.email
+                )
+            ),
+            2,
         )
 
         # Final checks
