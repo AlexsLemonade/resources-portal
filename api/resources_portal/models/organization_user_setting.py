@@ -10,6 +10,7 @@ class OrganizationUserSetting(SafeDeleteModel):
     class Meta:
         db_table = "organization_user_setting"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -26,6 +27,7 @@ class OrganizationUserSetting(SafeDeleteModel):
     transfer_requested_notif = models.BooleanField(default=True)
     transfer_updated_notif = models.BooleanField(default=True)
     perms_granted_notif = models.BooleanField(default=True)
+    misc_notif = models.BooleanField(default=True)
 
     user = models.ForeignKey(
         "User",

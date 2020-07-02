@@ -8,6 +8,7 @@ class Attachment(SafeDeleteModel):
     class Meta:
         db_table = "attachments"
         get_latest_by = "updated_at"
+        ordering = ["updated_at", "id"]
 
     ATTACHMENT_TYPES = (
         ("MTA", "MTA"),

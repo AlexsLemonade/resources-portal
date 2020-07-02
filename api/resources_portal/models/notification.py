@@ -16,6 +16,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     NOTIFICATION_TYPES = (
         ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
@@ -33,6 +34,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
         ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
         ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
+        ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
     )
 
     objects = SafeDeleteManager()
@@ -97,6 +99,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
             "TRANSFER_FULFILLED": lambda: f"Transfer of {self.associated_material.title} has been marked as fulfilled by "
             f"{self.associated_user.username} from {self.associated_organization.name}.",
+            "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
         }
 
         try:
@@ -122,6 +125,7 @@ NOTIFICATION_SETTING_DICT = {
     "TRANSFER_APPROVED": "transfer_updated_notif",
     "TRANSFER_REJECTED": "transfer_updated_notif",
     "TRANSFER_FULFILLED": "transfer_updated_notif",
+    "REMOVED_FROM_ORG": "misc_notif",
 }
 
 

@@ -13,6 +13,7 @@ class Material(SafeDeleteModel):
     class Meta:
         db_table = "materials"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     CATEGORY_CHOICES = (
         ("CELL_LINE", "CELL_LINE"),
