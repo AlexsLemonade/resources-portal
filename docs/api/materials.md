@@ -1,6 +1,9 @@
 # Materials
 Supports creating, viewing, and updating materials.
 
+## Description
+Materials are used to represent any transferrable piece of research listed on the site. They contain metadata about the information or scientific resource which they represent.
+
 ## Add a new material
 
 **Request**:

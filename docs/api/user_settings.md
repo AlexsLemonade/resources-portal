@@ -1,3 +1,9 @@
+# User Settings
+Supports viewing and updating user settings.
+
+## Description
+User settings determine what notifications a user will recieve. They can toggle each of a number of categories of notifications on or off.
+
 ## Get information on a user's settings:
 
 **Request**:

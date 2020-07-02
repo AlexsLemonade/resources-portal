@@ -1,6 +1,9 @@
 # Grants
 Supports adding, viewing, and updating grants. Contains nested routes for associated materials.
 
+## Description
+The Grant object represents ALSF grants associated with users or organizations.
+
 ## Register a new user account
 
 **Request**:

@@ -1,6 +1,9 @@
 # Attachments
 Supports adding, viewing, deleting, and updating attachments.
 
+## Description
+Attachments are used to support any kind of external file. These are often PDFs or images. Attachments are used for Material Transfer Agreements, Institutional Review Board documents, and sequence maps for materials among other things.
+
 ## Add a new attachment:
 
 **Request**:

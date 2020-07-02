@@ -1,5 +1,8 @@
 # Material Requests
-Supports adding, viewing, deleting, and updating attachments.
+Supports adding, viewing, deleting, and updating material requests.
+
+## Description
+Material Requests are used to track the progress of a material trasfer between a requester and the organization in charge of the requested material. All documents associated with the transfer are linked to the Material Request object.
 
 ## Add a new material request:
 
