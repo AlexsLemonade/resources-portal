@@ -8,6 +8,7 @@ class Grant(SafeDeleteModel):
     class Meta:
         db_table = "grants"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()

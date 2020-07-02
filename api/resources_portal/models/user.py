@@ -19,6 +19,10 @@ class DeletedObjectsManager(models.Manager):
 
 
 class User(AbstractUser):
+    class Meta:
+        get_latest_by = "created_at"
+        ordering = ["created_at"]
+
     objects = NonDeletedObjectsManager()
     deleted_objects = DeletedObjectsManager()
 
