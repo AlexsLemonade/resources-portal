@@ -16,6 +16,12 @@ class Local(Common):
     ELASTICSEARCH_HOST = "elasticsearch"
     ELASTICSEARCH_PORT = 9200
 
+    # AWS
+    AWS_REGION = None
+
+    # AWS Simple Email Service
+    AWS_SES_DOMAIN = None
+
     # OAuth
     OAUTH_URL = "https://sandbox.orcid.org/oauth/token"
 
