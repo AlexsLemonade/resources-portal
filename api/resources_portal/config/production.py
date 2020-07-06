@@ -31,3 +31,11 @@ class Production(Common):
             "PORT": os.getenv("DATABASE_PORT"),
         }
     }
+
+    ELASTICSEARCH_DSL = {
+        "default": {
+            "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
+            "port": 443,
+            "use_ssl": True,
+        }
+    }

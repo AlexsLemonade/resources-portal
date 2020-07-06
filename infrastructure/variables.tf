@@ -1,6 +1,8 @@
 # This terraform file hosts the terraform variables used throughout
 # the project.
 
+data "aws_caller_identity" "current" {}
+
 variable "region" {
   default = "us-east-1"
 }
@@ -21,12 +23,14 @@ variable "system_version" {
   default = "INVALID SYSTEM VERSION"
 }
 
-variable "database_user" {
-  default = "rppostgresuser"
+variable "django_secret_key" {
+  # This will be overwritten by the password in GitHub actions.
+  # It's kept there so it's secret.
+  default = "THIS_IS_NOT_A_SECRET_DO_NOT_USE_IN_PROD"
 }
 
 variable "database_password" {
-  # This will be overwritten by the password in terraform.tfvars.
+  # This will be overwritten by the password in GitHub actions.
   # It's kept there so it's secret.
   default = "rppostgrespassword"
 }
@@ -40,7 +44,11 @@ variable "api_instance_type" {
 }
 
 variable "database_instance_type" {
-  default = "t2.micro"
+  default = "db.t2.micro"
+}
+
+variable "elasticsearch_instance_type" {
+  default = "t2.small.elasticsearch"
 }
 
 output "environment_variables" {
@@ -50,10 +58,8 @@ output "environment_variables" {
     {name = "DATABASE_HOST"
       value = "${aws_db_instance.postgres_db.address}"},
     {name = "DATABASE_USER"
-      value = "${var.database_user}"},
-    {name = "DATABASE_PASSWORD"
-      value = "${var.database_password}"},
+      value = "${aws_db_instance.postgres_db.username}"},
     {name = "DATABASE_PORT"
-      value = "${var.database_port}"}
+      value = "${aws_db_instance.postgres_db.port}"}
   ]
 }

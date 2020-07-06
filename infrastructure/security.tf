@@ -5,7 +5,7 @@
 # debugging. Long term we may want to remove this entirely.
 resource "aws_key_pair" "resources_portal" {
   key_name = "resources-portal-key-${var.user}-${var.stage}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCzvVDhV2dLR9nWEW/EhfH3YGil2apmgCQV3R2UbCodUilC1SOpTDOjao1aCfT6seHN1Zp+OFlaDb7Xzo2p6AoJ5jTDqAhlyuQiqv/DtoQ6QUwyfaivnTHNIWjX+HN2qX1DupJK878oxWrPV9n7WLnKKTSb0KVVpiJfqsTUNvTtViNw793GADUfHjOLmSQxYudUK0QzeCT5tDtW0nTNTiONRSyoaZqK4HvsQqgNQene4vj3d3UHP7ehGMxQZD6pgiLnNSoqfCzf3hPXJfBJAZuBKGREUxcGiHcmO7vsh/R7nBnZr0YHoKCeyD2ZCAieoiW1hJhyVEllvcKoGNtXPxR97JbP2/5ZHT7MEEM1DXNCHoiIXCTJ5GGiM8BuUx9J+W8YkumV6vPR+JqHEQMXl7doYCHPqTLKF3A8rj/7Wt0261BzdEx2kywU6hnkSDEjUoIAqYx2hmFBpV4XJdTgHT8j+7rf90HmV7Pr7oVoN4QiFU2QItEqaOJxrxf4abSjGMmJb8nYgXpXfI5X+N0TvTeIozLT3NxVJITkYXt6q4xdrcok9/E0mavDQfWnsPxV3TsB7RiDcyu0vtlNhxHBc9jh/NJkkHxVfRO1eJPOvQ1yR5Y4Mdwzjxuem4wQCFx9/3Zz85K0ols12R0rppZlOvgOeL7hd/L1Jve6pqZXx1k+zw=="
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCZbpHCZMuk4Bl96wcJw2u0W31JV2IhInU7Xelfd/BO++QcxyoR3zpA+JhPC0MVKrvWO95chxQzIP91pGvPhscAlxoSMxRufjvIElvTbSgPCWFTIk/xfAyYGNkV6uX5wgQ2HjonEsnuLB31eRNF9WKdmv7UtyAIapghSSQa0Qbqdrk70LYFdDG+ZRT0ZqTxhvzIuaDjexI9rQtR03EzVoUP43XCHxl0NZN0QljsLu7dqM19b50dmlWXT0dQE+fgZBFbTR4yXOZAWqCEXLbV5VxW6lEbqXjW9VEAwcYZX1p3jL9HqOY/6E5l7Rl/TuwqDaCNkQ6dvs5GFk/qmmoeyUj1jDEuG+Fe0um6Cf8Eh3L43c9+EzNyGt44pdZsNg+NnpjOliqx4ww7WFwmMEpfLeOZwBOD01tykBJtah9CFH2574wv//XzimsXHgOU+bgLRzOX9297G2x6fPW0OIhO/VZrB4Y950vtE+mYAUDyqeSKAoR0LD4ugf/DtlZaHfRHFIexqGrnJoHDKuzsxA3edASTf0cmu3KYvfj22OD3VORbxRrM5wYul1wdk0Z+wribR3Sp2JBtx7ShG5Hv3BUMMNW4nOUI5O+VAdwRyH76gki6RS2FBM6TRol6ugdEyOsP1t+3atSu3sKrWpz2jisKZsDqYpJka/FPlDaEscPHMkzmFw=="
 }
 
 ##
@@ -15,9 +15,9 @@ resource "aws_key_pair" "resources_portal" {
 resource "aws_security_group" "resources_portal_db" {
   name = "resources-portal_db-${var.user}-${var.stage}"
   description = "resources_portal_db-${var.user}-${var.stage}"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags {
+  tags = {
     Name = "resources-portal-db-${var.user}-${var.stage}"
   }
 }
@@ -28,7 +28,7 @@ resource "aws_security_group_rule" "resources_portal_db_outbound" {
   to_port = 65535
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_db.id}"
+  security_group_id = aws_security_group.resources_portal_db.id
 }
 
 resource "aws_security_group_rule" "resources_portal_db_tcp" {
@@ -36,8 +36,8 @@ resource "aws_security_group_rule" "resources_portal_db_tcp" {
   from_port = 5432
   to_port = 5432
   protocol = "tcp"
-  source_security_group_id = "${aws_security_group.resources_portal_api.id}"
-  security_group_id = "${aws_security_group.resources_portal_db.id}"
+  source_security_group_id = aws_security_group.resources_portal_api.id
+  security_group_id = aws_security_group.resources_portal_db.id
 }
 
 ##
@@ -47,9 +47,9 @@ resource "aws_security_group_rule" "resources_portal_db_tcp" {
 resource "aws_security_group" "resources_portal_api" {
   name = "resources-portal-api-${var.user}-${var.stage}"
   description = "resources-portal-api-${var.user}-${var.stage}"
-  vpc_id = "${aws_vpc.resources_portal_vpc.id}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags {
+  tags = {
     Name = "resources-portal-api-${var.user}-${var.stage}"
   }
 }
@@ -60,7 +60,7 @@ resource "aws_security_group_rule" "resources_portal_api_ssh" {
   to_port = 22
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_http" {
@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "resources_portal_api_http" {
   to_port = 80
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_https" {
@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "resources_portal_api_https" {
   to_port = 443
   protocol = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
 }
 
 resource "aws_security_group_rule" "resources_portal_api_outbound" {
@@ -88,5 +88,27 @@ resource "aws_security_group_rule" "resources_portal_api_outbound" {
   protocol = "all"
   cidr_blocks = ["0.0.0.0/0"]
   ipv6_cidr_blocks = ["::/0"]
-  security_group_id = "${aws_security_group.resources_portal_api.id}"
+  security_group_id = aws_security_group.resources_portal_api.id
+}
+
+##
+# ElasticSearch
+##
+
+resource "aws_security_group" "resources_portal_es" {
+  name = "resources-portal-es-${var.user}-${var.stage}"
+  description = "resources-portal-es-${var.user}-${var.stage}"
+  vpc_id = aws_vpc.resources_portal_vpc.id
+
+  tags = {
+    Name = "resources-portal-es-${var.user}-${var.stage}"
+  }
+
+  # Wide open, but inside inside the VPC
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    security_groups = [aws_security_group.resources_portal_api.id]
+  }
 }

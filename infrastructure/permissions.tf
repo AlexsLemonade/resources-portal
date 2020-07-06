@@ -1,8 +1,6 @@
 # The configuration contained in this file specifies AWS IAM roles and
 # permissions.
 
-data "aws_caller_identity" "current" {}
-
 resource "aws_iam_role" "resources_portal_instance" {
   name = "resources-portal-instance-${var.user}-${var.stage}"
 
@@ -26,11 +24,11 @@ EOF
 }
 
 resource "aws_iam_instance_profile" "resources_portal_instance_profile" {
-  name  = "resources-portal-instance-profile-${var.user}-${var.stage}"
-  role = "${aws_iam_role.resources_portal_instance.name}"
+  name = "resources-portal-instance-profile-${var.user}-${var.stage}"
+  role = aws_iam_role.resources_portal_instance.name
 }
 
-resource "aws_iam_policy" "cloudwatch_policy" {
+resource "aws_iam_policy" "resources_portal_cloudwatch" {
   name = "resources-portal-cloudwatch-policy-${var.user}-${var.stage}"
   description = "Allows Cloudwatch Permissions."
 
@@ -66,6 +64,44 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch" {
-  role = "${aws_iam_role.resources_portal_instance.name}"
-  policy_arn = "${aws_iam_policy.cloudwatch_policy.arn}"
+  role = aws_iam_role.resources_portal_instance.name
+  policy_arn = aws_iam_policy.resources_portal_cloudwatch.arn
+}
+
+
+resource "aws_iam_policy" "resources_portal_elasticsearch" {
+  name = "resources-portal-elasticsearch-${var.user}-${var.stage}"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action":[
+              "es:DescribeElasticsearchDomain",
+              "es:DescribeElasticsearchDomainConfig",
+              "es:DescribeElasticsearchDomains",
+              "es:DescribeElasticsearchInstanceTypeLimits",
+              "es:ListDomainNames",
+              "es:ListElasticsearchInstanceTypeDetails",
+              "es:ListElasticsearchInstanceTypes",
+              "es:ListElasticsearchVersions",
+              "es:ListTags",
+              "es:ESHttpDelete",
+              "es:ESHttpGet",
+              "es:ESHttpHead",
+              "es:ESHttpPost",
+              "es:ESHttpPut"
+            ],
+            "Resource": "${aws_elasticsearch_domain.es.arn}"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "elasticsearch" {
+  role = aws_iam_role.resources_portal_instance.name
+  policy_arn = aws_iam_policy.resources_portal_elasticsearch.arn
 }
