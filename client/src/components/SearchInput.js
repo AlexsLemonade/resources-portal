@@ -1,8 +1,7 @@
 import React from 'react'
 import { Box, Button, Select, TextInput, Keyboard } from 'grommet'
 import { useSearchResources } from '../hooks/useSearchResources'
-import { Mappings } from './resources'
-import { sortedObjectKeys } from '../helpers/sortObjectKeys'
+import { resourceCategories } from './resources'
 import { getReadable } from '../helpers/readableNames'
 
 export default function SearchInput({ onChange, size = 'medium' }) {
@@ -31,7 +30,7 @@ export default function SearchInput({ onChange, size = 'medium' }) {
   // this is just the help make the select look more like the designs
   const resourceCategoryOptions = [
     'ALL',
-    ...sortedObjectKeys(Mappings).map((map) => map.key)
+    ...resourceCategories
   ].map((option) => ({ value: option, label: getReadable(option) }))
 
   return (
