@@ -6,7 +6,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_test_database import populate_test_database
 from resources_portal.models import (
     Attachment,
     Material,
@@ -40,7 +39,6 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
     1. The Postdoc receives a notification that the Prof invited her to join her lab.
     2. The Prof is notified that Postdoc accepted her invitation.
-    3. The Postdoc receives a notification that her request to join Lab was approved.
     """
 
     def setUp(self):
@@ -110,7 +108,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.client.force_authenticate(user=prof)
 
         self.material_json["contact_user"] = prof.id
-        self.material_json["organization_id"] = lab.id
+        self.material_json["organization"] = lab.id
 
         response = self.client.post(reverse("material-list"), self.material_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -118,12 +116,24 @@ class TestOrganizationWithTwoUsers(APITestCase):
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
 
-        settings_url = reverse("organization-user-setting-detail", args=[self.settings.id])
+        settings_url = reverse(
+            "organization-user-setting-detail", args=[prof.organization_settings.first().id]
+        )
 
-        settings_json = self.client.get(self.url).json()
+        settings_json = self.client.get(settings_url).json()
 
         settings_json["new_request_notif"] = False
         settings_json["change_in_request_status_notif"] = False
+        settings_json["request_approval_determined_notif"] = False
+        settings_json["request_assigned_notif"] = False
+        settings_json["reminder_notif"] = False
+        settings_json["transfer_requested_notif"] = False
+        settings_json["transfer_updated_notif"] = False
+        settings_json["perms_granted_notif"] = False
+        settings_json["misc_notif"] = False
 
-        response = self.client.put(self.url, settings_json)
+        response = self.client.put(settings_url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Final checks
+        self.assertEqual(len(Notification.objects.all()), 2)
