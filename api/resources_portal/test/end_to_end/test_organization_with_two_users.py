@@ -88,7 +88,12 @@ class TestOrganizationWithTwoUsers(APITestCase):
         invitation_id = response.data["id"]
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_CREATED", email=post_doc.email
+                )
+            ),
+            1,
         )
 
         # Postdoc accepts invitation to join Lab
@@ -101,7 +106,12 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="ORG_INVITE_ACCEPTED", email=prof.email
+                )
+            ),
+            1,
         )
 
         # Prof lists resource under Lab
