@@ -2,9 +2,12 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import User
+from resources_portal.views.organization_user_setting import OrganizationUserSettingSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
+    organization_settings = OrganizationUserSettingSerializer(many=True)
+
     class Meta:
         model = User
         fields = (
@@ -15,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             "orcid",
             "created_at",
             "updated_at",
+            "organization_settings",
         )
         read_only_fields = ("username", "created_at", "updated_at")
 
