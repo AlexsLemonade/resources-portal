@@ -147,6 +147,12 @@ def load_env_vars(args):
     os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
     os.environ["TF_VAR_system_version"] = args.system_version
 
+    # This isn't a secret, so include it here to be explicit.
+    if args.env == "dev" or args.env == "staging":
+        os.environ["TF_VAR_aws_ses_domain"] = "staging.resources.alexslemonade.org"
+    if args.env == "prod":
+        os.environ["TF_VAR_aws_ses_domain"] = "resources.alexslemonade.org"
+
 
 def run_terraform(args):
     var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)

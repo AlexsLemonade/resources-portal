@@ -8,3 +8,5 @@ DATABASE_PORT=${database_port}
 DATABASE_USER=${database_user}
 DATABASE_NAME=${database_name}
 DATABASE_PASSWORD=${database_password}
+AWS_REGION=${aws_region}
+AWS_SES_DOMAIN=${aws_ses_domain}
