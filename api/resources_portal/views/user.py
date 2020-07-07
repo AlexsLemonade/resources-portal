@@ -6,8 +6,6 @@ from resources_portal.views.organization_user_setting import OrganizationUserSet
 
 
 class UserSerializer(serializers.ModelSerializer):
-    organization_settings = OrganizationUserSettingSerializer(many=True)
-
     class Meta:
         model = User
         fields = (
