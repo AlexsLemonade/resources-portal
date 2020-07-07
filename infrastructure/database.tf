@@ -24,25 +24,25 @@ resource "aws_db_instance" "postgres_db" {
   engine = "postgres"
   engine_version = "9.6.11"
   auto_minor_version_upgrade = false
-  instance_class = "db.${var.database_instance_type}"
+  instance_class = var.database_instance_type
   name = "resources_portal"
-  port = "${var.database_port}"
-  username = "${var.database_user}"
-  password = "${var.database_password}"
+  port = "5432"
+  username = "rppostgresuser"
+  password = var.database_password
 
-  db_subnet_group_name = "${aws_db_subnet_group.resources_portal.name}"
-  parameter_group_name = "${aws_db_parameter_group.postgres_parameters.name}"
+  db_subnet_group_name = aws_db_subnet_group.resources_portal.name
+  parameter_group_name = aws_db_parameter_group.postgres_parameters.name
 
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
   # Only the prod's bucket prefix is empty.
-  skip_final_snapshot = "${var.stage == "prod" ? false : true}"
-  final_snapshot_identifier = "${var.stage == "prod" ? "resources-portal-prod-snapshot" : "none"}"
+  skip_final_snapshot = var.stage == "prod" ? false : true
+  final_snapshot_identifier = var.stage == "prod" ? "resources-portal-prod-snapshot" : "none"
 
-  vpc_security_group_ids = ["${aws_security_group.resources_portal_db.id}"]
+  vpc_security_group_ids = [aws_security_group.resources_portal_db.id]
   multi_az = true
   publicly_accessible = true
 
-  backup_retention_period  = "${var.stage == "prod" ? "7" : "0"}"
+  backup_retention_period  = var.stage == "prod" ? "7" : "0"
 
 }
