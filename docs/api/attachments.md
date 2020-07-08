@@ -16,7 +16,7 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The url of the s3_bucket where your attachment file is stored.
+s3_bucket       | string | The bucket name if the attachment file.
 s3_key          | string | The key of your s3 object.
 sequence_map_for| json   | A material object in json. The material which this attachment is a sequence map for.
 
@@ -35,9 +35,9 @@ Content-Type application/json
    "id":18,
    "filename":"attachment_file",
    "description":"A file for testing",
-   "s3_bucket":"https://bucket-name.s3.region.amazonaws.com/keyname",
-   "s3_key":"s3 key",
-   "deleted":"None",
+   "s3_bucket":"bucket-name",
+   "s3_key":"keyname",
+   "s3_resource_deleted":false,
    "created_at":"2020-07-01T16:53:13+0000",
    "updated_at":"2020-07-01T16:53:13+0000",
    "sequence_map_for":"None"
@@ -68,9 +68,9 @@ Content-Type application/json
    "id":21,
    "filename":"attachment_file",
    "description":"A file for testing",
-   "s3_bucket":"https://bucket-name.s3.region.amazonaws.com/keyname",
-   "s3_key":"s3 key",
-   "deleted":"None",
+   "s3_bucket":"bucket-name",
+   "s3_key":"keyname",
+   "s3_resource_deleted":false,
    "created_at":"2020-07-01T17:09:17+0000",
    "updated_at":"2020-07-01T17:09:17+0000",
    "sequence_map_for":"None"
@@ -94,19 +94,19 @@ Content-Type application/json
 Content-Type application/json
 200 OK
 
-...
+[
    {
       "id":21,
       "filename":"attachment_file",
       "description":"A file for testing",
-      "s3_bucket":"https://bucket-name.s3.region.amazonaws.com/keyname",
-      "s3_key":"s3 key",
-      "deleted":"None",
+      "s3_bucket":"bucket-name",
+      "s3_key":"keyname",
+      "s3_resource_deleted":false,
       "created_at":"2020-07-01T17:09:17+0000",
       "updated_at":"2020-07-01T17:09:17+0000",
       "sequence_map_for":"None"
    }
-...
+]
 
 ```
 
@@ -122,7 +122,7 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The url of the s3_bucket where your attachment file is stored.
+s3_bucket       | string | The bucket name if the attachment file.
 s3_key          | string | The key of your s3 object.
 sequence_map_for| json   | A material object in json, the material which this attachment is a sequence map for.
 
@@ -145,9 +145,9 @@ Content-Type application/json
    "id":21,
    "filename":"attachment_file",
    "description":"A file for testing",
-   "s3_bucket":"https://bucket-name.s3.region.amazonaws.com/keyname",
-   "s3_key":"s3 key",
-   "deleted":"None",
+   "s3_bucket":"bucket-name",
+   "s3_key":"keyname",
+   "s3_resource_deleted":false,
    "created_at":"2020-07-01T17:09:17+0000",
    "updated_at":"2020-07-01T17:09:17+0000",
    "sequence_map_for":"None"

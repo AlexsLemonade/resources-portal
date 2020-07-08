@@ -35,7 +35,7 @@ Content-Type application/json
 }
 ```
 
-## Update an attachment
+## Update user settings
 
 **Request**:
 
@@ -70,7 +70,7 @@ Content-Type application/json
    "request_approval_determined_notif":true,
    "request_assigned_notif":true,
    "reminder_notif":true,
-   "user":"UUID("   "8adbfcf0-7b4e-45b7-811a-f63a44d63c3d"   ")",
+   "user":"8adbfcf0-7b4e-45b7-811a-f63a44d63c3d",
    "organization":3,
    "created_at":"2020-07-01T19:52:07+0000",
    "updated_at":"2020-07-01T19:52:07+0000"

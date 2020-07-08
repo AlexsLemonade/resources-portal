@@ -21,8 +21,8 @@ irb_attachment                 | int    | The ID of an attachment object which r
 
 *Note:*
 
-- `sequence_map_for` is optional, and should only be provided when the attachment is a sequence map.
 - **[Authorization Protected](authentication.md)**
+- `requester_signed_mta_attachment` and `irb_attachment` are optional, and can be populated later in a PUT/PATCH.
 
 **Response**:
 
@@ -34,9 +34,9 @@ Content-Type application/json
    "id":6,
    "material":5,
    "requester":"ee1d43f8-7407-4031-9f1b-f9a5fcf2da26",
-   "requester_signed_mta_attachment":15,
-   "irb_attachment":14,
-   "executed_mta_attachment":13,
+   "requester_signed_mta_attachment":"None",
+   "irb_attachment":"None",
+   "executed_mta_attachment":"None",
    "is_active":true,
    "status":"PENDING",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
@@ -91,21 +91,19 @@ Content-Type application/json
 ```json
 Content-Type application/json
 200 OK
-
-...
-    {
-    "id":6,
-    "material":5,
-    "requester":"ee1d43f8-7407-4031-9f1b-f9a5fcf2da26",
-    "requester_signed_mta_attachment":15,
-    "irb_attachment":14,
-    "executed_mta_attachment":13,
-    "is_active":true,
-    "status":"PENDING",
-    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
-    }
-...
-
+[
+      {
+      "id":6,
+      "material":5,
+      "requester":"ee1d43f8-7407-4031-9f1b-f9a5fcf2da26",
+      "requester_signed_mta_attachment":15,
+      "irb_attachment":14,
+      "executed_mta_attachment":13,
+      "is_active":true,
+      "status":"PENDING",
+      "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
+      }
+]
 ```
 
 ## Update a material request
