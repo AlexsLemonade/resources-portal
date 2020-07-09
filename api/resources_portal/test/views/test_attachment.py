@@ -1,3 +1,7 @@
+import os
+import shutil
+
+from django.conf import settings
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
@@ -36,6 +40,12 @@ class TestAttachmentListTestCase(APITestCase):
         self.admin = UserFactory()
         self.admin.is_staff = True
 
+        # Cleanup the attachments test directory so there's no files
+        # from previous tests:
+        for directory_name in os.listdir(settings.LOCAL_FILE_DIRECTORY):
+            directory_path = os.path.join(settings.LOCAL_FILE_DIRECTORY, directory_name)
+            shutil.rmtree(directory_path, ignore_errors=True)
+
     def test_list_request_from_admin_succeeds(self):
         self.client.force_authenticate(user=self.admin)
         response = self.client.get(self.url)
@@ -43,8 +53,17 @@ class TestAttachmentListTestCase(APITestCase):
 
     def test_post_request_from_user_with_material_request_open_succeeds(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, self.attachment_data, format="json")
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**self.attachment_data, "file": fp}
+            data.pop("sequence_map_for")
+            response = self.client.post(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        response = self.client.get(response.json()["download_url"])
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.content), 157844)
 
     def test_post_request_from_user_in_organization_with_active_material_request_succeeds(self):
         self.client.force_authenticate(user=self.user_in_org)

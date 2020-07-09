@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
@@ -52,4 +53,4 @@ class Attachment(SafeDeleteModel):
         if not self.deleted and self.s3_key and self.s3_bucket:
             return "https://s3.amazonaws.com/" + self.s3_bucket + "/" + self.s3_key
         else:
-            return None
+            return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
