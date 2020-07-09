@@ -89,9 +89,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         response = self.client.post(reverse("attachment-list"), model_to_dict(irb1), format="json")
-        import pdb
 
-        pdb.set_trace()
         irb_1_id = response.data["id"]
         response = self.client.post(reverse("attachment-list"), model_to_dict(irb2), format="json")
         irb_2_id = response.data["id"]
