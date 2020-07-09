@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -52,5 +53,7 @@ class Attachment(SafeDeleteModel):
 
         if not self.deleted and self.s3_key and self.s3_bucket:
             return "https://s3.amazonaws.com/" + self.s3_bucket + "/" + self.s3_key
-        else:
+        elif settings.LOCAL_FILE_DIRECTORY:
             return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
+        else:
+            return None
