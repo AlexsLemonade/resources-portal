@@ -75,15 +75,15 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         # Upload IRBs
         irb1 = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
+            filename="irb_attachment",
+            description="Institutional Board Review for the research in question.",
             s3_bucket="a bucket",
             s3_key="a key",
         )
 
         irb2 = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
+            filename="irb_attachment",
+            description="Institutional Board Review for the research in question.",
             s3_bucket="a bucket",
             s3_key="a key",
         )
