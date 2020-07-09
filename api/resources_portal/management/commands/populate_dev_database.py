@@ -31,7 +31,7 @@ def add_class_to_database(class_json, Class):
         element_in_class.save()
 
 
-def populate_test_database():
+def populate_dev_database():
     # Add users
     users_json = loads(open("./dev_data/users.json").read())
     add_class_to_database(users_json["resources_portal_user"], User)
@@ -98,4 +98,4 @@ class Command(BaseCommand):
     help = "Populates the database with test data"
 
     def handle(self, *args, **options):
-        populate_test_database()
+        populate_dev_database()
