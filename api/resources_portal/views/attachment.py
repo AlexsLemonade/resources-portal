@@ -1,10 +1,7 @@
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
-from rest_framework.response import Response
 
-from guardian.core import ObjectPermissionChecker
-
-from resources_portal.models import Attachment, MaterialRequest, Organization
+from resources_portal.models import Attachment
 from resources_portal.views.relation_serializers import MaterialRelationSerializer
 
 
