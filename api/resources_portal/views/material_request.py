@@ -90,6 +90,8 @@ def send_transfer_update_notif(status, request):
         send_material_request_notif("TRANSFER_APPROVED", request)
     elif status == "REJECTED":
         send_material_request_notif("TRANSFER_REJECTED", request)
+    elif status == "FULFILLED":
+        send_material_request_notif("TRANSFER_FULFILLED", request)
     else:
         return
 
@@ -167,7 +169,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
 
-        if material_request.status == "CANCELLED" or material_request.status == "REJECTED":
+        if material_request.status in ["REJECTED", "CANCELLED", "FULFILLED"]:
             return Response(status=403)
 
         serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
@@ -186,7 +188,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 signed_mta.material_request = material_request
                 signed_mta.save()
 
-                send_material_request_notif("MTA_UPLOADED", material_request)
+                send_material_request_notif("SIGNED_MTA_UPLOADED", material_request)
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
@@ -206,6 +208,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 material_request.executed_mta_attachment = executed_mta
                 executed_mta.material_request = material_request
                 executed_mta.save()
+
+                send_material_request_notif("EXECUTED_MTA_UPLOADED", material_request)
 
         material_request.save()
 

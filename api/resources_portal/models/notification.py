@@ -29,11 +29,13 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
         ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
         ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
-        ("MTA_UPLOADED", "MTA_UPLOADED"),
+        ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
+        ("EXECUTED_MTA_UPLOADED", "EXECUTED_MTA_UPLOADED"),
         ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
         ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
         ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
+        ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
         ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
     )
 
@@ -87,7 +89,9 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f"Your pending invitations have been canceled.",
             "ORG_REQUEST_INVALID": lambda: f"{self.associated_user.username} no longer has permissions to add members to "
             f"{self.associated_organization.name}. Please resubmit your request.",
-            "MTA_UPLOADED": lambda: f"{self.associated_user.username} uploaded an MTA for "
+            "SIGNED_MTA_UPLOADED": lambda: f"{self.associated_user.username} uploaded a signed MTA for "
+            f"{self.associated_material.title}.",
+            "EXECUTED_MTA_UPLOADED": lambda: f"{self.associated_user.username} uploaded an executed MTA for "
             f"{self.associated_material.title}.",
             "APPROVE_REQUESTS_PERM_GRANTED": lambda: f"{self.associated_user.username} granted you permission to approve "
             f"material transfer requests in {self.associated_organization.name}.",
@@ -95,6 +99,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f'"{self.associated_material.title}".',
             "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
             "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
+            "TRANSFER_FULFILLED": lambda: f"Transfer of {self.associated_material.title} has been marked as fulfilled by "
+            f"{self.associated_user.username} from {self.associated_organization.name}.",
             "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
         }
 
@@ -114,11 +120,13 @@ NOTIFICATION_SETTING_DICT = {
     "ORG_REQUEST_REJECTED": "change_in_request_status_notif",
     "ORG_INVITE_INVALID": "change_in_request_status_notif",
     "ORG_REQUEST_INVALID": "change_in_request_status_notif",
-    "MTA_UPLOADED": "transfer_updated_notif",
+    "SIGNED_MTA_UPLOADED": "transfer_updated_notif",
+    "EXECUTED_MTA_UPLOADED": "transfer_updated_notif",
     "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
     "TRANSFER_REQUESTED": "transfer_requested_notif",
-    "TRANSFER_APPROVED": "transfer_approved_notif",
-    "TRANSFER_REJECTED": "transfer_rejected_notif",
+    "TRANSFER_APPROVED": "transfer_updated_notif",
+    "TRANSFER_REJECTED": "transfer_updated_notif",
+    "TRANSFER_FULFILLED": "transfer_updated_notif",
     "REMOVED_FROM_ORG": "misc_notif",
 }
 
