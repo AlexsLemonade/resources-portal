@@ -1,5 +1,6 @@
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
@@ -96,6 +97,21 @@ def send_transfer_update_notif(status, request):
         return
 
 
+# Adds an attachment to a material request, checking that the current user is in the org that uploaded the attachment.
+def add_attachment_to_material_request(request, attachment, attachment_type, user):
+    if user not in attachment.owned_by_org.members.all():
+        raise PermissionDenied(
+            detail="The current user is not part of the organization which owns the "
+            f"referenced {attachment_type}."
+        )
+
+    setattr(request, attachment_type, attachment)
+    attachment.material_request = request
+    attachment.save()
+
+    request.save()
+
+
 class MaterialRequestViewSet(viewsets.ModelViewSet):
     queryset = MaterialRequest.objects.all()
 
@@ -177,16 +193,20 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         if request.user == material_request.requester:
             if "irb_attachment" in request.data:
-                irb = serializer.validated_data["irb_attachment"]
-                material_request.irb_attachment = irb
-                irb.material_request = material_request
-                irb.save()
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["irb_attachment"],
+                    "irb_attachment",
+                    request.user,
+                )
 
             if "requester_signed_mta_attachment" in request.data:
-                signed_mta = serializer.validated_data["requester_signed_mta_attachment"]
-                material_request.requester_signed_mta_attachment = signed_mta
-                signed_mta.material_request = material_request
-                signed_mta.save()
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["requester_signed_mta_attachment"],
+                    "requester_signed_mta_attachment",
+                    request.user,
+                )
 
                 send_material_request_notif("SIGNED_MTA_UPLOADED", material_request)
 
@@ -204,14 +224,14 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
             if "executed_mta_attachment" in request.data:
-                executed_mta = serializer.validated_data["executed_mta_attachment"]
-                material_request.executed_mta_attachment = executed_mta
-                executed_mta.material_request = material_request
-                executed_mta.save()
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["executed_mta_attachment"],
+                    "executed_mta_attachment",
+                    request.user,
+                )
 
                 send_material_request_notif("EXECUTED_MTA_UPLOADED", material_request)
-
-        material_request.save()
 
         response_data = model_to_dict(material_request)
         response_data["requirements"] = self.get_material_requirements()

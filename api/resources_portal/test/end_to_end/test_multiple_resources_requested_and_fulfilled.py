@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_test_database import populate_test_database
+from resources_portal.management.commands.populate_dev_database import populate_test_database
 from resources_portal.models import (
     Attachment,
     Material,
@@ -73,11 +73,43 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         # Select two resources from PrimaryLab and request them, uploading two signed IRBs
         self.client.force_authenticate(user=requester)
 
+        # Upload IRBs
+        irb1 = Attachment(
+            filename="executed_mta",
+            description="Executed transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        irb2 = Attachment(
+            filename="executed_mta",
+            description="Executed transfer agreement for the material.",
+            s3_bucket="a bucket",
+            s3_key="a key",
+        )
+
+        response = self.client.post(reverse("attachment-list"), model_to_dict(irb1), format="json")
+        import pdb
+
+        pdb.set_trace()
+        irb_1_id = response.data["id"]
+        response = self.client.post(reverse("attachment-list"), model_to_dict(irb2), format="json")
+        irb_2_id = response.data["id"]
+
+        # POST requests
         material1 = Material.objects.get(pk=chosen_materials_json[0]["id"])
         material2 = Material.objects.get(pk=chosen_materials_json[1]["id"])
 
-        request1 = MaterialRequest(material=material1, requester=requester)
-        request2 = MaterialRequest(material=material2, requester=requester)
+        request1 = MaterialRequest(
+            material=material1,
+            requester=requester,
+            irb_attachment=Attachment.objects.get(pk=irb_1_id),
+        )
+        request2 = MaterialRequest(
+            material=material2,
+            requester=requester,
+            irb_attachment=Attachment.objects.get(pk=irb_2_id),
+        )
 
         response = self.client.post(
             reverse("material-request-list"), model_to_dict(request1), format="json"
@@ -96,26 +128,6 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             ),
             2,
         )
-
-        # Upload IRBs
-        irb1 = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
-
-        irb2 = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
-
-        response = self.client.post(reverse("attachment-list"), model_to_dict(irb1), format="json")
-        irb_1_id = response.data["id"]
-        response = self.client.post(reverse("attachment-list"), model_to_dict(irb2), format="json")
-        irb_2_id = response.data["id"]
 
         self.client.put(
             reverse("material-request-detail", args=[request_1_id]), {"irb_attachment": irb_1_id}

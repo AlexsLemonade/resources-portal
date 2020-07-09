@@ -34,6 +34,14 @@ class Attachment(SafeDeleteModel):
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
+    owned_by_org = models.ForeignKey(
+        "Organization",
+        blank=False,
+        null=False,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+    )
+
     sequence_map_for = models.ForeignKey(
         "resources_portal.Material",
         null=True,
