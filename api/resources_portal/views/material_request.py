@@ -75,10 +75,10 @@ class CanApproveRequestsOrIsRequester(BasePermission):
         )
 
 
-def send_material_request_notif(notif_type, request):
+def send_material_request_notif(notif_type, request, notified_user):
     notification = Notification(
         notification_type=notif_type,
-        notified_user=request.requester,
+        notified_user=notified_user,
         associated_user=request.assigned_to,
         associated_material=request.material,
         associated_organization=request.material.organization,
@@ -88,28 +88,48 @@ def send_material_request_notif(notif_type, request):
 
 def send_transfer_update_notif(status, request):
     if status == "APPROVED":
-        send_material_request_notif("TRANSFER_APPROVED", request)
+        send_material_request_notif("TRANSFER_APPROVED", request, request.requester)
     elif status == "REJECTED":
-        send_material_request_notif("TRANSFER_REJECTED", request)
+        send_material_request_notif("TRANSFER_REJECTED", request, request.requester)
     elif status == "FULFILLED":
-        send_material_request_notif("TRANSFER_FULFILLED", request)
+        send_material_request_notif("TRANSFER_FULFILLED", request, request.requester)
     else:
         return
 
 
+def user_owns_attachment(attachment, user):
+    if attachment.owned_by_org:
+        return user in attachment.owned_by_org.members.all()
+    else:
+        return False
+
+
+def user_in_attachment_org(attachment, user):
+    if attachment.owned_by_user:
+        return user == attachment.owned_by_user
+    else:
+        return False
+
+
 # Adds an attachment to a material request, checking that the current user is in the org that uploaded the attachment.
-def add_attachment_to_material_request(request, attachment, attachment_type, user):
-    if user not in attachment.owned_by_org.members.all():
+def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
+    if not (user_in_attachment_org(attachment, user) or user_owns_attachment(attachment, user)):
         raise PermissionDenied(
-            detail="The current user is not part of the organization which owns the "
-            f"referenced {attachment_type}."
+            detail=f"The current user is not authorized for the specifified attachment of type {attachment_type}."
         )
 
-    setattr(request, attachment_type, attachment)
-    attachment.material_request = request
-    attachment.save()
+    setattr(material_request, attachment_type, attachment)
+    material_request.save()
 
-    request.save()
+    attachment.material_request = material_request
+
+    # Assign ownership of the attachment to the other party in the material request
+    if material_request.requester == user:
+        attachment.owned_by_org = material_request.material.organization
+    else:
+        attachment.owned_by_user = material_request.requester
+
+    attachment.save()
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
@@ -208,7 +228,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-                send_material_request_notif("SIGNED_MTA_UPLOADED", material_request)
+                send_material_request_notif(
+                    "SIGNED_MTA_UPLOADED", material_request, material_request.assigned_to
+                )
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
@@ -231,7 +253,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-                send_material_request_notif("EXECUTED_MTA_UPLOADED", material_request)
+                send_material_request_notif(
+                    "EXECUTED_MTA_UPLOADED", material_request, material_request.requester
+                )
 
         response_data = model_to_dict(material_request)
         response_data["requirements"] = self.get_material_requirements()

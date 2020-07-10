@@ -15,7 +15,7 @@ from resources_portal.models import (
     OrganizationInvitation,
     User,
 )
-from resources_portal.test.mocks import (
+from resources_portal.test.utils import (
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -41,12 +41,15 @@ class TestNewMemberJoinsALab(APITestCase):
     2. The PrimaryProf receives a notification that NewMember accepted her invitation.
     3. The Postdoc receives a notification that they have been removed from the organization.
     4. NewMember receives a notification that a resource was requested.
-    5. SecondaryProf is notified that her request was approved.
+    5. SecondaryProf is notified that an executed MTA was uploaded.
+    6. SecondaryProf is notified that her request was approved.
     """
 
     def setUp(self):
-        populate_dev_database()
+        import pdb
 
+        pdb.set_trace()
+        populate_dev_database()
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
         self.post_doc = User.objects.get(username="PostDoc")
@@ -156,7 +159,7 @@ class TestNewMemberJoinsALab(APITestCase):
             1,
         )
 
-        # NewMember approves the request and uploads executed MTA/IRB
+        # NewMember approves the request and uploads executed MTA
         self.client.force_authenticate(user=new_member)
 
         # Post mta attachment
@@ -165,6 +168,7 @@ class TestNewMemberJoinsALab(APITestCase):
             description="Executed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_org=self.primary_lab,
         )
 
         executed_mta_data = model_to_dict(executed_mta)
@@ -173,26 +177,8 @@ class TestNewMemberJoinsALab(APITestCase):
         executed_mta_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # Post irb attachment
-        executed_irb = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
-
-        executed_irb_data = model_to_dict(executed_irb)
-
-        response = self.client.post(reverse("attachment-list"), executed_irb_data, format="json")
-        executed_irb_id = response.data["id"]
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
         # PUT updates to request
-        request_update_data = {
-            "status": "APPROVED",
-            "executed_mta_attachment": executed_mta_id,
-            "irb_attachment": executed_irb_id,
-        }
+        request_update_data = {"status": "APPROVED", "executed_mta_attachment": executed_mta_id}
 
         response = self.client.put(
             reverse("material-request-detail", args=[request_id]), request_update_data
@@ -200,7 +186,10 @@ class TestNewMemberJoinsALab(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 1
+        )
         self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 5)
+        self.assertEqual(len(Notification.objects.all()), 6)

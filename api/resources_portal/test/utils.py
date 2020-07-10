@@ -1,8 +1,11 @@
+import inspect
 import uuid
 
 from django.urls import reverse
 
 from faker import Faker
+
+from resources_portal import models
 
 fake = Faker()
 
@@ -58,3 +61,10 @@ def get_mock_oauth_url(grants):
         url += f"&grant_id={grant.id}"
 
     return url
+
+
+def restore_database():
+    for name, obj in inspect.getmembers(models):
+        if inspect.isclass(obj):
+            for model in obj.deleted_objects.all():
+                model.save()

@@ -15,7 +15,7 @@ from resources_portal.models import (
     OrganizationUserSetting,
     User,
 )
-from resources_portal.test.mocks import (
+from resources_portal.test.utils import (
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -59,7 +59,9 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_create_account_and_list_resource(self, mock_auth_request, mock_record_request):
+    def test_multiple_resources_requested_and_fulfilled(
+        self, mock_auth_request, mock_record_request
+    ):
         # Create account (Requester)
         self.client.get(get_mock_oauth_url([]))
         requester = User.objects.get(pk=self.client.session["_auth_user_id"])
@@ -68,7 +70,8 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         response = self.client.get(reverse("search-materials-list"), {"organization": "PrimaryLab"})
 
         search_json = response.json()["results"]
-        chosen_materials_json = search_json[0:2]
+        # Choose the second and third materials becuase both of them are assigned to PostDoc.
+        chosen_materials_json = search_json[1:3]
 
         # Select two resources from PrimaryLab and request them, uploading two signed IRBs
         self.client.force_authenticate(user=requester)
@@ -79,6 +82,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             description="Institutional Board Review for the research in question.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=requester,
         )
 
         irb2 = Attachment(
@@ -86,10 +90,10 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             description="Institutional Board Review for the research in question.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=requester,
         )
 
         response = self.client.post(reverse("attachment-list"), model_to_dict(irb1), format="json")
-
         irb_1_id = response.data["id"]
         response = self.client.post(reverse("attachment-list"), model_to_dict(irb2), format="json")
         irb_2_id = response.data["id"]
@@ -98,16 +102,8 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         material1 = Material.objects.get(pk=chosen_materials_json[0]["id"])
         material2 = Material.objects.get(pk=chosen_materials_json[1]["id"])
 
-        request1 = MaterialRequest(
-            material=material1,
-            requester=requester,
-            irb_attachment=Attachment.objects.get(pk=irb_1_id),
-        )
-        request2 = MaterialRequest(
-            material=material2,
-            requester=requester,
-            irb_attachment=Attachment.objects.get(pk=irb_2_id),
-        )
+        request1 = MaterialRequest(material=material1, requester=requester)
+        request2 = MaterialRequest(material=material2, requester=requester)
 
         response = self.client.post(
             reverse("material-request-list"), model_to_dict(request1), format="json"
@@ -135,6 +131,9 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        # Assert that ownership of attachments to the material-requests is shared by the requester and the requested org
+        self.assertEqual(Attachment.objects.get(pk=irb_1_id).owned_by_org, self.primary_lab)
+        self.assertEqual(Attachment.objects.get(pk=irb_2_id).owned_by_org, self.primary_lab)
 
         # Postdoc approves the requests
         self.client.force_authenticate(user=self.post_doc)
@@ -165,12 +164,14 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             description="Signed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=requester,
         )
         signed_mta_2 = Attachment(
             filename="signed_mta",
             description="Signed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=requester,
         )
 
         response = self.client.post(
@@ -202,6 +203,9 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             2,
         )
 
+        self.assertEqual(Attachment.objects.get(pk=mta_1_id).owned_by_org, self.primary_lab)
+        self.assertEqual(Attachment.objects.get(pk=mta_2_id).owned_by_org, self.primary_lab)
+
         # Postdoc uploads executed MTA/IRBs
         self.client.force_authenticate(user=self.post_doc)
 
@@ -210,12 +214,14 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             description="Executed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=self.post_doc,
         )
         executed_mta_2 = Attachment(
             filename="exectuted_mta",
             description="Executed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=self.post_doc,
         )
 
         response = self.client.post(
@@ -241,11 +247,14 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="EXECUTED_MTA_UPLOADED", email=self.post_doc.email
+                    notification_type="EXECUTED_MTA_UPLOADED", email=requester.email
                 )
             ),
             2,
         )
+
+        self.assertEqual(Attachment.objects.get(pk=mta_1_id).owned_by_user, requester)
+        self.assertEqual(Attachment.objects.get(pk=mta_2_id).owned_by_user, requester)
 
         # Postdoc marks the requests fulfilled
         self.client.force_authenticate(user=self.post_doc)

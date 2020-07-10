@@ -3,8 +3,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from resources_portal import models
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
-from resources_portal.models import Attachment, MaterialRequest, Notification, Organization, User
+from resources_portal.models import (
+    Attachment,
+    MaterialRequest,
+    Notification,
+    Organization,
+    OrganizationUserSetting,
+    User,
+)
 from resources_portal.test.factories import MaterialFactory
 
 
@@ -28,7 +36,6 @@ class TestResourceListedAndRequested(APITestCase):
 
     def setUp(self):
         populate_dev_database()
-
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
         self.post_doc = User.objects.get(username="PostDoc")
@@ -36,6 +43,7 @@ class TestResourceListedAndRequested(APITestCase):
         self.primary_lab = Organization.objects.get(name="PrimaryLab")
 
         self.primary_lab.assign_member_perms(self.post_doc)
+        OrganizationUserSetting.objects.create(user=self.post_doc, organization=self.primary_lab)
 
         Notification.objects.all().delete()
 
@@ -43,7 +51,7 @@ class TestResourceListedAndRequested(APITestCase):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
+        material = MaterialFactory(contact_user=self.post_doc, organization=self.primary_lab)
         material_data = model_to_dict(material)
 
         grant_list = []
@@ -103,6 +111,7 @@ class TestResourceListedAndRequested(APITestCase):
             description="Transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_user=self.secondary_prof,
         )
 
         signed_mta_data = model_to_dict(signed_mta)
@@ -133,6 +142,7 @@ class TestResourceListedAndRequested(APITestCase):
             description="Executed transfer agreement for the material.",
             s3_bucket="a bucket",
             s3_key="a key",
+            owned_by_org=self.primary_lab,
         )
 
         executed_mta_data = model_to_dict(executed_mta)

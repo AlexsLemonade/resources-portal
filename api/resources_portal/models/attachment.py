@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
@@ -34,10 +35,14 @@ class Attachment(SafeDeleteModel):
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
+    owned_by_user = models.ForeignKey(
+        "User", blank=False, null=True, on_delete=models.CASCADE, related_name="owned_attachments"
+    )
+
     owned_by_org = models.ForeignKey(
         "Organization",
         blank=False,
-        null=False,
+        null=True,
         on_delete=models.CASCADE,
         related_name="attachments",
     )
@@ -61,3 +66,8 @@ class Attachment(SafeDeleteModel):
             return "https://s3.amazonaws.com/" + self.s3_bucket + "/" + self.s3_key
         else:
             return None
+
+    def clean(self):
+        super(Attachment, self).clean()
+        if not (self.owned_by_org or self.owned_by_user):
+            raise ValidationError("Either owned_by_user or owned_by_org must be set on Attachment")

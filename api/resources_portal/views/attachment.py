@@ -2,7 +2,11 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 
 from resources_portal.models import Attachment
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.views.relation_serializers import (
+    MaterialRelationSerializer,
+    OrganizationRelationSerializer,
+    UserRelationSerializer,
+)
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -19,12 +23,15 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "updated_at",
             "sequence_map_for",
             "owned_by_org",
+            "owned_by_user",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
 
 class AttachmentDetailSerializer(AttachmentSerializer):
     sequence_map_for = MaterialRelationSerializer(many=False, read_only=True)
+    owned_by_org = OrganizationRelationSerializer(many=False)
+    owned_by_user = UserRelationSerializer(many=False)
 
 
 def user_is_requester_on_active_material_request(user, organization):
@@ -54,10 +61,10 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return AttachmentSerializer
+        if self.action == "retrieve":
+            return AttachmentDetailSerializer
 
-        return AttachmentDetailSerializer
+        return AttachmentSerializer
 
     def get_permissions(self):
         if self.action == "list":
