@@ -46,9 +46,6 @@ class TestNewMemberJoinsALab(APITestCase):
     """
 
     def setUp(self):
-        import pdb
-
-        pdb.set_trace()
         populate_dev_database()
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")

@@ -1,6 +1,7 @@
 from json import loads
 
 from django.core.management.base import BaseCommand
+from django.db.models.fields.related import ForeignKey
 from django.utils import dateparse
 
 from resources_portal.models import (
@@ -16,9 +17,28 @@ from resources_portal.models import (
     User,
 )
 
+model_id_dict = {}
+
+user_id_list = []
+
+
+def get_user_ids(users_json):
+    for user in users_json:
+        user_id_list.append(user["id"])
+
+
+def parse_int_or_uuid(val):
+    try:
+        return int(val) - 1
+    except:
+        return user_id_list.index(val)
+
 
 def add_class_to_database(class_json, Class):
     print(f"Inserting {Class.__name__} into database...")
+
+    model_id_dict[Class.__name__] = []
+
     for element in class_json:
         if "updated_at" in element:
             element["updated_at"] = dateparse.parse_datetime(element["updated_at"])
@@ -27,8 +47,16 @@ def add_class_to_database(class_json, Class):
         if "date_joined" in element:
             element["date_joined"] = dateparse.parse_datetime(element["date_joined"])
 
+        for field in Class._meta.fields:
+            if isinstance(field, ForeignKey):
+                if (field.attname in element.keys()) and element[field.attname]:
+                    index = parse_int_or_uuid(element[field.attname])
+                    element[field.attname] = model_id_dict[field.related_model.__name__][index]
+
         element_in_class = Class(**element)
         element_in_class.save()
+
+        model_id_dict[Class.__name__].append(element_in_class.id)
 
 
 def populate_dev_database():
@@ -36,11 +64,13 @@ def populate_dev_database():
     users_json = loads(open("./dev_data/users.json").read())
     add_class_to_database(users_json["resources_portal_user"], User)
 
+    get_user_ids(users_json["resources_portal_user"])
+
     # add shipping requirements
     shipping_requirements_json = loads(open("./dev_data/shipping_requirements.json").read())
     add_class_to_database(shipping_requirements_json["shipping_requirements"], ShippingRequirements)
 
-    # add organizations
+    # add Cl
     organizations_json = loads(open("./dev_data/organizations.json").read())
     add_class_to_database(organizations_json["organizations"], Organization)
 
@@ -69,29 +99,45 @@ def populate_dev_database():
     # add organization invitations
     add_class_to_database(organizations_json["organization_invitations"], OrganizationInvitation)
 
-    # add relation of organizations and members
+    grant_list = []
+    for grant_id in model_id_dict["Grant"]:
+        grant_list.append(Grant.objects.get(pk=grant_id))
+
+    user_list = []
+    for user_id in model_id_dict["User"]:
+        user_list.append(User.objects.get(pk=user_id))
+
+    material_list = []
+    for material_id in model_id_dict["Material"]:
+        material_list.append(Material.objects.get(pk=material_id))
+
+    org_list = []
+    for org_id in model_id_dict["Organization"]:
+        org_list.append(Organization.objects.get(pk=org_id))
+
+    # add relations of organizations and members
     for i in organizations_json["organizations_members"]:
-        myOrg = Organization.objects.get(id=i["organization_id"])
-        myUser = User.objects.get(id=i["user_id"])
-        myOrg.members.add(myUser)
+        org = org_list[parse_int_or_uuid(i["organization_id"])]
+        user = user_list[parse_int_or_uuid(i["user_id"])]
+        org.members.add(user)
 
     # add relation of grants and materials
     for i in grants_json["grants_materials"]:
-        myGrant = Grant.objects.get(id=i["grant_id"])
-        myMaterial = Material.objects.get(id=i["material_id"])
-        myGrant.materials.add(myMaterial)
+        grant = grant_list[parse_int_or_uuid(i["grant_id"])]
+        material = material_list[parse_int_or_uuid(i["material_id"])]
+        grant.materials.add(material)
 
     # add relation of grants and organizations
     for i in grants_json["grants_organizations"]:
-        myGrant = Grant.objects.get(id=i["grant_id"])
-        myOrg = Organization.objects.get(id=i["organization_id"])
-        myGrant.organizations.add(myOrg)
+        grant = grant_list[parse_int_or_uuid(i["grant_id"])]
+        org = org_list[parse_int_or_uuid(i["organization_id"])]
+        grant.organizations.add(org)
 
     # add relation of grants and users
     for i in grants_json["grants_users"]:
-        myGrant = Grant.objects.get(id=i["grant_id"])
-        myUser = User.objects.get(id=i["user_id"])
-        myGrant.users.add(myUser)
+        grant = grant_list[parse_int_or_uuid(i["grant_id"])]
+        user = user_list[parse_int_or_uuid(i["user_id"])]
+        grant.users.add(user)
 
 
 class Command(BaseCommand):

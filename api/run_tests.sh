@@ -2,5 +2,6 @@
 
 python wait_for_postgres.py
 python wait_for_elasticsearch.py
+coverage run ./manage.py search_index --rebuild -f
 coverage run ./manage.py test -v 2 --no-input "$@"
 coverage report -m

@@ -71,6 +71,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         search_json = response.json()["results"]
         # Choose the second and third materials becuase both of them are assigned to PostDoc.
+
         chosen_materials_json = search_json[1:3]
 
         # Select two resources from PrimaryLab and request them, uploading two signed IRBs
