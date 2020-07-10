@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+import boto3
 from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
@@ -131,7 +133,11 @@ NOTIFICATION_SETTING_DICT = {
 
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
-    if created:
+    source_template = "Resources Portal Mail Robot <no-reply@{}>"
+
+    # Check instance.delivered to allow creating a notification
+    # without triggering an email.
+    if created and not instance.delivered:
         # Check if user has settings turned on for this notificiation
         if instance.notified_user in instance.associated_organization.members.all():
             user_setting = OrganizationUserSetting.objects.get(
@@ -141,8 +147,30 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
                 return
 
         instance.email = instance.notified_user.email
-        print(
-            f'\nOne day an email with the following message will be sent to the following address: "{instance.message}", "{instance.notified_user.email}". This isn\'t implemented yet.'
-        )
+
+        if settings.AWS_SES_DOMAIN:
+            # Create a new SES resource and specify a region.
+            # I need to pass region in as a env var.
+            client = boto3.client("ses", region_name=settings.AWS_REGION)
+
+            # Provide the contents of the email.
+            client.send_email(
+                Destination={"ToAddresses": [instance.email]},
+                Message={
+                    "Body": {"Text": {"Charset": "UTF-8", "Data": instance.message}},
+                    "Subject": {
+                        "Charset": "UTF-8",
+                        "Data": "You have a new notification from the Resources Portal!",
+                    },
+                },
+                Source=source_template.format(settings.AWS_SES_DOMAIN),
+            )
+        else:
+
+            print(
+                f'In prod the following message will be sent to the following address: "'
+                f'"{instance.message}", "{instance.notified_user.email}".'
+            )
+
         instance.delivered = True
         instance.save()

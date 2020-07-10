@@ -51,6 +51,8 @@ resource "aws_instance" "api_server_1" {
           database_name = aws_db_instance.postgres_db.name
           database_password = var.database_password
           elasticsearch_host = aws_elasticsearch_domain.es.endpoint
+          aws_region  = var.region
+          aws_ses_domain = var.aws_ses_domain
         })
       start_api_with_migrations = templatefile(
         "api-configuration/start_api_with_migrations.tpl.sh",
