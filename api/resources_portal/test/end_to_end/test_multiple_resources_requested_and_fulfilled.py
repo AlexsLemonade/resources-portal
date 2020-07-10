@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_test_database import populate_test_database
+from resources_portal.management.commands.populate_dev_database import populate_test_database
 from resources_portal.models import (
     Attachment,
     Material,
