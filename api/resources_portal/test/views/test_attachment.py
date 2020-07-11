@@ -106,6 +106,8 @@ class TestSingleAttachmentTestCase(APITestCase):
         filename = "new_filename"
         attachment_json["filename"] = filename
 
+        attachment_json["owned_by_org"] = attachment_json["owned_by_org"]["id"]
+
         response = self.client.put(self.url, attachment_json)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
