@@ -97,7 +97,7 @@ export const readableNames = {
   sex: 'Sex',
   shipping_requirements: 'Shipping Requirements',
   specific_markers: 'Specific Markers',
-  speciment_tumor_tissue: 'Specimen Tumor Tissue',
+  specimen_tumor_tissue: 'Specimen Tumor Tissue',
   storage_medium: 'Storage Medium',
   str_profile: 'STR Profile',
   strain_name: 'Strain Name',
