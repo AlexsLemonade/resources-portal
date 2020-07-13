@@ -1,5 +1,5 @@
 export const readableNames = {
-  ADDGENE: 'Add Gene',
+  ADDGENE: 'Addgene',
   ALL: 'All',
   ATCC: 'ATCC',
   CELL_LINE: 'Cell Line',
