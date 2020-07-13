@@ -8,6 +8,8 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+import boto3
+from botocore.client import Config
 from guardian.core import ObjectPermissionChecker
 
 from resources_portal.models import Attachment, MaterialRequest, Organization
@@ -21,10 +23,8 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "id",
             "filename",
             "description",
-            "s3_bucket",
-            "s3_key",
             "download_url",
-            "deleted",
+            "s3_resource_deleted",
             "created_at",
             "updated_at",
             "sequence_map_for",
@@ -108,25 +108,35 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         if uploaded_file.size / 1000.0 / 1000.0 / 1000.0 > 1:
             return Response(status=400, message="The uploaded file was greated than 1GB.")
 
-        # These fields shouldn't be set by the user.
-        request.data.pop("s3_bucket")
-        request.data.pop("s3_key")
-        request.data.pop("filename")
-
-        request.data["filename"] = uploaded_file.name
+        if "filename" not in request.data:
+            request.data["filename"] = uploaded_file.name
 
         response = super(AttachmentViewSet, self).create(request, *args, **kwargs)
 
+        attachment_id = response.data["id"]
         if settings.AWS_S3_BUCKET_NAME:
-            # Create a bucket for the attachment. Then upload the file.
-            pass
+            # Upload the file to S3, then update the database object.
+            bucket_name = settings.AWS_S3_BUCKET_NAME
+            aws_key = f"attachment_{attachment_id}/{response.data['filename']}"
+
+            s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
+            s3_client.upload_fileobj(uploaded_file, bucket_name, aws_key)
+
+            created_attachment = Attachment.objects.get(id=attachment_id)
+            created_attachment.s3_bucket = bucket_name
+            created_attachment.s3_key = aws_key
+            created_attachment.save()
+
+            created_attachment.refresh_from_db()
+
+            response.data["download_url"] = created_attachment.download_url
+            response.data["updated_at"] = created_attachment.updated_at
         else:
-            attachment_id = response.data["id"]
-            attachment_directory = os.path.join(
+            attachment_path = os.path.join(
                 settings.LOCAL_FILE_DIRECTORY, f"attachment_{attachment_id}"
             )
-            os.mkdir(attachment_directory)
-            local_file_path = os.path.join(attachment_directory, uploaded_file.name)
+            os.mkdir(attachment_path)
+            local_file_path = os.path.join(attachment_path, uploaded_file.name)
             with open(local_file_path, "wb") as local_file:
                 for chunk in uploaded_file.chunks():
                     local_file.write(chunk)

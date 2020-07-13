@@ -53,6 +53,7 @@ class TestAttachmentListTestCase(APITestCase):
 
     def test_post_request_from_user_with_material_request_open_succeeds(self):
         self.client.force_authenticate(user=self.user)
+
         with open("dev_data/nerd_sniping.png", "rb") as fp:
             data = {**self.attachment_data, "file": fp}
             data.pop("sequence_map_for")
@@ -67,7 +68,12 @@ class TestAttachmentListTestCase(APITestCase):
 
     def test_post_request_from_user_in_organization_with_active_material_request_succeeds(self):
         self.client.force_authenticate(user=self.user_in_org)
-        response = self.client.post(self.url, self.attachment_data, format="json")
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**self.attachment_data, "file": fp}
+            data.pop("sequence_map_for")
+            response = self.client.post(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_request_from_user_without_material_request_open_fails(self):
@@ -76,17 +82,31 @@ class TestAttachmentListTestCase(APITestCase):
         self.material_request.is_active = False
         self.material_request.save()
 
-        response = self.client.post(self.url, self.attachment_data, format="json")
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**self.attachment_data, "file": fp}
+            data.pop("sequence_map_for")
+            response = self.client.post(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_from_user_without_any_material_request_fails(self):
         self.client.force_authenticate(user=self.user_without_request)
-        response = self.client.post(self.url, self.attachment_data, format="json")
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**self.attachment_data, "file": fp}
+            data.pop("sequence_map_for")
+            response = self.client.post(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
-        response = self.client.post(self.url, self.attachment_data, format="json")
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**self.attachment_data, "file": fp}
+            data.pop("sequence_map_for")
+            response = self.client.post(self.url, data, format="multipart")
+
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 
@@ -140,16 +160,17 @@ class TestSingleAttachmentTestCase(APITestCase):
     def test_put_request_updates_a_attachment(self):
         self.client.force_authenticate(user=self.user)
         attachment_json = self.client.get(self.url).json()
+        attachment_json.pop("sequence_map_for")
 
-        filename = "new_filename"
-        attachment_json["filename"] = filename
+        description = "A different description."
+        attachment_json["description"] = description
 
-        response = self.client.put(self.url, attachment_json)
+        response = self.client.put(self.url, attachment_json, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.attachment.refresh_from_db()
-        self.assertEqual(filename, self.attachment.filename)
+        self.assertEqual(description, self.attachment.description)
 
     def test_put_request_from_user_without_perms_fails(self):
         self.client.force_authenticate(user=self.user_without_request)
