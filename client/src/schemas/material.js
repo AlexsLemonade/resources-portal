@@ -89,7 +89,7 @@ const materialCategories = {
     submitter_tumor_id: string(),
     tissue_of_origin: string(),
     tumor_type: string(),
-    speciment_tumor_tissue: string(),
+    specimen_tumor_tissue: string(),
     histology: string(),
     tumor_grade: string(),
     disease_stage: string(),
