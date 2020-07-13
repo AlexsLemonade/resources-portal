@@ -27,7 +27,6 @@ export default function SearchInput({ onChange, size = 'medium' }) {
     goToSearchResults(true)
   }
 
-  // this is just the help make the select look more like the designs
   const resourceCategoryOptions = [
     'ALL',
     ...resourceCategories
