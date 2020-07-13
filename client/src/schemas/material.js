@@ -17,7 +17,7 @@ export const importSources = [
   'DATASET',
   'PROTOCOLS_IO',
   'ADDGENE',
-  'JACKSON_LAB',
+  'JACKSON_LABS',
   'ATCC',
   'ZIRC',
   'OTHER'
