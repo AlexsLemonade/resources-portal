@@ -16,7 +16,7 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The bucket name if the attachment file.
+s3_bucket       | string | The bucket name of the attachment file.
 s3_key          | string | The key of your s3 object.
 sequence_map_for| json   | A material object in json. The material which this attachment is a sequence map for.
 
@@ -122,7 +122,7 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The bucket name if the attachment file.
+s3_bucket       | string | The bucket name of the attachment file.
 s3_key          | string | The key of your s3 object.
 sequence_map_for| json   | A material object in json, the material which this attachment is a sequence map for.
 
