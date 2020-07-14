@@ -1,6 +1,5 @@
 from unittest.mock import patch
 
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -69,16 +68,14 @@ class TestNewMemberJoinsALab(APITestCase):
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        invitation = OrganizationInvitation(
-            organization=self.primary_lab,
-            request_reciever=self.primary_prof,
-            requester=new_member,
-            invite_or_request="INVITE",
-        )
+        invitation_json = {
+            "organization": self.primary_lab.id,
+            "request_reciever": self.primary_prof.id,
+            "requester": new_member.id,
+            "invite_or_request": "INVITE",
+        }
 
-        response = self.client.post(
-            reverse("invitation-list"), model_to_dict(invitation), format="json"
-        )
+        response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         invitation_id = response.data["id"]
@@ -136,11 +133,9 @@ class TestNewMemberJoinsALab(APITestCase):
         # SecondaryProf requests a resource assigned to NewMember
         self.client.force_authenticate(user=self.secondary_prof)
 
-        request = MaterialRequest(material=material, requester=self.secondary_prof)
+        request_json = {"material": material.id, "requester": self.secondary_prof.id}
 
-        response = self.client.post(
-            reverse("material-request-list"), model_to_dict(request), format="json"
-        )
+        response = self.client.post(reverse("material-request-list"), request_json, format="json")
 
         request_id = response.data["id"]
 
@@ -160,30 +155,26 @@ class TestNewMemberJoinsALab(APITestCase):
         self.client.force_authenticate(user=new_member)
 
         # Post mta attachment
-        executed_mta = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        executed_mta_json = {
+            "filename": "executed_mta",
+            "description": "Executed transfer agreement for the material.",
+            "s3_bucket": "a bucket",
+            "s3_key": "a key",
+        }
 
-        executed_mta_data = model_to_dict(executed_mta)
-
-        response = self.client.post(reverse("attachment-list"), executed_mta_data, format="json")
+        response = self.client.post(reverse("attachment-list"), executed_mta_json, format="json")
         executed_mta_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Post irb attachment
-        executed_irb = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        executed_irb_json = {
+            "filename": "executed_irb",
+            "description": "Executed irb for the material.",
+            "s3_bucket": "a bucket",
+            "s3_key": "a key",
+        }
 
-        executed_irb_data = model_to_dict(executed_irb)
-
-        response = self.client.post(reverse("attachment-list"), executed_irb_data, format="json")
+        response = self.client.post(reverse("attachment-list"), executed_irb_json, format="json")
         executed_irb_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

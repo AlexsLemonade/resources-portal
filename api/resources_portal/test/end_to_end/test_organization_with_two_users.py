@@ -1,7 +1,6 @@
 from json import loads
 from unittest.mock import patch
 
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -68,13 +67,14 @@ class TestOrganizationWithTwoUsers(APITestCase):
         # Prof invites Postdoc to join Lab
         self.client.force_authenticate(user=prof)
 
-        invitation = OrganizationInvitation(
-            organization=lab, request_reciever=prof, requester=post_doc, invite_or_request="INVITE",
-        )
+        invitation_json = {
+            "organization": lab.id,
+            "request_reciever": prof.id,
+            "requester": post_doc.id,
+            "invite_or_request": "INVITE",
+        }
 
-        response = self.client.post(
-            reverse("invitation-list"), model_to_dict(invitation), format="json"
-        )
+        response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         invitation_id = response.data["id"]

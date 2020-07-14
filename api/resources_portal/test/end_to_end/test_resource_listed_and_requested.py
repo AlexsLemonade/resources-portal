@@ -45,6 +45,12 @@ class TestResourceListedAndRequested(APITestCase):
         material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
         material_data = model_to_dict(material)
 
+        # NOTES: I STOPPED HERE WHEN CHANGING DJANGO OBJECTS TO JSON
+
+        import pdb
+
+        pdb.set_trace()
+
         grant_list = []
         for grant in material_data["grants"]:
             grant_list.append(grant.id)
