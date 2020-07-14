@@ -23,6 +23,7 @@ class TestResourceListedAndRequested(APITestCase):
     1. The Postdoc receives a notification that a resource was requested
     2. SecondaryProf is notified that her request was approved.
     3. Postdoc receives notification that SecondaryProf has signed MTA.
+    3. SecondaryProf receives notification that Postdoc has uploaded executed MTA.
     """
 
     def setUp(self):
@@ -68,7 +69,12 @@ class TestResourceListedAndRequested(APITestCase):
         request_id = response.data["id"]
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="TRANSFER_REQUESTED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_REQUESTED", email=self.post_doc.email
+                )
+            ),
+            1,
         )
 
         # Postdoc approves the request
@@ -80,7 +86,14 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_APPROVED", email=self.secondary_prof.email
+                )
+            ),
+            1,
+        )
 
         # SecondaryProf uploads the signed MTA
         self.client.force_authenticate(user=self.secondary_prof)
@@ -103,7 +116,14 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="MTA_UPLOADED")), 1)
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="SIGNED_MTA_UPLOADED", email=self.post_doc.email
+                )
+            ),
+            1,
+        )
 
         # Postdoc uploads the executed MTA
         self.client.force_authenticate(user=self.post_doc)
@@ -126,5 +146,14 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="EXECUTED_MTA_UPLOADED", email=self.secondary_prof.email
+                )
+            ),
+            1,
+        )
+
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 3)
+        self.assertEqual(len(Notification.objects.all()), 4)

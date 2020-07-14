@@ -1,6 +1,9 @@
 # Grants
 Supports adding, viewing, and updating grants. Contains nested routes for associated materials.
 
+## Description
+The Grant object represents ALSF grants associated with users or organizations.
+
 ## Register a new user account
 
 **Request**:
@@ -17,6 +20,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 *Note:*
 
 - **[Authorization Protected](authentication.md)**
+
+**Response**:
 
 ```json
 Content-Type application/json
@@ -50,6 +55,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can get its information.
+
+**Response**:
 
 ```json
 Content-Type application/json
@@ -121,6 +128,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can update it.
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -182,6 +191,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can view the materials.
+
+**Response**:
 
 ```json
 Content-Type application/json

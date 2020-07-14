@@ -1,6 +1,10 @@
 # Users
 Supports registering, viewing, and updating user accounts.
 
+## Description
+A user represents a single researcher or scientist on the site. A user is created using OAuth through ORCID, which allows each user to be associated with an ORCID.
+
+
 ## Register a new user account
 
 **Request**:
