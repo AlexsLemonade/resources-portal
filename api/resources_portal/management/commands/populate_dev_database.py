@@ -3,6 +3,8 @@ from json import loads
 from django.core.management.base import BaseCommand
 from django.utils import dateparse
 
+from guardian.shortcuts import assign_perm
+
 from resources_portal.models import (
     Attachment,
     Grant,
@@ -92,6 +94,16 @@ def populate_test_database():
         myGrant = Grant.objects.get(id=i["grant_id"])
         myUser = User.objects.get(id=i["user_id"])
         myGrant.users.add(myUser)
+
+    # add permissions for each user
+    permissions_json = loads(open("./dev_data/permissions.json").read())
+    for permission_set in permissions_json["user_organization_permissions"]:
+        user = User.objects.get(pk=permission_set.pop("user_id"))
+        organization = Organization.objects.get(pk=permission_set.pop("organization_id"))
+
+        for perm in permission_set:
+            if permission_set[perm]:
+                assign_perm(perm, user, organization)
 
 
 class Command(BaseCommand):
