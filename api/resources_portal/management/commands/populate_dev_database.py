@@ -30,7 +30,7 @@ def get_user_ids(users_json):
 def parse_int_or_uuid(val):
     try:
         return int(val) - 1
-    except:
+    except ValueError:
         return user_id_list.index(val)
 
 

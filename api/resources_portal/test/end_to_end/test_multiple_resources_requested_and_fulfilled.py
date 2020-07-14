@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.core.management import call_command
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
@@ -46,6 +47,9 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
     def setUp(self):
         populate_dev_database()
 
+        # Put newly created materials in the search index
+        call_command("search_index", "-f", "--rebuild")
+
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
         self.post_doc = User.objects.get(username="PostDoc")
@@ -56,6 +60,10 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         OrganizationUserSetting.objects.create(user=self.post_doc, organization=self.primary_lab)
 
         Notification.objects.all().delete()
+
+    def tearDown(self):
+        # Rebuild search index with what's actaully in the django database
+        call_command("search_index", "-f", "--rebuild")
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)

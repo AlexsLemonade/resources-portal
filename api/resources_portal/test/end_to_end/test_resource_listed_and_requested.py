@@ -3,7 +3,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal import models
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import (
     Attachment,
