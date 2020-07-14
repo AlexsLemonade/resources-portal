@@ -17,7 +17,10 @@ class Attachment(SafeDeleteModel):
     ATTACHMENT_TYPES = (
         ("MTA", "MTA"),
         ("SIGNED_MTA", "SIGNED_MTA"),
+        ("EXECUTED_MTA", "EXECUTED_MTA"),
         ("IRB", "IRB"),
+        ("SIGNED_IRB", "SIGNED_IRB"),
+        ("EXECUTED_IRB", "EXECUTED_IRB"),
         ("SEQUENCE_MAP", "SEQUENCE_MAP"),
     )
 
