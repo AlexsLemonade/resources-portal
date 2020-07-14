@@ -23,7 +23,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.Faker("email")
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
-    organization_settings = []
     is_active = True
     is_superuser = False
     is_staff = False
