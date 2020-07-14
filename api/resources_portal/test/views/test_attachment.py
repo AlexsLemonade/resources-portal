@@ -1,7 +1,3 @@
-import os
-import shutil
-
-from django.conf import settings
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
@@ -12,6 +8,7 @@ from guardian.shortcuts import assign_perm
 
 from resources_portal.models import Attachment
 from resources_portal.test.factories import AttachmentFactory, MaterialRequestFactory, UserFactory
+from resources_portal.test.mocks import clean_test_file_uploads
 
 fake = Faker()
 
@@ -40,11 +37,7 @@ class TestAttachmentListTestCase(APITestCase):
         self.admin = UserFactory()
         self.admin.is_staff = True
 
-        # Cleanup the attachments test directory so there's no files
-        # from previous tests:
-        for directory_name in os.listdir(settings.LOCAL_FILE_DIRECTORY):
-            directory_path = os.path.join(settings.LOCAL_FILE_DIRECTORY, directory_name)
-            shutil.rmtree(directory_path, ignore_errors=True)
+        clean_test_file_uploads()
 
     def test_list_request_from_admin_succeeds(self):
         self.client.force_authenticate(user=self.admin)
