@@ -17,7 +17,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "description",
             "s3_bucket",
             "s3_key",
-            "deleted",
+            "s3_resource_deleted",
             "created_at",
             "updated_at",
             "sequence_map_for",
