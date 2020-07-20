@@ -27,7 +27,7 @@ class ImportSRATestCase(APITestCase):
         org.members.add(user)
         org.save()
 
-        url = reverse("import-sra")
+        url = reverse("import")
         response = self.client.post(
             url,
             {
@@ -49,7 +49,7 @@ class ImportSRATestCase(APITestCase):
         org = OrganizationFactory()
         grant = GrantFactory()
 
-        url = reverse("import-sra")
+        url = reverse("import")
         response = self.client.post(
             url,
             {
@@ -72,7 +72,7 @@ class ImportSRATestCase(APITestCase):
         org.members.add(user)
         org.save()
 
-        url = reverse("import-sra")
+        url = reverse("import")
         response = self.client.post(
             url,
             {
@@ -95,7 +95,7 @@ class ImportSRATestCase(APITestCase):
         user.grants.add(grant)
         user.save()
 
-        url = reverse("import-sra")
+        url = reverse("import")
         response = self.client.post(
             url,
             {
