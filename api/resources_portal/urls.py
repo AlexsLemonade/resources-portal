@@ -29,7 +29,7 @@ from resources_portal.views import (
     local_file_view,
 )
 
-router = ExtendedSimpleRouter(trailing_slash=False)
+router = ExtendedSimpleRouter()
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserViewSet, basename="user").register(
     r"organizations",
