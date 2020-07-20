@@ -1,5 +1,5 @@
-# Import SRA
-Allows users to import an SRA material by providing the accession code of a particular read of an experiment. This endpoint will populate all possible fields on the material with information from the European Nucleotide Archive database.
+# Import Material
+Allows users to import a material by providing an external source to pull information from. This endpoint will populate all possible fields on the material with information from the given source.
 
 ## Import an SRA material:
 
