@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, OrganizationUserSetting, User
@@ -42,4 +43,8 @@ class OrganizationUserSettingViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, IsUser, IsInOrganization]
 
-    serializer_class = OrganizationUserSettingSerializer
+    def get_serializer_class(self):
+        if self.action == "list":
+            raise MethodNotAllowed("GET", detail="Cannot list organization user settings")
+
+        return OrganizationUserSettingSerializer
