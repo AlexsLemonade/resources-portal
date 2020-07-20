@@ -1,6 +1,9 @@
 import inspect
+import os
+import shutil
 import uuid
 
+from django.conf import settings
 from django.urls import reverse
 
 from faker import Faker
@@ -68,3 +71,11 @@ def restore_database():
         if inspect.isclass(obj):
             for model in obj.deleted_objects.all():
                 model.save()
+
+
+def clean_test_file_uploads():
+    """Cleanup the attachments test directory so there's no from previous tests
+    """
+    for directory_name in os.listdir(settings.LOCAL_FILE_DIRECTORY):
+        directory_path = os.path.join(settings.LOCAL_FILE_DIRECTORY, directory_name)
+        shutil.rmtree(directory_path, ignore_errors=True)

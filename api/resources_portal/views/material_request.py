@@ -32,7 +32,13 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "assigned_to",
+            "requester",
+        )
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
@@ -188,6 +194,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         material = serializer.validated_data["material"]
 
+        serializer.validated_data["requester"] = request.user
+
         material_request = MaterialRequest(**serializer.validated_data)
         material_request.save()
 
@@ -239,12 +247,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     material_request.status = serializer.validated_data["status"]
 
         else:
-            if "status" in request.data:
-                if serializer.validated_data["status"] == "CANCELLED":
-                    return Response(status=403)
-                material_request.status = serializer.validated_data["status"]
-                send_transfer_update_notif(serializer.validated_data["status"], material_request)
-
             if "executed_mta_attachment" in request.data:
                 add_attachment_to_material_request(
                     material_request,
@@ -256,6 +258,14 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 send_material_request_notif(
                     "EXECUTED_MTA_UPLOADED", material_request, material_request.requester
                 )
+
+            if "status" in request.data:
+                if serializer.validated_data["status"] == "CANCELLED":
+                    return Response(status=403)
+                material_request.status = serializer.validated_data["status"]
+                send_transfer_update_notif(serializer.validated_data["status"], material_request)
+
+        material_request.save()
 
         response_data = model_to_dict(material_request)
         response_data["requirements"] = self.get_material_requirements()

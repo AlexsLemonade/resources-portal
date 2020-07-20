@@ -2,10 +2,14 @@ import React from 'react'
 import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
 import api from '../../../api'
-import { ResourceDetails } from '../../../components/resources'
+// import { ResourceDetails } from '../../../components/resources/ResourceDetails'
 import DetailsTable from '../../../components/DetailsTable'
 import Organism from '../../../images/organism.svg'
 import ResourceType from '../../../images/resource-type.svg'
+
+const ResourceDetails = () => {
+  return <>IMPLEMENT THIS</>
+}
 
 const ResourceDetailsPage = ({ resource }) => {
   if (!resource)

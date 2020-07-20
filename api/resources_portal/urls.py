@@ -26,6 +26,7 @@ from resources_portal.views import (
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
+    local_file_view,
 )
 
 router = ExtendedSimpleRouter(trailing_slash=False)
@@ -89,3 +90,8 @@ urlpatterns = [
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
     path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.LOCAL_FILE_DIRECTORY:
+    urlpatterns.append(
+        path("v1/uploaded-file/<path:file_path>", local_file_view, name="uploaded-file")
+    )

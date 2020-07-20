@@ -55,7 +55,7 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", email=self.request.assigned_to.email
+                    notification_type="TRANSFER_REQUESTED", email=self.sharer.email
                 )
             ),
             1,

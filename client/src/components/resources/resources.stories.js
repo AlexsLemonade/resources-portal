@@ -3,7 +3,9 @@ import { Grommet, Box } from 'grommet'
 import { storiesOf } from '@storybook/react'
 import { getReadable } from '../../helpers/readableNames'
 import theme from '../../theme'
-import { Mappings, SearchResult, ResourceDetails } from '.'
+import { resourceCategories } from './index'
+import { SearchResult } from './SearchResult'
+import { ResourceDetails } from './ResourceDetails'
 
 import { fakeSearchMaterialsResponse } from '../../helpers/testData'
 
@@ -14,7 +16,7 @@ fakeSearchMaterialsResponse.results.forEach((material) => {
   data[material.category].push(material)
 })
 
-for (const key of Object.keys(Mappings)) {
+for (const key of resourceCategories) {
   storiesOf(`Resources/${getReadable(key)}`, module)
     .add('SearchResult', () => {
       return (

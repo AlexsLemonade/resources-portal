@@ -1,8 +1,7 @@
 import React from 'react'
 import { Box, Button, Select, TextInput, Keyboard } from 'grommet'
 import { useSearchResources } from '../hooks/useSearchResources'
-import { Mappings } from './resources'
-import { sortedObjectKeys } from '../helpers/sortObjectKeys'
+import { resourceCategories } from './resources'
 import { getReadable } from '../helpers/readableNames'
 
 export default function SearchInput({ onChange, size = 'medium' }) {
@@ -15,6 +14,9 @@ export default function SearchInput({ onChange, size = 'medium' }) {
   } = useSearchResources()
   const [resourceType, setResourceType] = React.useState('ALL')
   const [inputValue, setInputValue] = React.useState(query.search || '')
+  const [selectWidth, setSelectWith] = React.useState(
+    resourceType === 'ALL' ? '60px' : '156px'
+  )
 
   const handleSubmit = () => {
     removeFacet('category')
@@ -25,8 +27,11 @@ export default function SearchInput({ onChange, size = 'medium' }) {
     goToSearchResults(true)
   }
 
-  // this is just the help make the select look more like the designs
-  const selectWidth = resourceType === 'ALL' ? '60px' : '156px'
+  const resourceCategoryOptions = [
+    'ALL',
+    ...resourceCategories
+  ].map((option) => ({ value: option, label: getReadable(option) }))
+
   return (
     <Box direction="row">
       <Box
@@ -40,9 +45,11 @@ export default function SearchInput({ onChange, size = 'medium' }) {
           plain
           size={size}
           value={resourceType}
-          options={['ALL', ...sortedObjectKeys(Mappings).map((map) => map.key)]}
-          labelKey={getReadable}
+          valueKey="value"
+          options={resourceCategoryOptions}
+          labelKey="label"
           onChange={({ option: { value } }) => {
+            setSelectWith(value === 'ALL' ? '60px' : '156px')
             setResourceType(value)
           }}
         />
