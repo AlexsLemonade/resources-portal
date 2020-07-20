@@ -58,14 +58,6 @@ def import_sra(run_accession, organization, grant, user):
     return JsonResponse(material_json, status=201)
 
 
-class OwnsGrantAndIsInO(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return (
-            request.user.has_perm("approve_requests", obj.material.organization)
-            or request.user == obj.requester
-        )
-
-
 class ImportViewSet(viewsets.ViewSet):
     """ A viewset used to import all availible material data from a specified source."""
 
