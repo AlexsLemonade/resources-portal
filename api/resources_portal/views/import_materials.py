@@ -1,7 +1,7 @@
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from rest_framework import viewsets
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 
 from resources_portal.models import Grant, Material, Organization
 from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_metadata
