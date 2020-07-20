@@ -53,6 +53,9 @@ resource "aws_instance" "api_server_1" {
           elasticsearch_host = aws_elasticsearch_domain.es.endpoint
           aws_region  = var.region
           aws_ses_domain = var.aws_ses_domain
+          aws_s3_bucket_name = aws_s3_bucket.resources_portal_bucket.id
+          oauth_url = var.oauth_url
+          oauth_client_secret = var.oauth_client_secret
         })
       start_api_with_migrations = templatefile(
         "api-configuration/start_api_with_migrations.tpl.sh",

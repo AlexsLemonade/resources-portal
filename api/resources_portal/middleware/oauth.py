@@ -1,3 +1,4 @@
+import logging
 import urllib
 
 from django.conf import settings
@@ -10,6 +11,8 @@ import requests
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
+
+logger = logging.getLogger(__name__)
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
@@ -51,6 +54,8 @@ class OAuthMiddleWare:
             # get user orcid info
             response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
             response_json = response.json()
+            if "orcid" not in response_json:
+                logger.warn("Response from ORCID does not contain expected values:" + response_json)
 
             user = User.objects.filter(orcid=response_json["orcid"]).first()
 

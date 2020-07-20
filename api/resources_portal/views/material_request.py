@@ -205,12 +205,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     material_request.status = serializer.validated_data["status"]
 
         else:
-            if "status" in request.data:
-                if serializer.validated_data["status"] == "CANCELLED":
-                    return Response(status=403)
-                material_request.status = serializer.validated_data["status"]
-                send_transfer_update_notif(serializer.validated_data["status"], material_request)
-
             if "executed_mta_attachment" in request.data:
                 executed_mta = serializer.validated_data["executed_mta_attachment"]
                 material_request.executed_mta_attachment = executed_mta
@@ -218,6 +212,12 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 executed_mta.save()
 
                 send_material_request_notif("EXECUTED_MTA_UPLOADED", material_request)
+
+            if "status" in request.data:
+                if serializer.validated_data["status"] == "CANCELLED":
+                    return Response(status=403)
+                material_request.status = serializer.validated_data["status"]
+                send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
         material_request.save()
 

@@ -132,3 +132,49 @@ resource "aws_iam_role_policy_attachment" "ses" {
   role = aws_iam_role.resources_portal_instance.name
   policy_arn = aws_iam_policy.resources_portal_client_policy_ses.arn
 }
+
+resource "aws_iam_policy" "s3_access_policy" {
+  name = "resources-portal-s3-access-policy-${var.user}-${var.stage}"
+  description = "Allows S3 Permissions."
+
+  # Policy text based off of:
+  # http://docs.aws.amazon.com/AmazonS3/latest/dev/example-bucket-policies.html
+  policy = <<EOF
+{
+   "Version":"2012-10-17",
+   "Statement":[
+      {
+         "Effect":"Allow",
+         "Action":[
+            "s3:ListAllMyBuckets"
+         ],
+         "Resource":"arn:aws:s3:::*"
+      },
+      {
+         "Effect":"Allow",
+         "Action":[
+            "s3:ListBucket",
+            "s3:GetBucketLocation"
+         ],
+         "Resource":"arn:aws:s3:::resources-portal"
+      },
+      {
+         "Effect":"Allow",
+         "Action":[
+            "s3:PutObject",
+            "s3:GetObject",
+            "s3:DeleteObject"
+         ],
+          "Resource": [
+            "arn:aws:s3:::${aws_s3_bucket.resources_portal_bucket.bucket}/*"
+          ]
+      }
+   ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "s3" {
+  role = aws_iam_role.resources_portal_instance.name
+  policy_arn = aws_iam_policy.s3_access_policy.arn
+}

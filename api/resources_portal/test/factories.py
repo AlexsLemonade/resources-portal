@@ -123,7 +123,7 @@ class AttachmentFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Attachment"
 
-    filename = "attachment_file"
+    filename = "nerd_sniping.png"
     description = "A file for testing"
     s3_bucket = "https://bucket-name.s3.region.amazonaws.com/keyname"
     s3_key = "s3 key"

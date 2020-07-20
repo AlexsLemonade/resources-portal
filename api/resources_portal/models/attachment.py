@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.db import models
+from django.urls import reverse
 
+import boto3
+from botocore.client import Config
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -13,7 +17,10 @@ class Attachment(SafeDeleteModel):
     ATTACHMENT_TYPES = (
         ("MTA", "MTA"),
         ("SIGNED_MTA", "SIGNED_MTA"),
+        ("EXECUTED_MTA", "EXECUTED_MTA"),
         ("IRB", "IRB"),
+        ("SIGNED_IRB", "SIGNED_IRB"),
+        ("EXECUTED_IRB", "EXECUTED_IRB"),
         ("SEQUENCE_MAP", "SEQUENCE_MAP"),
     )
 
@@ -47,9 +54,21 @@ class Attachment(SafeDeleteModel):
 
     @property
     def download_url(self):
-        """A temporary URL from which the file can be downloaded. """
-
-        if not self.deleted and self.s3_key and self.s3_bucket:
-            return "https://s3.amazonaws.com/" + self.s3_bucket + "/" + self.s3_key
+        """A temporary URL from which the file can be downloaded.
+        """
+        if (
+            not self.s3_resource_deleted
+            and self.s3_key
+            and self.s3_bucket
+            and settings.AWS_S3_BUCKET_NAME
+        ):
+            s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
+            return s3_client.generate_presigned_url(
+                ClientMethod="get_object",
+                Params={"Bucket": self.s3_bucket, "Key": self.s3_key},
+                ExpiresIn=(60 * 60 * 24),  # 1 day in seconds.
+            )
+        elif settings.LOCAL_FILE_DIRECTORY:
+            return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
         else:
             return None
