@@ -1,16 +1,9 @@
-import random
 import xml.etree.ElementTree as ET
-from typing import Dict, List
-
-from django.forms.models import model_to_dict
-from django.http import JsonResponse
-from rest_framework import viewsets
+from typing import Dict
 
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
-
-from resources_portal.models import Grant, Material, Organization
 
 ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
 

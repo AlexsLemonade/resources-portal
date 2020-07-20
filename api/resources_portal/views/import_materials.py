@@ -1,15 +1,7 @@
-import random
-import xml.etree.ElementTree as ET
-from typing import Dict, List
-
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
-
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
 
 from resources_portal.models import Grant, Material, Organization
 from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_metadata
@@ -85,10 +77,10 @@ class ImportViewSet(viewsets.ViewSet):
         organization = Organization.objects.get(pk=request.data["organization_id"])
         grant = Grant.objects.get(pk=request.data["grant_id"])
 
-        if not grant in request.user.grants.all():
+        if grant not in request.user.grants.all():
             return JsonResponse({"error": f"The user does not own grant id {grant.id}"}, status=403)
 
-        if not request.user in organization.members.all():
+        if request.user not in organization.members.all():
             return JsonResponse(
                 {"error": f"The user is not a member of organization id {organization.id}"},
                 status=403,
