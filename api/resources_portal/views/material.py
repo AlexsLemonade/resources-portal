@@ -43,6 +43,23 @@ class MaterialSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
+    def validate(self, data):
+        """Only allow materials with no open requests to be archived.
+        """
+        # If they aren't setting is_archived=True on an existing
+        # material then they're fine.
+        if "id" not in data or "is_archived" not in data or not data["is_archived"]:
+            return data
+
+        material = Material.objects.get(data["id"])
+        for request in material.requests:
+            if request.status not in ["REJECTED", "INVALID", "CANCELLED", "FULFILLED"]:
+                raise serializers.ValidationError(
+                    "All requests for the material must be closed first."
+                )
+
+        return data
+
 
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserSerializer()

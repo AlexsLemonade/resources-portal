@@ -158,6 +158,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         material = serializer.validated_data["material"]
 
+        if material.is_archived:
+            return Response(data={"reason": "Cannot request archived materials."}, status=400)
+
         serializer.validated_data["requester"] = request.user
 
         material_request = MaterialRequest(**serializer.validated_data)

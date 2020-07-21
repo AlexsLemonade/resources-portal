@@ -61,6 +61,19 @@ class TestMaterialRequestListTestCase(APITestCase):
             1,
         )
 
+    def test_post_request_with_valid_data_fails_if_archived(self):
+        self.request.material.is_archived = True
+        self.request.material.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        OrganizationUserSetting.objects.get_or_create(
+            user=self.sharer, organization=self.request.material.organization
+        )
+
+        response = self.client.post(self.url, self.material_request_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_post_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.material_request_data, format="json")

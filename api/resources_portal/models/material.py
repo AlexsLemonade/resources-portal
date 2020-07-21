@@ -81,6 +81,8 @@ class Material(SafeDeleteModel):
     additional_info = models.TextField(blank=True, null=True)
     embargo_date = models.DateField(blank=True, null=True)
 
+    is_archived = models.BooleanField(default=False, null=False)
+
     def needs_mta(self):
         return not (self.mta_attachment is None)
 
