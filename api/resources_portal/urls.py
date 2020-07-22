@@ -13,6 +13,7 @@ from resources_portal.views import (
     GrantMaterialViewSet,
     GrantUserViewSet,
     GrantViewSet,
+    ImportViewSet,
     MaterialDocumentView,
     MaterialRequestViewSet,
     MaterialViewSet,
@@ -90,6 +91,10 @@ urlpatterns = [
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
     path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns.append(
+    path("v1/materials/import/", ImportViewSet.as_view({"post": "create"}), name="materials-import")
+)
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(
