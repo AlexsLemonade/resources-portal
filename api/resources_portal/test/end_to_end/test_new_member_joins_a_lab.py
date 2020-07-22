@@ -190,7 +190,6 @@ class TestNewMemberJoinsALab(APITestCase):
                 reverse("attachment-list"), executed_irb_data, format="multipart"
             )
 
-        executed_irb_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # PUT updates to request

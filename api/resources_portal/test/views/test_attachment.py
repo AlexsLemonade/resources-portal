@@ -4,10 +4,9 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
-from guardian.shortcuts import assign_perm
 
 from resources_portal.models import Attachment
-from resources_portal.test.factories import AttachmentFactory, MaterialRequestFactory, UserFactory
+from resources_portal.test.factories import AttachmentFactory, UserFactory
 from resources_portal.test.utils import clean_test_file_uploads
 
 fake = Faker()
@@ -58,10 +57,6 @@ class TestAttachmentListTestCase(APITestCase):
             data = {**self.attachment_data, "file": fp}
             data.pop("sequence_map_for")
             response = self.client.post(self.url, data, format="multipart")
-
-        import pdb
-
-        pdb.set_trace()
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

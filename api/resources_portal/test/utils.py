@@ -1,4 +1,3 @@
-import inspect
 import os
 import shutil
 import uuid
@@ -7,8 +6,6 @@ from django.conf import settings
 from django.urls import reverse
 
 from faker import Faker
-
-from resources_portal import models
 
 fake = Faker()
 

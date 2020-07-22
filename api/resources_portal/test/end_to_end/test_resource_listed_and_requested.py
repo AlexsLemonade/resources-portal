@@ -5,7 +5,6 @@ from rest_framework.test import APITestCase
 
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import (
-    Attachment,
     MaterialRequest,
     Notification,
     Organization,
