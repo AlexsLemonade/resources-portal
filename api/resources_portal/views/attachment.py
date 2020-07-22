@@ -10,9 +10,8 @@ from rest_framework.response import Response
 
 import boto3
 from botocore.client import Config
-from guardian.core import ObjectPermissionChecker
 
-from resources_portal.models import Attachment, Organization
+from resources_portal.models import Attachment
 from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
     OrganizationRelationSerializer,
