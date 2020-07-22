@@ -43,7 +43,7 @@ class Attachment(SafeDeleteModel):
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
     owned_by_user = models.ForeignKey(
-        "User", blank=False, null=True, on_delete=models.CASCADE, related_name="owned_attachments"
+        "User", blank=False, null=False, on_delete=models.CASCADE, related_name="owned_attachments"
     )
 
     owned_by_org = models.ForeignKey(

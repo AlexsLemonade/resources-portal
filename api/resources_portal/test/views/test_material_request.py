@@ -143,11 +143,11 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         requester_org.members.add(self.request.requester)
         requester_org.save()
 
-        irb_attachment = AttachmentFactory(owned_by_org=requester_org)
+        irb_attachment = AttachmentFactory(owned_by_user=self.request.requester)
 
         self.material_request_data["irb_attachment"] = irb_attachment.id
         self.material_request_data["requester_signed_mta_attachment"] = AttachmentFactory(
-            owned_by_org=requester_org
+            owned_by_user=self.request.requester
         ).id
 
         response = self.client.put(self.url, self.material_request_data)

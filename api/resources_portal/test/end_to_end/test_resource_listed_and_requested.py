@@ -3,10 +3,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_dev_database import (
-    populate_dev_database,
-    populate_test_database,
-)
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import (
     Attachment,
     MaterialRequest,
@@ -16,7 +13,7 @@ from resources_portal.models import (
     User,
 )
 from resources_portal.test.factories import MaterialFactory
-from resources_portal.test.mocks import clean_test_file_uploads
+from resources_portal.test.utils import clean_test_file_uploads
 
 
 class TestResourceListedAndRequested(APITestCase):

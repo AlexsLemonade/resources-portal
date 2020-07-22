@@ -103,23 +103,16 @@ def send_transfer_update_notif(status, request):
         return
 
 
-def user_owns_attachment(attachment, user):
+def user_in_attachment_org(attachment, user):
     if attachment.owned_by_org:
         return user in attachment.owned_by_org.members.all()
     else:
         return False
 
 
-def user_in_attachment_org(attachment, user):
-    if attachment.owned_by_user:
-        return user == attachment.owned_by_user
-    else:
-        return False
-
-
 # Adds an attachment to a material request, checking that the current user is in the org that uploaded the attachment.
 def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
-    if not (user_in_attachment_org(attachment, user) or user_owns_attachment(attachment, user)):
+    if not (user_in_attachment_org(attachment, user) or attachment.owned_by_user == user):
         raise PermissionDenied(
             detail=f"The current user is not authorized for the specifified attachment of type {attachment_type}."
         )

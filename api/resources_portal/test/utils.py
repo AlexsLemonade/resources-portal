@@ -66,13 +66,6 @@ def get_mock_oauth_url(grants):
     return url
 
 
-def restore_database():
-    for name, obj in inspect.getmembers(models):
-        if inspect.isclass(obj):
-            for model in obj.deleted_objects.all():
-                model.save()
-
-
 def clean_test_file_uploads():
     """Cleanup the attachments test directory so there's no from previous tests
     """

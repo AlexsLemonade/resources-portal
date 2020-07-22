@@ -86,25 +86,21 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.client.force_authenticate(user=requester)
 
         # Upload IRBs
-        irb1 = Attachment(
-            filename="irb_attachment",
-            description="Institutional Board Review for the research in question.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=requester,
-        )
+        irb_json = {
+            "filename": "irb_attachment",
+            "description": "Institutional Board Review for the research in question.",
+        }
 
-        irb2 = Attachment(
-            filename="irb_attachment",
-            description="Institutional Board Review for the research in question.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=requester,
-        )
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**irb_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
 
-        response = self.client.post(reverse("attachment-list"), model_to_dict(irb1), format="json")
         irb_1_id = response.data["id"]
-        response = self.client.post(reverse("attachment-list"), model_to_dict(irb2), format="json")
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**irb_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
         irb_2_id = response.data["id"]
 
         # POST requests
@@ -168,28 +164,21 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         # The Requester uploads two signed MTAs
         self.client.force_authenticate(user=requester)
 
-        signed_mta_1 = Attachment(
-            filename="signed_mta",
-            description="Signed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=requester,
-        )
-        signed_mta_2 = Attachment(
-            filename="signed_mta",
-            description="Signed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=requester,
-        )
+        signed_mta_json = {
+            "filename": "signed_mta",
+            "description": "Signed transfer agreement for the material.",
+        }
 
-        response = self.client.post(
-            reverse("attachment-list"), model_to_dict(signed_mta_1), format="json"
-        )
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**signed_mta_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
         mta_1_id = response.data["id"]
-        response = self.client.post(
-            reverse("attachment-list"), model_to_dict(signed_mta_2), format="json"
-        )
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**signed_mta_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
         mta_2_id = response.data["id"]
 
         response = self.client.put(
@@ -218,28 +207,21 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         # Postdoc uploads executed MTA/IRBs
         self.client.force_authenticate(user=self.post_doc)
 
-        executed_mta_1 = Attachment(
-            filename="exectuted_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=self.post_doc,
-        )
-        executed_mta_2 = Attachment(
-            filename="exectuted_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-            owned_by_user=self.post_doc,
-        )
+        executed_mta_json = {
+            "filename": "exectuted_mta",
+            "description": "Executed transfer agreement for the material.",
+        }
 
-        response = self.client.post(
-            reverse("attachment-list"), model_to_dict(executed_mta_1), format="json"
-        )
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**executed_mta_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
         mta_1_id = response.data["id"]
-        response = self.client.post(
-            reverse("attachment-list"), model_to_dict(executed_mta_2), format="json"
-        )
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**executed_mta_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
         mta_2_id = response.data["id"]
 
         response = self.client.put(
