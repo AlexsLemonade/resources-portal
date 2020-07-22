@@ -20,7 +20,7 @@ class UnsupportedDataTypeError(Exception):
 
 def _get_number_of_samples(srs_string):
     """
-    SRS accession codes are provided in the following format:
+    SRR accession codes are provided in the following format:
     "SRR000001, SRR000002, SRR000003-SRR000008"
     You can count the non-consecutive elements, but the ranges must be parsed.
     """
