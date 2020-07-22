@@ -1,18 +1,20 @@
 import React from 'react'
 import Link from 'next/link'
 import { Box, Anchor, Button, Heading, Text } from 'grommet'
-import { getReadable } from '../helpers/readableNames'
-import { getPubmedUrl } from '../helpers/getPubmedUrl'
-import { getDOIUrl } from '../helpers/getDOIUrl'
-import ResourceTypeIcon from '../images/resource-type.svg'
-import OrganismIcon from '../images/organism.svg'
+import { getReadable } from '../../helpers/readableNames'
+import { getResourceValue } from '../../helpers/getResourceValue'
+import { getPubmedUrl } from '../../helpers/getPubmedUrl'
+import { getDOIUrl } from '../../helpers/getDOIUrl'
+import ResourceTypeIcon from '../../images/resource-type.svg'
+import OrganismIcon from '../../images/organism.svg'
+import configs from './configs'
 
 export const SearchResult = ({
   resource,
-  children,
   hideDefaults = false,
   margin = { bottom: 'gutter' }
 }) => {
+  const { searchResult } = configs[resource.category]
   return (
     <Box
       round="xsmall"
@@ -54,7 +56,7 @@ export const SearchResult = ({
               <ResourceTypeIcon />
               {getReadable(resource.category)}
             </Box>
-            {resource.organism && (
+            {resource.organism.length > 0 && (
               <Box as="span" align="center" direction="row" gap="small">
                 <OrganismIcon />
                 <span>
@@ -91,7 +93,15 @@ export const SearchResult = ({
           )}
         </Box>
       </Box>
-      <Box>{children}</Box>
+      <Box>
+        {searchResult.map((attribute) => (
+          <SearchResultDetail
+            key={attribute}
+            title={getReadable(attribute)}
+            label={getResourceValue(resource, attribute)}
+          />
+        ))}
+      </Box>
       {!hideDefaults && <PublicationDetails resource={resource} />}
       {!hideDefaults && <RequestRequirements resource={resource} />}
     </Box>
@@ -215,5 +225,3 @@ export const RequestRequirements = ({ resource }) => {
     </SearchResultDetail>
   )
 }
-
-export default SearchResult

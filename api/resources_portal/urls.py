@@ -27,6 +27,7 @@ from resources_portal.views import (
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
+    local_file_view,
 )
 
 router = ExtendedSimpleRouter(trailing_slash=False)
@@ -94,3 +95,8 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import/", ImportViewSet.as_view({"post": "create"}), name="import")
 )
+
+if settings.LOCAL_FILE_DIRECTORY:
+    urlpatterns.append(
+        path("v1/uploaded-file/<path:file_path>", local_file_view, name="uploaded-file")
+    )
