@@ -21,7 +21,7 @@ class UnsupportedDataTypeError(Exception):
 def _get_number_of_samples(srs_string):
     """
     SRS accession codes are provided in the following format:
-    "SRS000001, SRS000002, SRS000003-SRS000008"
+    "SRR000001, SRR000002, SRR000003-SRR000008"
     You can count the non-consecutive elements, but the ranges must be parsed.
     """
 
@@ -30,7 +30,7 @@ def _get_number_of_samples(srs_string):
     srs_list = srs_string.split(",")
 
     for srs in srs_list:
-        srs = srs.replace("SRS", "")
+        srs = srs.replace("SRR", "")
         if "-" in srs:
             srs_range = srs.split("-")
             num_samples += int(srs_range[1]) - int(srs_range[0]) + 1
@@ -116,7 +116,12 @@ def _gather_study_metadata(study_accession: str) -> None:
     response = _requests_retry_session().get(formatted_metadata_URL)
     study_xml = ET.fromstring(response.text)
 
-    discoverable_accessions = ["sample_accession", "submission_accession", "experiment_accession"]
+    discoverable_accessions = [
+        "sample_accession",
+        "submission_accession",
+        "experiment_accession",
+        "run_accession",
+    ]
 
     metadata = {}
 
@@ -177,7 +182,7 @@ def gather_all_metadata(study_accession):
         _gather_experiment_metadata(metadata)
         _gather_sample_metadata(metadata)
 
-        metadata["num_samples"] = _get_number_of_samples(metadata["sample_accession"])
+        metadata["num_samples"] = _get_number_of_samples(metadata["run_accession"])
 
         if "pubmed_id" in metadata.keys():
             _gather_pubmed_metadata(metadata)

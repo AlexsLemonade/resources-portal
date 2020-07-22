@@ -7,23 +7,17 @@ from resources_portal.models import Grant, Material, Organization
 from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_metadata
 
 
-def import_sra(run_accession, organization, grant, user):
+def import_sra(study_accession, organization, grant, user):
     """
     This function returns a Response object containing the json representation of the newly-created material object
     made using SRA data.
     """
-    metadata = gather_all_metadata(run_accession)
+    metadata = gather_all_metadata(study_accession)
 
     if metadata == {}:
         return JsonResponse(
             {"error": "No data was found for the provided accession code"}, status=404
         )
-
-    # note for the PR: currently, I use "library-construction-protocol" to populate the description. This is a technical description of the steps taken to process the material.
-    # Should I use the study abstract to populate it instead?
-
-    # One more question for PR. I was not able to find a way to retrieve "num_samples", "technology", "pre_print_doi", or "pre_print_title"
-    # from the SRA api. Are these neccessary to retrieve automatically? If so, I may need to pair with someone to find out out how to get those.
 
     try:
         additional_metadata = {
@@ -93,7 +87,7 @@ class ImportViewSet(viewsets.ViewSet):
         import_type = request.data["import_type"]
 
         if import_type == "SRA":
-            return import_sra(request.data["run_accession"], organization, grant, request.user)
+            return import_sra(request.data["study_accession"], organization, grant, request.user)
         else:
             return JsonResponse(
                 {"error": f'Invalid value for parameter "import_type": {import_type}.'}, status=400

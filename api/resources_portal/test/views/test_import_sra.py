@@ -15,7 +15,7 @@ class ImportSRATestCase(APITestCase):
         self.test_accession_with_pubmed_id = "SRP107324"
         self.test_accession_with_pubmed_id_num_samples = 9
         self.test_accession_without_pubmed_id = "SRP009841"
-        self.test_accession_without_pubmed_id_num_samples = 1
+        self.test_accession_without_pubmed_id_num_samples = 6
 
         self.org = OrganizationFactory()
         self.grant = GrantFactory()
@@ -35,7 +35,7 @@ class ImportSRATestCase(APITestCase):
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession_with_pubmed_id,
+                "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
@@ -63,7 +63,7 @@ class ImportSRATestCase(APITestCase):
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession_without_pubmed_id,
+                "study_accession": self.test_accession_without_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
@@ -89,7 +89,7 @@ class ImportSRATestCase(APITestCase):
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession_with_pubmed_id,
+                "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
@@ -108,7 +108,7 @@ class ImportSRATestCase(APITestCase):
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession_with_pubmed_id,
+                "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
@@ -127,7 +127,7 @@ class ImportSRATestCase(APITestCase):
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession_with_pubmed_id,
+                "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
