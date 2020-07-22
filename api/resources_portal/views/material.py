@@ -99,7 +99,7 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
-        serializer = self.get_serializer(material, data=request.data)
+        serializer = self.get_serializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         new_organization = serializer.validated_data["organization"]

@@ -99,12 +99,19 @@ class TransferOfResource(APITestCase):
         # The PostDoc transfers the resource to PrimaryLab
         self.client.force_authenticate(user=self.post_doc)
 
-        response = self.client.post(
+        response = self.client.patch(
             reverse("material-detail", args=[material.id]),
             {"organization": self.primary_lab.id},
             format="json",
         )
 
+        import pdb
+
+        pdb.set_trace()
+
         material.refresh_from_db()
 
         self.assertEqual(material.organization, self.primary_lab)
+
+        # Final checks
+        self.assertEqual(len(Notification.objects.all()), 2)
