@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_dev_database import populate_test_database
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import (
     Material,
     MaterialRequest,
@@ -14,7 +14,7 @@ from resources_portal.models import (
     OrganizationInvitation,
     User,
 )
-from resources_portal.test.mocks import (
+from resources_portal.test.utils import (
     clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
@@ -47,7 +47,7 @@ class TestNewMemberJoinsALab(APITestCase):
 
     def setUp(self):
         clean_test_file_uploads()
-        populate_test_database()
+        populate_dev_database()
 
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
@@ -158,7 +158,7 @@ class TestNewMemberJoinsALab(APITestCase):
             1,
         )
 
-        # NewMember approves the request and uploads executed MTA/IRB
+        # NewMember approves the request and uploads executed MTA
         self.client.force_authenticate(user=new_member)
 
         # Post mta attachment
@@ -190,15 +190,10 @@ class TestNewMemberJoinsALab(APITestCase):
                 reverse("attachment-list"), executed_irb_data, format="multipart"
             )
 
-        executed_irb_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # PUT updates to request
-        request_update_data = {
-            "status": "APPROVED",
-            "executed_mta_attachment": executed_mta_id,
-            "irb_attachment": executed_irb_id,
-        }
+        request_update_data = {"status": "APPROVED", "executed_mta_attachment": executed_mta_id}
 
         response = self.client.put(
             reverse("material-request-detail", args=[request_id]), request_update_data
