@@ -53,23 +53,6 @@ class OwnsAttachmentOrIsAdmin(BasePermission):
         )
 
 
-def user_has_perm_on_active_material_request(user, perm):
-
-    # Retrieve all organization permissions in a single query
-    checker = ObjectPermissionChecker(user)
-    organizations = Organization.objects.all()
-    checker.prefetch_perms(organizations)
-
-    # Uses prefetch_related to retrieve all related objects in a single query
-    for organization in user.organizations.all().prefetch_related("materials"):
-        if checker.has_perm(perm, organization):
-            for material in organization.materials.all().prefetch_related("requests"):
-                for request in material.requests.all():
-                    if request.is_active:
-                        return True
-    return False
-
-
 class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     parser_classes = (MultiPartParser, FormParser)

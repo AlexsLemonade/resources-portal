@@ -114,7 +114,7 @@ def user_in_attachment_org(attachment, user):
 def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
     if not (user_in_attachment_org(attachment, user) or attachment.owned_by_user == user):
         raise PermissionDenied(
-            detail=f"The current user is not authorized for the specifified attachment of type {attachment_type}."
+            detail=f"The current user is not authorized for the specified attachment of type {attachment_type}."
         )
 
     setattr(material_request, attachment_type, attachment)
