@@ -14,6 +14,11 @@ def import_sra(run_accession, organization, grant, user):
     """
     metadata = gather_all_metadata(run_accession)
 
+    if metadata == {}:
+        return JsonResponse(
+            {"error": "No data was found for the provided accession code"}, status=404
+        )
+
     # note for the PR: currently, I use "library-construction-protocol" to populate the description. This is a technical description of the steps taken to process the material.
     # Should I use the study abstract to populate it instead?
 
@@ -22,24 +27,32 @@ def import_sra(run_accession, organization, grant, user):
 
     try:
         additional_metadata = {
-            "study_id": metadata["submission_accession"],
-            "description": metadata["library_construction_protocol"],
+            "study_id": metadata["study_accession"],
+            "description": metadata["study_abstract"],
             "platform": metadata["platform_instrument_model"],
+            "technology": metadata["library_strategy"],
+            "num_samples": metadata["num_samples"],
         }
 
-        material = Material.objects.create(
-            organization=organization,
-            category="DATASET",
-            imported=True,
-            import_source="SRA",
-            title=metadata["study_title"],
-            organism=[metadata["organism_name"]],
-            url=ENA_URL_TEMPLATE.format(metadata["submission_accession"]),
-            contact_user=user,
-            pubmed_id=metadata["pubmed_id"],
-            publication_title=metadata["publication_title"],
-            additional_metadata=additional_metadata,
-        )
+        material_json = {
+            "organization": organization,
+            "category": "DATASET",
+            "imported": True,
+            "import_source": "SRA",
+            "title": metadata["study_title"],
+            "organism": [metadata["organism_name"]],
+            "url": ENA_URL_TEMPLATE.format(metadata["submission_accession"]),
+            "contact_user": user,
+            "additional_metadata": additional_metadata,
+        }
+
+        # Not all SRA objects will have a publication it seems. This accounts for that.
+        if "pubmed_id" in metadata.keys():
+            material_json["pubmed_id"] = metadata["pubmed_id"]
+            material_json["publication_title"] = metadata["publication_title"]
+
+        material = Material(**material_json)
+        material.save()
 
         material.grants.set([grant])
 
@@ -52,7 +65,6 @@ def import_sra(run_accession, organization, grant, user):
         )
 
     material_json = model_to_dict(material)
-
     material_json["grants"] = [material_json["grants"][0].id]
 
     return JsonResponse(material_json, status=201)

@@ -18,6 +18,28 @@ class UnsupportedDataTypeError(Exception):
     pass
 
 
+def _get_number_of_samples(srs_string):
+    """
+    SRS accession codes are provided in the following format:
+    "SRS000001, SRS000002, SRS000003-SRS000008"
+    You can count the non-consecutive elements, but the ranges must be parsed.
+    """
+
+    num_samples = 0
+
+    srs_list = srs_string.split(",")
+
+    for srs in srs_list:
+        srs = srs.replace("SRS", "")
+        if "-" in srs:
+            srs_range = srs.split("-")
+            num_samples += int(srs_range[1]) - int(srs_range[0]) + 1
+        else:
+            num_samples += 1
+
+    return num_samples
+
+
 def _gather_library_metadata(metadata: Dict, library: ET.Element) -> None:
     for child in library:
         if child.tag == "LIBRARY_LAYOUT":
@@ -34,7 +56,7 @@ def _gather_library_metadata(metadata: Dict, library: ET.Element) -> None:
         )
 
 
-def _parse_run_link(run_link: ET.ElementTree) -> (str, str):
+def _parse_study_link(run_link: ET.ElementTree) -> (str, str):
     key = ""
     value = ""
 
@@ -73,41 +95,6 @@ def _requests_retry_session(
     return session
 
 
-def _gather_run_metadata(run_accession: str) -> Dict:
-    """A run refers to a specific read in an experiment."""
-
-    discoverable_accessions = ["study_accession", "sample_accession", "submission_accession"]
-
-    response = _requests_retry_session().get(ENA_METADATA_URL_TEMPLATE.format(run_accession))
-    try:
-        run_xml = ET.fromstring(response.text)
-    except Exception:
-        print("Unable to decode response: " + response.text)
-        return {}
-
-    # Necessary because ERP000263 has only one ROOT element containing this error:
-    # Entry: ERR15562 display type is either not supported or entry is not found.
-    if len(run_xml) == 0:
-        return {}
-
-    run_item = run_xml[0]
-
-    metadata = {}
-
-    metadata["run_accession"] = run_accession
-
-    for child in run_item:
-        if child.tag == "EXPERIMENT_REF":
-            metadata["experiment_accession"] = child.attrib["accession"]
-        elif child.tag == "RUN_LINKS":
-            for grandchild in child:
-                key, value = _parse_run_link(grandchild)
-                if value != "" and key in discoverable_accessions:
-                    metadata[key] = value
-
-    return metadata
-
-
 def _gather_sample_metadata(metadata: Dict) -> None:
     formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(metadata["sample_accession"])
     response = _requests_retry_session().get(formatted_metadata_URL)
@@ -124,10 +111,16 @@ def _gather_sample_metadata(metadata: Dict) -> None:
                     metadata["organism_name"] = grandchild.text
 
 
-def _gather_study_metadata(metadata: Dict) -> None:
-    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(metadata["study_accession"])
+def _gather_study_metadata(study_accession: str) -> None:
+    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(study_accession)
     response = _requests_retry_session().get(formatted_metadata_URL)
     study_xml = ET.fromstring(response.text)
+
+    discoverable_accessions = ["sample_accession", "submission_accession", "experiment_accession"]
+
+    metadata = {}
+
+    metadata["study_accession"] = study_accession
 
     study = study_xml[0]
     for child in study:
@@ -141,6 +134,11 @@ def _gather_study_metadata(metadata: Dict) -> None:
                     if ggc.getchildren()[0].text == "pubmed":
                         metadata["pubmed_id"] = ggc.getchildren()[1].text
                         break
+                key, value = _parse_study_link(grandchild)
+                if value != "" and key in discoverable_accessions:
+                    metadata[key] = value
+
+    return metadata
 
 
 def _gather_experiment_metadata(metadata: Dict) -> None:
@@ -154,7 +152,8 @@ def _gather_experiment_metadata(metadata: Dict) -> None:
             for grandchild in child:
                 if grandchild.tag == "LIBRARY_DESCRIPTOR":
                     _gather_library_metadata(metadata, grandchild)
-                    break
+                if grandchild.tag == "DESIGN_DESCRIPTION":
+                    metadata["experiment_design_description"] = grandchild.text
         elif child.tag == "PLATFORM":
             # This structure is extraneously nested.
             metadata["platform_instrument_model"] = child[0][0].text
@@ -171,13 +170,16 @@ def _gather_pubmed_metadata(metadata: Dict):
             return
 
 
-def gather_all_metadata(run_accession):
-    metadata = _gather_run_metadata(run_accession)
+def gather_all_metadata(study_accession):
+    metadata = _gather_study_metadata(study_accession)
 
     if metadata != {}:
         _gather_experiment_metadata(metadata)
         _gather_sample_metadata(metadata)
-        _gather_study_metadata(metadata)
-        _gather_pubmed_metadata(metadata)
+
+        metadata["num_samples"] = _get_number_of_samples(metadata["sample_accession"])
+
+        if "pubmed_id" in metadata.keys():
+            _gather_pubmed_metadata(metadata)
 
     return metadata

@@ -12,29 +12,32 @@ class ImportSRATestCase(APITestCase):
     """
 
     def setUp(self):
-        self.test_accession = "SRR4199304"
+        self.test_accession_with_pubmed_id = "SRP107324"
+        self.test_accession_with_pubmed_id_num_samples = 9
+        self.test_accession_without_pubmed_id = "SRP009841"
+        self.test_accession_without_pubmed_id_num_samples = 1
 
-    def test_import_sra_succeeds(self):
-        user = UserFactory()
-        self.client.force_authenticate(user=user)
+        self.org = OrganizationFactory()
+        self.grant = GrantFactory()
+        self.user = UserFactory()
 
-        org = OrganizationFactory()
-        grant = GrantFactory()
+        self.user.grants.add(self.grant)
+        self.user.save()
 
-        user.grants.add(grant)
-        user.save()
+        self.org.members.add(self.user)
+        self.org.save()
 
-        org.members.add(user)
-        org.save()
+    def test_import_sra_succeeds_for_study_with_pubmed_id(self):
+        self.client.force_authenticate(user=self.user)
 
         url = reverse("import")
         response = self.client.post(
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession,
-                "organization_id": org.id,
-                "grant_id": grant.id,
+                "run_accession": self.test_accession_with_pubmed_id,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
             },
         )
 
@@ -42,67 +45,91 @@ class ImportSRATestCase(APITestCase):
 
         material = Material.objects.get(pk=response.json()["id"])
 
-        self.assertEqual(material.organization, org)
-        self.assertEqual(material.grants.first(), grant)
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.grants.first(), self.grant)
+        self.assertEqual(
+            material.additional_metadata["study_id"], self.test_accession_with_pubmed_id
+        )
+        self.assertEqual(
+            material.additional_metadata["num_samples"],
+            self.test_accession_with_pubmed_id_num_samples,
+        )
 
-    def test_import_sra_from_unauthenticated_fails(self):
-        org = OrganizationFactory()
-        grant = GrantFactory()
+    def test_import_sra_succeeds_for_study_without_pubmed_id(self):
+        self.client.force_authenticate(user=self.user)
 
         url = reverse("import")
         response = self.client.post(
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession,
-                "organization_id": org.id,
-                "grant_id": grant.id,
+                "run_accession": self.test_accession_without_pubmed_id,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.grants.first(), self.grant)
+        self.assertEqual(
+            material.additional_metadata["study_id"], self.test_accession_without_pubmed_id
+        )
+        self.assertEqual(
+            material.additional_metadata["num_samples"],
+            self.test_accession_without_pubmed_id_num_samples,
+        )
+
+    def test_import_sra_from_unauthenticated_fails(self):
+        url = reverse("import")
+        response = self.client.post(
+            url,
+            {
+                "import_type": "SRA",
+                "run_accession": self.test_accession_with_pubmed_id,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_import_sra_from_user_who_does_not_own_grant_fails(self):
-        user = UserFactory()
-        self.client.force_authenticate(user=user)
+        self.client.force_authenticate(user=self.user)
 
-        org = OrganizationFactory()
-        grant = GrantFactory()
-
-        org.members.add(user)
-        org.save()
+        self.org.members.remove(self.user)
+        self.org.save()
 
         url = reverse("import")
         response = self.client.post(
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession,
-                "organization_id": org.id,
-                "grant_id": grant.id,
+                "run_accession": self.test_accession_with_pubmed_id,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
             },
         )
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_import_sra_from_user_not_in_organization_fails(self):
-        user = UserFactory()
-        self.client.force_authenticate(user=user)
+        self.client.force_authenticate(user=self.user)
 
-        org = OrganizationFactory()
-        grant = GrantFactory()
-
-        user.grants.add(grant)
-        user.save()
+        self.user.grants.remove(self.grant)
+        self.user.save()
 
         url = reverse("import")
         response = self.client.post(
             url,
             {
                 "import_type": "SRA",
-                "run_accession": self.test_accession,
-                "organization_id": org.id,
-                "grant_id": grant.id,
+                "run_accession": self.test_accession_with_pubmed_id,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
             },
         )
 

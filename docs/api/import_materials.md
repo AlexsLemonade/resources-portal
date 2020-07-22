@@ -12,7 +12,7 @@ Parameters:
 Name                           | Type   | Description
 -------------------------------|--------|---
 import_type                    | string | The type of resource being imported. Options include: ["SRA"].
-run_accession                  | int    | The accession code for the run represeting the SRA material, in the form "SRR123456".
+study_accession                | int    | The accession code for the study represeting the SRP material, in the form "SRP123456".
 organization_id                | int    | The ID of the organization that this material will be owned by.
 grant_id                       | int    | The ID of the grant that this material will be associated with.
 
@@ -36,7 +36,9 @@ Content-Type application/json
    "additional_metadata":{
       "study_id":"SRA464955",
       "description":"Tails of the GFP positive embryos were amputated. Tails were placed on ice for 30min before tissue disociation. GFP positive cells were sorted by FACS. RNA was harvested from GFP positive cells using Trizol reagent. Illumina TruSeq RNA Sample Prep Kit (Cat#RS-122-2302) was used with 13 ng of total RNA for the construction of sequencing libraries. RNA libraries were prepared for sequencing using standard Illumina protocols.",
-      "platform":"Illumina HiSeq 2500"
+      "platform":"Illumina HiSeq 2500",
+      "technology":"Rna-Seq",
+      "num_samples":9
    },
    "mta_attachment":"None",
    "title":"Proliferation-independent regulation of organ size by Notch signaling",
