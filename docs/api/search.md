@@ -12,7 +12,7 @@ Searches can be performed by adding ```?:search_parameter``` onto the search req
 
 Filtering can narrow down your search results. To filter, specify the name of your filterable field and a value to filter on. For example, to filter your search to dataset materials only, your request would be:
 ```search/materials?category=DATASET```
-A list of all filterable fields for a given search will be returned with the search results, under the "facets" field, in the follwing format:
+A list of all filterable fields for a given search will be returned with the search results, under the "facets" field, in the following format:
 ```json
 "facets": {
     "has_publication": {

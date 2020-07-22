@@ -15,8 +15,9 @@ class UserSerializer(serializers.ModelSerializer):
             "orcid",
             "created_at",
             "updated_at",
+            "organization_settings",
         )
-        read_only_fields = ("username", "created_at", "updated_at")
+        read_only_fields = ("username", "created_at", "updated_at", "organization_settings")
 
 
 class IsUserOrAdmin(BasePermission):

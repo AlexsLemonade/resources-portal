@@ -51,6 +51,18 @@ variable "elasticsearch_instance_type" {
   default = "t2.small.elasticsearch"
 }
 
+variable "aws_ses_domain" {
+  default = "staging.resources.alexslemonade.org."
+}
+
+variable "oauth_url" {
+  default = "MISSING_VALUE"
+}
+
+variable "oauth_client_secret" {
+  default = "MISSING_VALUE"
+}
+
 output "environment_variables" {
   value = [
     {name = "DATABASE_NAME"

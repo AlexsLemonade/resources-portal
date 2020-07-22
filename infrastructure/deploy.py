@@ -131,9 +131,9 @@ def load_env_vars(args):
     if args.env == "dev":
         with open("api-configuration/dev-secrets") as dev_secrets:
             for line in dev_secrets.readlines():
-                [key, val] = line.split("=")
-                # Test this!
-                os.environ[key] = val
+                if line.strip():
+                    [key, val] = line.split("=")
+                    os.environ[key] = val
     else:
         env_prefix = args.env.upper() + "_"
         for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
@@ -146,11 +146,20 @@ def load_env_vars(args):
     os.environ["TF_VAR_region"] = args.region
     os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
     os.environ["TF_VAR_system_version"] = args.system_version
+    os.environ["TF_VAR_oauth_url"] = os.environ["OAUTH_URL"]
+    os.environ["TF_VAR_oauth_client_secret"] = os.environ["OAUTH_CLIENT_SECRET"]
+
+    # This isn't a secret, so include it here to be explicit.
+    if args.env == "dev" or args.env == "staging":
+        os.environ["TF_VAR_aws_ses_domain"] = "staging.resources.alexslemonade.org"
+    if args.env == "prod":
+        os.environ["TF_VAR_aws_ses_domain"] = "resources.alexslemonade.org"
 
 
 def run_terraform(args):
     var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
 
+    # Make sure that Terraform is allowed to shut down gracefully.
     try:
         terraform_process = subprocess.Popen(
             ["terraform", "apply", var_file_arg, "-auto-approve"], stdout=subprocess.PIPE

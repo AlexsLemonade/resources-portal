@@ -1,4 +1,4 @@
-from resources_portal.views.attachment import AttachmentViewSet
+from resources_portal.views.attachment import AttachmentViewSet, local_file_view
 from resources_portal.views.document_views import (
     MaterialDocumentView,
     OrganizationDocumentView,
