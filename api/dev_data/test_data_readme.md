@@ -19,7 +19,7 @@ There are fours organizations which have these users as members:
 
 The members of each organization have the relevant permissions for their status in the organization, as shown below:
 
-                      |PrimaryProf |PostDoc     |SecondaryProf
+Permissions:          |PrimaryProf |PostDoc     |SecondaryProf
 ----------------------|------------|----------- |--------------
 PrimaryLab            |Owner Perms |Member Perms|None
 PrimaryProfPersonalOrg|Owner Perms |None        |None
