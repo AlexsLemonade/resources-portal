@@ -30,7 +30,7 @@ class ImportSRATestCase(APITestCase):
     def test_import_sra_succeeds_for_study_with_pubmed_id(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("import")
+        url = reverse("materials-import")
         response = self.client.post(
             url,
             {
@@ -58,7 +58,7 @@ class ImportSRATestCase(APITestCase):
     def test_import_sra_succeeds_for_study_without_pubmed_id(self):
         self.client.force_authenticate(user=self.user)
 
-        url = reverse("import")
+        url = reverse("materials-import")
         response = self.client.post(
             url,
             {
@@ -84,7 +84,7 @@ class ImportSRATestCase(APITestCase):
         )
 
     def test_import_sra_from_unauthenticated_fails(self):
-        url = reverse("import")
+        url = reverse("materials-import")
         response = self.client.post(
             url,
             {
@@ -103,7 +103,7 @@ class ImportSRATestCase(APITestCase):
         self.org.members.remove(self.user)
         self.org.save()
 
-        url = reverse("import")
+        url = reverse("materials-import")
         response = self.client.post(
             url,
             {
@@ -122,7 +122,7 @@ class ImportSRATestCase(APITestCase):
         self.user.grants.remove(self.grant)
         self.user.save()
 
-        url = reverse("import")
+        url = reverse("materials-import")
         response = self.client.post(
             url,
             {

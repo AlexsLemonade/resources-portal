@@ -18,7 +18,7 @@ class UnsupportedDataTypeError(Exception):
     pass
 
 
-def _get_number_of_samples(srs_string):
+def _get_number_of_samples(srr_string):
     """
     SRR accession codes are provided in the following format:
     "SRR000001, SRR000002, SRR000003-SRR000008"
@@ -27,13 +27,13 @@ def _get_number_of_samples(srs_string):
 
     num_samples = 0
 
-    srs_list = srs_string.split(",")
+    srr_list = srr_string.split(",")
 
-    for srs in srs_list:
-        srs = srs.replace("SRR", "")
-        if "-" in srs:
-            srs_range = srs.split("-")
-            num_samples += int(srs_range[1]) - int(srs_range[0]) + 1
+    for srr in srr_list:
+        srr = srr.replace("SRR", "")
+        if "-" in srr:
+            srr_range = srr.split("-")
+            num_samples += int(srr_range[1]) - int(srr_range[0]) + 1
         else:
             num_samples += 1
 
