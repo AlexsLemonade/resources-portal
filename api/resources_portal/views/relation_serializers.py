@@ -13,6 +13,7 @@ from resources_portal.models import (
     Grant,
     Material,
     MaterialRequest,
+    MaterialShareEvent,
     Organization,
     OrganizationInvitation,
     ShippingRequirements,
@@ -152,7 +153,7 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
 
 class MaterialShareEventsRelationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ShippingRequirements
+        model = MaterialShareEvent
         fields = (
             "id",
             "created_at",

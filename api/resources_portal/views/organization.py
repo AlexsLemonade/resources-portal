@@ -29,6 +29,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "members",
+            "materials",
             "attachments",
         )
 

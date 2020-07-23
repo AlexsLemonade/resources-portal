@@ -45,7 +45,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps")
+        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps", "requests")
 
 
 class MaterialDetailSerializer(MaterialSerializer):
