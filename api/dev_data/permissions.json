@@ -1,0 +1,74 @@
+{
+    "user_organization_permissions": [
+        {
+            "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+            "organization_id": "1",
+            "delete_resources": true,
+            "add_members": true,
+            "manage_permissions": true,
+            "add_owner": true,
+            "remove_members": true,
+            "add_resources": true,
+            "edit_resources": true,
+            "archive_resources": true,
+            "view_requests": true,
+            "approve_requests": true
+        },
+        {
+            "user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+            "organization_id": "2",
+            "delete_resources": true,
+            "add_members": true,
+            "manage_permissions": true,
+            "add_owner": true,
+            "remove_members": true,
+            "add_resources": true,
+            "edit_resources": true,
+            "archive_resources": true,
+            "view_requests": true,
+            "approve_requests": true
+        },
+        {
+            "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+            "organization_id": "1",
+            "delete_resources": false,
+            "add_members": false,
+            "manage_permissions": false,
+            "add_owner": false,
+            "remove_members": false,
+            "add_resources": true,
+            "edit_resources": true,
+            "archive_resources": true,
+            "view_requests": true,
+            "approve_requests": true
+        },
+        {
+            "user_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+            "organization_id": "3",
+            "delete_resources": true,
+            "add_members": true,
+            "manage_permissions": true,
+            "add_owner": true,
+            "remove_members": true,
+            "add_resources": true,
+            "edit_resources": true,
+            "archive_resources": true,
+            "view_requests": true,
+            "approve_requests": true
+        },
+        {
+            "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+            "organization_id": "4",
+            "delete_resources": true,
+            "add_members": true,
+            "manage_permissions": true,
+            "add_owner": true,
+            "remove_members": true,
+            "add_resources": true,
+            "edit_resources": true,
+            "archive_resources": true,
+            "view_requests": true,
+            "approve_requests": true
+        }
+    ]
+}

@@ -92,7 +92,7 @@ Content-Type application/json
             "pubmed_id": "32223680",
             "created_at": "2020-05-08T15:23:20.139476+00:00",
             "updated_at": "2020-05-08T15:23:20.139490+00:00",
-            "organism": [],
+            "organisms": [],
             "has_publication": true,
             "has_pre_print": true,
             "additional_info": "This paper was co-authored by Postworth Docktor.",

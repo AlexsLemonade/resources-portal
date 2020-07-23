@@ -123,10 +123,6 @@ def load_env_vars(args):
 
     For dev environment, just use the variables contained in
     api-configuration/dev-secrets.
-
-    For staging and prod environments, filter all the environment
-    variables just starting with "STAGING_" or "PROD_". This is
-    because github actions will always provide all the env variables.
     """
     if args.env == "dev":
         with open("api-configuration/dev-secrets") as dev_secrets:
@@ -134,12 +130,6 @@ def load_env_vars(args):
                 if line.strip():
                     [key, val] = line.split("=")
                     os.environ[key] = val
-    else:
-        env_prefix = args.env.upper() + "_"
-        for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
-            val = os.environ.get(key)
-            stripped_key = key.split(env_prefix)[-1]
-            os.environ[stripped_key] = val
 
     os.environ["TF_VAR_user"] = args.user
     os.environ["TF_VAR_stage"] = args.env

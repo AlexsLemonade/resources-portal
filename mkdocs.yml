@@ -18,3 +18,4 @@ nav:
       - Attachments: 'api/attachments.md'
       - Material Requests: 'api/material_requests.md'
       - Notification Settings: 'api/user_settings.md'
+      - Importing Materials: 'api/import_materials.md'

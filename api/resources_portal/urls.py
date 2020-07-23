@@ -13,6 +13,7 @@ from resources_portal.views import (
     GrantMaterialViewSet,
     GrantUserViewSet,
     GrantViewSet,
+    ImportViewSet,
     MaterialDocumentView,
     MaterialRequestViewSet,
     MaterialViewSet,
@@ -29,7 +30,7 @@ from resources_portal.views import (
     local_file_view,
 )
 
-router = ExtendedSimpleRouter(trailing_slash=False)
+router = ExtendedSimpleRouter()
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserViewSet, basename="user").register(
     r"organizations",
@@ -75,7 +76,7 @@ router.register(
 
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
 
-search_router = DefaultRouter(trailing_slash=False)
+search_router = DefaultRouter()
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
 search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
 search_router.register(r"users", UserDocumentView, basename="search-users")
@@ -90,6 +91,10 @@ urlpatterns = [
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
     path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns.append(
+    path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
+)
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(

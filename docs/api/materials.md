@@ -24,7 +24,7 @@ needs_irb                | boolean   | Boolean specifying whether the material n
 needs_abstract           | boolean   | Boolean specifying whether the material needs a research abstract to be transferred.
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
-organism                 | string[]  | The organism that the material is associated with. Nullable.
+organisms                | string[]  | The organisms that the material is associated with. Nullable.
 publication_title        | string    | The title of the associated publication. Nullable.
 pre_print_doi            | string    | The DOI of the associated pre-print document. Nullable.
 pre_print_title          | string    | The title of the associated pre-print document. Nullable.
@@ -116,7 +116,7 @@ needs_irb                | boolean   | Boolean specifying whether the material n
 needs_abstract           | boolean   | Boolean specifying whether the material needs a research abstract to be transferred.
 imported                 | boolean   | Boolean specifying whether the material was imported.
 import_source            | string    | String specifying the import source.
-organism                 | string[]  | The organism that the material is associated with. Nullable.
+organisms                | string[]  | The organisms that the material is associated with. Nullable.
 publication_title        | string    | The title of the associated publication. Nullable.
 pre_print_doi            | string    | The DOI of the associated pre-print document. Nullable.
 pre_print_title          | string    | The title of the associated pre-print document. Nullable.
