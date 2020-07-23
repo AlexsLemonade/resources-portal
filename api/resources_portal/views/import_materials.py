@@ -34,7 +34,7 @@ def import_sra(study_accession, organization, grant, user):
             "imported": True,
             "import_source": "SRA",
             "title": metadata["study_title"],
-            "organism": [metadata["organism_name"]],
+            "organisms": [metadata["organism_name"]],
             "url": ENA_URL_TEMPLATE.format(metadata["submission_accession"]),
             "contact_user": user,
             "additional_metadata": additional_metadata,

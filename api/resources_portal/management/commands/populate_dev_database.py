@@ -144,8 +144,12 @@ def populate_dev_database():
     # add permissions for each user
     permissions_json = loads(open("./dev_data/permissions.json").read())
     for permission_set in permissions_json["user_organization_permissions"]:
-        user = User.objects.get(pk=permission_set.pop("user_id"))
-        organization = Organization.objects.get(pk=permission_set.pop("organization_id"))
+        user_id = model_id_dict["User"][parse_int_or_uuid(permission_set.pop("user_id"))]
+        user = User.objects.get(pk=user_id)
+        org_id = model_id_dict["Organization"][
+            parse_int_or_uuid(permission_set.pop("organization_id"))
+        ]
+        organization = Organization.objects.get(pk=org_id)
 
         for perm in permission_set:
             if permission_set[perm]:
