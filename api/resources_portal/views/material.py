@@ -1,4 +1,5 @@
 from rest_framework import serializers, status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
@@ -101,6 +102,9 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         material = self.get_object()
         serializer = self.get_serializer(material, data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data["category"] != material.category:
+            raise ValidationError("Category cannot be changed after a material is created.")
 
         new_organization = serializer.validated_data["organization"]
 

@@ -110,6 +110,15 @@ class TestSingleMaterialTestCase(APITestCase):
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_put_request_cannot_change_category(self):
+        self.client.force_authenticate(user=self.user)
+        material_json = self.client.get(self.url).json()
+
+        material_json["category"] = "PLASMID"
+
+        response = self.client.put(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
         material_json = self.client.get(self.url).json()
