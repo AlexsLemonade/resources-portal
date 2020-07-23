@@ -24,9 +24,8 @@ commands = {
     "rebuild-index": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"'
     ),
-    "populate-db": run_api.format(
-        'bash -c "./wait_for_elasticsearch.py && ./manage.py populate_dev_database"'
-    ),
+    "populate-db": "./recreate_schema.sh && "
+    + run_api.format('bash -c "./wait_for_elasticsearch.py && ./manage.py populate_dev_database"'),
     "recreate-schema": "./recreate_schema.sh",
     "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh {}"'),
     "makemigrations": run_api.format(

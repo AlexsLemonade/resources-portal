@@ -73,7 +73,7 @@ class Material(SafeDeleteModel):
 
     grants = models.ManyToManyField("Grant", through="GrantMaterialAssociation")
 
-    organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
+    organisms = ArrayField(base_field=models.TextField(), blank=True, null=True)
     publication_title = models.TextField(blank=True, null=True)
     pre_print_doi = models.TextField(blank=True, null=True)
     pre_print_title = models.TextField(blank=True, null=True)
