@@ -10,10 +10,13 @@ from rest_framework.response import Response
 
 import boto3
 from botocore.client import Config
-from guardian.core import ObjectPermissionChecker
 
-from resources_portal.models import Attachment, MaterialRequest, Organization
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.models import Attachment
+from resources_portal.views.relation_serializers import (
+    MaterialRelationSerializer,
+    OrganizationRelationSerializer,
+    UserRelationSerializer,
+)
 
 
 class AttachmentSerializer(serializers.ModelSerializer):
@@ -28,45 +31,23 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "sequence_map_for",
+            "owned_by_org",
+            "owned_by_user",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
 
 class AttachmentDetailSerializer(AttachmentSerializer):
     sequence_map_for = MaterialRelationSerializer(many=False, read_only=True)
+    owned_by_org = OrganizationRelationSerializer(many=False)
+    owned_by_user = UserRelationSerializer(many=False)
 
 
-def user_has_perm_on_active_material_request(user, perm):
-
-    # Retrieve all organization permissions in a single query
-    checker = ObjectPermissionChecker(user)
-    organizations = Organization.objects.all()
-    checker.prefetch_perms(organizations)
-
-    # Uses prefetch_related to retrieve all related objects in a single query
-    for organization in user.organizations.all().prefetch_related("materials"):
-        if checker.has_perm(perm, organization):
-            for material in organization.materials.all().prefetch_related("requests"):
-                for request in material.requests.all():
-                    if request.is_active:
-                        return True
-    return False
-
-
-class CanViewRequestsOrIsRequesterOrIsAdminUser(BasePermission):
+class OwnsAttachmentOrIsAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
         return (
-            MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or user_has_perm_on_active_material_request(request.user, "view_requests")
-            or request.user.is_staff
-        )
-
-
-class CanApproveRequestsOrIsRequesterOrIsAdminUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return (
-            MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or user_has_perm_on_active_material_request(request.user, "approve_requests")
+            request.user in obj.owned_by_org.members.all()
+            or request.user == obj.owned_by_user
             or request.user.is_staff
         )
 
@@ -76,18 +57,18 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     parser_classes = (MultiPartParser, FormParser)
 
     def get_serializer_class(self):
-        if self.action == "list":
-            return AttachmentSerializer
+        if self.action == "retrieve":
+            return AttachmentDetailSerializer
 
-        return AttachmentDetailSerializer
+        return AttachmentSerializer
 
     def get_permissions(self):
         if self.action == "list":
             permission_classes = [IsAuthenticated, IsAdminUser]
-        elif self.action == "retrieve":
-            permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequesterOrIsAdminUser]
+        elif self.action == "create":
+            permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequesterOrIsAdminUser]
+            permission_classes = [IsAuthenticated, OwnsAttachmentOrIsAdmin]
 
         return [permission() for permission in permission_classes]
 
@@ -96,13 +77,6 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     # because we want the path to have its id in it.
     @transaction.atomic
     def create(self, request, *args, **kwargs):
-        if not (
-            MaterialRequest.objects.filter(requester=request.user, is_active=True).exists()
-            or user_has_perm_on_active_material_request(request.user, "approve_requests")
-            or request.user.is_staff
-        ):
-            return Response(status=403)
-
         uploaded_file = request.data.pop("file")[0]
 
         if uploaded_file.size / 1000.0 / 1000.0 / 1000.0 > 1:
@@ -110,6 +84,8 @@ class AttachmentViewSet(viewsets.ModelViewSet):
 
         if "filename" not in request.data:
             request.data["filename"] = uploaded_file.name
+
+        request.data["owned_by_user"] = request.user.id
 
         response = super(AttachmentViewSet, self).create(request, *args, **kwargs)
 

@@ -31,7 +31,7 @@
         "growth_temp_celsius": "32.0",
         "growth_strain": "Escherichia coli"
       },
-      "organism": [
+      "organisms": [
         "Danio rerio",
         "Mus musculus"
       ],
@@ -86,7 +86,7 @@
         "number_availible_models": "20",
         "construct_details": "The dominant gene is represented in this sample."
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "publication_title": "",
       "pre_print_doi": "",
       "pre_print_title": "",
@@ -115,7 +115,7 @@
         "number_availible_models": "20",
         "construct_details": "The dominant gene is represented in this sample."
       },
-      "organism": ["Mus musculus"],
+      "organisms": ["Mus musculus"],
       "mta_attachment_id": "1",
       "needs_irb": false,
       "needs_abstract": true,
@@ -178,7 +178,7 @@
         "str_profile": "Amelogenin: X Y\nCSF1PO: 11\nD13S317: 8, 14\nD16S539: 9, 11\nD5S818: 11, 13\nD7S820: 10\nTH01: 6, 9.3\nTPOX: 9, 12\nvWA: 16, 17",
         "passage_number": "21430780"
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "mta_attachment_id": "1",
       "needs_irb": true,
       "needs_abstract": true,
@@ -207,7 +207,7 @@
         "technology": "R-readable array",
         "platform": "Amazon s3 Database"
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "mta_attachment_id": "1",
       "needs_irb": false,
       "needs_abstract": false,
@@ -273,7 +273,7 @@
         "pdx_model_availability": "Availible",
         "goverance_restriction": "None"
       },
-      "organism": [
+      "organisms": [
         "Danio rerio",
         "Mus musculus"
       ],
@@ -305,7 +305,7 @@
         "technology": "R-readable array",
         "platform": "Amazon s3 Database"
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "pubmed_id": "32223680",
       "imported": true,
       "publication_title": "Data collected from genetically modified zebrafish",
@@ -396,7 +396,7 @@
         "insert_delete_genes": "TCGCGCGTTTCGGTGATGACGGTGAAAACCTCTGACACATGCAGCTCCCGGAGACGGTCACAGCTTGTCT",
         "relevant_mutations": "Biofloresence"
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "pubmed_id": "32223680",
       "imported": true,
       "publication_title": "Imported Plasmid",
@@ -418,7 +418,7 @@
         "strain_name": "Domestica salvis",
         "description": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma."
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "pubmed_id": "32223680",
       "imported": true,
       "publication_title": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",
@@ -446,7 +446,7 @@
         "sex": "Male",
         "ethnicity": "N/A"
       },
-      "organism": ["Danio rerio"],
+      "organisms": ["Danio rerio"],
       "pubmed_id": "32223680",
       "imported": true,
       "publication_title": "Cell Line from Zebrafish Sample",
@@ -470,7 +470,7 @@
         "genetic_background": "TTdDss",
         "genotype": "TTdDsS"
       },
-      "organism": ["Mus musculus"],
+      "organisms": ["Mus musculus"],
       "pubmed_id": "32223680",
       "imported": true,
       "publication_title": "Investigation of expression differences between skin and melanomas from a transgenic BRAFV600E zebrafish model of melanoma",

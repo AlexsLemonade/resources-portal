@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
@@ -41,6 +42,18 @@ class Attachment(SafeDeleteModel):
     s3_bucket = models.CharField(max_length=255, blank=True, null=True)
     s3_key = models.CharField(max_length=255, blank=True, null=True)
 
+    owned_by_user = models.ForeignKey(
+        "User", blank=False, null=False, on_delete=models.CASCADE, related_name="owned_attachments"
+    )
+
+    owned_by_org = models.ForeignKey(
+        "Organization",
+        blank=False,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+    )
+
     sequence_map_for = models.ForeignKey(
         "resources_portal.Material",
         null=True,
@@ -72,3 +85,8 @@ class Attachment(SafeDeleteModel):
             return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
         else:
             return None
+
+    def clean(self):
+        super(Attachment, self).clean()
+        if not (self.owned_by_org or self.owned_by_user):
+            raise ValidationError("Either owned_by_user or owned_by_org must be set on Attachment")

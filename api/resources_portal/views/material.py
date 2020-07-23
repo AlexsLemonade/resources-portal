@@ -1,4 +1,5 @@
 from rest_framework import serializers, status, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
@@ -42,6 +43,23 @@ class MaterialSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("id", "created_at", "updated_at")
+
+    def validate(self, data):
+        """Only allow materials with no open requests to be archived.
+        """
+        # If they aren't setting is_archived=True on an existing
+        # material then they're fine.
+        if "id" not in data or "is_archived" not in data or not data["is_archived"]:
+            return data
+
+        material = Material.objects.get(data["id"])
+        for request in material.requests:
+            if request.status not in ["REJECTED", "INVALID", "CANCELLED", "FULFILLED"]:
+                raise serializers.ValidationError(
+                    "All requests for the material must be closed first."
+                )
+
+        return data
 
 
 class MaterialDetailSerializer(MaterialSerializer):
@@ -101,6 +119,9 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         material = self.get_object()
         serializer = self.get_serializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+
+        if serializer.validated_data["category"] != material.category:
+            raise ValidationError("Category cannot be changed after a material is created.")
 
         new_organization = serializer.validated_data["organization"]
 

@@ -16,13 +16,13 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The bucket name of the attachment file.
-s3_key          | string | The key of your s3 object.
+owned_by_org    | int    | The ID of the organization that you would like this attachment to be owned by or shared with.
 sequence_map_for| json   | A material object in json. The material which this attachment is a sequence map for.
 
 *Note:*
 
 - `sequence_map_for` is optional, and should only be provided when the attachment is a sequence map.
+- `owned_by_org` is optional.
 - **[Authorization Protected](authentication.md)**
 
 **Response**:
@@ -32,15 +32,16 @@ Content-Type application/json
 201 CREATED
 
 {
-   "id":18,
-   "filename":"attachment_file",
+   "id":5,
+   "filename":"nerd_sniping.png",
    "description":"A file for testing",
-   "s3_bucket":"bucket-name",
-   "s3_key":"keyname",
+   "download_url":"/v1/uploaded-file/attachment_5/nerd_sniping.png",
    "s3_resource_deleted":false,
-   "created_at":"2020-07-01T16:53:13+0000",
-   "updated_at":"2020-07-01T16:53:13+0000",
-   "sequence_map_for":"None"
+   "created_at":"2020-07-22T05:08:21+0000",
+   "updated_at":"2020-07-22T05:08:21+0000",
+   "sequence_map_for":"None",
+   "owned_by_org":3,
+   "owned_by_user":"06fca1ec-8a9d-485b-8a37-3eba49081aec"
 }
 ```
 
@@ -54,8 +55,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - The only users who can view an attachment are:
-   1. Users who are part of an organization which has an active material request
-   2. Users who are the `requester` on an active material request
+   1. The `owned_by_user`
+   2. Members of the `owned_by_organization`
    3. Admins
 
 **Response**:
@@ -65,15 +66,16 @@ Content-Type application/json
 200 OK
 
 {
-   "id":21,
-   "filename":"attachment_file",
+   "id":5,
+   "filename":"nerd_sniping.png",
    "description":"A file for testing",
-   "s3_bucket":"bucket-name",
-   "s3_key":"keyname",
+   "download_url":"/v1/uploaded-file/attachment_5/nerd_sniping.png",
    "s3_resource_deleted":false,
-   "created_at":"2020-07-01T17:09:17+0000",
-   "updated_at":"2020-07-01T17:09:17+0000",
-   "sequence_map_for":"None"
+   "created_at":"2020-07-22T05:08:21+0000",
+   "updated_at":"2020-07-22T05:08:21+0000",
+   "sequence_map_for":"None",
+   "owned_by_org":3,
+   "owned_by_user":"06fca1ec-8a9d-485b-8a37-3eba49081aec"
 }
 ```
 
@@ -96,15 +98,16 @@ Content-Type application/json
 
 [
    {
-      "id":21,
-      "filename":"attachment_file",
+      "id":5,
+      "filename":"nerd_sniping.png",
       "description":"A file for testing",
-      "s3_bucket":"bucket-name",
-      "s3_key":"keyname",
+      "download_url":"/v1/uploaded-file/attachment_5/nerd_sniping.png",
       "s3_resource_deleted":false,
-      "created_at":"2020-07-01T17:09:17+0000",
-      "updated_at":"2020-07-01T17:09:17+0000",
-      "sequence_map_for":"None"
+      "created_at":"2020-07-22T05:08:21+0000",
+      "updated_at":"2020-07-22T05:08:21+0000",
+      "sequence_map_for":"None",
+      "owned_by_org":3,
+      "owned_by_user":"06fca1ec-8a9d-485b-8a37-3eba49081aec"
    }
 ]
 
@@ -122,17 +125,17 @@ Name            | Type   | Description
 ----------------|--------|---
 filename        | string | The filename of the attachment.
 description     | string | A description of the attachment.
-s3_bucket       | string | The bucket name of the attachment file.
-s3_key          | string | The key of your s3 object.
-sequence_map_for| json   | A material object in json, the material which this attachment is a sequence map for.
+owned_by_user   | uuid   | The ID of the owning user.
+owned_by_org    | int    | The ID of the organization that you would like this attachment to be owned by or shared with.
+sequence_map_for| json   | A material object in json. The material which this attachment is a sequence map for.
 
 *Note:*
 
 - All parameters are optional
 - **[Authorization Protected](authentication.md)**
 - The only users who can update an attachment are:
-   1. Users who are part of an organization which has an active material request
-   2. Users who are the `requester` on an active material request
+   1. The `owned_by_user`
+   2. Members of the `owned_by_organization`
    3. Admins
 
 **Response**:
@@ -142,15 +145,16 @@ Content-Type application/json
 200 OK
 
 {
-   "id":21,
-   "filename":"attachment_file",
+   "id":5,
+   "filename":"nerd_sniping.png",
    "description":"A file for testing",
-   "s3_bucket":"bucket-name",
-   "s3_key":"keyname",
+   "download_url":"/v1/uploaded-file/attachment_5/nerd_sniping.png",
    "s3_resource_deleted":false,
-   "created_at":"2020-07-01T17:09:17+0000",
-   "updated_at":"2020-07-01T17:09:17+0000",
-   "sequence_map_for":"None"
+   "created_at":"2020-07-22T05:08:21+0000",
+   "updated_at":"2020-07-22T05:08:21+0000",
+   "sequence_map_for":"None",
+   "owned_by_org":3,
+   "owned_by_user":"06fca1ec-8a9d-485b-8a37-3eba49081aec"
 }
 ```
 
@@ -164,8 +168,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - The only users who can delete an attachment are:
-   1. Users who are part of an organization which has an active material request
-   2. Users who are the `requester` on an active material request
+   1. The `owned_by_user`
+   2. Members of the `owned_by_organization`
    3. Admins
 
 **Response**:

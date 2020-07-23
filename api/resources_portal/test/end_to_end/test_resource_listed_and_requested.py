@@ -3,10 +3,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_dev_database import populate_test_database
-from resources_portal.models import MaterialRequest, Notification, Organization, User
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
+from resources_portal.models import (
+    MaterialRequest,
+    Notification,
+    Organization,
+    OrganizationUserSetting,
+    User,
+)
 from resources_portal.test.factories import MaterialFactory
-from resources_portal.test.mocks import clean_test_file_uploads
+from resources_portal.test.utils import clean_test_file_uploads
 
 
 class TestResourceListedAndRequested(APITestCase):
@@ -29,7 +35,7 @@ class TestResourceListedAndRequested(APITestCase):
 
     def setUp(self):
         clean_test_file_uploads()
-        populate_test_database()
+        populate_dev_database()
 
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
@@ -38,6 +44,7 @@ class TestResourceListedAndRequested(APITestCase):
         self.primary_lab = Organization.objects.get(name="PrimaryLab")
 
         self.primary_lab.assign_member_perms(self.post_doc)
+        OrganizationUserSetting.objects.create(user=self.post_doc, organization=self.primary_lab)
 
         Notification.objects.all().delete()
 
@@ -45,7 +52,7 @@ class TestResourceListedAndRequested(APITestCase):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
+        material = MaterialFactory(contact_user=self.post_doc, organization=self.primary_lab)
         material_data = model_to_dict(material)
 
         grant_list = []
