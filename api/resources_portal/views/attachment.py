@@ -47,9 +47,9 @@ class AttachmentDetailSerializer(AttachmentSerializer):
     mta_materials = MaterialRelationSerializer(many=True, read_only=True)
     owned_by_org = OrganizationRelationSerializer(many=False)
     owned_by_user = UserRelationSerializer(many=False)
-    requests_signed_mta = MaterialRequestRelationSerializer()
-    requests_irb = MaterialRequestRelationSerializer()
-    requests_executed_mta = MaterialRequestRelationSerializer()
+    requests_signed_mta = MaterialRequestRelationSerializer(many=False)
+    requests_irb = MaterialRequestRelationSerializer(many=False)
+    requests_executed_mta = MaterialRequestRelationSerializer(many=False)
 
 
 class OwnsAttachmentOrIsAdmin(BasePermission):
