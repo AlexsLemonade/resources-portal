@@ -5,7 +5,7 @@ from resources_portal.models import User
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     MaterialRequestRelationSerializer,
-    MaterialShareEventsRelationSerializer,
+    OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
 )
 
@@ -21,8 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
             "orcid",
             "owned_attachments",
             "material_requests",
+            "invitations",
             "organizations",
-            "organization_settings",
+            "owned_organizations",
             "assignments",
             "created_at",
             "updated_at",
@@ -33,15 +34,18 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
             "attachments",
             "material_requests",
+            "invitations",
             "assignments",
             "organizations",
-            "organization_settings",
+            "owned_organizations",
         )
 
     owned_attachments = AttachmentRelationSerializer(many=True, read_only=True)
     organizations = OrganizationRelationSerializer(many=True, read_only=True)
+    owned_organizations = OrganizationRelationSerializer(many=True, read_only=True)
     material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
+    invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
 
 
 class IsUserOrAdmin(BasePermission):

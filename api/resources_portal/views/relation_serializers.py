@@ -14,6 +14,7 @@ from resources_portal.models import (
     Material,
     MaterialRequest,
     Organization,
+    OrganizationInvitation,
     ShippingRequirements,
     User,
 )
@@ -161,4 +162,27 @@ class MaterialShareEventsRelationSerializer(serializers.ModelSerializer):
             "event_type",
             "created_by",
             "assigned_to",
+        )
+
+
+class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrganizationInvitation
+        fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "status",
+            "invite_or_request",
+            "organization",
+            "request_reciever",
+            "requester",
+        )
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "organization",
+            "request_reciever",
+            "requester",
         )
