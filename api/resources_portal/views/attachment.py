@@ -14,6 +14,7 @@ from botocore.client import Config
 from resources_portal.models import Attachment
 from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
+    MaterialRequestRelationSerializer,
     OrganizationRelationSerializer,
     UserRelationSerializer,
 )
@@ -31,6 +32,10 @@ class AttachmentSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "sequence_map_for",
+            "mta_materials",
+            "requests_signed_mta",
+            "requests_irb",
+            "requests_executed_mta",
             "owned_by_org",
             "owned_by_user",
         )
@@ -39,8 +44,12 @@ class AttachmentSerializer(serializers.ModelSerializer):
 
 class AttachmentDetailSerializer(AttachmentSerializer):
     sequence_map_for = MaterialRelationSerializer(many=False, read_only=True)
+    mta_materials = MaterialRelationSerializer(many=True, read_only=True)
     owned_by_org = OrganizationRelationSerializer(many=False)
     owned_by_user = UserRelationSerializer(many=False)
+    requests_signed_mta = MaterialRequestRelationSerializer()
+    requests_irb = MaterialRequestRelationSerializer()
+    requests_executed_mta = MaterialRequestRelationSerializer()
 
 
 class OwnsAttachmentOrIsAdmin(BasePermission):

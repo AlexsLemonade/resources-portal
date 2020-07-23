@@ -7,6 +7,8 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 from resources_portal.models import Material, Organization
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
+    MaterialRequestSerializer,
+    MaterialShareEventsRelationSerializer,
     ShippingRequirementsRelationSerializer,
 )
 from resources_portal.views.user import UserSerializer
@@ -24,12 +26,14 @@ class MaterialSerializer(serializers.ModelSerializer):
             "pubmed_id",
             "additional_metadata",
             "contact_user",
+            "sequence_maps",
             "mta_attachment",
             "needs_mta",
             "needs_irb",
             "needs_abstract",
             "imported",
             "shipping_requirements",
+            "share_events",
             "import_source",
             "grants",
             "publication_title",
@@ -38,16 +42,20 @@ class MaterialSerializer(serializers.ModelSerializer):
             "citation",
             "additional_info",
             "embargo_date",
+            "requests",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps", "share_events")
 
 
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserSerializer()
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirements = ShippingRequirementsRelationSerializer()
+    sequence_maps = AttachmentRelationSerializer(many=True)
+    requests = MaterialRequestSerializer(many=True)
+    share_events = MaterialShareEventsRelationSerializer(many=True, read_only=True)
 
 
 class HasAddResources(BasePermission):
