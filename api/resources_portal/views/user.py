@@ -24,8 +24,6 @@ class UserSerializer(serializers.ModelSerializer):
             "organizations",
             "organization_settings",
             "assignments",
-            "material_share_assignments",
-            "material_share_events",
             "created_at",
             "updated_at",
         )
@@ -36,8 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
             "attachments",
             "material_requests",
             "assignments",
-            "material_share_assignments",
-            "material_share_events",
             "organizations",
             "organization_settings",
         )
@@ -46,8 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
     organizations = OrganizationRelationSerializer(many=True, read_only=True)
     material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
-    material_share_assignments = MaterialShareEventsRelationSerializer(many=True, read_only=True)
-    material_share_events = MaterialShareEventsRelationSerializer(many=True, read_only=True)
 
 
 class IsUserOrAdmin(BasePermission):
