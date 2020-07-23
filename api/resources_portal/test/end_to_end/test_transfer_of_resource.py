@@ -1,19 +1,10 @@
-from unittest.mock import patch
-
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_dev_database import populate_test_database
-from resources_portal.models import (
-    Material,
-    MaterialRequest,
-    Notification,
-    Organization,
-    OrganizationInvitation,
-    User,
-)
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
+from resources_portal.models import Notification, Organization, User
 from resources_portal.test.factories import MaterialFactory
 
 
@@ -33,7 +24,7 @@ class TransferOfResource(APITestCase):
     """
 
     def setUp(self):
-        populate_test_database()
+        populate_dev_database()
 
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.post_doc = User.objects.get(username="PostDoc")
@@ -104,10 +95,6 @@ class TransferOfResource(APITestCase):
             {"organization": self.primary_lab.id},
             format="json",
         )
-
-        import pdb
-
-        pdb.set_trace()
 
         material.refresh_from_db()
 
