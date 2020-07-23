@@ -30,7 +30,7 @@ from resources_portal.views import (
     local_file_view,
 )
 
-router = ExtendedSimpleRouter(trailing_slash=False)
+router = ExtendedSimpleRouter()
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserViewSet, basename="user").register(
     r"organizations",
@@ -76,7 +76,7 @@ router.register(
 
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
 
-search_router = DefaultRouter(trailing_slash=False)
+search_router = DefaultRouter()
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
 search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
 search_router.register(r"users", UserDocumentView, basename="search-users")
