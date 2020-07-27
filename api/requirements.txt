@@ -51,3 +51,6 @@ drf_yasg==1.17.1
 # Orcid
 orcid==1.0.3
 furl==2.1.0
+
+# API Libaries
+GEOparse==2.0.1
