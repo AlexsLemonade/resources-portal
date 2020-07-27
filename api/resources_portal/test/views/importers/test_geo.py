@@ -43,10 +43,6 @@ class ImportGEOTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        import pdb
-
-        pdb.set_trace()
-
         material = Material.objects.get(pk=response.json()["id"])
 
         self.assertEqual(material.organization, self.org)
