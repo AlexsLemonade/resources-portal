@@ -2,6 +2,12 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import User
+from resources_portal.views.relation_serializers import (
+    AttachmentRelationSerializer,
+    MaterialRequestRelationSerializer,
+    OrganizationInvitationRelationSerializer,
+    OrganizationRelationSerializer,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -13,11 +19,33 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "orcid",
+            "owned_attachments",
+            "material_requests",
+            "invitations",
+            "organizations",
+            "owned_organizations",
+            "assignments",
             "created_at",
             "updated_at",
-            "organization_settings",
         )
-        read_only_fields = ("username", "created_at", "updated_at", "organization_settings")
+        read_only_fields = (
+            "username",
+            "created_at",
+            "updated_at",
+            "attachments",
+            "material_requests",
+            "invitations",
+            "assignments",
+            "organizations",
+            "owned_organizations",
+        )
+
+    owned_attachments = AttachmentRelationSerializer(many=True, read_only=True)
+    organizations = OrganizationRelationSerializer(many=True, read_only=True)
+    owned_organizations = OrganizationRelationSerializer(many=True, read_only=True)
+    material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
+    assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
+    invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
 
 
 class IsUserOrAdmin(BasePermission):
