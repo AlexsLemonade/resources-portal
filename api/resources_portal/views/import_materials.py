@@ -4,6 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from resources_portal.importers import geo, protocols_io, sra
+from resources_portal.importers.protocols_io import ProtocolNotFoundError
 from resources_portal.models import Grant, Material, Organization
 
 
@@ -67,22 +68,18 @@ def import_dataset(import_source, accession_code, organization, grant, user):
     return JsonResponse(material_json, status=201)
 
 
-def import_protocol(protocol_id, organization, grant, user):
+def import_protocol(protocol_doi, organization, grant, user):
     """
     This function returns a Response object containing
     the json representation of the newly-created material object
     made using data from the protocols.io API.
     """
 
-    # NOTE: GIVE SHITTY DOI
     try:
-        metadata = protocols_io.gather_all_metadata(protocol_id)
-    except KeyError as error:
+        metadata = protocols_io.gather_all_metadata(protocol_doi)
+    except ProtocolNotFoundError:
         return JsonResponse(
-            {
-                "error": f"The protocol could not be imported due to the following error: {str(error)}"
-            },
-            status=400,
+            {"error": f"The protocol matching DOI {protocol_doi} could not be found"}, status=400,
         )
 
     additional_metadata = {

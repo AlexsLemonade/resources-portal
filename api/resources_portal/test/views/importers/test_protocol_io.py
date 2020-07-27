@@ -20,6 +20,8 @@ class ImportProtocolTestCase(APITestCase):
             "Must be made fresh before experiment because of the Sucrose. For 20 mL solutions."
         )
 
+        self.invalid_protocol_doi = "dx.doi.org/10.17504/protocols.io.pikachu"
+
         self.org = OrganizationFactory()
         self.grant = GrantFactory()
         self.user = UserFactory()
@@ -45,16 +47,27 @@ class ImportProtocolTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        import pdb
-
-        pdb.set_trace()
-
         material = Material.objects.get(pk=response.json()["id"])
 
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(material.additional_metadata["protocol_name"], self.test_protocol_name)
         self.assertEqual(material.additional_metadata["abstract"], self.test_protocol_abstract)
+
+    def test_import_protocol_with_invalid_doi_fails(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "import_type": "PROTOCOLS.IO",
+                "protocol_doi": self.invalid_protocol_doi,
+                "organization_id": self.org.id,
+                "grant_id": self.grant.id,
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_import_from_unauthenticated_fails(self):
         response = self.client.post(

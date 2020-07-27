@@ -8,6 +8,10 @@ PROTOCOL_IO_API_TEMPLATE = "https://www.protocols.io/api/v3/protocols/{doi_suffi
 PROTOCOL_IO_VIEW_TEMPLATE = "https://www.protocols.io/view/{protocol_uri}"
 
 
+class ProtocolNotFoundError(Exception):
+    pass
+
+
 class HTMLDataParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
@@ -30,7 +34,10 @@ def gather_all_metadata(protocol_doi):
     formatted_metadata_URL = PROTOCOL_IO_API_TEMPLATE.format(doi_suffix=doi_suffix)
     response = requests_retry_session().get(formatted_metadata_URL)
 
-    protocol_json = loads(response.text)["protocol"]
+    if "protocol" in response.json():
+        protocol_json = response.json()["protocol"]
+    else:
+        raise ProtocolNotFoundError
 
     html_parser = HTMLDataParser()
     html_parser.feed(protocol_json["description"])
