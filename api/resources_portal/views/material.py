@@ -122,10 +122,13 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
-        serializer = self.get_serializer(material, data=request.data)
+        serializer = self.get_serializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        if serializer.validated_data["category"] != material.category:
+        if (
+            "category" in serializer.validated_data
+            and serializer.validated_data["category"] != material.category
+        ):
             raise ValidationError("Category cannot be changed after a material is created.")
 
         new_organization = serializer.validated_data["organization"]

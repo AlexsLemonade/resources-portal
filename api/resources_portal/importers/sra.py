@@ -1,15 +1,11 @@
 import xml.etree.ElementTree as ET
 from typing import Dict
 
-from resources_portal.views.import_materials import _requests_retry_session
+from resources_portal.importers.utils import get_pubmed_publication_title, requests_retry_session
 
 ENA_URL_TEMPLATE = '"https://www.ebi.ac.uk/ena/data/view/{}"'
 
 ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}&display=xml"
-
-PUBMED_METADATA_URL_TEMPLATE = (
-    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id={}"
-)
 
 
 class UnsupportedDataTypeError(Exception):
@@ -73,23 +69,26 @@ def _parse_study_link(run_link: ET.ElementTree) -> (str, str):
 
 def _gather_sample_metadata(metadata: Dict) -> None:
     formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(metadata["sample_accession"])
-    response = _requests_retry_session().get(formatted_metadata_URL)
+    response = requests_retry_session().get(formatted_metadata_URL)
     sample_xml = ET.fromstring(response.text)
 
     sample = sample_xml[0]
 
+    organism_names = set()
     for child in sample:
         if child.tag == "TITLE":
             metadata["sample_title"] = child.text
         elif child.tag == "SAMPLE_NAME":
             for grandchild in child:
                 if grandchild.tag == "SCIENTIFIC_NAME":
-                    metadata["organism_name"] = grandchild.text
+                    organism_names.add(grandchild.text.replace(" ", "_").upper())
+
+    metadata["organism_names"] = list(organism_names)
 
 
 def _gather_study_metadata(study_accession: str) -> None:
     formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(study_accession)
-    response = _requests_retry_session().get(formatted_metadata_URL)
+    response = requests_retry_session().get(formatted_metadata_URL)
     study_xml = ET.fromstring(response.text)
 
     discoverable_accessions = [
@@ -124,7 +123,7 @@ def _gather_study_metadata(study_accession: str) -> None:
 
 def _gather_experiment_metadata(metadata: Dict) -> None:
     formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(metadata["experiment_accession"])
-    response = _requests_retry_session().get(formatted_metadata_URL)
+    response = requests_retry_session().get(formatted_metadata_URL)
     experiment_xml = ET.fromstring(response.text)
 
     experiment = experiment_xml[0]
@@ -141,14 +140,9 @@ def _gather_experiment_metadata(metadata: Dict) -> None:
 
 
 def _gather_pubmed_metadata(metadata: Dict):
-    formatted_metadata_URL = PUBMED_METADATA_URL_TEMPLATE.format(metadata["pubmed_id"])
-    response = _requests_retry_session().get(formatted_metadata_URL)
-    pubmed_xml = ET.fromstring(response.text)[0]
-
-    for child in pubmed_xml:
-        if "Name" in child.attrib and child.attrib["Name"] == "Title":
-            metadata["publication_title"] = child.text
-            return
+    pubmed_title = get_pubmed_publication_title(metadata["pubmed_id"])
+    if pubmed_title:
+        metadata["publication_title"] = pubmed_title
 
 
 def gather_all_sra_metadata(study_accession):
@@ -162,5 +156,13 @@ def gather_all_sra_metadata(study_accession):
 
         if "pubmed_id" in metadata.keys():
             _gather_pubmed_metadata(metadata)
+
+    # Make sure the specific fields that are needed are present with
+    # the expected keys.
+    metadata["url"] = ENA_URL_TEMPLATE.format(metadata["submission_accession"])
+    metadata["description"] = metadata["study_abstract"]
+    metadata["platform"] = metadata["platform_instrument_model"]
+    metadata["technology"] = metadata["library_strategy"]
+    metadata["title"] = metadata["study_title"]
 
     return metadata
