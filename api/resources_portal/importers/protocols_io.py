@@ -1,7 +1,6 @@
 from html.parser import HTMLParser
-from json import loads
 
-from resources_portal.importers.utils import get_pubmed_publication_title, requests_retry_session
+from resources_portal.importers.utils import requests_retry_session
 
 PROTOCOL_IO_API_TEMPLATE = "https://www.protocols.io/api/v3/protocols/{doi_suffix}"
 
