@@ -30,6 +30,8 @@ class SearchMaterialsEndpointTestCase(APITestCase):
 
     @classmethod
     def setUpClass(cls):
+        super(SearchMaterialsEndpointTestCase, cls).setUpClass()
+
         populate_dev_database()
 
         # Put newly created materials in the search index
@@ -44,10 +46,10 @@ class SearchMaterialsEndpointTestCase(APITestCase):
         cls.material1 = Material.objects.get(title="Melanoma Reduction Plasmid")
         cls.material2 = Material.objects.get(title="Allele Extraction Protocol")
 
-        super(SearchMaterialsEndpointTestCase, cls).setUpClass()
-
     @classmethod
     def tearDownClass(cls):
+        super(SearchMaterialsEndpointTestCase, cls).tearDownClass()
+
         # Rebuild search index with what's actaully in the django database
         call_command("search_index", "-f", "--rebuild")
 
@@ -260,3 +262,147 @@ class SearchMaterialsEndpointTestCase(APITestCase):
         material_count = int(response.json()["count"])
 
         self.assertEqual(material_count, 0)
+
+
+class SearchUsersEndpointTestCase(APITestCase):
+    """
+    Tests /search/users operations.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super(SearchUsersEndpointTestCase, cls).setUpClass()
+
+        populate_dev_database()
+
+        # Put newly created materials in the search index
+        call_command("search_index", "-f", "--rebuild")
+
+        cls.primary_prof = User.objects.get(username="PrimaryProf")
+
+    @classmethod
+    def tearDownClass(cls):
+        super(SearchUsersEndpointTestCase, cls).tearDownClass()
+
+        # Rebuild search index with what's actaully in the django database
+        call_command("search_index", "-f", "--rebuild")
+
+    def test_search_for_name_returns_given_user(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = (
+            reverse("search-users-list")
+            + "?search="
+            + self.primary_prof.first_name
+            + " "
+            + self.primary_prof.last_name
+        )
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        first_result_id = response.json()["results"][0]["id"]
+
+        self.assertEqual(first_result_id, str(self.primary_prof.id))
+
+    def test_order_by_published_name_succeeds(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = reverse("search-users-list") + "?ordering=published_name"
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user_published_names = []
+        for user in response.json()["results"]:
+            if user["published_name"]:
+                user_published_names.append(user["published_name"])
+
+        self.assertEqual(user_published_names, sorted(user_published_names))
+
+    def test_empty_search_returns_no_results(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = reverse("search-users-list") + "?search="
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        user_count = int(response.json()["count"])
+
+        self.assertEqual(user_count, 0)
+
+
+class SearchOrganizationsEndpointTestCase(APITestCase):
+    """
+    Tests /search/organizations operations.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super(SearchOrganizationsEndpointTestCase, cls).setUpClass()
+
+        populate_dev_database()
+
+        # Put newly created materials in the search index
+        call_command("search_index", "-f", "--rebuild")
+
+        cls.primary_prof = User.objects.get(username="PrimaryProf")
+        cls.primary_lab = Organization.objects.get(name="PrimaryLab")
+
+    @classmethod
+    def tearDownClass(cls):
+        super(SearchOrganizationsEndpointTestCase, cls).tearDownClass()
+
+        # Rebuild search index with what's actaully in the django database
+        call_command("search_index", "-f", "--rebuild")
+
+    def test_search_for_organization_name_returns_given_organization(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = reverse("search-organizations-list") + "?search=" + self.primary_lab.name
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        first_result_id = int(response.json()["results"][0]["id"])
+
+        self.assertEqual(first_result_id, self.primary_lab.id)
+
+    def test_search_for_owner_attribute_returns_related_organizations(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = reverse("search-organizations-list") + "?search=" + self.primary_prof.email
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        organization_count = int(response.json()["count"])
+
+        organization_names = []
+        for org in response.json()["results"]:
+            organization_names.append(org["name"])
+
+        self.assertEqual(
+            organization_count, len(Organization.objects.filter(owner=self.primary_prof))
+        )
+
+        for name in organization_names:
+            self.assertTrue(
+                Organization.objects.filter(name=name, owner=self.primary_prof).exists()
+            )
+
+    def test_ordering_on_updated_at_succeeds(self):
+        self.client.force_authenticate(user=self.primary_prof)
+
+        search_url = reverse("search-organizations-list") + "?ordering=" + "updated_at"
+
+        response = self.client.get(search_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        organization_dates = []
+        for org in response.json()["results"]:
+            date = datetime.datetime.strptime(org["updated_at"], "%Y-%m-%dT%H:%M:%S.%f%z").date()
+            organization_dates.append(date)
+
+        self.assertEqual(organization_dates, sorted(organization_dates))
