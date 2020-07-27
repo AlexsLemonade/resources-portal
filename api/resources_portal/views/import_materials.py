@@ -3,16 +3,19 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
+from resources_portal.importers import geo, sra
 from resources_portal.models import Grant, Material, Organization
-from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_metadata
 
 
-def import_sra(study_accession, organization, grant, user):
+def import_dataset(import_source, accession_code, organization, grant, user):
+    """This function returns a Response object containing the json
+    representation of the newly-created material object made using
+    metadata from the import_source's API.
     """
-    This function returns a Response object containing the json representation of the newly-created material object
-    made using SRA data.
-    """
-    metadata = gather_all_metadata(study_accession)
+    if import_source == "SRA":
+        metadata = sra.gather_all_metadata(accession_code)
+    elif import_source == "GEO":
+        metadata = geo.gather_all_metadata(accession_code)
 
     if metadata == {}:
         return JsonResponse(
@@ -21,10 +24,10 @@ def import_sra(study_accession, organization, grant, user):
 
     try:
         additional_metadata = {
-            "study_id": metadata["study_accession"],
-            "description": metadata["study_abstract"],
-            "platform": metadata["platform_instrument_model"],
-            "technology": metadata["library_strategy"],
+            "study_id": accession_code,
+            "description": metadata["description"],
+            "platform": metadata["platform"],
+            "technology": metadata["technology"],
             "num_samples": metadata["num_samples"],
         }
 
@@ -32,15 +35,15 @@ def import_sra(study_accession, organization, grant, user):
             "organization": organization,
             "category": "DATASET",
             "imported": True,
-            "import_source": "SRA",
-            "title": metadata["study_title"],
-            "organisms": [metadata["organism_name"]],
-            "url": ENA_URL_TEMPLATE.format(metadata["submission_accession"]),
+            "import_source": import_source,
+            "title": metadata["title"],
+            "organisms": metadata["organism_names"],
+            "url": metadata["url"],
             "contact_user": user,
             "additional_metadata": additional_metadata,
         }
 
-        # Not all SRA objects will have a publication it seems. This accounts for that.
+        # Not all datasets will have a publication. This accounts for that.
         if "pubmed_id" in metadata.keys():
             material_json["pubmed_id"] = metadata["pubmed_id"]
             material_json["publication_title"] = metadata["publication_title"]
@@ -86,8 +89,10 @@ class ImportViewSet(viewsets.ViewSet):
 
         import_type = request.data["import_type"]
 
-        if import_type == "SRA":
-            return import_sra(request.data["study_accession"], organization, grant, request.user)
+        if import_type == "SRA" or import_type == "GEO":
+            return import_dataset(
+                import_type, request.data["study_accession"], organization, grant, request.user
+            )
         else:
             return JsonResponse(
                 {"error": f'Invalid value for parameter "import_type": {import_type}.'}, status=400

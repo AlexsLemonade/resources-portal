@@ -6,16 +6,16 @@ from resources_portal.models import Material
 from resources_portal.test.factories import GrantFactory, OrganizationFactory, UserFactory
 
 
-class ImportSRATestCase(APITestCase):
+class ImportGEOTestCase(APITestCase):
     """
-    Tests importing via SRA.
+    Tests importing via GEO.
     """
 
     def setUp(self):
-        self.test_accession_with_pubmed_id = "SRP107324"
-        self.test_accession_with_pubmed_id_num_samples = 9
-        self.test_accession_without_pubmed_id = "SRP009841"
-        self.test_accession_without_pubmed_id_num_samples = 6
+        self.test_accession_with_pubmed_id = "GSE24528"
+        self.test_accession_with_pubmed_id_num_samples = 15
+        self.test_accession_without_pubmed_id = "GSE44094"
+        self.test_accession_without_pubmed_id_num_samples = 3
 
         self.org = OrganizationFactory()
         self.grant = GrantFactory()
@@ -27,14 +27,14 @@ class ImportSRATestCase(APITestCase):
         self.org.members.add(self.user)
         self.org.save()
 
-    def test_import_sra_succeeds_for_study_with_pubmed_id(self):
+    def test_import_succeeds_for_study_with_pubmed_id(self):
         self.client.force_authenticate(user=self.user)
 
         url = reverse("materials-import")
         response = self.client.post(
             url,
             {
-                "import_type": "SRA",
+                "import_type": "GEO",
                 "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -55,14 +55,14 @@ class ImportSRATestCase(APITestCase):
             self.test_accession_with_pubmed_id_num_samples,
         )
 
-    def test_import_sra_succeeds_for_study_without_pubmed_id(self):
+    def test_import_succeeds_for_study_without_pubmed_id(self):
         self.client.force_authenticate(user=self.user)
 
         url = reverse("materials-import")
         response = self.client.post(
             url,
             {
-                "import_type": "SRA",
+                "import_type": "GEO",
                 "study_accession": self.test_accession_without_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -83,12 +83,12 @@ class ImportSRATestCase(APITestCase):
             self.test_accession_without_pubmed_id_num_samples,
         )
 
-    def test_import_sra_from_unauthenticated_fails(self):
+    def test_import_from_unauthenticated_fails(self):
         url = reverse("materials-import")
         response = self.client.post(
             url,
             {
-                "import_type": "SRA",
+                "import_type": "GEO",
                 "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -97,7 +97,7 @@ class ImportSRATestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_import_sra_from_user_who_does_not_own_grant_fails(self):
+    def test_import_from_user_who_does_not_own_grant_fails(self):
         self.client.force_authenticate(user=self.user)
 
         self.org.members.remove(self.user)
@@ -107,7 +107,7 @@ class ImportSRATestCase(APITestCase):
         response = self.client.post(
             url,
             {
-                "import_type": "SRA",
+                "import_type": "GEO",
                 "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -116,7 +116,7 @@ class ImportSRATestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_import_sra_from_user_not_in_organization_fails(self):
+    def test_import_from_user_not_in_organization_fails(self):
         self.client.force_authenticate(user=self.user)
 
         self.user.grants.remove(self.grant)
@@ -126,7 +126,7 @@ class ImportSRATestCase(APITestCase):
         response = self.client.post(
             url,
             {
-                "import_type": "SRA",
+                "import_type": "GEO",
                 "study_accession": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
