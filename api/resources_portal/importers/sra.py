@@ -3,7 +3,7 @@ from typing import Dict
 
 from resources_portal.importers.utils import get_pubmed_publication_title, requests_retry_session
 
-ENA_URL_TEMPLATE = '"https://www.ebi.ac.uk/ena/data/view/{}"'
+ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
 
 ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}&display=xml"
 
@@ -145,7 +145,7 @@ def _gather_pubmed_metadata(metadata: Dict):
         metadata["publication_title"] = pubmed_title
 
 
-def gather_all_sra_metadata(study_accession):
+def gather_all_metadata(study_accession):
     metadata = _gather_study_metadata(study_accession)
 
     if metadata != {}:

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from resources_portal.importers import geo, sra
+from resources_portal.importers import geo, protocols_io, sra
 from resources_portal.models import Grant, Material, Organization
 
 
@@ -73,7 +73,42 @@ def import_protocol(protocol_id, organization, grant, user):
     the json representation of the newly-created material object
     made using data from the protocols.io API.
     """
-    metadata = gather_all_metadata(protocol_id)
+
+    # NOTE: GIVE SHITTY DOI
+    try:
+        metadata = protocols_io.gather_all_metadata(protocol_id)
+    except KeyError as error:
+        return JsonResponse(
+            {
+                "error": f"The protocol could not be imported due to the following error: {str(error)}"
+            },
+            status=400,
+        )
+
+    additional_metadata = {
+        "protocol_name": metadata["protocol_name"],
+        "abstract": metadata["abstract"],
+    }
+
+    material_json = {
+        "organization": organization,
+        "category": "PROTOCOL",
+        "imported": True,
+        "import_source": "PROTOCOLS.IO",
+        "title": metadata["protocol_name"],
+        "url": metadata["url"],
+        "contact_user": user,
+        "additional_metadata": additional_metadata,
+    }
+
+    material = Material(**material_json)
+    material.save()
+    material.grants.set([grant])
+
+    material_json = model_to_dict(material)
+    material_json["grants"] = [material_json["grants"][0].id]
+
+    return JsonResponse(material_json, status=201)
 
 
 class ImportViewSet(viewsets.ViewSet):
@@ -102,7 +137,7 @@ class ImportViewSet(viewsets.ViewSet):
             return import_dataset(
                 import_type, request.data["study_accession"], organization, grant, request.user
             )
-        elif import_type == "PROTOCOL_IO":
+        elif import_type == "PROTOCOLS.IO":
             return import_protocol(request.data["protocol_doi"], organization, grant, request.user)
         else:
             return JsonResponse(
