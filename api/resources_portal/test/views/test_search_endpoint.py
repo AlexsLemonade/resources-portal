@@ -1,26 +1,12 @@
 import datetime
 
 from django.core.management import call_command
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
-from resources_portal.models import (
-    Attachment,
-    Material,
-    MaterialRequest,
-    Notification,
-    Organization,
-    OrganizationUserSetting,
-    User,
-)
-from resources_portal.test.utils import (
-    generate_mock_orcid_authorization_response,
-    generate_mock_orcid_record_response,
-    get_mock_oauth_url,
-)
+from resources_portal.models import Material, Organization, User
 
 
 class SearchMaterialsEndpointTestCase(APITestCase):
