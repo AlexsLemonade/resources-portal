@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material, Organization
+from resources_portal.views.material_request import MaterialRequestSerializer
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     ShippingRequirementsRelationSerializer,
@@ -25,6 +26,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "pubmed_id",
             "additional_metadata",
             "contact_user",
+            "sequence_maps",
             "mta_attachment",
             "needs_mta",
             "needs_irb",
@@ -39,10 +41,11 @@ class MaterialSerializer(serializers.ModelSerializer):
             "citation",
             "additional_info",
             "embargo_date",
+            "requests",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps", "requests")
 
     def validate(self, data):
         """Only allow materials with no open requests to be archived.
@@ -66,6 +69,8 @@ class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserSerializer()
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirements = ShippingRequirementsRelationSerializer()
+    sequence_maps = AttachmentRelationSerializer(many=True)
+    requests = MaterialRequestSerializer(many=True)
 
 
 class HasAddResources(BasePermission):
@@ -117,10 +122,13 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
-        serializer = self.get_serializer(material, data=request.data)
+        serializer = self.get_serializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        if serializer.validated_data["category"] != material.category:
+        if (
+            "category" in serializer.validated_data
+            and serializer.validated_data["category"] != material.category
+        ):
             raise ValidationError("Category cannot be changed after a material is created.")
 
         new_organization = serializer.validated_data["organization"]
