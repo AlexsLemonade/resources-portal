@@ -3,8 +3,35 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 from resources_portal.models import Grant, Material, Organization
-from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_metadata
+from resources_portal.views.import_protocols_utils import gather_all_protocols_metadata
+from resources_portal.views.import_sra_utils import ENA_URL_TEMPLATE, gather_all_sra_metadata
+
+
+def _requests_retry_session(
+    retries=0, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None
+):
+    """
+    Exponential back off for requests.
+
+    via https://www.peterbe.com/plog/best-practice-with-retries-with-requests
+    """
+    session = session or requests.Session()
+    retry = Retry(
+        total=retries,
+        read=retries,
+        connect=retries,
+        backoff_factor=backoff_factor,
+        status_forcelist=status_forcelist,
+    )
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount("http://", adapter)
+    session.mount("https://", adapter)
+    return session
 
 
 def import_sra(study_accession, organization, grant, user):
@@ -12,7 +39,7 @@ def import_sra(study_accession, organization, grant, user):
     This function returns a Response object containing the json representation of the newly-created material object
     made using SRA data.
     """
-    metadata = gather_all_metadata(study_accession)
+    metadata = gather_all_sra_metadata(study_accession)
 
     if metadata == {}:
         return JsonResponse(
@@ -64,6 +91,14 @@ def import_sra(study_accession, organization, grant, user):
     return JsonResponse(material_json, status=201)
 
 
+def import_protocol(protocol_id, organization, grant, user):
+    """
+    This function returns a Response object containing the json representation of the newly-created material object
+    made using data from the protocols.io API.
+    """
+    metadata = gather_all_protocols_metadata(protocol_id)
+
+
 class ImportViewSet(viewsets.ViewSet):
     """ A viewset used to import all availible material data from a specified source."""
 
@@ -88,6 +123,8 @@ class ImportViewSet(viewsets.ViewSet):
 
         if import_type == "SRA":
             return import_sra(request.data["study_accession"], organization, grant, request.user)
+        if import_type == "PROTOCOL-IO":
+            return import_protocol(request.data["protocol_id"], organization, grant, request.user)
         else:
             return JsonResponse(
                 {"error": f'Invalid value for parameter "import_type": {import_type}.'}, status=400

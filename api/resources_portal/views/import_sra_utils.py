@@ -1,11 +1,9 @@
 import xml.etree.ElementTree as ET
 from typing import Dict
 
-import requests
-from requests.adapters import HTTPAdapter
-from requests.packages.urllib3.util.retry import Retry
+from resources_portal.views.import_materials import _requests_retry_session
 
-ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
+ENA_URL_TEMPLATE = '"https://www.ebi.ac.uk/ena/data/view/{}"'
 
 ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}&display=xml"
 
@@ -71,28 +69,6 @@ def _parse_study_link(run_link: ET.ElementTree) -> (str, str):
             value = child.text
 
     return (key, value)
-
-
-def _requests_retry_session(
-    retries=0, backoff_factor=0.3, status_forcelist=(500, 502, 504), session=None
-):
-    """
-    Exponential back off for requests.
-
-    via https://www.peterbe.com/plog/best-practice-with-retries-with-requests
-    """
-    session = session or requests.Session()
-    retry = Retry(
-        total=retries,
-        read=retries,
-        connect=retries,
-        backoff_factor=backoff_factor,
-        status_forcelist=status_forcelist,
-    )
-    adapter = HTTPAdapter(max_retries=retry)
-    session.mount("http://", adapter)
-    session.mount("https://", adapter)
-    return session
 
 
 def _gather_sample_metadata(metadata: Dict) -> None:
@@ -175,7 +151,7 @@ def _gather_pubmed_metadata(metadata: Dict):
             return
 
 
-def gather_all_metadata(study_accession):
+def gather_all_sra_metadata(study_accession):
     metadata = _gather_study_metadata(study_accession)
 
     if metadata != {}:
