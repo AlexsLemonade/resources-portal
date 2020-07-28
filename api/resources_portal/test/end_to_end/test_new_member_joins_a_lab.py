@@ -1,19 +1,11 @@
 from unittest.mock import patch
 
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
-from resources_portal.models import (
-    Material,
-    MaterialRequest,
-    Notification,
-    Organization,
-    OrganizationInvitation,
-    User,
-)
+from resources_portal.models import Material, Notification, Organization, User
 from resources_portal.test.utils import (
     clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
@@ -71,16 +63,14 @@ class TestNewMemberJoinsALab(APITestCase):
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        invitation = OrganizationInvitation(
-            organization=self.primary_lab,
-            request_reciever=self.primary_prof,
-            requester=new_member,
-            invite_or_request="INVITE",
-        )
+        invitation_json = {
+            "organization": self.primary_lab.id,
+            "request_reciever": self.primary_prof.id,
+            "requester": new_member.id,
+            "invite_or_request": "INVITE",
+        }
 
-        response = self.client.post(
-            reverse("invitation-list"), model_to_dict(invitation), format="json"
-        )
+        response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         invitation_id = response.data["id"]
@@ -138,11 +128,9 @@ class TestNewMemberJoinsALab(APITestCase):
         # SecondaryProf requests a resource assigned to NewMember
         self.client.force_authenticate(user=self.secondary_prof)
 
-        request = MaterialRequest(material=material, requester=self.secondary_prof)
+        request_json = {"material": material.id, "requester": self.secondary_prof.id}
 
-        response = self.client.post(
-            reverse("material-request-list"), model_to_dict(request), format="json"
-        )
+        response = self.client.post(reverse("material-request-list"), request_json, format="json")
 
         request_id = response.data["id"]
 
