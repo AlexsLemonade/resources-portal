@@ -36,36 +36,12 @@ def get_worker_id() -> str:
     return get_instance_id() + "/" + current_process().name
 
 
-def get_volume_index(path="/home/user/data_store/VOLUME_INDEX") -> str:
-    """ Reads the contents of the VOLUME_INDEX file, else returns default """
-
-    if settings.RUNNING_IN_CLOUD:
-        default = "-1"
-    else:
-        default = "0"
-
-    try:
-        with open(path, "r") as f:
-            v_id = f.read().strip()
-            return v_id
-    except Exception as e:
-        # Our configured logger needs util, so we use the standard logging library for just this.
-        import logging
-
-        logger = logging.getLogger(__name__)
-        logger.info(str(e))
-        logger.info("Could not read volume index file, using default: " + str(default))
-
-    return default
-
-
 # Most of the formatting in this string is for the logging system. All
 # that the call to format() does is replace the "{0}" in the string
 # with the worker id.
 FORMAT_STRING = (
-    "%(asctime)s {0} [volume: {1}] %(name)s %(color)s%(levelname)s%(extras)s"
-    ": %(message)s%(color_stop)s"
-).format(get_instance_id(), get_volume_index())
+    "%(asctime)s {0} %(name)s %(color)s%(levelname)s%(extras)s" ": %(message)s%(color_stop)s"
+).format(get_instance_id())
 LOG_LEVEL = None
 
 
