@@ -3,8 +3,6 @@ import os
 import sys
 from multiprocessing import current_process
 
-from django.conf import settings
-
 import daiquiri
 
 

@@ -50,7 +50,6 @@ class Common(Configuration):
     ROOT_URLCONF = "resources_portal.urls"
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
     WSGI_APPLICATION = "resources_portal.wsgi.application"
-    RUNNING_IN_CLOUD = False
 
     # OAuth
     CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
