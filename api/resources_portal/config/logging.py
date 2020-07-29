@@ -11,29 +11,11 @@ from retrying import retry
 
 # Found: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
 METADATA_URL = "http://169.254.169.254/latest/meta-data"
-INSTANCE_ID = None
 
 
-def get_instance_id() -> str:
-    """Returns the AWS instance id where this is running or "local"."""
-    global INSTANCE_ID
-    if INSTANCE_ID is None:
-        if settings.RUNNING_IN_CLOUD:
-
-            @retry(stop_max_attempt_number=3)
-            def retrieve_instance_id():
-                return requests.get(os.path.join(METADATA_URL, "instance-id")).text
-
-            INSTANCE_ID = retrieve_instance_id()
-        else:
-            INSTANCE_ID = "local"
-
-    return INSTANCE_ID
-
-
-def get_worker_id() -> str:
-    """Returns <instance_id>/<thread_id>."""
-    return get_instance_id() + "/" + current_process().name
+def get_thread_id() -> str:
+    """Returns thread_id."""
+    return current_process().name
 
 
 # Most of the formatting in this string is for the logging system. All
@@ -41,7 +23,7 @@ def get_worker_id() -> str:
 # with the worker id.
 FORMAT_STRING = (
     "%(asctime)s {0} %(name)s %(color)s%(levelname)s%(extras)s" ": %(message)s%(color_stop)s"
-).format(get_instance_id())
+).format(get_thread_id())
 LOG_LEVEL = None
 
 
