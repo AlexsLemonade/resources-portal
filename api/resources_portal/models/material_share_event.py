@@ -11,6 +11,7 @@ class MaterialShareEvent(SafeDeleteModel):
     class Meta:
         db_table = "material_share_events"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()

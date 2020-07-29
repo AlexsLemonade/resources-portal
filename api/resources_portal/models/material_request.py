@@ -12,6 +12,7 @@ class MaterialRequest(SafeDeleteModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -23,6 +24,7 @@ class MaterialRequest(SafeDeleteModel):
         ("REJECTED", "REJECTED"),
         ("INVALID", "INVALID"),
         ("CANCELLED", "CANCELLED"),
+        ("FULFILLED", "FULFILLED"),
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -34,10 +36,6 @@ class MaterialRequest(SafeDeleteModel):
 
     requester = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="material_requests"
-    )
-
-    assigned_to = models.ForeignKey(
-        User, blank=False, null=False, on_delete=models.CASCADE, related_name="assignments"
     )
 
     requester_signed_mta_attachment = models.ForeignKey(
@@ -62,3 +60,12 @@ class MaterialRequest(SafeDeleteModel):
     is_active = models.BooleanField(default=True)
 
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")
+
+    assigned_to = models.ForeignKey(
+        User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
+    )
+
+    def save(self, *args, **kwargs):
+        if self.assigned_to is None:
+            self.assigned_to = self.material.contact_user
+        super().save(*args, **kwargs)

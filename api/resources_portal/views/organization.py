@@ -5,7 +5,11 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Organization, User
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.views.relation_serializers import (
+    AttachmentRelationSerializer,
+    MaterialRelationSerializer,
+    UserRelationSerializer,
+)
 
 logger = get_and_configure_logger(__name__)
 
@@ -18,15 +22,26 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "owner",
             "name",
             "members",
+            "materials",
+            "attachments",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at", "members")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "members",
+            "materials",
+            "attachments",
+        )
 
 
 class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
     members = UserRelationSerializer(many=True, read_only=True)
+    materials = MaterialRelationSerializer(many=True, read_only=True)
+    attachments = AttachmentRelationSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         owner = validated_data.pop("owner")

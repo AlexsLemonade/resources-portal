@@ -6,6 +6,7 @@ from guardian.shortcuts import assign_perm, remove_perm
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
+from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
 
 OWNER_PERMISSIONS = (
@@ -29,6 +30,7 @@ class Organization(SafeDeleteModel):
     class Meta:
         db_table = "organizations"
         get_latest_by = "updated_at"
+        ordering = ["updated_at", "id"]
 
         permissions = OWNER_PERMISSIONS + MEMBER_PERMISSIONS
 
@@ -71,3 +73,9 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         # when a new organization is created, assign permission to it's owner
         instance.assign_member_perms(instance.owner)
         instance.assign_owner_perms(instance.owner)
+
+
+@receiver(post_save, sender="resources_portal.Organization")
+def create_owner_settings(sender, instance=None, created=False, **kwargs):
+    if created:
+        OrganizationUserSetting.objects.get_or_create(user=instance.owner, organization=instance)

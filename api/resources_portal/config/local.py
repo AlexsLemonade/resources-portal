@@ -1,4 +1,5 @@
 import os
+import sys
 
 from resources_portal.config.common import Common
 
@@ -15,6 +16,29 @@ class Local(Common):
 
     ELASTICSEARCH_HOST = "elasticsearch"
     ELASTICSEARCH_PORT = 9200
+
+    # AWS
+    AWS_REGION = None
+
+    # AWS Simple Email Service
+    AWS_SES_DOMAIN = None
+
+    # AWS S3
+    AWS_S3_BUCKET_NAME = None
+
+    # Local handling of uploaded files.
+    TESTING = "test" in sys.argv
+
+    if TESTING:
+        LOCAL_FILE_DIRECTORY = "/home/user/code/test_uploaded_files"
+    else:
+        LOCAL_FILE_DIRECTORY = "/home/user/code/uploaded_files"
+
+    if not os.path.exists(LOCAL_FILE_DIRECTORY):
+        os.mkdir(LOCAL_FILE_DIRECTORY)
+
+    # OAuth
+    OAUTH_URL = "https://sandbox.orcid.org/oauth/token"
 
     # CORS
     CORS_ORIGIN_WHITELIST = [

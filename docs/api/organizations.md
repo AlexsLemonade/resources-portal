@@ -1,6 +1,9 @@
 # Organizations
 Supports creating, viewing, and updating organizations and their members.
 
+## Description
+An organization is used to keep track of the members of any scientic group, the materials that they have produced, and their grants.
+
 ## Create a new organization
 
 **Request**:
@@ -76,6 +79,8 @@ members    | list(string) | Yes      | A list of the IDs of members of the organ
 
 - All parameters are optional
 - Not Authorization Protected
+
+**Response**:
 
 ```json
 Content-Type application/json

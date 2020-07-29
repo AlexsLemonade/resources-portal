@@ -13,6 +13,7 @@ class Material(SafeDeleteModel):
     class Meta:
         db_table = "materials"
         get_latest_by = "created_at"
+        ordering = ["created_at", "id"]
 
     CATEGORY_CHOICES = (
         ("CELL_LINE", "CELL_LINE"),
@@ -72,13 +73,15 @@ class Material(SafeDeleteModel):
 
     grants = models.ManyToManyField("Grant", through="GrantMaterialAssociation")
 
-    organism = ArrayField(base_field=models.TextField(), blank=True, null=True)
+    organisms = ArrayField(base_field=models.TextField(), blank=True, null=True)
     publication_title = models.TextField(blank=True, null=True)
     pre_print_doi = models.TextField(blank=True, null=True)
     pre_print_title = models.TextField(blank=True, null=True)
     citation = models.TextField(blank=True, null=True)
     additional_info = models.TextField(blank=True, null=True)
     embargo_date = models.DateField(blank=True, null=True)
+
+    is_archived = models.BooleanField(default=False, null=False)
 
     def needs_mta(self):
         return not (self.mta_attachment is None)

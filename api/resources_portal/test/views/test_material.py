@@ -4,9 +4,15 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
+from guardian.shortcuts import assign_perm
 
 from resources_portal.models import Material
-from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
+from resources_portal.test.factories import (
+    MaterialFactory,
+    MaterialRequestFactory,
+    OrganizationFactory,
+    UserFactory,
+)
 
 fake = Faker()
 
@@ -66,6 +72,8 @@ class TestSingleMaterialTestCase(APITestCase):
         self.material = MaterialFactory(contact_user=self.user, organization=self.organization)
         self.url = reverse("material-detail", args=[self.material.id])
 
+        assign_perm("delete_resources", self.user, self.organization)
+
     def test_get_request_returns_a_given_material(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
@@ -78,6 +86,7 @@ class TestSingleMaterialTestCase(APITestCase):
         new_url = fake.url()
         material_json["url"] = new_url
         material_json["contact_user"] = material_json["contact_user"]["id"]
+        material_json["is_archived"] = True
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -97,6 +106,17 @@ class TestSingleMaterialTestCase(APITestCase):
 
         self.assertTrue(self.material in self.organization2.materials.all())
 
+    def test_put_request_cannot_archive_with_active_requests(self):
+        MaterialRequestFactory(material=self.material)
+
+        self.client.force_authenticate(user=self.user)
+        material_json = self.client.get(self.url).json()
+
+        material_json["is_archived"] = True
+
+        response = self.client.put(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_put_request_on_organization_without_permissions_for_both_orgs_fails(self):
         self.client.force_authenticate(user=self.user)
         material_json = self.client.get(self.url).json()
@@ -106,6 +126,15 @@ class TestSingleMaterialTestCase(APITestCase):
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_put_request_cannot_change_category(self):
+        self.client.force_authenticate(user=self.user)
+        material_json = self.client.get(self.url).json()
+
+        material_json["category"] = "PLASMID"
+
+        response = self.client.put(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)

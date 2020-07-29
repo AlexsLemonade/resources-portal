@@ -2,7 +2,13 @@ from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
 from resources_portal.config.logging import get_and_configure_logger
-from resources_portal.models import Notification, Organization, OrganizationInvitation, User
+from resources_portal.models import (
+    Notification,
+    Organization,
+    OrganizationInvitation,
+    OrganizationUserSetting,
+    User,
+)
 
 logger = get_and_configure_logger(__name__)
 
@@ -11,6 +17,7 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
     requester = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     request_reciever = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     organization = serializers.PrimaryKeyRelatedField(queryset=Organization.objects.all())
+    invite_or_request = serializers.CharField()
 
     class Meta:
         model = OrganizationInvitation
@@ -20,6 +27,14 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
             "updated_at",
             "status",
             "invite_or_request",
+            "organization",
+            "request_reciever",
+            "requester",
+        )
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
             "organization",
             "request_reciever",
             "requester",
@@ -34,6 +49,9 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         if new_status == "ACCEPTED":
             invitation.organization.members.add(invitation.requester)
             invitation.organization.assign_member_perms(invitation.requester)
+            OrganizationUserSetting.objects.get_or_create(
+                user=invitation.requester, organization=invitation.organization
+            )
 
         notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 

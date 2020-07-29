@@ -1,6 +1,7 @@
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
-from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
 from resources_portal.config.logging import get_and_configure_logger
@@ -34,7 +35,13 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "assigned_to",
+            "requester",
+        )
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
@@ -44,6 +51,11 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
+
+
+class IsAdminUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_superuser
 
 
 class CanViewRequests(BasePermission):
@@ -70,6 +82,56 @@ class CanApproveRequestsOrIsRequester(BasePermission):
             request.user.has_perm("approve_requests", obj.material.organization)
             or request.user == obj.requester
         )
+
+
+def send_material_request_notif(notif_type, request, notified_user):
+    notification = Notification(
+        notification_type=notif_type,
+        notified_user=notified_user,
+        associated_user=request.assigned_to,
+        associated_material=request.material,
+        associated_organization=request.material.organization,
+    )
+    notification.save()
+
+
+def send_transfer_update_notif(status, request):
+    if status == "APPROVED":
+        send_material_request_notif("TRANSFER_APPROVED", request, request.requester)
+    elif status == "REJECTED":
+        send_material_request_notif("TRANSFER_REJECTED", request, request.requester)
+    elif status == "FULFILLED":
+        send_material_request_notif("TRANSFER_FULFILLED", request, request.requester)
+    else:
+        return
+
+
+def user_in_attachment_org(attachment, user):
+    if attachment.owned_by_org:
+        return user in attachment.owned_by_org.members.all()
+    else:
+        return False
+
+
+# Adds an attachment to a material request, checking that the current user is in the org that uploaded the attachment.
+def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
+    if not (user_in_attachment_org(attachment, user) or attachment.owned_by_user == user):
+        raise PermissionDenied(
+            detail=f"The current user is not authorized for the specified attachment of type {attachment_type}."
+        )
+
+    setattr(material_request, attachment_type, attachment)
+    material_request.save()
+
+    attachment.material_request = material_request
+
+    # Assign ownership of the attachment to the other party in the material request
+    if material_request.requester == user:
+        attachment.owned_by_org = material_request.material.organization
+    else:
+        attachment.owned_by_user = material_request.requester
+
+    attachment.save()
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
@@ -127,7 +189,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         material = serializer.validated_data["material"]
-        serializer.validated_data["assigned_to"] = material.contact_user
+
+        if material.is_archived:
+            return Response(data={"reason": "Cannot request archived materials."}, status=400)
+
+        serializer.validated_data["requester"] = request.user
 
         material_request = MaterialRequest(**serializer.validated_data)
         material_request.save()
@@ -137,6 +203,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             notified_user=material_request.assigned_to,
             associated_user=request.user,
             associated_material=material,
+            associated_organization=material.organization,
         )
         notification.save()
 
@@ -145,20 +212,32 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
 
-        if material_request.status == "CANCELLED" or material_request.status == "REJECTED":
+        if material_request.status in ["REJECTED", "CANCELLED", "FULFILLED"]:
             return Response(status=403)
 
-        serializer = MaterialRequestSerializer(material_request, data=request.data)
+        serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         if request.user == material_request.requester:
             if "irb_attachment" in request.data:
-                material_request.irb_attachment = serializer.validated_data["irb_attachment"]
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["irb_attachment"],
+                    "irb_attachment",
+                    request.user,
+                )
 
             if "requester_signed_mta_attachment" in request.data:
-                material_request.requester_signed_mta_attachment = serializer.validated_data[
-                    "requester_signed_mta_attachment"
-                ]
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["requester_signed_mta_attachment"],
+                    "requester_signed_mta_attachment",
+                    request.user,
+                )
+
+                send_material_request_notif(
+                    "SIGNED_MTA_UPLOADED", material_request, material_request.assigned_to
+                )
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 if serializer.validated_data["status"] != "CANCELLED":
@@ -167,15 +246,23 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     material_request.status = serializer.validated_data["status"]
 
         else:
+            if "executed_mta_attachment" in request.data:
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["executed_mta_attachment"],
+                    "executed_mta_attachment",
+                    request.user,
+                )
+
+                send_material_request_notif(
+                    "EXECUTED_MTA_UPLOADED", material_request, material_request.requester
+                )
+
             if "status" in request.data:
                 if serializer.validated_data["status"] == "CANCELLED":
                     return Response(status=403)
                 material_request.status = serializer.validated_data["status"]
-
-            if "executed_mta_attachment" in request.data:
-                material_request.executed_mta_attachment = serializer.validated_data[
-                    "executed_mta_attachment"
-                ]
+                send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
         material_request.save()
 

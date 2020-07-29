@@ -1,5 +1,5 @@
 from rest_framework import serializers, viewsets
-from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Grant
@@ -38,6 +38,11 @@ class GrantListSerializer(GrantSerializer):
     users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     organizations = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
+
+class IsAdminUser(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_superuser
 
 
 class OwnsGrant(BasePermission):

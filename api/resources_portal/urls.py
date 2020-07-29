@@ -9,9 +9,11 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from resources_portal.views import (
+    AttachmentViewSet,
     GrantMaterialViewSet,
     GrantUserViewSet,
     GrantViewSet,
+    ImportViewSet,
     MaterialDocumentView,
     MaterialRequestViewSet,
     MaterialViewSet,
@@ -20,13 +22,15 @@ from resources_portal.views import (
     OrganizationInvitationViewSet,
     OrganizationMaterialViewSet,
     OrganizationMemberViewSet,
+    OrganizationUserSettingViewSet,
     OrganizationViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
+    local_file_view,
 )
 
-router = ExtendedSimpleRouter(trailing_slash=False)
+router = ExtendedSimpleRouter()
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserViewSet, basename="user").register(
     r"organizations",
@@ -63,9 +67,16 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
+router.register(r"attachments", AttachmentViewSet, basename="attachment")
+router.register(
+    r"organization-user-settings",
+    OrganizationUserSettingViewSet,
+    basename="organization-user-setting",
+)
+
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
 
-search_router = DefaultRouter(trailing_slash=False)
+search_router = DefaultRouter()
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
 search_router.register(r"organizations", OrganizationDocumentView, basename="search-organizations")
 search_router.register(r"users", UserDocumentView, basename="search-users")
@@ -80,3 +91,12 @@ urlpatterns = [
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
     path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns.append(
+    path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
+)
+
+if settings.LOCAL_FILE_DIRECTORY:
+    urlpatterns.append(
+        path("v1/uploaded-file/<path:file_path>", local_file_view, name="uploaded-file")
+    )

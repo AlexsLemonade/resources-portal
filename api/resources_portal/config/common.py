@@ -43,6 +43,7 @@ class Common(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        "resources_portal.middleware.oauth.OAuthMiddleWare",
     )
 
     ALLOWED_HOSTS = ["*"]
@@ -50,6 +51,10 @@ class Common(Configuration):
     SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
     WSGI_APPLICATION = "resources_portal.wsgi.application"
     RUNNING_IN_CLOUD = False
+
+    # OAuth
+    CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
+    CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
 
     # Email
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -65,7 +70,7 @@ class Common(Configuration):
     }
 
     # General
-    APPEND_SLASH = False
+    APPEND_SLASH = True
     TIME_ZONE = "UTC"
     LANGUAGE_CODE = "en-us"
     # If you set this to False, Django will make some optimizations so as not
@@ -77,7 +82,7 @@ class Common(Configuration):
 
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/2.0/howto/static-files/
-    STATIC_ROOT = os.path.normpath(join(os.path.dirname(BASE_DIR), "static"))
+    STATIC_ROOT = "/tmp/www/static/"
     STATICFILES_DIRS = []
     STATIC_URL = "/static/"
     STATICFILES_FINDERS = (

@@ -8,9 +8,13 @@ import SearchInput from '../components/SearchInput'
 import { SearchResultsLimit } from '../components/SearchResultsLimit'
 import { SearchResultsFilters } from '../components/SearchResultsFilters'
 import { SearchResultsOffset } from '../components/SearchResultsOffset'
-import { SearchResult } from '../components/resources'
+// import { SearchResult } from '../components/resources/SearchResult'
 
 import { useSearchResources } from '../hooks/useSearchResources'
+
+const SearchResult = () => {
+  return <>Temporarily mock this component for next PR</>
+}
 
 const Search = (search) => {
   const { response } = useSearchResources(search)

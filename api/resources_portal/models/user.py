@@ -19,13 +19,20 @@ class DeletedObjectsManager(models.Manager):
 
 
 class User(AbstractUser):
+    class Meta:
+        get_latest_by = "created_at"
+        ordering = ["created_at"]
+
     objects = NonDeletedObjectsManager()
     deleted_objects = DeletedObjectsManager()
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    published_name = models.TextField()
+    published_name = models.TextField(null=True)
+    orcid = models.TextField(unique=True)
+    refresh_token = models.TextField()
+    access_token = models.TextField()
     deleted = models.BooleanField(default=False, null=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")

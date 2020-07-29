@@ -36,7 +36,7 @@ class MaterialDocument(Document):
     )
     category = fields.KeywordField()
 
-    organism = fields.ListField(
+    organisms = fields.ListField(
         fields.TextField(
             fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()}
         )
@@ -52,7 +52,10 @@ class MaterialDocument(Document):
     )
 
     organization = fields.ObjectField(
-        properties={"name": fields.TextField(), "id": fields.IntegerField()}
+        properties={
+            "name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "id": fields.IntegerField(),
+        }
     )
 
     shipping_requirements = fields.ObjectField(
