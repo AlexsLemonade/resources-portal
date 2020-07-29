@@ -15,7 +15,7 @@ def get_thread_id() -> str:
 
 # Most of the formatting in this string is for the logging system. All
 # that the call to format() does is replace the "{0}" in the string
-# with the worker id.
+# with the thread id.
 FORMAT_STRING = (
     "%(asctime)s {0} %(name)s %(color)s%(levelname)s%(extras)s" ": %(message)s%(color_stop)s"
 ).format(get_thread_id())
