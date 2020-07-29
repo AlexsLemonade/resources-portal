@@ -36,7 +36,7 @@ class MaterialDocument(Document):
     )
     category = fields.KeywordField()
 
-    organism = fields.ListField(
+    organisms = fields.ListField(
         fields.TextField(
             fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()}
         )

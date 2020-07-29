@@ -1,21 +1,13 @@
 from unittest.mock import patch
 
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_test_database import populate_test_database
-from resources_portal.models import (
-    Attachment,
-    Material,
-    MaterialRequest,
-    Notification,
-    Organization,
-    OrganizationInvitation,
-    User,
-)
-from resources_portal.test.mocks import (
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
+from resources_portal.models import Material, Notification, Organization, User
+from resources_portal.test.utils import (
+    clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -41,11 +33,13 @@ class TestNewMemberJoinsALab(APITestCase):
     2. The PrimaryProf receives a notification that NewMember accepted her invitation.
     3. The Postdoc receives a notification that they have been removed from the organization.
     4. NewMember receives a notification that a resource was requested.
-    5. SecondaryProf is notified that her request was approved.
+    5. SecondaryProf is notified that an executed MTA was uploaded.
+    6. SecondaryProf is notified that her request was approved.
     """
 
     def setUp(self):
-        populate_test_database()
+        clean_test_file_uploads()
+        populate_dev_database()
 
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
@@ -69,16 +63,14 @@ class TestNewMemberJoinsALab(APITestCase):
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        invitation = OrganizationInvitation(
-            organization=self.primary_lab,
-            request_reciever=self.primary_prof,
-            requester=new_member,
-            invite_or_request="INVITE",
-        )
+        invitation_json = {
+            "organization": self.primary_lab.id,
+            "request_reciever": self.primary_prof.id,
+            "requester": new_member.id,
+            "invite_or_request": "INVITE",
+        }
 
-        response = self.client.post(
-            reverse("invitation-list"), model_to_dict(invitation), format="json"
-        )
+        response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         invitation_id = response.data["id"]
@@ -136,11 +128,9 @@ class TestNewMemberJoinsALab(APITestCase):
         # SecondaryProf requests a resource assigned to NewMember
         self.client.force_authenticate(user=self.secondary_prof)
 
-        request = MaterialRequest(material=material, requester=self.secondary_prof)
+        request_json = {"material": material.id, "requester": self.secondary_prof.id}
 
-        response = self.client.post(
-            reverse("material-request-list"), model_to_dict(request), format="json"
-        )
+        response = self.client.post(reverse("material-request-list"), request_json, format="json")
 
         request_id = response.data["id"]
 
@@ -156,43 +146,42 @@ class TestNewMemberJoinsALab(APITestCase):
             1,
         )
 
-        # NewMember approves the request and uploads executed MTA/IRB
+        # NewMember approves the request and uploads executed MTA
         self.client.force_authenticate(user=new_member)
 
         # Post mta attachment
-        executed_mta = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        executed_mta_data = {
+            "filename": "executed_mta",
+            "description": "Executed transfer agreement for the material.",
+            "attachment_type": "EXECUTED_MTA",
+        }
 
-        executed_mta_data = model_to_dict(executed_mta)
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            executed_mta_data["file"] = fp
+            response = self.client.post(
+                reverse("attachment-list"), executed_mta_data, format="multipart"
+            )
 
-        response = self.client.post(reverse("attachment-list"), executed_mta_data, format="json")
         executed_mta_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Post irb attachment
-        executed_irb = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        executed_irb_data = {
+            "filename": "executed_irb",
+            "description": "Executed instituional review board document.",
+            "attachment_type": "EXECUTED_IRB",
+        }
 
-        executed_irb_data = model_to_dict(executed_irb)
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            executed_irb_data["file"] = fp
+            response = self.client.post(
+                reverse("attachment-list"), executed_irb_data, format="multipart"
+            )
 
-        response = self.client.post(reverse("attachment-list"), executed_irb_data, format="json")
-        executed_irb_id = response.data["id"]
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # PUT updates to request
-        request_update_data = {
-            "status": "APPROVED",
-            "executed_mta_attachment": executed_mta_id,
-            "irb_attachment": executed_irb_id,
-        }
+        request_update_data = {"status": "APPROVED", "executed_mta_attachment": executed_mta_id}
 
         response = self.client.put(
             reverse("material-request-detail", args=[request_id]), request_update_data
@@ -200,7 +189,10 @@ class TestNewMemberJoinsALab(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 1
+        )
         self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 5)
+        self.assertEqual(len(Notification.objects.all()), 6)

@@ -9,7 +9,7 @@ services:
     container_name: '${API_NAME}'
     network_mode: '${API_NETWORK}'
     restart: always
-    env_file: api/dev-secrets
+    env_file: infrastructure/api-configuration/dev-secrets
     image: api
     build:
       context: ./api

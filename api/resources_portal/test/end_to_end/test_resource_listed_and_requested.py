@@ -3,9 +3,16 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.management.commands.populate_test_database import populate_test_database
-from resources_portal.models import Attachment, MaterialRequest, Notification, Organization, User
+from resources_portal.management.commands.populate_dev_database import populate_dev_database
+from resources_portal.models import (
+    MaterialRequest,
+    Notification,
+    Organization,
+    OrganizationUserSetting,
+    User,
+)
 from resources_portal.test.factories import MaterialFactory
+from resources_portal.test.utils import clean_test_file_uploads
 
 
 class TestResourceListedAndRequested(APITestCase):
@@ -27,7 +34,8 @@ class TestResourceListedAndRequested(APITestCase):
     """
 
     def setUp(self):
-        populate_test_database()
+        clean_test_file_uploads()
+        populate_dev_database()
 
         self.primary_prof = User.objects.get(username="PrimaryProf")
         self.secondary_prof = User.objects.get(username="SecondaryProf")
@@ -36,6 +44,7 @@ class TestResourceListedAndRequested(APITestCase):
         self.primary_lab = Organization.objects.get(name="PrimaryLab")
 
         self.primary_lab.assign_member_perms(self.post_doc)
+        OrganizationUserSetting.objects.create(user=self.post_doc, organization=self.primary_lab)
 
         Notification.objects.all().delete()
 
@@ -43,7 +52,7 @@ class TestResourceListedAndRequested(APITestCase):
         # PrimaryProf lists new resource on PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
-        material = MaterialFactory(contact_user=self.primary_prof, organization=self.primary_lab)
+        material = MaterialFactory(contact_user=self.post_doc, organization=self.primary_lab)
         material_data = model_to_dict(material)
 
         grant_list = []
@@ -98,16 +107,18 @@ class TestResourceListedAndRequested(APITestCase):
         # SecondaryProf uploads the signed MTA
         self.client.force_authenticate(user=self.secondary_prof)
 
-        signed_mta = Attachment(
-            filename="signed_mta",
-            description="Transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        signed_mta_data = {
+            "filename": "signed_mta",
+            "description": "Signed transfer agreement for the material.",
+            "attachment_type": "SIGNED_MTA",
+        }
 
-        signed_mta_data = model_to_dict(signed_mta)
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            signed_mta_data["file"] = fp
+            response = self.client.post(
+                reverse("attachment-list"), signed_mta_data, format="multipart"
+            )
 
-        response = self.client.post(reverse("attachment-list"), signed_mta_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         signed_mta_id = response.data["id"]
@@ -127,17 +138,18 @@ class TestResourceListedAndRequested(APITestCase):
 
         # Postdoc uploads the executed MTA
         self.client.force_authenticate(user=self.post_doc)
+        executed_mta_data = {
+            "filename": "executed_mta",
+            "description": "Executed transfer agreement for the material.",
+            "attachment_type": "EXECUTED_MTA",
+        }
 
-        executed_mta = Attachment(
-            filename="executed_mta",
-            description="Executed transfer agreement for the material.",
-            s3_bucket="a bucket",
-            s3_key="a key",
-        )
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            executed_mta_data["file"] = fp
+            response = self.client.post(
+                reverse("attachment-list"), executed_mta_data, format="multipart"
+            )
 
-        executed_mta_data = model_to_dict(executed_mta)
-
-        response = self.client.post(reverse("attachment-list"), executed_mta_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         executed_mta_id = response.data["id"]
