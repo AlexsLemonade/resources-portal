@@ -1,7 +1,6 @@
 from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import User
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
@@ -9,8 +8,6 @@ from resources_portal.views.relation_serializers import (
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
 )
-
-logger = get_and_configure_logger(__name__)
 
 
 class UserSerializer(serializers.ModelSerializer):

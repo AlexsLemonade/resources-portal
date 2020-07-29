@@ -20,11 +20,9 @@ from elasticsearch_dsl import TermsFacet
 from elasticsearch_dsl.query import Q
 from six import iteritems
 
-from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Material, Organization, User
 from resources_portal.models.documents import MaterialDocument, OrganizationDocument, UserDocument
 
-logger = get_and_configure_logger(__name__)
 
 # Puts material search data into a form that the client will accept
 class MaterialDocumentSerializer(serializers.Serializer):

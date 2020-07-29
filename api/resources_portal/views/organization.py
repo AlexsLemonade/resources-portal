@@ -3,15 +3,12 @@ from rest_framework import serializers, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
-from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import Organization, User
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
 )
-
-logger = get_and_configure_logger(__name__)
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
