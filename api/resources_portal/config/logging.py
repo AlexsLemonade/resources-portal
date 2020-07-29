@@ -6,11 +6,6 @@ from multiprocessing import current_process
 from django.conf import settings
 
 import daiquiri
-import requests
-from retrying import retry
-
-# Found: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-metadata.html
-METADATA_URL = "http://169.254.169.254/latest/meta-data"
 
 
 def get_thread_id() -> str:
