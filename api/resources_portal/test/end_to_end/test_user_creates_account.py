@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 
 from resources_portal.models import User
 from resources_portal.test.factories import GrantFactory, MaterialFactory
-from resources_portal.test.mocks import (
+from resources_portal.test.utils import (
     MOCK_EMAIL,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,

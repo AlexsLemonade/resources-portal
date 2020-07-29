@@ -123,29 +123,21 @@ def load_env_vars(args):
 
     For dev environment, just use the variables contained in
     api-configuration/dev-secrets.
-
-    For staging and prod environments, filter all the environment
-    variables just starting with "STAGING_" or "PROD_". This is
-    because github actions will always provide all the env variables.
     """
     if args.env == "dev":
         with open("api-configuration/dev-secrets") as dev_secrets:
             for line in dev_secrets.readlines():
-                [key, val] = line.split("=")
-                # Test this!
-                os.environ[key] = val
-    else:
-        env_prefix = args.env.upper() + "_"
-        for key in filter(lambda var: var.startswith(env_prefix), os.environ.keys()):
-            val = os.environ.get(key)
-            stripped_key = key.split(env_prefix)[-1]
-            os.environ[stripped_key] = val
+                if line.strip():
+                    [key, val] = line.split("=")
+                    os.environ[key] = val
 
     os.environ["TF_VAR_user"] = args.user
     os.environ["TF_VAR_stage"] = args.env
     os.environ["TF_VAR_region"] = args.region
     os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
     os.environ["TF_VAR_system_version"] = args.system_version
+    os.environ["TF_VAR_oauth_url"] = os.environ["OAUTH_URL"]
+    os.environ["TF_VAR_oauth_client_secret"] = os.environ["OAUTH_CLIENT_SECRET"]
 
     # This isn't a secret, so include it here to be explicit.
     if args.env == "dev" or args.env == "staging":
@@ -157,6 +149,7 @@ def load_env_vars(args):
 def run_terraform(args):
     var_file_arg = "-var-file=tf_vars/{}.tfvars".format(args.env)
 
+    # Make sure that Terraform is allowed to shut down gracefully.
     try:
         terraform_process = subprocess.Popen(
             ["terraform", "apply", var_file_arg, "-auto-approve"], stdout=subprocess.PIPE
