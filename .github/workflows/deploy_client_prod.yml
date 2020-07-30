@@ -1,4 +1,4 @@
-name: deploy-client
+name: deploy-client-prod
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy-client:
+  deploy-client-prod:
     container: node:lts-buster
     env:
       ZEIT_TOKEN: ${{ secrets.ZEIT_TOKEN }}
