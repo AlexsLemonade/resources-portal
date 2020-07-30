@@ -91,7 +91,7 @@ def import_protocol(protocol_doi, organization, grant, user):
         "organization": organization,
         "category": "PROTOCOL",
         "imported": True,
-        "import_source": "PROTOCOLS.IO",
+        "import_source": "PROTOCOLS_IO",
         "title": metadata["protocol_name"],
         "url": metadata["url"],
         "contact_user": user,
@@ -134,7 +134,7 @@ class ImportViewSet(viewsets.ViewSet):
             return import_dataset(
                 import_type, request.data["study_accession"], organization, grant, request.user
             )
-        elif import_type == "PROTOCOLS.IO":
+        elif import_type == "PROTOCOLS_IO":
             return import_protocol(request.data["protocol_doi"], organization, grant, request.user)
         else:
             return JsonResponse(

@@ -38,7 +38,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS.IO",
+                "import_type": "PROTOCOLS_IO",
                 "protocol_doi": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -60,7 +60,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS.IO",
+                "import_type": "PROTOCOLS_IO",
                 "protocol_doi": self.invalid_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -73,7 +73,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS.IO",
+                "import_type": "PROTOCOLS_IO",
                 "study_accession": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -91,7 +91,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS.IO",
+                "import_type": "PROTOCOLS_IO",
                 "study_accession": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -109,7 +109,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS.IO",
+                "import_type": "PROTOCOLS_IO",
                 "study_accession": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
