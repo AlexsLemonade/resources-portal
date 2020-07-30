@@ -1,4 +1,3 @@
-import logging
 import urllib
 
 from django.conf import settings
@@ -8,11 +7,12 @@ import furl
 import orcid
 import requests
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
-logger = logging.getLogger(__name__)
+logger = get_and_configure_logger(__name__)
 
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET

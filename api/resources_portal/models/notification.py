@@ -8,10 +8,13 @@ from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models.material import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
+
+logger = get_and_configure_logger(__name__)
 
 
 class Notification(ComputedFieldsModel, SafeDeleteModel):
@@ -166,8 +169,7 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
                 Source=source_template.format(settings.AWS_SES_DOMAIN),
             )
         else:
-
-            print(
+            logger.info(
                 f'In prod the following message will be sent to the following address: "'
                 f'"{instance.message}", "{instance.notified_user.email}".'
             )

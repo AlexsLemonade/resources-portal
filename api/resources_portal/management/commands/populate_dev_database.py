@@ -6,6 +6,7 @@ from django.utils import dateparse
 
 from guardian.shortcuts import assign_perm
 
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import (
     Attachment,
     Grant,
@@ -18,6 +19,8 @@ from resources_portal.models import (
     ShippingRequirements,
     User,
 )
+
+logger = get_and_configure_logger(__name__)
 
 model_id_dict = {}
 
@@ -37,7 +40,7 @@ def parse_int_or_uuid(val):
 
 
 def add_class_to_database(class_json, Class):
-    print(f"Inserting {Class.__name__} into database...")
+    logger.info(f"Inserting {Class.__name__} into database...")
 
     model_id_dict[Class.__name__] = []
 
