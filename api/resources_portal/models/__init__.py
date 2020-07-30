@@ -1,3 +1,4 @@
+from resources_portal.models.address import Address
 from resources_portal.models.associations.grant_material_association import GrantMaterialAssociation
 from resources_portal.models.associations.grant_organization_association import (
     GrantOrganizationAssociation,

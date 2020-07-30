@@ -41,6 +41,23 @@ class UserFactory(factory.django.DjangoModelFactory):
                 self.organizations.add(organization)
 
 
+class AddressFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Address"
+
+    user = factory.SubFactory(UserFactory)
+    saved_for_reuse = True
+    name = "My Lab's Address"
+    institution = "Ranch Labs Inc."
+
+    address_line_1 = "11 Ranch Lane"
+    address_line_2 = "Suite 3000"
+    locality = "Ranchville"
+    postal_code = "12345"
+    state = "Pennsylvania"
+    country = "US"
+
+
 class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Organization"
