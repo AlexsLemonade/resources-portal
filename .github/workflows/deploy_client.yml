@@ -1,9 +1,9 @@
-name: deploy-client-staging
+name: deploy-client
 
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   deploy-client-staging:
@@ -17,5 +17,5 @@ jobs:
       - name: Install now
         run: yarn global add now
 
-      - name: Deploy to Staging
+      - name: Deploy to Production
         run: $(yarn global bin)/now  --confirm --prod --token $ZEIT_TOKEN --local-config now.json --scope ccdl
