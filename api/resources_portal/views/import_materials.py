@@ -3,7 +3,8 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from resources_portal.importers import geo, sra
+from resources_portal.importers import geo, protocols_io, sra
+from resources_portal.importers.protocols_io import ProtocolNotFoundError
 from resources_portal.models import Grant, Material, Organization
 
 
@@ -67,6 +68,46 @@ def import_dataset(import_source, accession_code, organization, grant, user):
     return JsonResponse(material_json, status=201)
 
 
+def import_protocol(protocol_doi, organization, grant, user):
+    """
+    This function returns a Response object containing
+    the json representation of the newly-created material object
+    made using data from the protocols.io API.
+    """
+
+    try:
+        metadata = protocols_io.gather_all_metadata(protocol_doi)
+    except ProtocolNotFoundError:
+        return JsonResponse(
+            {"error": f"The protocol matching DOI {protocol_doi} could not be found"}, status=400,
+        )
+
+    additional_metadata = {
+        "protocol_name": metadata["protocol_name"],
+        "abstract": metadata["abstract"],
+    }
+
+    material_json = {
+        "organization": organization,
+        "category": "PROTOCOL",
+        "imported": True,
+        "import_source": "PROTOCOLS_IO",
+        "title": metadata["protocol_name"],
+        "url": metadata["url"],
+        "contact_user": user,
+        "additional_metadata": additional_metadata,
+    }
+
+    material = Material(**material_json)
+    material.save()
+    material.grants.set([grant])
+
+    material_json = model_to_dict(material)
+    material_json["grants"] = [material_json["grants"][0].id]
+
+    return JsonResponse(material_json, status=201)
+
+
 class ImportViewSet(viewsets.ViewSet):
     """ A viewset used to import all availible material data from a specified source."""
 
@@ -93,6 +134,8 @@ class ImportViewSet(viewsets.ViewSet):
             return import_dataset(
                 import_type, request.data["study_accession"], organization, grant, request.user
             )
+        elif import_type == "PROTOCOLS_IO":
+            return import_protocol(request.data["protocol_doi"], organization, grant, request.user)
         else:
             return JsonResponse(
                 {"error": f'Invalid value for parameter "import_type": {import_type}.'}, status=400
