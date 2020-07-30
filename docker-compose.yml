@@ -44,8 +44,8 @@ services:
     command: >
       bash -c 'cd /home/user/code &&
                yarn &&
-               yarn dev -p ${CLIENT_PORT} &&
-               yarn storybook --quiet -p ${STORYBOOK_PORT}'
+               (yarn storybook --quiet -p ${STORYBOOK_PORT} &
+               yarn dev -p ${CLIENT_PORT})'
     volumes:
       - ./client:/home/user/code
       - ./client/node_modules:/home/user/code/node_modules
