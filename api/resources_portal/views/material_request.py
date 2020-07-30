@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from resources_portal.models import MaterialRequest, Notification
 from resources_portal.views.relation_serializers import (
+    AddressRelationSerializer,
     AttachmentRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
@@ -29,6 +30,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "material",
             "requester",
             "requester_signed_mta_attachment",
+            "address",
             "created_at",
             "updated_at",
         )
@@ -45,6 +47,7 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     assigned_to = UserRelationSerializer()
     requester = UserRelationSerializer()
     material = MaterialRelationSerializer()
+    address = AddressRelationSerializer()
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
