@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy-client-staging:
+  deploy-client:
     container: node:lts-buster
     env:
       ZEIT_TOKEN: ${{ secrets.ZEIT_TOKEN }}
