@@ -8,24 +8,21 @@ import SearchInput from '../components/SearchInput'
 import { SearchResultsLimit } from '../components/SearchResultsLimit'
 import { SearchResultsFilters } from '../components/SearchResultsFilters'
 import { SearchResultsOffset } from '../components/SearchResultsOffset'
-// import { SearchResult } from '../components/resources/SearchResult'
-
+import { SearchResult } from '../components/resources/SearchResult'
 import { useSearchResources } from '../hooks/useSearchResources'
-
-const SearchResult = () => {
-  return <>Temporarily mock this component for next PR</>
-}
 
 const Search = (search) => {
   const { response } = useSearchResources(search)
+
+  const hasResults = response && response.results.length > 0
 
   return (
     <>
       <Box pad={{ horizontal: '144px' }} margin={{ bottom: 'xlarge' }}>
         <SearchInput />
       </Box>
-      {!response && <Box>Waiting on dizzies</Box>}
-      {response && (
+      {!hasResults && <Box>Waiting on dizzies</Box>}
+      {hasResults && (
         <Grid
           fill
           rows={['auto', 'flex']}
@@ -37,7 +34,7 @@ const Search = (search) => {
             { name: 'results', start: [1, 1], end: [1, 1] }
           ]}
         >
-          <Box gridArea="filters" width="medium">
+          <Box gridArea="filters" width="224px">
             <SearchResultsFilters />
           </Box>
           <Box gridArea="searchLimit">
