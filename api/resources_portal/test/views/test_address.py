@@ -31,7 +31,6 @@ class AddressListTestCase(APITestCase):
         new_address_data = self.address_data.copy()
         new_address_data.pop("user")
         response = self.client.post(self.url, new_address_data, format="json")
-        print(response.json())
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(str(self.address_data["user"]), response.json()["user"])
