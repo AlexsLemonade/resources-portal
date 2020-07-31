@@ -194,3 +194,6 @@ class Common(Configuration):
         "django.contrib.auth.backends.ModelBackend",  # default
         "guardian.backends.ObjectPermissionBackend",
     )
+
+    # CORS - unrestricted
+    CORS_ORIGIN_ALLOW_ALL = True
