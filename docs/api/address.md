@@ -77,7 +77,7 @@ Content-Type application/json
    "locality": "Ranchville",
    "name": "My Lab's Address",
    "postal_code": "12345",
-   "saved_for_reuse": True,
+   "saved_for_reuse": true,
    "state": "Pennsylvania",
    "user": {
          "id":"3f8b7a1a-adc8-4fa1-b015-814a9a4b5357",
