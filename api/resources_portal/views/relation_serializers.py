@@ -9,6 +9,7 @@ will use PrimaryKeyRelatedFields.
 from rest_framework import serializers
 
 from resources_portal.models import (
+    Address,
     Attachment,
     Grant,
     Material,
@@ -187,3 +188,24 @@ class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
             "request_reciever",
             "requester",
         )
+
+
+class AddressRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = (
+            "id",
+            "user",
+            "saved_for_reuse",
+            "name",
+            "institution",
+            "address_line_1",
+            "address_line_2",
+            "locality",
+            "postal_code",
+            "state",
+            "country",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")

@@ -9,6 +9,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_extensions.routers import ExtendedSimpleRouter
 
 from resources_portal.views import (
+    AddressViewSet,
     AttachmentViewSet,
     GrantMaterialViewSet,
     GrantUserViewSet,
@@ -37,6 +38,9 @@ router.register(r"users", UserViewSet, basename="user").register(
     UserOrganizationViewSet,
     basename="users-organizations",
     parents_query_lookups=["user"],
+)
+router.register(r"users", UserViewSet, basename="user").register(
+    r"addresses", AddressViewSet, basename="users-addresses", parents_query_lookups=["user"],
 )
 router.register(r"materials", MaterialViewSet, basename="material")
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
