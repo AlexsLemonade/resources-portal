@@ -9,7 +9,8 @@
   },
   "build": {
     "env": {
-      "API_HOST": "https://api.resources.alexslemonade.org"
+      "API_HOST": "https://api.resources.alexslemonade.org",
+      "IS_PRODUCTION": true
     }
   }
 }
