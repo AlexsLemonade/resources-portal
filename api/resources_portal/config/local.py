@@ -40,10 +40,4 @@ class Local(Common):
     # OAuth
     OAUTH_URL = "https://sandbox.orcid.org/oauth/token"
 
-    # CORS
-    CORS_ORIGIN_WHITELIST = [
-        "http://localhost:7000",
-        "http://127.0.0.1:7000",
-    ]
-
     CSRF_TRUSTED_ORIGINS = ["localhost", "127.0.0.1"]
