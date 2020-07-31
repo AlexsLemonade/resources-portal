@@ -13,7 +13,7 @@ fake = Faker()
 
 class AddressListTestCase(APITestCase):
     """
-    Tests /addresss list operations.
+    Tests /address list operations.
     """
 
     def setUp(self):
