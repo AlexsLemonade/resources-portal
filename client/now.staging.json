@@ -6,5 +6,11 @@
   "github": {
     "autoAlias": false,
     "silent": true
+  },
+  "build": {
+    "env": {
+      "API_HOST": "https://api.staging.resources.alexslemonade.org",
+      "STAGE": "staging"
+    }
   }
 }
