@@ -103,10 +103,21 @@ class TestMaterialRequestListTestCase(APITestCase):
         response = self.client.post(self.url, self.material_request_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_get_request_succeeds(self):
+    def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_request_from_requester_succeeds(self):
+        self.client.force_authenticate(user=self.request.requester)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_request_filters(self):
+        self.client.force_authenticate(user=self.user_without_perms)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 0)
 
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
