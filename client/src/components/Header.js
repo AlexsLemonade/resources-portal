@@ -3,9 +3,12 @@ import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
 import styled from 'styled-components'
 import Link from 'next/link'
 import LogoSvg from './logo.svg'
+import Login from './Login'
+import LoginModal from './LoginModal'
 
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
+  const [showing, setShowing] = React.useState(false)
 
   return (
     <Header
@@ -43,6 +46,8 @@ export default function ResourcesHeader({ className }) {
           </Link>
           <Anchor color="white" href="#" label="Help" />
           <Anchor color="white" href="#" label="My Account" />
+          <Login onClick={() => setShowing(true)}/>
+          <LoginModal showing={showing} setShowing={setShowing}/>
         </Nav>
       </Box>
     </Header>
