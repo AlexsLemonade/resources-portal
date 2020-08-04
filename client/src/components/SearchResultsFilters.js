@@ -50,7 +50,7 @@ export const SearchResultsFilters = () => {
           ))}
         </Box>
       )}
-      {!facetIsEmpty(facets.organism) && (
+      {!facetIsEmpty(facets.organisms) && (
         <Box
           margin={{ top: 'small' }}
           pad={{ vertical: 'small' }}
@@ -63,7 +63,7 @@ export const SearchResultsFilters = () => {
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Organisms
           </Text>
-          {sortedObjectKeysByValues(facets.organism).map((organism) => (
+          {sortedObjectKeysByValues(facets.organisms).map((organism) => (
             <CheckBox
               key={organism.key}
               label={`${organism.key} (${organism.value})`}

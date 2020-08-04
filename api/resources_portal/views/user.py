@@ -3,6 +3,7 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import User
 from resources_portal.views.relation_serializers import (
+    AddressRelationSerializer,
     AttachmentRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationInvitationRelationSerializer,
@@ -25,6 +26,7 @@ class UserSerializer(serializers.ModelSerializer):
             "organizations",
             "owned_organizations",
             "assignments",
+            "addresses",
             "created_at",
             "updated_at",
         )
@@ -37,6 +39,7 @@ class UserSerializer(serializers.ModelSerializer):
             "invitations",
             "assignments",
             "organizations",
+            "addresses",
             "owned_organizations",
         )
 
@@ -46,6 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
     material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
     invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
+    addresses = AddressRelationSerializer(many=True, read_only=True)
 
 
 class IsUserOrAdmin(BasePermission):

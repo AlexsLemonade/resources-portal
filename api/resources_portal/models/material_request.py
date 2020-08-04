@@ -3,6 +3,7 @@ from django.db import models
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
+from resources_portal.models.address import Address
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
@@ -32,6 +33,10 @@ class MaterialRequest(SafeDeleteModel):
 
     material = models.ForeignKey(
         Material, blank=False, null=False, on_delete=models.CASCADE, related_name="requests"
+    )
+
+    address = models.ForeignKey(
+        Address, blank=False, null=True, on_delete=models.SET_NULL, related_name="requests"
     )
 
     requester = models.ForeignKey(

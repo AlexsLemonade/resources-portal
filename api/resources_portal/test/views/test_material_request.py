@@ -7,6 +7,7 @@ from faker import Faker
 
 from resources_portal.models import MaterialRequest, Notification, OrganizationUserSetting
 from resources_portal.test.factories import (
+    AddressFactory,
     AttachmentFactory,
     MaterialRequestFactory,
     OrganizationFactory,
@@ -48,6 +49,29 @@ class TestMaterialRequestListTestCase(APITestCase):
         OrganizationUserSetting.objects.get_or_create(
             user=self.sharer, organization=self.request.material.organization
         )
+
+        response = self.client.post(self.url, self.material_request_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_REQUESTED", email=self.sharer.email
+                )
+            ),
+            1,
+        )
+
+    def test_post_request_with_address_succeeds(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        OrganizationUserSetting.objects.get_or_create(
+            user=self.sharer, organization=self.request.material.organization
+        )
+
+        address = AddressFactory()
+        material_request_data = self.material_request_data.copy()
+        material_request_data["address"] = address.id
 
         response = self.client.post(self.url, self.material_request_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
