@@ -6,7 +6,7 @@ from faker import Faker
 from guardian.shortcuts import assign_perm
 
 from resources_portal.models import User
-from resources_portal.test.factories import GrantFactory, UserFactory
+from resources_portal.test.factories import GrantFactory, GrantUserAssociationFactory, UserFactory
 
 fake = Faker()
 
@@ -90,7 +90,15 @@ class GrantUsersTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_request_disassociates_a_material(self):
+    def test_delete_request_doesnt_disassociate_a_grant_if_last_grant(self):
+        self.client.force_authenticate(user=self.owner_1)
+        url = reverse("grants-user-detail", args=[self.grant.id, self.owner_2])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_request_disassociates_a_grant(self):
+        # Create second grant for user so they can disassociate from one.
+        GrantUserAssociationFactory(user=self.owner_2)
         self.client.force_authenticate(user=self.owner_1)
         url = reverse("grants-user-detail", args=[self.grant.id, self.owner_2])
         response = self.client.delete(url)

@@ -41,6 +41,9 @@ class GrantUserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         user = User.objects.get(pk=kwargs["pk"])
         grant = Grant.objects.get(pk=kwargs["parent_lookup_grants"])
 
+        if user.grants.count() <= 1:
+            return Response(data={"reason": "Delete last grant for user."}, status=400)
+
         association = GrantUserAssociation.objects.get(grant=grant, user=user)
 
         association.delete()

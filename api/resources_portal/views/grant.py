@@ -47,6 +47,13 @@ class OwnsGrant(BasePermission):
         return request.user in obj.users.all()
 
 
+class HasOtherGrants(BasePermission):
+    """Users cannot delete their last grant"""
+
+    def has_object_permission(self, request, view, obj):
+        return request.user.grants.all().count() > 1
+
+
 class GrantViewSet(viewsets.ModelViewSet):
     queryset = Grant.objects.all()
 
@@ -61,6 +68,8 @@ class GrantViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAdminUser]
         elif self.action == "create":
             permission_classes = [IsAuthenticated]
+        elif self.action == "destroy":
+            permission_classes = [IsAuthenticated, OwnsGrant, HasOtherGrants]
         else:
             permission_classes = [IsAuthenticated, OwnsGrant]
 
