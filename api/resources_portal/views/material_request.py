@@ -221,7 +221,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
 
-        if material_request.status in ["REJECTED", "CANCELLED", "FULFILLED"]:
+        if material_request.status in ["REJECTED", "CANCELLED", "VERIFIED_FULFILLED"]:
             return Response(status=403)
 
         serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
@@ -256,10 +256,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
             if "status" in request.data and request.data["status"] != material_request.status:
-                if serializer.validated_data["status"] != "CANCELLED":
+                # The only status change the requester can make is to
+                # cancel or verify the request.
+                cancelling = serializer.validated_data["status"] == "CANCELLED"
+                verifying = (
+                    material_request.status == "FULFILLED"
+                    and serializer.validated_data["status"] == "VERIFIED_FULFILLED"
+                )
+                if not (cancelling or verifying):
                     return Response(status=403)
-                else:
-                    material_request.status = serializer.validated_data["status"]
 
             # Can't make it read-only because organization members
             # should be able to change it.
@@ -287,7 +292,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
             if "status" in request.data:
-                if serializer.validated_data["status"] == "CANCELLED":
+                if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
                     return Response(status=403)
 
                 send_transfer_update_notif(serializer.validated_data["status"], material_request)

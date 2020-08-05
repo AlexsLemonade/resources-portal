@@ -196,10 +196,6 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
-        requester_org = OrganizationFactory()
-        requester_org.members.add(self.request.requester)
-        requester_org.save()
-
         irb_attachment = AttachmentFactory(owned_by_user=self.request.requester)
 
         self.material_request_data["irb_attachment"] = irb_attachment.id
@@ -212,6 +208,33 @@ class TestSingleMaterialRequestTestCase(APITestCase):
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.irb_attachment, irb_attachment)
+
+    def test_put_request_from_requester_verifies_request(self):
+        # Make the request fulfilled, so it can be verified.
+        self.request.status = "FULFILLED"
+        self.request.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        self.material_request_data["status"] = "VERIFIED_FULFILLED"
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_request = MaterialRequest.objects.get(pk=self.request.id)
+        self.assertEqual(material_request.status, "VERIFIED_FULFILLED")
+
+    def test_put_request_from_sharer_does_not_verify_request(self):
+        # Make the request fulfilled, so it could be verified.
+        self.request.status = "FULFILLED"
+        self.request.save()
+
+        self.client.force_authenticate(user=self.sharer)
+
+        self.material_request_data["status"] = "VERIFIED_FULFILLED"
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_from_user_who_does_not_own_attachment_fails(self):
         self.client.force_authenticate(user=self.request.requester)
