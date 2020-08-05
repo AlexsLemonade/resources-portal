@@ -4,7 +4,9 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
-from resources_portal.models import MaterialRequest, Notification
+from guardian.shortcuts import get_objects_for_user
+
+from resources_portal.models import MaterialRequest, Notification, Organization
 from resources_portal.views.relation_serializers import (
     AddressRelationSerializer,
     AttachmentRelationSerializer,
@@ -56,11 +58,6 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
 class IsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.is_superuser
-
-
-class CanViewRequests(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("view_requests", obj.material.organization)
 
 
 class CanViewRequestsOrIsRequester(BasePermission):
@@ -135,7 +132,19 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    queryset = MaterialRequest.objects.all()
+    def get_queryset(self):
+        if self.action == "list":
+            requests_made_by_user = MaterialRequest.objects.filter(requester=self.request.user)
+            organizations = get_objects_for_user(
+                self.request.user, "view_requests", klass=Organization.objects
+            )
+            requests_viewable_by_user = MaterialRequest.objects.filter(
+                material__organization__in=organizations
+            )
+
+            return requests_made_by_user.union(requests_viewable_by_user)
+        else:
+            return MaterialRequest.objects.all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -144,12 +153,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return MaterialRequestDetailSerializer
 
     def get_permissions(self):
-        if self.action == "list":
-            permission_classes = [
-                IsAuthenticated,
-                CanViewRequests,
-            ]
-        elif self.action == "retrieve":
+        if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
         elif self.action == "update" or self.action == "partial-update":
             permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
