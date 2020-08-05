@@ -1,22 +1,8 @@
-import * as React from 'react'
-import { storiesOf } from '@storybook/react'
 import {
-  Grommet,
-  Box,
-  Button,
-  Tabs,
-  Tab,
-  Paragraph,
-  FormField,
-  Select,
-  TextInput,
-  RadioButton,
-  RadioButtonGroup,
-  CheckBox,
-  Heading
+    Box,
+    Button
 } from 'grommet'
-import Link from 'next/link'
-import styled from 'styled-components'
+import * as React from 'react'
 import ORCIDLogo from '../images/grant.svg'
 
 export const LoginButton = ({onClick}) => {

@@ -1,16 +1,12 @@
-import React from 'react'
-
 import {
-    Grommet,
-    Anchor,
     Box,
-    Button,
-    Heading,
-    Text,
-  } from 'grommet'
-
-import {CreateAccountStep, VerifyGrantStep, NextStepsStep} from '../components/CreateAccount'
+    Heading
+} from 'grommet'
+import React from 'react'
+import { CreateAccountStep, NextStepsStep, VerifyGrantStep } from '../components/CreateAccount'
 import { ProgressBar } from '../components/ProgressBar'
+
+
 
 let CreateAccountPage = ({stepNum, ORCID}) => {
     const steps = ['Create Account', 'Verify Grant Information', 'Next Steps']

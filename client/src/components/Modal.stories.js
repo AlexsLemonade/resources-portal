@@ -1,27 +1,10 @@
-import * as React from 'react'
 import { storiesOf } from '@storybook/react'
-import {
-  Grommet,
-  Anchor,
-  Box,
-  Button,
-  Tabs,
-  Tab,
-  Paragraph,
-  FormField,
-  Select,
-  TextInput,
-  RadioButton,
-  RadioButtonGroup,
-  CheckBox,
-  Heading,
-  Text
-} from 'grommet'
-import LoginButton from './LoginButton'
-import Modal from './Modal'
-import {HeaderModalContent, ResourcesModalContent} from './Modal'
-
+import { Grommet } from 'grommet'
+import * as React from 'react'
 import theme from '../theme'
+import LoginButton from './LoginButton'
+import Modal, { HeaderModalContent, ResourcesModalContent } from './Modal'
+
 
 storiesOf('Modal', module).add('Sign in from header', () => {
     const [showing, setShowing] = React.useState(false)

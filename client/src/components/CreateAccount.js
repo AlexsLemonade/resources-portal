@@ -1,26 +1,11 @@
-import * as React from 'react'
-import { storiesOf } from '@storybook/react'
 import {
-  Grommet,
-  Anchor,
-  Box,
-  Button,
-  Tabs,
-  Tab,
-  Text,
-  Paragraph,
-  FormField,
-  Select,
-  TextInput,
-  RadioButton,
-  RadioButtonGroup,
-  CheckBox,
-  Heading
+    Anchor,
+    Box,
+    Button,
+    Text
 } from 'grommet'
-import Link from 'next/link'
-import styled from 'styled-components'
+import * as React from 'react'
 import ORCIDLogo from '../images/grant.svg'
-import { ProgressBar } from './ProgressBar'
 
 export const useAlertsQueue = (queue = 'main') => {
   const context = React.useContext(AlertsContext)

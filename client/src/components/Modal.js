@@ -1,27 +1,13 @@
-import * as React from 'react'
-import { storiesOf } from '@storybook/react'
 import {
-  Grommet,
-  Anchor,
-  Box,
-  Button,
-  Layer,
-  Tabs,
-  Tab,
-  Paragraph,
-  FormField,
-  Select,
-  TextInput,
-  RadioButton,
-  RadioButtonGroup,
-  CheckBox,
-  Heading,
-  Text
+    Anchor,
+    Box,
+    Button,
+    Heading, Layer,
+    Text
 } from 'grommet'
-import Link from 'next/link'
-import styled from 'styled-components'
-import ORCIDLogo from '../images/grant.svg'
+import * as React from 'react'
 import Cross from '../images/cross-black-tint-30.svg'
+import ORCIDLogo from '../images/grant.svg'
 
 let ORCIDDescription = () => {
     return(
