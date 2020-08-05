@@ -19,7 +19,7 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import ORCIDLogo from '../images/grant.svg'
 
-export const Login = ({onClick}) => {
+export const LoginButton = ({onClick}) => {
     return (
         <Box align="center" pad="small" gap="large">
             <Button label="Sign in with ORCID iD" icon={<ORCIDLogo />} onClick={onClick} login/>
@@ -27,4 +27,4 @@ export const Login = ({onClick}) => {
     )
 }
 
-export default Login
+export default LoginButton
