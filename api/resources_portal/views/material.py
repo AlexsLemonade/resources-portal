@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import serializers, status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -10,8 +11,8 @@ from resources_portal.views.material_request import MaterialRequestSerializer
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     ShippingRequirementsRelationSerializer,
+    UserRelationSerializer,
 )
-from resources_portal.views.user import UserSerializer
 
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -41,7 +42,6 @@ class MaterialSerializer(serializers.ModelSerializer):
             "citation",
             "additional_info",
             "embargo_date",
-            "requests",
             "created_at",
             "updated_at",
         )
@@ -66,11 +66,10 @@ class MaterialSerializer(serializers.ModelSerializer):
 
 
 class MaterialDetailSerializer(MaterialSerializer):
-    contact_user = UserSerializer()
+    contact_user = UserRelationSerializer()
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirements = ShippingRequirementsRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
-    requests = MaterialRequestSerializer(many=True)
 
 
 class HasAddResources(BasePermission):
@@ -108,6 +107,23 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             permission_classes = []
 
         return [permission() for permission in permission_classes]
+
+    def retrieve(self, request, pk=None):
+        """Retrieve requests manually so we can filter to ones the user has perms for."""
+        material = get_object_or_404(self.queryset, pk=pk)
+        serializer = MaterialDetailSerializer(material)
+
+        response_data = serializer.data
+
+        if request.user.id:
+            requests_queryset = serializer.instance.requests
+            if serializer.instance.organization.members.filter(id=request.user.id).count() < 1:
+                requests_queryset = requests_queryset.filter(requester=request.user)
+
+            requests_serializer = MaterialRequestSerializer(requests_queryset, many=True)
+            response_data["requests"] = requests_serializer.data
+
+        return Response(response_data)
 
     def create(self, request, *args, **kwargs):
         serializer = MaterialSerializer(data=request.data)
