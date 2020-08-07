@@ -194,6 +194,24 @@ const theme = {
           color: ${normalizeColor('black-tint-60', props.theme)};
 
           `
+        ),
+        applyWhen(
+          props.login,
+          `
+          color: ${normalizeColor('black', props.theme)};
+
+          border: none;
+
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('black', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('black-tint-90', props.theme)};
+            color: ${normalizeColor('black', props.theme)};
+          `
         )
       )
   },
