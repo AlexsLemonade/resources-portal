@@ -25,11 +25,11 @@ def import_dataset(import_source, accession_code, organization, grant, user):
 
     try:
         additional_metadata = {
-            "study_id": accession_code,
+            "accession_code": accession_code,
             "description": metadata["description"],
             "platform": metadata["platform"],
             "technology": metadata["technology"],
-            "num_samples": metadata["num_samples"],
+            "number_samples": metadata["number_samples"],
         }
 
         material_json = {
@@ -84,7 +84,9 @@ def import_protocol(protocol_doi, organization, grant, user):
 
     additional_metadata = {
         "protocol_name": metadata["protocol_name"],
-        "abstract": metadata["abstract"],
+        "description": metadata["description"],
+        # There's no abstract to import.
+        "abstract": "",
     }
 
     material_json = {
