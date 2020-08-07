@@ -18,8 +18,8 @@ last_name = fake.last_name()
 ORCID_AUTHORIZATION_DICT = {
     "name": f"{first_name} {last_name}",
     "orcid": str(uuid.uuid4()),
-    "access_token": str(uuid.uuid4()),
-    "refresh_token": str(uuid.uuid4()),
+    "orcid_access_token": str(uuid.uuid4()),
+    "orcid_refresh_token": str(uuid.uuid4()),
 }
 
 ORCID_SUMMARY_DICT = {
@@ -54,7 +54,7 @@ def generate_mock_orcid_record_response(*args, **kwargs):
 
 
 def get_mock_oauth_url(grants):
-    base_url = reverse("user-list")
+    base_url = reverse("auth")
     url = f"{base_url}" f"?code={MOCK_AUTHORIZATION_CODE}" f"&email={MOCK_EMAIL}"
 
     for grant in grants:

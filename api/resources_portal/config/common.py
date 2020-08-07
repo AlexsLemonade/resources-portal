@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from distutils.util import strtobool
 from os.path import join
 
@@ -20,7 +21,7 @@ class Common(Configuration):
         # Third party apps
         "django_extensions",
         "rest_framework",  # utilities for rest apis
-        "rest_framework.authtoken",  # token authentication
+        "django_expiring_token",  # token authentication
         "django_filters",  # for filtering rest endpoints
         "guardian",  # extended permissions to individual objects
         "django_elasticsearch_dsl",  # elasticsearch
@@ -43,7 +44,6 @@ class Common(Configuration):
         "django.contrib.auth.middleware.AuthenticationMiddleware",
         "django.contrib.messages.middleware.MessageMiddleware",
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        "resources_portal.middleware.oauth.OAuthMiddleWare",
     )
 
     ALLOWED_HOSTS = ["*"]
@@ -184,8 +184,7 @@ class Common(Configuration):
             # 'rest_framework.permissions.IsAuthenticated',
         ],
         "DEFAULT_AUTHENTICATION_CLASSES": (
-            "rest_framework.authentication.SessionAuthentication",
-            "rest_framework.authentication.TokenAuthentication",
+            "django_expiring_token.authentication.ExpiringTokenAuthentication",
         ),
     }
 
@@ -194,6 +193,9 @@ class Common(Configuration):
         "django.contrib.auth.backends.ModelBackend",  # default
         "guardian.backends.ObjectPermissionBackend",
     )
+
+    # Time for expiration of API tokens
+    EXPIRING_TOKEN_DURATION = timedelta(days=1)
 
     # CORS - unrestricted
     CORS_ORIGIN_ALLOW_ALL = True

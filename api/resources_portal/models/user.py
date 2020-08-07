@@ -5,7 +5,8 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
+
+from django_expiring_token.models import ExpiringToken
 
 
 class NonDeletedObjectsManager(UserManager):
@@ -31,8 +32,8 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     published_name = models.TextField(null=True)
     orcid = models.TextField(unique=True)
-    refresh_token = models.TextField()
-    access_token = models.TextField()
+    orcid_refresh_token = models.TextField()
+    orcid_access_token = models.TextField()
     deleted = models.BooleanField(default=False, null=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
@@ -54,4 +55,4 @@ class User(AbstractUser):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
-        Token.objects.create(user=instance)
+        ExpiringToken.objects.create(user=instance)
