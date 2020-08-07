@@ -48,7 +48,7 @@ class ImportSRATestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(
-            material.additional_metadata["study_id"], self.test_accession_with_pubmed_id
+            material.additional_metadata["accession_code"], self.test_accession_with_pubmed_id
         )
         self.assertEqual(
             material.additional_metadata["num_samples"],
@@ -76,7 +76,7 @@ class ImportSRATestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(
-            material.additional_metadata["study_id"], self.test_accession_without_pubmed_id
+            material.additional_metadata["accession_code"], self.test_accession_without_pubmed_id
         )
         self.assertEqual(
             material.additional_metadata["num_samples"],

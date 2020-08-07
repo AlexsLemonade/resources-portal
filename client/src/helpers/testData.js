@@ -413,10 +413,9 @@ export const fakeSearchMaterialsResponse = {
       additional_metadata: {
         title: 'Zebrafish Analyis',
         platform: 'Amazon s3 Database',
-        study_id: 'phs000328.v2.p1',
+        accession_code: 'phs000328.v2.p1',
         technology: 'R-readable array',
         description: 'Data collected from genetically modified zebrafish.',
-        study_id_type: 'dbgap_study_accession',
         number_samples: '15'
       },
       imported: false,
@@ -537,10 +536,9 @@ export const fakeSearchMaterialsResponse = {
       additional_metadata: {
         title: 'Imported Zebrafish Analyis',
         platform: 'Amazon s3 Database',
-        study_id: 'GSE24528',
+        accession_code: 'GSE24528',
         technology: 'R-readable array',
         description: 'Data collected from genetically modified zebrafish.',
-        study_id_type: 'accession_id',
         number_samples: '15'
       },
       imported: true,

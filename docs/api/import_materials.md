@@ -35,7 +35,7 @@ Content-Type application/json
    "url":"https://www.ebi.ac.uk/ena/data/view/SRA464955",
    "pubmed_id":"28085667",
    "additional_metadata":{
-      "study_id":"SRA464955",
+      "accession_code":"SRA464955",
       "description":"Tails of the GFP positive embryos were amputated. Tails were placed on ice for 30min before tissue disociation. GFP positive cells were sorted by FACS. RNA was harvested from GFP positive cells using Trizol reagent. Illumina TruSeq RNA Sample Prep Kit (Cat#RS-122-2302) was used with 13 ng of total RNA for the construction of sequencing libraries. RNA libraries were prepared for sequencing using standard Illumina protocols.",
       "platform":"Illumina HiSeq 2500",
       "technology":"Rna-Seq",
