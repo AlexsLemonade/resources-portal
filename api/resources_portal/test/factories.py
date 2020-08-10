@@ -26,6 +26,9 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
     is_staff = False
+    personal_organization = factory.RelatedFactory(
+        "resources_portal.test.factories.PersonalOrganizationFactory", "owner"
+    )
 
     created_at = timezone.now()
     updated_at = timezone.now()
@@ -75,7 +78,7 @@ class OrganizationUserAssociationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.OrganizationUserAssociation"
 
     user = factory.SubFactory(UserFactory)
-    organization = factory.SubFactory(PersonalOrganizationFactory)
+    organization = factory.SubFactory(PersonalOrganizationFactory, owner=user)
 
 
 class OrganizationFactory(factory.django.DjangoModelFactory):
@@ -171,14 +174,6 @@ class LeafGrantFactory(factory.django.DjangoModelFactory):
     funder_id = "1234567890"
 
 
-class GrantUserAssociationFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = "resources_portal.GrantUserAssociation"
-
-    user = factory.SubFactory(UserFactory)
-    grant = factory.SubFactory(LeafGrantFactory)
-
-
 class GrantOrganizationAssociationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.GrantOrganizationAssociation"
@@ -196,8 +191,7 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 
 
 class GrantFactory(LeafGrantFactory):
-    user1 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
-    user2 = factory.RelatedFactory(GrantUserAssociationFactory, "grant")
+    user = factory.SubFactory(UserFactory)
     organization1 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")

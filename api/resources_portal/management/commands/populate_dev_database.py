@@ -142,7 +142,7 @@ def populate_dev_database():
     for i in grants_json["grants_users"]:
         grant = grant_list[parse_int_or_uuid(i["grant_id"])]
         user = user_list[parse_int_or_uuid(i["user_id"])]
-        grant.users.add(user)
+        grant.user = user
 
     # add permissions for each user
     permissions_json = loads(open("./dev_data/permissions.json").read())

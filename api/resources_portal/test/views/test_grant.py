@@ -20,12 +20,12 @@ class TestGrantPostTestCase(APITestCase):
         self.grant = GrantFactory()
 
     def test_post_request_with_no_data_fails(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         response = self.client.post(self.url, {})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_with_valid_data_succeeds(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
 
         get_url = reverse("grant-detail", args=[self.grant.id])
         grant_json = self.client.get(get_url).json()
@@ -45,7 +45,7 @@ class TestSingleGrantTestCase(APITestCase):
         self.url = reverse("grant-detail", args=[self.grant.id])
 
     def test_get_request_returns_a_given_grant(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
 
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -62,7 +62,7 @@ class TestSingleGrantTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_put_request_updates_a_grant(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         grant_json = self.client.get(self.url).json()
 
         new_title = "New Title"
@@ -72,8 +72,7 @@ class TestSingleGrantTestCase(APITestCase):
 
         # Test that users won't be updated.
         new_member = UserFactory()
-        new_member_json = {"id": new_member.id}
-        grant_json["users"].append(new_member_json)
+        grant_json["user"] = new_member.id
 
         response = self.client.put(self.url, grant_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -84,7 +83,7 @@ class TestSingleGrantTestCase(APITestCase):
 
         # This was ignored, requires using the relationship endpoiint.
         new_member = User.objects.get(id=new_member.id)
-        self.assertNotIn(new_member, self.grant.users.all())
+        self.assertEqual(new_member, self.grant.user)
 
     def test_cannot_update_someone_elses_grant(self):
         user = UserFactory()
@@ -96,7 +95,7 @@ class TestSingleGrantTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_delete_only_soft_deletes_objects(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         grant_id = self.grant.id
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

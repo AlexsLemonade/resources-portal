@@ -36,8 +36,9 @@ class User(AbstractUser):
     deleted = models.BooleanField(default=False, null=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
-
-    grants = models.ManyToManyField("Grant", through="GrantUserAssociation")
+    personal_organization = models.ForeignKey(
+        "Organization", blank=True, null=True, on_delete=models.CASCADE, related_name="+"
+    )
 
     def save(self, *args, **kwargs):
         self.id = uuid.UUID(str(self.id))

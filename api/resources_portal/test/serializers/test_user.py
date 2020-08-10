@@ -1,14 +1,13 @@
 from django.test import TestCase
 
-import factory
-
-from resources_portal.test.factories import UserFactory
+from resources_portal.test.factories import PersonalOrganizationFactory, UserFactory
 from resources_portal.views.user import UserSerializer
 
 
 class TestCreateUserSerializer(TestCase):
     def setUp(self):
-        self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
+        personal_organization = PersonalOrganizationFactory()
+        self.user_data = UserFactory.build(personal_organization=personal_organization)
 
     def test_serializer_with_empty_data(self):
         serializer = UserSerializer(data={})
