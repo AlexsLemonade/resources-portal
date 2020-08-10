@@ -1,3 +1,4 @@
+import qs from 'qs'
 import React from 'react'
 import api, { path } from '../api'
 import StoreToken from '../components/StoreToken'
@@ -14,13 +15,20 @@ const Home = ({ token }) => (
 
 Home.getInitialProps = async ({ query, req, res }) => {
   // finish login and redirect
-  const originURL = 'http%3A%2F%2Flocalhost%3A7000%2F%3Femail%3Dtest%40test.com'
-  if (query.code && originURL) {
-    const tokenJson = await api.authenticate(query.code, query.email, originURL)
-    console.log(tokenJson.response.token)
+  if (query.code && query.origin_url) {
+    const { email } = qs.parse(this.props.location.search, {
+      ignoreQueryPrefix: true
+    })
+    console.log('email: ', email)
+    const tokenJson = await api.authenticate(
+      query.code,
+      email,
+      query.origin_url
+    )
+    console.log('Token: ', tokenJson.response.token)
     if (tokenJson.response.token) {
-      if (req && originURL) {
-        res.writeHead(302, { Location: originURL })
+      if (req && query.origin_url) {
+        res.writeHead(302, { Location: query.origin_url })
         res.end()
       }
       return { token: tokenJson.response.token }

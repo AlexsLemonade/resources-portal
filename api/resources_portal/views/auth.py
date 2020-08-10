@@ -44,11 +44,8 @@ class AuthViewSet(viewsets.ViewSet):
                 status=400,
             )
 
-        print("EIHDEWDFWENDKEDNEDNEKDNEKFEBFKEJFBEKFBE")
-
         authorization_code = request.GET["code"]
         origin_url = request.GET["origin_url"]
-        email = request.GET["email"]
 
         data = {
             "client_id": CLIENT_ID,
@@ -68,6 +65,14 @@ class AuthViewSet(viewsets.ViewSet):
 
         # Create user if neccessary
         if not user:
+            if "email" not in request.GET:
+                return JsonResponse(
+                    {
+                        "error": f"There is no user associated with the given URL and no 'email' parameter was provided to create one."
+                    },
+                    status=400,
+                )
+
             email = request.GET["email"]
 
             print(response_json, "********************")

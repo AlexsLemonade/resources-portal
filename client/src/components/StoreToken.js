@@ -1,3 +1,5 @@
+import { Box } from 'grommet'
+import * as React from 'react'
 import { Component } from 'react'
 
 export default class StoreToken extends Component {
@@ -6,5 +8,9 @@ export default class StoreToken extends Component {
     if (token) {
       localStorage.setItem('token', token)
     }
+  }
+
+  render() {
+    return <Box />
   }
 }
