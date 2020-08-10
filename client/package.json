@@ -2,6 +2,7 @@
   "name": "resources-portal",
   "version": "0.1.0",
   "private": true,
+  "dev": "NODE_OPTIONS='--inspect' next dev",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

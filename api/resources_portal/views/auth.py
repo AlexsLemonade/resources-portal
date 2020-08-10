@@ -24,47 +24,58 @@ CLIENT_SECRET = settings.CLIENT_SECRET
 OAUTH_URL = settings.OAUTH_URL
 
 
-def remove_code_parameter_from_uri(url):
-    url_obj = furl.furl(url)
-    url_obj.remove(["code"])
-    return urllib.parse.unquote(url_obj.url)
-
-
 class AuthViewSet(viewsets.ViewSet):
 
     http_method_names = ["get"]
 
     def retrieve(self, request, *args, **kwargs):
-        authorization_code = request.GET["code"]
+        if "code" not in request.GET:
+            return JsonResponse(
+                {
+                    "error": f"Code parameter was not found in the URL: {request.build_absolute_uri()}"
+                },
+                status=400,
+            )
+        elif "origin_url" not in request.GET:
+            return JsonResponse(
+                {
+                    "error": f"Origin URL parameter was not found in the URL: {request.build_absolute_uri()}"
+                },
+                status=400,
+            )
 
-        # remove code param from uri so the redirect_uris will match
-        # Remove code parameter?
-        uri = remove_code_parameter_from_uri(request.build_absolute_uri())
+        print("EIHDEWDFWENDKEDNEDNEKDNEKFEBFKEJFBEKFBE")
+
+        authorization_code = request.GET["code"]
+        origin_url = request.GET["origin_url"]
+        email = request.GET["email"]
 
         data = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
             "grant_type": "authorization_code",
             "code": authorization_code,
-            "redirect_uri": uri,
+            "redirect_uri": origin_url,
         }
 
         # get user orcid info
         response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
         response_json = response.json()
         if "orcid" not in response_json:
-            return JsonResponse(response_json, status=400,)
+            return JsonResponse(response_json, status=400)
 
         user = User.objects.filter(orcid=response_json["orcid"]).first()
 
         # Create user if neccessary
         if not user:
-            email = request.GET.get("email")
+            email = request.GET["email"]
+
+            print(response_json, "********************")
 
             # Get first and last name
             api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=True)
             summary = api.read_record_public(
-                response_json["orcid"], "person", response_json["orcid_access_token"]
+                response_json["orcid"], "person", response_json["access_token"]
             )
             first_name = summary["name"]["given-names"]["value"]
             last_name = summary["name"]["family-name"]["value"]
@@ -72,8 +83,8 @@ class AuthViewSet(viewsets.ViewSet):
             user = User.objects.create(
                 username=response_json["name"],
                 orcid=response_json["orcid"],
-                orcid_access_token=response_json["orcid_access_token"],
-                orcid_refresh_token=response_json["orcid_refresh_token"],
+                orcid_access_token=response_json["access_token"],
+                orcid_refresh_token=response_json["refresh_token"],
                 first_name=first_name,
                 last_name=last_name,
                 email=email,
