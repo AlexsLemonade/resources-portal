@@ -51,10 +51,17 @@ export default {
   resources: {
     find: (id) => request(getAPIURL(`materials/${id}`))
   },
-  authenticate: (code, email, originUrl) =>
-    request(
-      `${getAPIURL(
-        `auth/`
-      )}?code=${code}&email=${email}&origin_url=${originUrl}`
-    )
+  user: {
+    authenticate: (code, email, originUrl) =>
+      request(
+        `${getAPIURL(
+          `auth/`
+        )}?code=${code}&email=${email}&origin_url=${originUrl}`
+      ),
+    getInfo: (token) =>
+      request(
+        `${getAPIURL(
+          `users/token`
+      )
+  }
 }
