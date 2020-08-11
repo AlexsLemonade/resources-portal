@@ -133,7 +133,6 @@ class TestNewMemberJoinsALab(APITestCase):
         response = self.client.post(reverse("material-request-list"), request_json, format="json")
 
         request_id = response.data["id"]
-
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # NewMember has been notified that the material has been requested

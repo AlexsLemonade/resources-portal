@@ -26,9 +26,9 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
     is_staff = False
-    personal_organization = factory.RelatedFactory(
-        "resources_portal.test.factories.PersonalOrganizationFactory", "owner"
-    )
+    # This can get recurisve, so if someone needs it they can
+    # construct it and pass it in.
+    personal_organization = None
 
     created_at = timezone.now()
     updated_at = timezone.now()
@@ -67,6 +67,12 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
 
     owner = factory.SubFactory(UserFactory)
     name = factory.Sequence(lambda n: f"test_organization{n}")
+
+    @factory.post_generation
+    def make_self_personal_org_of_owner(self, create, extracted, **kwargs):
+        self.owner.personal_organization = self
+        if create:
+            self.owner.save()
 
     @factory.post_generation
     def organizations(self, create, extracted, **kwargs):

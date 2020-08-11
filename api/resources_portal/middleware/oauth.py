@@ -92,8 +92,8 @@ class OAuthMiddleWare:
 
                 user.save()
 
-                if grant_ids:
-                    personal_organization.save()
+                personal_organization.members.add(user)
+                personal_organization.save()
 
             # login user
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")
