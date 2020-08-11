@@ -1,11 +1,11 @@
-import { Anchor, Box, Button, Heading, Layer, Text } from 'grommet'
+import { Anchor, Box, Button, Layer, Text } from 'grommet'
 import * as React from 'react'
 import Cross from '../images/cross-black-tint-30.svg'
 import ORCIDLogo from '../images/grant.svg'
 
-const ORCIDDescription = () => {
+export const ORCIDDescription = () => {
   return (
-    <Box height={{ min: '170px', max: '170px' }}>
+    <Box height="170px">
       <Box margin={{ top: 'large', bottom: 'small' }}>
         <Text weight="bold">What is an ORCID iD?</Text>
       </Box>
@@ -25,7 +25,7 @@ const ORCIDDescription = () => {
   )
 }
 
-const AccountCreationInfo = ({ button }) => {
+export const AccountCreationInfo = ({ button }) => {
   return (
     <Box height="large" pad="small">
       <Text weight="bold">
@@ -45,98 +45,20 @@ const AccountCreationInfo = ({ button }) => {
   )
 }
 
-const ResourcesButton = () => {
+export const ResourcesButton = () => {
   return (
     <Box
       alignSelf="center"
       pad="medium"
       margin={{ top: 'small' }}
-      width={{ min: '320px', max: '320px' }}
+      width="320px"
     >
       <Button label="Create or Connect ORCID iD" icon={<ORCIDLogo />} primary />
     </Box>
   )
 }
 
-export const HeaderModalContent = () => {
-  return (
-    <Box>
-      <Box
-        fill="horizontal"
-        border={[{ size: 'small', side: 'bottom', color: '#F2F2F2' }]}
-        height={{ min: '50px' }}
-      >
-        <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">
-          Create a BioResources Portal Account
-        </Heading>
-      </Box>
-      <Box
-        margin={{ top: 'large', bottom: 'small' }}
-        height={{ min: '230px', max: '250px' }}
-      >
-        <AccountCreationInfo button={<ResourcesButton />} />
-      </Box>
-      <Box
-        alignSelf="center"
-        height="0px"
-        width="large"
-        border={[{ size: 'small', side: 'top', color: '#F2F2F2' }]}
-      />
-      <ORCIDDescription />
-    </Box>
-  )
-}
-
-export const ResourcesModalContent = ({ title }) => {
-  return (
-    <Box>
-      <Box
-        fill="horizontal"
-        border={[{ size: 'small', side: 'bottom', color: '#F2F2F2' }]}
-        height={{ min: '50px', max: '70px' }}
-      >
-        <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">
-          {title}
-        </Heading>
-      </Box>
-      <Box
-        direction="row"
-        margin={{ top: 'large' }}
-        height={{ min: '300px', max: '300px' }}
-      >
-        <Box
-          basis="2/5"
-          align="center"
-          width={{ min: '300px' }}
-          border={[{ size: 'small', side: 'right', color: '#F2F2F2' }]}
-        >
-          <Text weight="bold">Sign in with your ORCID iD</Text>
-          <Box align="center" margin={{ top: 'large' }}>
-            <Button
-              label="Sign in with ORCID iD"
-              icon={<ORCIDLogo />}
-              primary
-            />
-            primary
-          </Box>
-          <Box margin={{ left: '30px' }} basis="3/5">
-            <AccountCreationInfo button={<ResourcesButton />} />
-          </Box>
-        </Box>
-        <Box
-          alignSelf="center"
-          height="0px"
-          width="large"
-          margin={{ top: 'large' }}
-          border={[{ size: 'small', side: 'top', color: '#F2F2F2' }]}
-        />
-        <ORCIDDescription />
-      </Box>
-    </Box>
-  )
-}
-
-const Modal = ({ showing, setShowing, content }) => {
+export const Modal = ({ showing, setShowing, content }) => {
   return (
     <Box>
       {showing && (
