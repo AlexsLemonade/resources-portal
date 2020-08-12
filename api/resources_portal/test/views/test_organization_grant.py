@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import Grant
-from resources_portal.test.factories import GrantFactory, UserFactory
+from resources_portal.test.factories import GrantFactory, PersonalOrganizationFactory, UserFactory
 
 fake = Faker()
 
@@ -138,15 +138,35 @@ class OrganizationGrantTestCase(APITestCase):
         Grant.objects.get(pk=self.grant.id)
 
     def test_delete_request_transfers_materials(self):
-        self.client.force_authenticate(user=self.organization1.owner)
-        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
+        grant = self.grant2
+        user = grant.user
+
+        # Add grant2 materials to organization1, so they can be transferred out.
+        materials = grant.materials.all()
+        material1 = materials[0]
+        material2 = materials[1]
+        material1.organization = self.organization1
+        material1.save()
+        material2.organization = self.organization1
+        material2.save()
+
+        # Create a personal organization for grant2.user (factory
+        # doesn't create by default.)
+        user.personal_organization = PersonalOrganizationFactory(owner=user)
+        user.save()
+
+        self.client.force_authenticate(user)
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, grant.id])
         response = self.client.delete(url + "?transfer=true")
         self.assertEqual(response.status_code, 204)
 
-        self.grant.refresh_from_db()
-        self.assertNotIn(self.grant, self.organization1.grants.all())
+        grant.refresh_from_db()
+        self.assertNotIn(grant, self.organization1.grants.all())
         # Verify that the grant was not deleted, just its relationship
-        Grant.objects.get(pk=self.grant.id)
+        grant = Grant.objects.get(pk=grant.id)
+
+        for material in grant.materials.all():
+            self.assertEqual(user.personal_organization, material.organization)
 
     def test_delete_fails_if_not_grant_owner(self):
         self.client.force_authenticate(user=self.organization1.owner)
