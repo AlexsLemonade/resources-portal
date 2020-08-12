@@ -18,7 +18,7 @@ export const CreateAccountStep = ({ ORCID }) => {
         width="large"
         alignSelf="center"
         margin={{ top: 'large' }}
-        border={[{ size: 'small', side: 'bottom', color: '#F2F2F2' }]}
+        border={[{ size: 'small', side: 'bottom', color: 'black-tint-95' }]}
       >
         <Text>Our records show that your ORCID iD is {ORCID}</Text>
         <Box align="center" pad="medium" gap="large">
