@@ -31,9 +31,14 @@ Content-Type application/json
    "id":5,
    "title":"Young Investigator's Grant",
    "funder_id":"1234567890",
-   "users":[
-
-   ],
+   "user": {
+         "id":"3f8b7a1a-adc8-4fa1-b015-814a9a4b5357",
+         "username":"testuser96",
+         "first_name":"Shane",
+         "last_name":"Cain",
+         "created_at":"2020-05-11T13:47:53+0000",
+         "updated_at":"2020-05-11T13:47:53+0000"
+   },
    "organizations":[
 
    ],
@@ -66,16 +71,14 @@ Content-Type application/json
    "id":8,
    "title":"Young Investigator's Grant",
    "funder_id":"1234567890",
-   "users":[
-      {
+   "user":{
          "id":"3f8b7a1a-adc8-4fa1-b015-814a9a4b5357",
          "username":"testuser96",
          "first_name":"Shane",
          "last_name":"Cain",
          "created_at":"2020-05-11T13:47:53+0000",
          "updated_at":"2020-05-11T13:47:53+0000"
-      }
-   ],
+   },
    "organizations":[
       {
          "id":26,
@@ -138,16 +141,14 @@ Content-Type application/json
    "id":10,
    "title":"New Title",
    "funder_id":"YYY-YYY-YYY",
-   "users":[
-      {
+   "user": {
          "id":"c362123d-7526-4fd8-a3b0-6e3fa026125c",
          "username":"testuser118",
          "first_name":"Carl",
          "last_name":"Mckinney",
          "created_at":"2020-05-11T13:55:46+0000",
          "updated_at":"2020-05-11T13:55:46+0000"
-      }
-   ],
+   },
    "organizations":[
       {
          "id":32,

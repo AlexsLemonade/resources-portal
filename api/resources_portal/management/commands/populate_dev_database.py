@@ -138,12 +138,6 @@ def populate_dev_database():
         org = org_list[parse_int_or_uuid(i["organization_id"])]
         grant.organizations.add(org)
 
-    # add relation of grants and users
-    for i in grants_json["grants_users"]:
-        grant = grant_list[parse_int_or_uuid(i["grant_id"])]
-        user = user_list[parse_int_or_uuid(i["user_id"])]
-        grant.user = user
-
     # add permissions for each user
     permissions_json = loads(open("./dev_data/permissions.json").read())
     for permission_set in permissions_json["user_organization_permissions"]:
