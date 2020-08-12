@@ -5,7 +5,6 @@ from resources_portal.models import Grant, User
 from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
     OrganizationRelationSerializer,
-    UserRelationSerializer,
 )
 
 
