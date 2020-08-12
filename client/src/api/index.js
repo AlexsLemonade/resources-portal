@@ -20,12 +20,20 @@ const getAPIURL = (endpoint = '', query = {}) => {
   return url.href || url
 }
 
-const request = async (url, { headers = {}, ...options } = {}) => {
+const request = async (
+  url,
+  { headers = {}, authorization, ...options } = {}
+) => {
+  const { body } = options
   const config = { ...options }
+  config.body = body
   config.headers = {
     'content-type': 'application/json',
     ...headers
   }
+  if (authorization) config.headers.Authorization = `Token ${authorization}`
+
+  console.log('options: ', config)
 
   try {
     const response = await fetch(url, config)
@@ -52,16 +60,13 @@ export default {
     find: (id) => request(getAPIURL(`materials/${id}`))
   },
   user: {
-    authenticate: (code, email, originUrl) =>
-      request(
-        `${getAPIURL(
-          `auth/`
-        )}?code=${code}&email=${email}&origin_url=${originUrl}`
-      ),
-    getInfo: (token) =>
-      request(
-        `${getAPIURL(
-          `users/token`
-      )
+    authenticate: (query) => request(getAPIURL('auth/', query)),
+    getInfo: (userId, authorization) =>
+      request(`${getAPIURL(`users/${userId}`)}`, { authorization }),
+    refreshToken: (token) =>
+      request(`${getAPIURL('refresh-token/')}`, {
+        method: 'POST',
+        body: { token }
+      })
   }
 }

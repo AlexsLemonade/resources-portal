@@ -1,21 +1,24 @@
 import React from 'react'
+import api from '../api'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
-export const useUser = () => {
-  const { user, setUser } = React.useContext(ResourcesPortalContext)
-  const { token, setToken } = React.useState(user ? user.token : null)
-  const loginUser = (orcidToken) => {
-    // set token in for restricted api endpoints
-    // make api calls here
+export const useUser = (defaultUser, defaultToken) => {
+  const { user, setUser, token, setToken } = React.useContext(
+    ResourcesPortalContext
+  )
+  function getUser() {
+    return defaultUser
   }
   const isLoggedIn = () => {
     return user && user.token
   }
   const refreshUserData = () => {
-    // api calls to refresh data
+    const { currentToken, userId } = api.user.refreshToken(token)
+    const currentUser = api.user.getInfo(userId)
   }
   return {
-    user,
-    isLoggedIn
+    getUser,
+    isLoggedIn,
+    refreshUserData
   }
 }

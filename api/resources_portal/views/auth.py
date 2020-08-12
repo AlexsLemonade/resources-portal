@@ -24,7 +24,13 @@ CLIENT_SECRET = settings.CLIENT_SECRET
 OAUTH_URL = settings.OAUTH_URL
 
 
+def remove_code_parameter_from_uri(url):
+    return url.split("&code")[0]
+
+
 class AuthViewSet(viewsets.ViewSet):
+
+    # Verify that this should be a GET/POST?
 
     http_method_names = ["get"]
 
@@ -47,12 +53,14 @@ class AuthViewSet(viewsets.ViewSet):
         authorization_code = request.GET["code"]
         origin_url = request.GET["origin_url"]
 
+        print("ORIGIN_URL: ", remove_code_parameter_from_uri(origin_url))
+
         data = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
             "grant_type": "authorization_code",
             "code": authorization_code,
-            "redirect_uri": origin_url,
+            "redirect_uri": remove_code_parameter_from_uri(origin_url),
         }
 
         # get user orcid info
@@ -109,4 +117,6 @@ class AuthViewSet(viewsets.ViewSet):
 
         is_expired, token = token_expire_handler(token)
 
-        return JsonResponse({"token": token.key, "expires": token.expires}, status=200,)
+        return JsonResponse(
+            {"user_id": user.id, "token": token.key, "expires": token.expires}, status=200,
+        )
