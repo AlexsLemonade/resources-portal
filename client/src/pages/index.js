@@ -1,10 +1,11 @@
 import React from 'react'
 import api, { path } from '../api'
-import { ResourcesPortalContext } from '../ResourcesPortalContext'
+import { useUser } from '../hooks/useUser'
 
-export const Home = ({ currentUser }) => {
-  const user = React.useContext(ResourcesPortalContext)
-  user.setUser(currentUser)
+export const Home = ({ authenticatedUser, token, redirectUrl }) => {
+  useUser(authenticatedUser, token, redirectUrl)
+
+  console.log('authenticatedUser: ', authenticatedUser)
 
   return (
     <div className="container">
@@ -17,6 +18,7 @@ export const Home = ({ currentUser }) => {
 }
 
 Home.getInitialProps = async ({ req, query }) => {
+  // Revisit how to present errors thrown from this function
   // finish login and redirect
   if (!(query.code && query.json)) {
     return {}
@@ -35,19 +37,25 @@ Home.getInitialProps = async ({ req, query }) => {
     code: query.code
   })
 
-  if (!tokenRequest.response.token) {
-    return { error: tokenRequest }
+  if (!tokenRequest.isOk || !tokenRequest.response.token) {
+    return tokenRequest
   }
+
+  console.log('token: ', tokenRequest)
 
   const userRequest = await api.user.getInfo(
     tokenRequest.response.user_id,
     tokenRequest.response.token
   )
 
+  if (!userRequest.isOk || !userRequest.response.id) {
+    return userRequest
+  }
+
   console.log('The user is: ', userRequest)
 
   return {
-    currentUser: userRequest.response,
+    authenticatedUser: userRequest.response,
     token: tokenRequest.response.token,
     redirectUrl: queryJSON.origin_url
   }

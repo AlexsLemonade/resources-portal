@@ -45,7 +45,7 @@ export const AccountCreationInfo = ({ button }) => {
   )
 }
 
-export const ResourcesButton = (link) => {
+export const ResourcesButton = () => {
   return (
     <Box
       alignSelf="center"

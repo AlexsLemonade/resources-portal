@@ -2,7 +2,7 @@ import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
 import Link from 'next/link'
 import React from 'react'
 import styled from 'styled-components'
-import { ResourcesPortalContext } from '../ResourcesPortalContext'
+import { useUser } from '../hooks/useUser'
 import { LoginButton } from './LoginButton'
 import LogoSvg from './logo.svg'
 import SignInModal from './SignInModal'
@@ -10,9 +10,7 @@ import SignInModal from './SignInModal'
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
   const [showing, setShowing] = React.useState(false)
-  const { user } = React.useContext(ResourcesPortalContext)
-
-  console.log('header user is: ', user)
+  const { isLoggedIn } = useUser()
 
   return (
     <Header
@@ -49,8 +47,12 @@ export default function ResourcesHeader({ className }) {
             <Anchor color="white" href="#" label="List Resource" />
           </Link>
           <Anchor color="white" href="#" label="Help" />
-          {user && <Anchor color="white" href="#" label={user.username} />}
-          {!user && (
+          {isLoggedIn && (
+            <Link href="/account">
+              <Anchor color="white" href="#" label="My Account" />
+            </Link>
+          )}
+          {!isLoggedIn && (
             <Box>
               <LoginButton onClick={() => setShowing(true)} />
               <SignInModal showing={showing} setShowing={setShowing} />

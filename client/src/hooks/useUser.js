@@ -1,24 +1,46 @@
+import { useRouter } from 'next/router'
 import React from 'react'
 import api from '../api'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
+import { useLocalStorage } from './useLocalStorage'
 
-export const useUser = (defaultUser, defaultToken) => {
+export const useUser = (defaultUser, defaultToken, redirectUrl) => {
+  const [loginRedirectUrl, setLoginRedirectUrl] = useLocalStorage(
+    'redirectUrl',
+    redirectUrl
+  )
   const { user, setUser, token, setToken } = React.useContext(
     ResourcesPortalContext
   )
-  function getUser() {
-    return defaultUser
+  const router = useRouter()
+  if (defaultUser && defaultToken) {
+    setUser(defaultUser)
+    setToken(defaultToken)
+    if (loginRedirectUrl) {
+      setLoginRedirectUrl()
+      router.replace(loginRedirectUrl)
+    }
   }
-  const isLoggedIn = () => {
-    return user && user.token
-  }
+  const isLoggedIn = user && token
   const refreshUserData = () => {
-    const { currentToken, userId } = api.user.refreshToken(token)
-    const currentUser = api.user.getInfo(userId)
+    // Check that the responses are ok here. Otherwise we could end in a bad state
+    const {
+      response: { token: refreshToken, userId }
+    } = api.user.refreshToken(token)
+    setToken(refreshToken)
+    const { response: refreshUser } = api.user.getInfo(userId)
+    setUser(refreshUser)
+  }
+  const logOut = () => {
+    setUser()
+    setToken()
   }
   return {
-    getUser,
+    user,
+    token,
     isLoggedIn,
-    refreshUserData
+    refreshUserData,
+    logOut,
+    setLoginRedirectUrl
   }
 }

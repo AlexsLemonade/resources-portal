@@ -1,11 +1,12 @@
 import React from 'react'
+import { useLocalStorage } from './hooks/useLocalStorage'
 
 export const ResourcesPortalContext = React.createContext({})
 
 export const ResourcesPortalContextProvider = ({ children }) => {
   const [search, setSearch] = React.useState({})
-  const [user, setUser] = React.useState({})
-  const [token, setToken] = React.useState('')
+  const [user, setUser] = useLocalStorage('user', {})
+  const [token, setToken] = useLocalStorage('token', '')
 
   return (
     <ResourcesPortalContext.Provider
