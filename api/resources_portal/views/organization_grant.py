@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -59,9 +60,22 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return Response(status=201)
 
+    @transaction.atomic
     def destroy(self, request, *args, **kwargs):
         organization = Organization.objects.get(pk=kwargs["parent_lookup_organizations"])
         grant = Grant.objects.get(pk=kwargs["pk"])
+
+        if (
+            "transfer" in request.query_params
+            and request.query_params["transfer"].upper() == "TRUE"
+        ):
+            # Transfer materials to the grant owner's personal organization.
+            personal_organization = grant.user.personal_organization
+
+            for material in organization.materials.all():
+                if material.grant == grant:
+                    material.organization = personal_organization
+                    material.save()
 
         association = GrantOrganizationAssociation.objects.get(
             grant=grant, organization=organization

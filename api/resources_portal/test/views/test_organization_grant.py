@@ -137,6 +137,17 @@ class OrganizationGrantTestCase(APITestCase):
         # Verify that the grant was not deleted, just its relationship
         Grant.objects.get(pk=self.grant.id)
 
+    def test_delete_request_transfers_materials(self):
+        self.client.force_authenticate(user=self.organization1.owner)
+        url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
+        response = self.client.delete(url + "?transfer=true")
+        self.assertEqual(response.status_code, 204)
+
+        self.grant.refresh_from_db()
+        self.assertNotIn(self.grant, self.organization1.grants.all())
+        # Verify that the grant was not deleted, just its relationship
+        Grant.objects.get(pk=self.grant.id)
+
     def test_delete_fails_if_not_grant_owner(self):
         self.client.force_authenticate(user=self.organization1.owner)
         grant = GrantFactory()
