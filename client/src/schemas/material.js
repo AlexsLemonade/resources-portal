@@ -62,6 +62,7 @@ const materialCategories = {
     protocol_name: string()
   }),
   DATASET: object({
+    accession_code: string(),
     description: string(),
     number_samples: string(),
     technology: string(),

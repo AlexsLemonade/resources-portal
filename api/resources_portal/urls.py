@@ -13,7 +13,6 @@ from resources_portal.views import (
     AttachmentViewSet,
     AuthViewSet,
     GrantMaterialViewSet,
-    GrantUserViewSet,
     GrantViewSet,
     ImportViewSet,
     MaterialDocumentView,
@@ -68,9 +67,6 @@ router.register(r"grants", GrantViewSet, basename="grant").register(
     GrantMaterialViewSet,
     basename="grants-material",
     parents_query_lookups=["grants"],
-)
-router.register(r"grants", GrantViewSet, basename="grant").register(
-    r"users", GrantUserViewSet, basename="grants-user", parents_query_lookups=["grants"],
 )
 router.register(r"attachments", AttachmentViewSet, basename="attachment")
 router.register(

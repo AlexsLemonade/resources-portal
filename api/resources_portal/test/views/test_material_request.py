@@ -70,8 +70,7 @@ class TestMaterialRequestListTestCase(APITestCase):
         )
 
         address = AddressFactory()
-        material_request_data = self.material_request_data.copy()
-        material_request_data["address"] = address.id
+        self.material_request_data["address"] = address.id
 
         response = self.client.post(self.url, self.material_request_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -84,6 +83,9 @@ class TestMaterialRequestListTestCase(APITestCase):
             ),
             1,
         )
+
+        created_request = MaterialRequest.objects.get(id=response.json()["id"])
+        self.assertEqual(created_request.address.id, address.id)
 
     def test_post_request_with_valid_data_fails_if_archived(self):
         self.request.material.is_archived = True
@@ -142,6 +144,11 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.organization.assign_member_perms(self.sharer)
         self.organization.assign_owner_perms(self.sharer)
 
+        self.other_member = UserFactory()
+        self.organization.members.add(self.other_member)
+        self.organization.assign_member_perms(self.other_member)
+        self.organization.assign_owner_perms(self.other_member)
+
         self.user_without_perms = UserFactory()
 
         self.admin = UserFactory()
@@ -189,10 +196,6 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
-        requester_org = OrganizationFactory()
-        requester_org.members.add(self.request.requester)
-        requester_org.save()
-
         irb_attachment = AttachmentFactory(owned_by_user=self.request.requester)
 
         self.material_request_data["irb_attachment"] = irb_attachment.id
@@ -206,12 +209,55 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.irb_attachment, irb_attachment)
 
+    def test_put_request_from_requester_verifies_request(self):
+        # Make the request fulfilled, so it can be verified.
+        self.request.status = "FULFILLED"
+        self.request.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        self.material_request_data["status"] = "VERIFIED_FULFILLED"
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_request = MaterialRequest.objects.get(pk=self.request.id)
+        self.assertEqual(material_request.status, "VERIFIED_FULFILLED")
+
+    def test_put_request_from_sharer_does_not_verify_request(self):
+        # Make the request fulfilled, so it could be verified.
+        self.request.status = "FULFILLED"
+        self.request.save()
+
+        self.client.force_authenticate(user=self.sharer)
+
+        self.material_request_data["status"] = "VERIFIED_FULFILLED"
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_put_request_from_user_who_does_not_own_attachment_fails(self):
         self.client.force_authenticate(user=self.request.requester)
 
         irb_attachment = AttachmentFactory()
 
         self.material_request_data["irb_attachment"] = irb_attachment.id
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_put_request_updates_assigned_to(self):
+        self.client.force_authenticate(user=self.other_member)
+        self.material_request_data["assigned_to"] = self.other_member.id
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        updated_request = MaterialRequest.objects.get(id=self.request.id)
+        self.assertEqual(updated_request.assigned_to, self.other_member)
+
+    def test_put_request_from_requester_does_not_update_assigned_to(self):
+        self.client.force_authenticate(user=self.request.requester)
+        self.material_request_data["assigned_to"] = self.other_member.id
 
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

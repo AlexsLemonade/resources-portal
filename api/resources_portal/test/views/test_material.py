@@ -74,10 +74,34 @@ class TestSingleMaterialTestCase(APITestCase):
 
         assign_perm("delete_resources", self.user, self.organization)
 
-    def test_get_request_returns_a_given_material(self):
+    def test_get_request_returns_no_requests_if_no_user(self):
         self.client.force_authenticate(user=None)
+        # Add a request to be filtered out.
+        MaterialRequestFactory(material=self.material)
+
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue("requests" not in response.json())
+
+    def test_get_request_returns_all_requests_if_user_in_org(self):
+        self.client.force_authenticate(user=self.user)
+        # Add a request to be filtered out.
+        MaterialRequestFactory(material=self.material)
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["requests"]), 1)
+
+    def test_get_request_filters_requests_if_user_not_in_org(self):
+        requester = UserFactory()
+        self.client.force_authenticate(user=requester)
+        # Add a request to not be filtered out.
+        MaterialRequestFactory(requester=requester, material=self.material)
+        # Add a request to be filtered out.
+        MaterialRequestFactory(material=self.material)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["requests"]), 1)
 
     def test_put_request_updates_a_material(self):
         self.client.force_authenticate(user=self.user)

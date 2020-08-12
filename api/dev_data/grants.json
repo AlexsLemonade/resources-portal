@@ -2,11 +2,13 @@
   "grants": [
     {
       "title": "Grant for Research in Melanoma Treatment",
-      "funder_id": "10000000-0f5a-4165-b518-b2386a753d6f"
+      "funder_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
       "title": "Grant for Research in Tumor Growth",
-      "funder_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
+      "funder_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }
   ],
   "grants_materials": [
@@ -87,20 +89,6 @@
     {
       "grant_id": "2",
       "organization_id": "4"
-    }
-  ],
-  "grants_users": [
-    {
-      "grant_id": "1",
-      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
-    },
-    {
-      "grant_id": "2",
-      "user_id": "10000000-0f5a-4165-b518-b2386a753d6f"
-    },
-    {
-      "grant_id": "2",
-      "user_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }
   ]
 }

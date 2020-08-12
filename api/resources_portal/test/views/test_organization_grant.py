@@ -27,7 +27,7 @@ class OrganizationGrantTestCase(APITestCase):
         self.organization1.grants.add(self.grant2)
         self.organization1.save()
 
-        self.grant.users.add(self.organization1.owner)
+        self.grant.user = self.organization1.owner
         self.grant.save()
 
         self.url = reverse("organization-detail", args=[self.grant.id])
@@ -68,7 +68,7 @@ class OrganizationGrantTestCase(APITestCase):
         self.client.force_authenticate(user=self.organization1.owner)
 
         grant = GrantFactory()
-        grant.users.add(self.organization1.owner)
+        grant.user = self.organization1.owner
         grant.save()
 
         org_grant_url = reverse("organizations-grants-list", args=[self.organization1.id])
@@ -84,7 +84,7 @@ class OrganizationGrantTestCase(APITestCase):
         grant = GrantFactory()
         grant.save()
 
-        self.client.force_authenticate(user=grant.users.first())
+        self.client.force_authenticate(user=grant.user)
         grant_url = reverse("grant-detail", args=[grant.id])
         grant_json = self.client.get(grant_url).json()
 
@@ -97,7 +97,7 @@ class OrganizationGrantTestCase(APITestCase):
 
     def test_post_fails_if_not_organization_owner(self):
         grant = GrantFactory()
-        grant.users.add(self.organization1.owner)
+        grant.user = self.organization1.owner
         grant.save()
 
         # sign in as org1 owner so we can get grant
