@@ -20,6 +20,8 @@ class Grant(SafeDeleteModel):
     title = models.TextField()
     funder_id = models.CharField(max_length=80)
 
-    users = models.ManyToManyField("User", through="GrantUserAssociation")
+    user = models.ForeignKey(
+        "User", blank=True, null=True, on_delete=models.SET_NULL, related_name="grants"
+    )
     organizations = models.ManyToManyField("Organization", through="GrantOrganizationAssociation")
     materials = models.ManyToManyField("Material", through="GrantMaterialAssociation")

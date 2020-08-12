@@ -30,7 +30,7 @@ class OwnsGrantAndOrganization(BasePermission):
         else:
             grant = Grant.objects.get(pk=view.kwargs["pk"])
 
-        return request.user in grant.users.all() and request.user == organization.owner
+        return request.user == grant.user and request.user == organization.owner
 
 
 class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

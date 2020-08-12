@@ -2,7 +2,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-import factory
 from faker import Faker
 
 from resources_portal.models import User
@@ -19,10 +18,6 @@ class TestUserListTestCase(APITestCase):
     def setUp(self):
         self.user = UserFactory()
         self.url = reverse("user-list")
-        self.user_data = factory.build(dict, FACTORY_CLASS=UserFactory)
-        # Don't post created_at and updated_at.
-        self.user_data.pop("created_at")
-        self.user_data.pop("updated_at")
 
     def test_list_request_succeeds(self):
         self.client.force_authenticate(user=self.user)

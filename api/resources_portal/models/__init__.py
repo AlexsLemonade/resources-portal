@@ -3,7 +3,6 @@ from resources_portal.models.associations.grant_material_association import Gran
 from resources_portal.models.associations.grant_organization_association import (
     GrantOrganizationAssociation,
 )
-from resources_portal.models.associations.grant_user_association import GrantUserAssociation
 from resources_portal.models.associations.organization_user_association import (
     OrganizationUserAssociation,
 )

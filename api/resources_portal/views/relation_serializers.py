@@ -81,14 +81,14 @@ class GrantRelationSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "funder_id",
-            "users",
+            "user",
             "organizations",
             "materials",
             "created_at",
             "updated_at",
         )
 
-    users = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
     organizations = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
