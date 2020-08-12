@@ -26,7 +26,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
     is_staff = False
-    # This can get recurisve, so if someone needs it they can
+    # This can get recursive, so if someone needs it they can
     # construct it and pass it in.
     personal_organization = None
 
