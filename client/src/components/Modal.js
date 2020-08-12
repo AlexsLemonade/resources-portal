@@ -45,7 +45,7 @@ export const AccountCreationInfo = ({ button }) => {
   )
 }
 
-export const ResourcesButton = () => {
+export const ResourcesButton = (link) => {
   return (
     <Box
       alignSelf="center"
@@ -53,7 +53,12 @@ export const ResourcesButton = () => {
       margin={{ top: 'small' }}
       width="320px"
     >
-      <Button label="Create or Connect ORCID iD" icon={<ORCIDLogo />} primary />
+      <Button
+        label="Create or Connect ORCID iD"
+        href="https://sandbox.orcid.org/oauth/authorize?client_id=APP-2AHZAK2XCFGHRJFM&response_type=code&scope=/authenticate&redirect_uri=http://localhost:7000/?json=%7B%22email%22:%20%22test@test.com%22%7D"
+        icon={<ORCIDLogo />}
+        primary
+      />
     </Box>
   )
 }

@@ -93,6 +93,8 @@ class AuthViewSet(viewsets.ViewSet):
             first_name = summary["name"]["given-names"]["value"]
             last_name = summary["name"]["family-name"]["value"]
 
+            print("summary: ", summary)
+
             user = User.objects.create(
                 username=response_json["name"],
                 orcid=response_json["orcid"],
