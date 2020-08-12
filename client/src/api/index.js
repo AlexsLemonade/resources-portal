@@ -52,6 +52,9 @@ const request = async (
   }
 }
 
+export const loginUser = () => {}
+// return array of api responses
+
 export default {
   search: {
     resources: (query) => request(getAPIURL('search/materials', query))

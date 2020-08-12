@@ -31,6 +31,7 @@ commands = {
     "makemigrations": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"'
     ),
+    "migrate": run_api.format('bash -c "./wait_for_elasticsearch.py && ./manage.py migrate"'),
     "postgres-cli": "./run_psql_client.sh",
     "createsuperuser": run_api.format("./manage.py createsuperuser"),
     "graph-models": run_api.format("./manage.py graph_models -a -g > model.dot"),

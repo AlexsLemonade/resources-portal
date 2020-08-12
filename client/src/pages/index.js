@@ -20,11 +20,15 @@ export const Home = ({ authenticatedUser, token, redirectUrl }) => {
 Home.getInitialProps = async ({ req, query }) => {
   // Revisit how to present errors thrown from this function
   // finish login and redirect
-  if (!(query.code && query.json)) {
+  let queryJSON = {}
+
+  if (!query.code) {
     return {}
   }
 
-  const queryJSON = JSON.parse(query.json)
+  if (query.json) {
+    queryJSON = JSON.parse(query.json)
+  }
 
   console.log(
     'tokenrequest: ',
@@ -38,6 +42,7 @@ Home.getInitialProps = async ({ req, query }) => {
   })
 
   if (!tokenRequest.isOk || !tokenRequest.response.token) {
+    console.log(tokenRequest)
     return tokenRequest
   }
 

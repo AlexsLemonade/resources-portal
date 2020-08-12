@@ -25,7 +25,11 @@ OAUTH_URL = settings.OAUTH_URL
 
 
 def remove_code_parameter_from_uri(url):
-    return url.split("&code")[0]
+    """
+    This removes the "code" parameter added by the first ORCID call if it is there,
+     and trims off the trailing '/?' if it is there.
+    """
+    return url.split("code")[0].strip("&").strip("/?")
 
 
 class AuthViewSet(viewsets.ViewSet):
@@ -53,7 +57,7 @@ class AuthViewSet(viewsets.ViewSet):
         authorization_code = request.GET["code"]
         origin_url = request.GET["origin_url"]
 
-        print("ORIGIN_URL: ", remove_code_parameter_from_uri(origin_url))
+        print("GET PARAMS: ", request.GET)
 
         data = {
             "client_id": CLIENT_ID,
@@ -70,6 +74,8 @@ class AuthViewSet(viewsets.ViewSet):
             return JsonResponse(response_json, status=400)
 
         user = User.objects.filter(orcid=response_json["orcid"]).first()
+
+        print("USer in database: ", user)
 
         # Create user if neccessary
         if not user:
@@ -108,7 +114,9 @@ class AuthViewSet(viewsets.ViewSet):
             org = Organization.objects.create(owner=user)
             user.organizations.add(org)
 
-            grant_ids = request.GET.getlist("grant_id")
+            grant_ids = request.GET.getlist("grants")
+
+            print("grants: ", grant_ids)
 
             for grant in Grant.objects.filter(id__in=grant_ids):
                 user.grants.add(grant)

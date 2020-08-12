@@ -4,7 +4,7 @@ import {
   AccountCreationInfo,
   Modal,
   ORCIDDescription,
-  ResourcesButton
+  ORCIDSignInButton
 } from './Modal'
 
 export const SignInModalContent = () => {
@@ -20,7 +20,9 @@ export const SignInModalContent = () => {
         </Heading>
       </Box>
       <Box margin={{ top: 'large', bottom: 'small' }} height="240px">
-        <AccountCreationInfo button={<ResourcesButton />} />
+        <AccountCreationInfo
+          button={<ORCIDSignInButton label="Create or Connect ORCID iD" />}
+        />
       </Box>
       <Box
         alignSelf="center"

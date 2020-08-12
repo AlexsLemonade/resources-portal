@@ -21,9 +21,9 @@ class Common(Configuration):
         # Third party apps
         "django_extensions",
         "rest_framework",  # utilities for rest apis
-        "django_expiring_token",  # token authentication
         "django_filters",  # for filtering rest endpoints
         "guardian",  # extended permissions to individual objects
+        "django_expiring_token",  # token authentication
         "django_elasticsearch_dsl",  # elasticsearch
         "django_elasticsearch_dsl_drf",  # elasticsearch rest api
         "drf_yasg",
