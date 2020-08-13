@@ -169,7 +169,7 @@ class OrganizationGrantTestCase(APITestCase):
             self.assertEqual(user.personal_organization, material.organization)
 
     def test_delete_fails_if_not_grant_owner(self):
-        self.client.force_authenticate(user=self.organization1.owner)
+        self.client.force_authenticate(user=self.organization2.owner)
         grant = GrantFactory()
         self.organization1.grants.add(grant)
         self.organization1.save()
