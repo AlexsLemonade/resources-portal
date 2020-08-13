@@ -1,4 +1,5 @@
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
+const path = require('path')
 
 module.exports = (phase) => {
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
@@ -15,6 +16,15 @@ module.exports = (phase) => {
   }
 
   return {
-    env
+    env,
+    webpack: (config) => {
+      config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
+
+      config.module.rules.push({
+        test: /\.md$/,
+        use: ['raw-loader', 'template-literal-loader']
+      })
+      return config
+    }
   }
 }
