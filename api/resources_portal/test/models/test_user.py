@@ -1,5 +1,3 @@
-from django.urls import reverse
-from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
@@ -26,10 +24,8 @@ class TestUserModelTestCase(APITestCase):
             user = UserFactory(first_name=first_name, last_name=last_name)
 
             if i == 0:
-                print("0: ", user.username)
                 self.assertEqual(user.username, f"{first_name}{last_name}")
             else:
-                print("1: ", user.username)
                 self.assertEqual(user.username, f"{first_name}{last_name}{i}")
 
     def test_fullname_generated_correctly(self):
