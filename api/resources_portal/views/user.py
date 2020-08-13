@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "full_name",
             "orcid",
             "owned_attachments",
             "material_requests",
