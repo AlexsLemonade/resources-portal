@@ -94,9 +94,7 @@ class TestSingleGrantTestCase(APITestCase):
         response = self.client.put(self.url, grant_json)
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_only_soft_deletes_objects(self):
+    def test_delete_fails(self):
         self.client.force_authenticate(user=self.grant.user)
-        grant_id = self.grant.id
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Grant.deleted_objects.filter(id=grant_id).count(), 1)
+        self.assertEqual(response.status_code, 405)

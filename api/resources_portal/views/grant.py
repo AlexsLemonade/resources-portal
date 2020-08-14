@@ -49,6 +49,9 @@ class OwnsGrant(BasePermission):
 class GrantViewSet(viewsets.ModelViewSet):
     queryset = Grant.objects.all()
 
+    # Not allowed to delete grants.
+    http_method_names = ["post", "put", "get", "head", "options"]
+
     def get_serializer_class(self):
         if self.action == "list":
             return GrantListSerializer
