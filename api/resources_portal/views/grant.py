@@ -8,6 +8,8 @@ from resources_portal.views.relation_serializers import (
     OrganizationRelationSerializer,
 )
 
+BAD_DISASSOCIATION_ERROR = "You may not disassociate your last grant from your user."
+
 
 class GrantSerializer(serializers.ModelSerializer):
     class Meta:
@@ -80,6 +82,6 @@ class GrantViewSet(viewsets.ModelViewSet):
             and grant.user
             and grant.user.grants.all().count() < 2
         ):
-            raise ValidationError("You may not disassociate your last grant from your user.")
+            raise ValidationError(BAD_DISASSOCIATION_ERROR)
 
         return super(GrantViewSet, self).update(request, *args, **kwargs)

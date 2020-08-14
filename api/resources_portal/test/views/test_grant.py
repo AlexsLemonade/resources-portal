@@ -6,6 +6,7 @@ from faker import Faker
 
 from resources_portal.models import Grant, User
 from resources_portal.test.factories import GrantFactory, UserFactory
+from resources_portal.views.grant import BAD_DISASSOCIATION_ERROR
 
 fake = Faker()
 
@@ -102,9 +103,7 @@ class TestSingleGrantTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Make sure the 400 is for the right reason
-        self.assertEqual(
-            response.json()[0], "You may not disassociate your last grant from your user."
-        )
+        self.assertEqual(response.json()[0], BAD_DISASSOCIATION_ERROR)
 
     def test_update_disassociates_if_not_last_grant(self):
         # Create second grant for user so they can disassociate from one.
