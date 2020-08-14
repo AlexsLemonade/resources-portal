@@ -1,5 +1,3 @@
-from copy import copy
-
 from django.db import models
 
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
