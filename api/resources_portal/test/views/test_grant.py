@@ -4,8 +4,8 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Grant, User
-from resources_portal.test.factories import GrantFactory, GrantUserAssociationFactory, UserFactory
+from resources_portal.models import User
+from resources_portal.test.factories import GrantFactory, UserFactory
 
 fake = Faker()
 
@@ -94,18 +94,20 @@ class TestSingleGrantTestCase(APITestCase):
         response = self.client.put(self.url, grant_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_fails_if_last_grant(self):
-        self.client.force_authenticate(user=self.grant.users.first())
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def test_update_disassociate_fails_if_last_grant(self):
+        self.client.force_authenticate(user=self.grant.user)
+        grant_json = self.client.get(self.url).json()
+        grant_json["user"] = None
+        response = self.client.put(self.url, grant_json)
 
-    def test_delete_only_soft_deletes_objects(self):
-        # Create second grant for user so they can delete one.
-        user = self.grant.users.first()
-        GrantUserAssociationFactory(user=user)
-        self.client.force_authenticate(user=user)
-        grant_id = self.grant.id
+        self.assertEqual(response.status_code, 400)
+        # Make sure the 400 is for the right reason
+        self.assertEqual(
+            response.json()[0], "You may not disassociate your last grant from your user."
+        )
+
+    def test_delete_fails(self):
+        self.client.force_authenticate(user=self.grant.user)
         response = self.client.delete(self.url)
 
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Grant.deleted_objects.filter(id=grant_id).count(), 1)
+        self.assertEqual(response.status_code, 405)
