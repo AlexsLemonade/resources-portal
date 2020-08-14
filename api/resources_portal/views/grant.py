@@ -1,4 +1,5 @@
 from rest_framework import serializers, viewsets
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Grant, User
@@ -6,6 +7,8 @@ from resources_portal.views.relation_serializers import (
     MaterialRelationSerializer,
     OrganizationRelationSerializer,
 )
+
+BAD_DISASSOCIATION_ERROR = "You may not disassociate your last grant from your user."
 
 
 class GrantSerializer(serializers.ModelSerializer):
@@ -25,7 +28,7 @@ class GrantSerializer(serializers.ModelSerializer):
 
 
 class GrantDetailSerializer(GrantSerializer):
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    user = serializers.PrimaryKeyRelatedField(allow_null=True, queryset=User.objects.all())
     organizations = OrganizationRelationSerializer(many=True, read_only=True)
     materials = MaterialRelationSerializer(many=True, read_only=True)
 
@@ -49,6 +52,9 @@ class OwnsGrant(BasePermission):
 class GrantViewSet(viewsets.ModelViewSet):
     queryset = Grant.objects.all()
 
+    # Don't allow delete.
+    http_method_names = ["post", "put", "get", "head", "options"]
+
     def get_serializer_class(self):
         if self.action == "list":
             return GrantListSerializer
@@ -64,3 +70,18 @@ class GrantViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated, OwnsGrant]
 
         return [permission() for permission in permission_classes]
+
+    def update(self, request, *args, **kwargs):
+        grant = self.get_object()
+        serializer = self.get_serializer(grant, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        if (
+            "user" in serializer.validated_data
+            and serializer.validated_data["user"] is None
+            and grant.user
+            and grant.user.grants.all().count() < 2
+        ):
+            raise ValidationError(BAD_DISASSOCIATION_ERROR)
+
+        return super(GrantViewSet, self).update(request, *args, **kwargs)
