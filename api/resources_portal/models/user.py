@@ -7,9 +7,8 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from django_expiring_token.models import ExpiringToken
-
 from computedfields.models import ComputedFieldsModel, computed
+from django_expiring_token.models import ExpiringToken
 
 
 class NonDeletedObjectsManager(UserManager):
