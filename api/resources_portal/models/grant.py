@@ -34,7 +34,7 @@ class Grant(SafeDeleteModel):
 
     def set_on_personal_organiztion(self):
         if self.user and self.user.personal_organization:
-            GrantOrganizationAssociation.get_or_create(
+            GrantOrganizationAssociation.objects.get_or_create(
                 grant=self, organization=self.user.personal_organization
             )
 
