@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import viewsets
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -21,6 +22,7 @@ class OwnsGrantAndOrganization(BasePermission):
 
         organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
 
+        # Check this early to avoid unnecessary DB call.
         if not request.user == organization.owner:
             return False
 
@@ -29,7 +31,20 @@ class OwnsGrantAndOrganization(BasePermission):
         else:
             grant = Grant.objects.get(pk=view.kwargs["pk"])
 
-        return request.user == grant.user and request.user == organization.owner
+        return request.user == grant.user
+
+
+class OwnsGrantOrOrganization(BasePermission):
+    def has_permission(self, request, view):
+
+        organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
+
+        if view.action == "create":
+            grant = Grant.objects.get(pk=request.data["id"])
+        else:
+            grant = Grant.objects.get(pk=view.kwargs["pk"])
+
+        return request.user == grant.user or request.user == organization.owner
 
 
 class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -44,8 +59,10 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return GrantRelationSerializer
 
     def get_permissions(self):
-        if self.action == "create" or self.action == "destroy":
+        if self.action == "create":
             permission_classes = [IsAuthenticated, OwnsGrantAndOrganization]
+        elif self.action == "destroy":
+            permission_classes = [IsAuthenticated, OwnsGrantOrOrganization]
         else:
             permission_classes = [IsAuthenticated, IsMemberOfOrganization]
 
@@ -59,9 +76,21 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         return Response(status=201)
 
+    @transaction.atomic
     def destroy(self, request, *args, **kwargs):
         organization = Organization.objects.get(pk=kwargs["parent_lookup_organizations"])
         grant = Grant.objects.get(pk=kwargs["pk"])
+
+        if (
+            "transfer" in request.query_params
+            and request.query_params["transfer"].upper() == "TRUE"
+        ):
+            # Transfer materials to the grant owner's personal organization.
+            personal_organization = grant.user.personal_organization
+
+            for material in organization.materials.filter(grants__id__contains=grant.id):
+                material.organization = personal_organization
+                material.save()
 
         association = GrantOrganizationAssociation.objects.get(
             grant=grant, organization=organization
