@@ -4,9 +4,10 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
-from resources_portal.models import MaterialRequest, Notification
+from guardian.shortcuts import get_objects_for_user
+
+from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.views.relation_serializers import (
-    AddressRelationSerializer,
     AttachmentRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
@@ -38,16 +39,15 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "id",
             "created_at",
             "updated_at",
-            "assigned_to",
             "requester",
         )
 
 
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
-    assigned_to = UserRelationSerializer()
+    assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     requester = UserRelationSerializer()
     material = MaterialRelationSerializer()
-    address = AddressRelationSerializer()
+    address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
@@ -56,11 +56,6 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
 class IsAdminUser(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.is_superuser
-
-
-class CanViewRequests(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("view_requests", obj.material.organization)
 
 
 class CanViewRequestsOrIsRequester(BasePermission):
@@ -113,8 +108,12 @@ def user_in_attachment_org(attachment, user):
         return False
 
 
-# Adds an attachment to a material request, checking that the current user is in the org that uploaded the attachment.
 def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
+    """"Adds an attachment to a material request.
+
+    Checks that the current user is in the org that uploaded the
+    attachment.
+    """
     if not (user_in_attachment_org(attachment, user) or attachment.owned_by_user == user):
         raise PermissionDenied(
             detail=f"The current user is not authorized for the specified attachment of type {attachment_type}."
@@ -135,7 +134,19 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    queryset = MaterialRequest.objects.all()
+    def get_queryset(self):
+        if self.action == "list":
+            requests_made_by_user = MaterialRequest.objects.filter(requester=self.request.user)
+            organizations = get_objects_for_user(
+                self.request.user, "view_requests", klass=Organization.objects
+            )
+            requests_viewable_by_user = MaterialRequest.objects.filter(
+                material__organization__in=organizations
+            )
+
+            return requests_made_by_user.union(requests_viewable_by_user)
+        else:
+            return MaterialRequest.objects.all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -144,12 +155,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return MaterialRequestDetailSerializer
 
     def get_permissions(self):
-        if self.action == "list":
-            permission_classes = [
-                IsAuthenticated,
-                CanViewRequests,
-            ]
-        elif self.action == "retrieve":
+        if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
         elif self.action == "update" or self.action == "partial-update":
             permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
@@ -190,6 +196,9 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         material = serializer.validated_data["material"]
 
+        # Make sure assigned_to is always contact user initially.
+        serializer.validated_data["assigned_to"] = material.contact_user
+
         if material.is_archived:
             return Response(data={"reason": "Cannot request archived materials."}, status=400)
 
@@ -212,14 +221,17 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
 
-        if material_request.status in ["REJECTED", "CANCELLED", "FULFILLED"]:
+        if material_request.status in ["REJECTED", "CANCELLED", "VERIFIED_FULFILLED"]:
             return Response(status=403)
 
         serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         if request.user == material_request.requester:
-            if "irb_attachment" in request.data:
+            if (
+                "irb_attachment" in request.data
+                and serializer.validated_data["irb_attachment"] != material_request.irb_attachment
+            ):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["irb_attachment"],
@@ -227,7 +239,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-            if "requester_signed_mta_attachment" in request.data:
+            if (
+                "requester_signed_mta_attachment" in request.data
+                and serializer.validated_data["requester_signed_mta_attachment"]
+                != material_request.requester_signed_mta_attachment
+            ):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["requester_signed_mta_attachment"],
@@ -240,13 +256,30 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
             if "status" in request.data and request.data["status"] != material_request.status:
-                if serializer.validated_data["status"] != "CANCELLED":
+                # The only status change the requester can make is to
+                # cancel or verify the request.
+                cancelling = serializer.validated_data["status"] == "CANCELLED"
+                verifying = (
+                    material_request.status == "FULFILLED"
+                    and serializer.validated_data["status"] == "VERIFIED_FULFILLED"
+                )
+                if not (cancelling or verifying):
                     return Response(status=403)
-                else:
-                    material_request.status = serializer.validated_data["status"]
+
+            # Can't make it read-only because organization members
+            # should be able to change it.
+            if (
+                "assigned_to" in request.data
+                and serializer.validated_data["assigned_to"] != material_request.assigned_to
+            ):
+                return Response(status=403)
 
         else:
-            if "executed_mta_attachment" in request.data:
+            if (
+                "executed_mta_attachment" in request.data
+                and serializer.validated_data["executed_mta_attachment"]
+                != material_request.executed_mta_attachment
+            ):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["executed_mta_attachment"],
@@ -259,12 +292,13 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
             if "status" in request.data:
-                if serializer.validated_data["status"] == "CANCELLED":
+                if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
                     return Response(status=403)
-                material_request.status = serializer.validated_data["status"]
+
                 send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
-        material_request.save()
+        serializer.save()
+        material_request.refresh_from_db()
 
         response_data = model_to_dict(material_request)
         response_data["requirements"] = self.get_material_requirements()

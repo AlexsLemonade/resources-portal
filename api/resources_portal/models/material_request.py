@@ -26,6 +26,7 @@ class MaterialRequest(SafeDeleteModel):
         ("INVALID", "INVALID"),
         ("CANCELLED", "CANCELLED"),
         ("FULFILLED", "FULFILLED"),
+        ("VERIFIED_FULFILLED", "VERIFIED_FULFILLED"),
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

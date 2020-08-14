@@ -37,7 +37,17 @@ Content-Type application/json
   "first_name": "Richard",
   "last_name": "Hendriks",
   "email": "richard@piedpiper.com",
-  "auth_token": "132cf952e0165a274bf99e115ab483671b3d9ff6"
+  "addresses": [],
+  "assignments": [],
+  "created_at": "2020-08-12T15:51:47+0000",
+  "grants": [],
+  "invitations": [],
+  "material_requests": [],
+  "orcid": "842d2e20-7d17-42b7-a48b-1e9263c08dd9",
+  "organizations": [],
+  "owned_attachments": [],
+  "owned_organizations": [],
+  "updated_at": "2020-08-12T15:51:47+0000",
 }
 ```
 
@@ -69,6 +79,17 @@ Content-Type application/json
   "first_name": "Richard",
   "last_name": "Hendriks",
   "email": "richard@piedpiper.com",
+  "addresses": [],
+  "assignments": [],
+  "created_at": "2020-08-12T15:51:47+0000",
+  "grants": [],
+  "invitations": [],
+  "material_requests": [],
+  "orcid": "842d2e20-7d17-42b7-a48b-1e9263c08dd9",
+  "organizations": [],
+  "owned_attachments": [],
+  "owned_organizations": [],
+  "updated_at": "2020-08-12T15:51:47+0000",
 }
 ```
 
@@ -106,5 +127,16 @@ Content-Type application/json
   "first_name": "Richard",
   "last_name": "Hendriks",
   "email": "richard@piedpiper.com",
+  "addresses": [],
+  "assignments": [],
+  "created_at": "2020-08-12T15:51:47+0000",
+  "grants": [],
+  "invitations": [],
+  "material_requests": [],
+  "orcid": "842d2e20-7d17-42b7-a48b-1e9263c08dd9",
+  "organizations": [],
+  "owned_attachments": [],
+  "owned_organizations": [],
+  "updated_at": "2020-08-12T15:51:47+0000",
 }
 ```

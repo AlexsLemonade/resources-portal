@@ -81,15 +81,19 @@ class OAuthMiddleWare:
                     email=email,
                 )
 
-                org = Organization.objects.create(owner=user)
-                user.organizations.add(org)
+                personal_organization = Organization.objects.create(owner=user)
+                user.personal_organization = personal_organization
 
                 grant_ids = request.GET.getlist("grant_id")
 
                 for grant in Grant.objects.filter(id__in=grant_ids):
                     user.grants.add(grant)
+                    personal_organization.grants.add(grant)
 
                 user.save()
+
+                personal_organization.members.add(user)
+                personal_organization.save()
 
             # login user
             login(request, user, backend="django.contrib.auth.backends.ModelBackend")

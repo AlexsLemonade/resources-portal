@@ -5,6 +5,7 @@ from resources_portal.models import User
 from resources_portal.views.relation_serializers import (
     AddressRelationSerializer,
     AttachmentRelationSerializer,
+    GrantRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
@@ -22,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             "orcid",
             "owned_attachments",
             "material_requests",
+            "grants",
             "invitations",
             "organizations",
             "owned_organizations",
@@ -36,6 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
             "attachments",
             "material_requests",
+            "grants",
             "invitations",
             "assignments",
             "organizations",
@@ -47,6 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
     organizations = OrganizationRelationSerializer(many=True, read_only=True)
     owned_organizations = OrganizationRelationSerializer(many=True, read_only=True)
     material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
+    grants = GrantRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
     invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
     addresses = AddressRelationSerializer(many=True, read_only=True)
