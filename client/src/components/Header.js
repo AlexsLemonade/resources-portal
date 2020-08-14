@@ -2,24 +2,11 @@ import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
 import Link from 'next/link'
 import React from 'react'
 import styled from 'styled-components'
-import { useUser } from '../hooks/useUser'
-import { LoginButton } from './LoginButton'
+import { HeaderAccountLink } from './HeaderAccountLink'
 import LogoSvg from './logo.svg'
-import SignInModal from './SignInModal'
 
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
-  const [showing, setShowing] = React.useState(false)
-  const { isLoggedIn } = useUser()
-
-  let orcidPrefix = ''
-  if (process.env.IS_DEVELOPMENT) {
-    orcidPrefix = 'https://sandbox.orcid.org/'
-  } else {
-    orcidPrefix = 'https://orcid.org/'
-  }
-
-  const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${process.env.ORCID_CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=${process.env.CLIENT_HOST}`
 
   return (
     <Header
@@ -56,17 +43,7 @@ export default function ResourcesHeader({ className }) {
             <Anchor color="white" href="#" label="List Resource" />
           </Link>
           <Anchor color="white" href="#" label="Help" />
-          {isLoggedIn && (
-            <Link href="/account">
-              <Anchor color="white" href="#" label="My Account" />
-            </Link>
-          )}
-          {!isLoggedIn && (
-            <Box>
-              <LoginButton onClick={() => setShowing(true)} />
-              <SignInModal showing={showing} setShowing={setShowing} />
-            </Box>
-          )}
+          <HeaderAccountLink />
         </Nav>
       </Box>
     </Header>

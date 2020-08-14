@@ -35,7 +35,7 @@ export const SignInModalContent = () => {
   )
 }
 
-const SignInModal = ({ showing, setShowing }) => {
+export const SignInModal = ({ showing, setShowing }) => {
   return (
     <Modal
       showing={showing}

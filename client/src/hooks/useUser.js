@@ -13,15 +13,18 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
     ResourcesPortalContext
   )
   const router = useRouter()
-  if (defaultUser && defaultToken) {
-    setUser(defaultUser)
-    setToken(defaultToken)
-    if (loginRedirectUrl) {
-      setLoginRedirectUrl()
-      router.replace(loginRedirectUrl)
+  React.useEffect(() => {
+    if (defaultUser && defaultToken) {
+      // Component cannot update other component may be coming from here
+      setUser(defaultUser)
+      setToken(defaultToken)
+      if (loginRedirectUrl) {
+        setLoginRedirectUrl()
+        router.replace(loginRedirectUrl)
+      }
     }
-  }
-  const isLoggedIn = user && token
+  })
+  const isLoggedIn = Boolean(user && token)
   const refreshUserData = () => {
     // Check that the responses are ok here. Otherwise we could end in a bad state
     const {

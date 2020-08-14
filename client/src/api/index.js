@@ -55,6 +55,11 @@ const request = async (
 export const loginUser = () => {}
 // return array of api responses
 
+export const userAuthenticate = (query) => request(getAPIURL('auth/', query))
+
+export const userGetInfo = (userId, authorization) =>
+  request(`${getAPIURL(`users/${userId}`)}`, { authorization })
+
 export default {
   search: {
     resources: (query) => request(getAPIURL('search/materials', query))
@@ -63,13 +68,30 @@ export default {
     find: (id) => request(getAPIURL(`materials/${id}`))
   },
   user: {
-    authenticate: (query) => request(getAPIURL('auth/', query)),
-    getInfo: (userId, authorization) =>
-      request(`${getAPIURL(`users/${userId}`)}`, { authorization }),
+    authenticate: userAuthenticate,
+    getInfo: userGetInfo,
     refreshToken: (token) =>
       request(`${getAPIURL('refresh-token/')}`, {
         method: 'POST',
         body: { token }
+      }),
+    login: async (authCode, originUrl, loginAttributes) => {
+      const tokenRequest = await userAuthenticate({
+        ...loginAttributes,
+        origin_url: originUrl,
+        code: authCode
       })
+
+      if (!tokenRequest.isOk) {
+        return [tokenRequest]
+      }
+
+      const userRequest = await userGetInfo(
+        tokenRequest.response.user_id,
+        tokenRequest.response.token
+      )
+
+      return [tokenRequest, userRequest]
+    }
   }
 }

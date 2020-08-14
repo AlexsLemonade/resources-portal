@@ -3,9 +3,9 @@ import api, { path } from '../api'
 import { useUser } from '../hooks/useUser'
 
 export const Home = ({ authenticatedUser, token, redirectUrl }) => {
-  useUser(authenticatedUser, token, redirectUrl)
+  const { user } = useUser(authenticatedUser, token, redirectUrl)
 
-  console.log('authenticatedUser: ', authenticatedUser)
+  console.log('authenticatedUser: ', user)
 
   return (
     <div className="container">
@@ -19,51 +19,34 @@ export const Home = ({ authenticatedUser, token, redirectUrl }) => {
 
 Home.getInitialProps = async ({ req, query }) => {
   // Revisit how to present errors thrown from this function
-  // finish login and redirect
-  let queryJSON = {}
-
   if (!query.code) {
     return {}
   }
+
+  let queryJSON = {}
 
   if (query.json) {
     queryJSON = JSON.parse(query.json)
   }
 
-  console.log(
-    'tokenrequest: ',
-    decodeURI(`http://${req.headers.host}${req.url}`)
+  const [tokenRequest, userRequest] = await api.user.login(
+    query.code,
+    decodeURI(`http://${req.headers.host}${req.url}`),
+    queryJSON
   )
 
-  const tokenRequest = await api.user.authenticate({
-    ...queryJSON,
-    origin_url: decodeURI(`http://${req.headers.host}${req.url}`),
-    code: query.code
-  })
+  const initialProps = {}
 
-  if (!tokenRequest.isOk || !tokenRequest.response.token) {
-    console.log(tokenRequest)
-    return tokenRequest
+  if (tokenRequest.isOk) {
+    initialProps.token = tokenRequest.response.token
+    initialProps.redirectUrl = queryJSON.origin_url
   }
 
-  console.log('token: ', tokenRequest)
-
-  const userRequest = await api.user.getInfo(
-    tokenRequest.response.user_id,
-    tokenRequest.response.token
-  )
-
-  if (!userRequest.isOk || !userRequest.response.id) {
-    return userRequest
+  if (userRequest.isOk) {
+    initialProps.authenticatedUser = userRequest.response
   }
 
-  console.log('The user is: ', userRequest)
-
-  return {
-    authenticatedUser: userRequest.response,
-    token: tokenRequest.response.token,
-    redirectUrl: queryJSON.origin_url
-  }
+  return initialProps
 }
 
 export default Home
