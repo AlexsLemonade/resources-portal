@@ -2,8 +2,8 @@
   "resources_portal_user": [
     {
       "username": "PrimaryProf",
-      "first_name": "Prim",
-      "last_name": "Proffer",
+      "first_name": "Primary",
+      "last_name": "Prof",
       "published_name": "Dr. Prim Proffer",
       "password": "App1eB0ttomGene$",
       "last_login": "2020-02-19 17:15:25-07",
@@ -17,8 +17,8 @@
     },
     {
       "username": "PostDoc",
-      "first_name": "Postsworth",
-      "last_name": "Doktor",
+      "first_name": "Post",
+      "last_name": "Doc",
       "published_name": "Dr. Postsworth Doktor",
       "password": "Malc0mInPlasmiddle!",
       "last_login": "2020-03-12 04:15:25-07",
@@ -32,8 +32,8 @@
     },
     {
       "username": "SecondaryProf",
-      "first_name": "Secundus",
-      "last_name": "Profarius",
+      "first_name": "Secondary",
+      "last_name": "Prof",
       "published_name": "Dr. Secundus Profarius",
       "password": "PDXG0nG!veItToYa",
       "last_login": "2020-03-31 09:11:25-07",

@@ -38,7 +38,6 @@ class AddressListTestCase(APITestCase):
     def test_post_request_may_not_specify_user(self):
         self.client.force_authenticate(user=self.other_user)
         response = self.client.post(self.url, self.address_data, format="json")
-        print(response.status_code)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_without_authentication_fails(self):
