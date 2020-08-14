@@ -4,57 +4,6 @@ Supports registering, viewing, and updating user accounts.
 ## Description
 A user represents a single researcher or scientist on the site. A user is created using OAuth through ORCID, which allows each user to be associated with an ORCID.
 
-
-## Register a new user account
-
-**Request**:
-
-`POST` `/users/`
-
-Parameters:
-
-Name       | Type   | Required | Description
------------|--------|----------|------------
-username   | string | Yes      | The username for the new user.
-password   | string | Yes      | The password for the new user account.
-first_name | string | No       | The user's given name.
-last_name  | string | No       | The user's family name.
-email      | string | No       | The user's email address.
-
-*Note:*
-
-- Not Authorization Protected
-
-**Response**:
-
-```json
-Content-Type application/json
-201 Created
-
-{
-  "id": "6d5f9bae-a31b-4b7b-82c4-3853eda2b011",
-  "username": "richard",
-  "first_name": "Richard",
-  "last_name": "Hendriks",
-  "email": "richard@piedpiper.com",
-  "addresses": [],
-  "assignments": [],
-  "created_at": "2020-08-12T15:51:47+0000",
-  "grants": [],
-  "invitations": [],
-  "material_requests": [],
-  "orcid": "842d2e20-7d17-42b7-a48b-1e9263c08dd9",
-  "organizations": [],
-  "owned_attachments": [],
-  "owned_organizations": [],
-  "updated_at": "2020-08-12T15:51:47+0000",
-}
-```
-
-The `auth_token` returned with this response should be stored by the client for
-authenticating future requests to the API. See [Authentication](authentication.md).
-
-
 ## Get a user's profile information
 
 **Request**:
