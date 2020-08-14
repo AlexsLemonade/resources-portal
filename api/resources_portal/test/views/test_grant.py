@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import User
+from resources_portal.models import Grant, User
 from resources_portal.test.factories import GrantFactory, UserFactory
 
 fake = Faker()
@@ -105,6 +105,20 @@ class TestSingleGrantTestCase(APITestCase):
         self.assertEqual(
             response.json()[0], "You may not disassociate your last grant from your user."
         )
+
+    def test_update_disassociates_if_not_last_grant(self):
+        # Create second grant for user so they can disassociate from one.
+        user = self.grant.user
+        GrantFactory(user=user)
+        self.client.force_authenticate(user=user)
+        grant_id = self.grant.id
+
+        grant_json = self.client.get(self.url).json()
+        grant_json["user"] = None
+        response = self.client.put(self.url, grant_json)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(Grant.objects.get(id=grant_id).user)
 
     def test_delete_fails(self):
         self.client.force_authenticate(user=self.grant.user)
