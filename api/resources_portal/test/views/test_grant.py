@@ -52,14 +52,14 @@ class TestSingleGrantTestCase(APITestCase):
 
     def test_grant_requires_auth(self):
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_cannot_get_someone_elses_grant(self):
         user = UserFactory()
         self.client.force_authenticate(user=user)
 
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_put_request_updates_a_grant(self):
         self.client.force_authenticate(user=self.grant.user)
@@ -100,7 +100,7 @@ class TestSingleGrantTestCase(APITestCase):
         grant_json["user"] = None
         response = self.client.put(self.url, grant_json)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         # Make sure the 400 is for the right reason
         self.assertEqual(
             response.json()[0], "You may not disassociate your last grant from your user."
@@ -117,11 +117,11 @@ class TestSingleGrantTestCase(APITestCase):
         grant_json["user"] = None
         response = self.client.put(self.url, grant_json)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIsNone(Grant.objects.get(id=grant_id).user)
 
     def test_delete_fails(self):
         self.client.force_authenticate(user=self.grant.user)
         response = self.client.delete(self.url)
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
