@@ -6,6 +6,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from django_expiring_token.models import ExpiringToken
+
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import (
     Attachment,
@@ -71,8 +73,8 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self, mock_auth_request, mock_record_request
     ):
         # Create account (Requester)
-        self.client.get(get_mock_oauth_url([]))
-        requester = User.objects.get(pk=self.client.session["_auth_user_id"])
+        response = self.client.get(get_mock_oauth_url([]))
+        requester = ExpiringToken.objects.get(key=response.json()["token"]).user
 
         # Search resources
         response = self.client.get(reverse("search-materials-list"), {"organization": "PrimaryLab"})

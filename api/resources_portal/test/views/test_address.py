@@ -43,7 +43,7 @@ class AddressListTestCase(APITestCase):
     def test_post_request_without_authentication_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.address_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class SingleAddressTestCase(APITestCase):
@@ -90,7 +90,7 @@ class SingleAddressTestCase(APITestCase):
         address_json["address_line_2"] = "Suite 4000"
 
         response = self.client.put(self.url, address_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_deletes_address(self):
         self.client.force_authenticate(user=self.address.user)
@@ -107,7 +107,7 @@ class SingleAddressTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_only_soft_deletes_objects(self):
         self.client.force_authenticate(user=self.address.user)

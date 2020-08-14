@@ -4,6 +4,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from django_expiring_token.models import ExpiringToken
+
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import Material, Notification, Organization, User
 from resources_portal.test.utils import (
@@ -55,10 +57,10 @@ class TestNewMemberJoinsALab(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
         # Create account (NewMember)
-        self.client.get(get_mock_oauth_url([]))
+        response = self.client.get(get_mock_oauth_url([]))
 
         # Client is now logged in as user, get user ID from session data
-        new_member = User.objects.get(pk=self.client.session["_auth_user_id"])
+        new_member = ExpiringToken.objects.get(key=response.json()["token"]).user
 
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)

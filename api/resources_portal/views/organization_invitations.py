@@ -69,13 +69,17 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         serializer = OrganizationInvitationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         request_reciever = serializer.validated_data["request_reciever"]
         organization = serializer.validated_data["organization"]
         invite_or_request = serializer.validated_data["invite_or_request"]
+
+        import pdb
+
+        pdb.set_trace()
 
         if invite_or_request == "INVITE" and not request_reciever.has_perm(
             "add_members", organization
@@ -106,7 +110,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
         invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
 
         requester_accepting = (
@@ -142,7 +146,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            return Response(status=status.HTTP_403_FORBIDDEN)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
         if not request.user == invitation.requester:

@@ -24,14 +24,15 @@ class TestUserListTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_list_request_from_unauthenticated_forbidden(self):
+    def test_list_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_not_allowed(self):
+        self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TestUserDetailTestCase(APITestCase):
@@ -58,7 +59,7 @@ class TestUserDetailTestCase(APITestCase):
     def test_get_request_from_unauthenticated_user_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_updates_a_user(self):
         self.client.force_authenticate(user=self.user)
@@ -73,7 +74,7 @@ class TestUserDetailTestCase(APITestCase):
         user = User.objects.get(pk=self.user.id)
         self.assertEqual(user.first_name, new_first_name)
 
-    def test_put_request_from_wrong_user_forbidden(self):
+    def test_put_request_from_wrong_user_fails(self):
         self.client.force_authenticate(user=self.second_user)
 
         new_first_name = fake.first_name()
@@ -91,7 +92,7 @@ class TestUserDetailTestCase(APITestCase):
         user_json["first_name"] = new_first_name
 
         response = self.client.put(self.url, user_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_from_admin_succeeds(self):
         self.client.force_authenticate(user=self.superuser)
@@ -116,7 +117,7 @@ class TestUserDetailTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_only_soft_deletes_objects(self):
         self.client.force_authenticate(user=self.user)

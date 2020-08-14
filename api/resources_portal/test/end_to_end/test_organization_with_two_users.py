@@ -5,6 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from django_expiring_token.models import ExpiringToken
+
 from resources_portal.models import Notification, Organization, User
 from resources_portal.test.factories import GrantFactory
 from resources_portal.test.utils import (
@@ -42,12 +44,12 @@ class TestOrganizationWithTwoUsers(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
-        self.client.get(get_mock_oauth_url([self.grant]))
-        prof = User.objects.get(pk=self.client.session["_auth_user_id"])
+        response = self.client.get(get_mock_oauth_url([self.grant]))
+        prof = ExpiringToken.objects.get(key=response.json()["token"]).user
 
         # Create account Postdoc
         self.client.get(get_mock_oauth_url([]))
-        post_doc = User.objects.get(pk=self.client.session["_auth_user_id"])
+        post_doc = ExpiringToken.objects.get(key=response.json()["token"]).user
 
         # Prof creates organization Lab with grant id
         # null members might be an issue?

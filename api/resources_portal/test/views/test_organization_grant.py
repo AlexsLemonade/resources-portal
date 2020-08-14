@@ -62,7 +62,7 @@ class OrganizationGrantTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         url = reverse("organizations-grants-list", args=[self.organization1.id])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_request_associates_a_grant(self):
         self.client.force_authenticate(user=self.organization1.owner)
@@ -124,7 +124,7 @@ class OrganizationGrantTestCase(APITestCase):
 
         response = self.client.post(url, data=grant_json)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_disassociates_a_material(self):
         self.client.force_authenticate(user=self.organization1.owner)
@@ -190,7 +190,7 @@ class OrganizationGrantTestCase(APITestCase):
 
         url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_cannot_put_a_relationship(self):
         self.client.force_authenticate(user=self.organization1.owner)

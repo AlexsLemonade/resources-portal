@@ -5,7 +5,6 @@ from rest_framework.test import APITestCase
 
 from django_expiring_token.models import ExpiringToken
 
-from resources_portal.models import User
 from resources_portal.test.factories import GrantFactory, UserFactory
 from resources_portal.test.utils import (
     MOCK_EMAIL,

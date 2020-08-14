@@ -6,8 +6,8 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import remove_perm
 
-from resources_portal.models import Notification, OrganizationInvitation
-from resources_portal.test.factories import OrganizationInvitationFactory
+from resources_portal.models import Notification, Organization, OrganizationInvitation
+from resources_portal.test.factories import OrganizationInvitationFactory, UserFactory
 
 fake = Faker()
 
@@ -57,12 +57,12 @@ class OrganizationInvitationListTestCase(APITestCase):
             username=self.invitation.requester.username, password=self.invitation.requester.password
         )
         response = self.client.post(self.url, self.invitation_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_post_request_without_authentication_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.invitation_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestSingleOrganizationInvitationTestCase(APITestCase):
@@ -243,7 +243,7 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
         invitation_json["status"] = "ACCEPTED"
 
         response = self.client.put(self.url, invitation_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_deletes_invitation(self):
         self.client.force_authenticate(user=self.invitation.requester)
@@ -260,7 +260,7 @@ class TestSingleOrganizationInvitationTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_only_soft_deletes_objects(self):
         self.client.force_authenticate(user=self.invitation.requester)

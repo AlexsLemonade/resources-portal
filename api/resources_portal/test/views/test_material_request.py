@@ -103,7 +103,7 @@ class TestMaterialRequestListTestCase(APITestCase):
     def test_post_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.material_request_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)
@@ -126,7 +126,7 @@ class TestMaterialRequestListTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestSingleMaterialRequestTestCase(APITestCase):
@@ -173,7 +173,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
@@ -276,7 +276,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.material_request_data["status"] = "APPROVED"
 
         response = self.client.put(self.url, self.material_request_data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_deletes_a_material(self):
         self.client.force_authenticate(user=self.admin)
@@ -293,4 +293,4 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

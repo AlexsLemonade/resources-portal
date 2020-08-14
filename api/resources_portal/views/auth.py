@@ -1,12 +1,7 @@
-import urllib
-from datetime import datetime
-
 from django.conf import settings
-from django.contrib.auth import login
 from django.http import JsonResponse
 from rest_framework import viewsets
 
-import furl
 import orcid
 import requests
 from django_expiring_token.authentication import token_expire_handler
@@ -57,8 +52,6 @@ class AuthViewSet(viewsets.ViewSet):
         authorization_code = request.GET["code"]
         origin_url = request.GET["origin_url"]
 
-        print("GET PARAMS: ", request.GET)
-
         data = {
             "client_id": CLIENT_ID,
             "client_secret": CLIENT_SECRET,
@@ -75,21 +68,17 @@ class AuthViewSet(viewsets.ViewSet):
 
         user = User.objects.filter(orcid=response_json["orcid"]).first()
 
-        print("USer in database: ", user)
-
         # Create user if neccessary
         if not user:
             if "email" not in request.GET:
                 return JsonResponse(
                     {
-                        "error": f"There is no user associated with the given URL and no 'email' parameter was provided to create one."
+                        "error": "There is no user associated with the given URL and no 'email' parameter was provided to create one."
                     },
                     status=400,
                 )
 
             email = request.GET["email"]
-
-            print(response_json, "********************")
 
             # Get first and last name
             api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=True)
@@ -98,8 +87,6 @@ class AuthViewSet(viewsets.ViewSet):
             )
             first_name = summary["name"]["given-names"]["value"]
             last_name = summary["name"]["family-name"]["value"]
-
-            print("summary: ", summary)
 
             user = User.objects.create(
                 username=response_json["name"],
@@ -112,14 +99,14 @@ class AuthViewSet(viewsets.ViewSet):
             )
 
             org = Organization.objects.create(owner=user)
-            user.organizations.add(org)
+            user.personal_organization = org
 
-            grant_ids = request.GET.getlist("grants")
+            grant_ids = request.GET.getlist("grant_id")
 
-            print("grants: ", grant_ids)
-
-            for grant in Grant.objects.filter(id__in=grant_ids):
-                user.grants.add(grant)
+            for grant_id in grant_ids:
+                grant_query_set = Grant.objects.filter(pk=grant_id)
+                if grant_query_set.exists():
+                    user.grants.add(grant_query_set.first())
 
             user.save()
 

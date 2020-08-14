@@ -68,7 +68,7 @@ class TestAttachmentListTestCase(APITestCase):
             data.pop("sequence_map_for")
             response = self.client.post(self.url, data, format="multipart")
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestSingleAttachmentTestCase(APITestCase):
@@ -116,7 +116,7 @@ class TestSingleAttachmentTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_from_owning_user_succeeds(self):
         self.client.force_authenticate(user=self.user)
@@ -166,7 +166,7 @@ class TestSingleAttachmentTestCase(APITestCase):
 
         response = self.client.put(self.url, attachment_json)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_from_admin_succeeds(self):
         self.client.force_authenticate(user=self.admin)
@@ -203,4 +203,4 @@ class TestSingleAttachmentTestCase(APITestCase):
 
         response = self.client.delete(self.url)
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
