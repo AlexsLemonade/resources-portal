@@ -200,8 +200,7 @@
       "organization_id": "1",
       "additional_metadata": {
         "title": "Zebrafish Analyis",
-        "study_id": "phs000328.v2.p1",
-        "study_id_type": "dbgap_study_accession",
+        "accession_code": "phs000328.v2.p1",
         "description": "Data collected from genetically modified zebrafish.",
         "number_samples": "15",
         "technology": "R-readable array",
@@ -298,8 +297,7 @@
       "organization_id": "1",
       "additional_metadata": {
         "title": "Imported Zebrafish Analyis",
-        "study_id": "GSE24528",
-        "study_id_type": "accession_id",
+        "accession_code": "GSE24528",
         "description": "Data collected from genetically modified zebrafish.",
         "number_samples": "15",
         "technology": "R-readable array",

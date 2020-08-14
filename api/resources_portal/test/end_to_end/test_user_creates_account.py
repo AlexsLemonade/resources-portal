@@ -38,7 +38,7 @@ class TestUserCreatesAccount(APITestCase):
         user = User.objects.get(pk=self.client.session["_auth_user_id"])
 
         # Create resource on personal organization
-        material = MaterialFactory(contact_user=user, organization=user.organizations.first())
+        material = MaterialFactory(contact_user=user, organization=user.personal_organization)
         material_data = model_to_dict(material)
 
         response = self.client.post(reverse("material-list"), material_data, format="json")

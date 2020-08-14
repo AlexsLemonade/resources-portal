@@ -40,11 +40,11 @@ def gather_all_metadata(protocol_doi):
 
     html_parser = HTMLDataParser()
     html_parser.feed(protocol_json["description"])
-    abstract = html_parser.data
+    description = html_parser.data
 
     metadata = {
         "protocol_name": protocol_json["title"],
-        "abstract": abstract,
+        "description": description,
         "url": PROTOCOL_IO_VIEW_TEMPLATE.format(protocol_uri=protocol_json["uri"]),
     }
 

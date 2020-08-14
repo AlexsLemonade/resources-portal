@@ -40,7 +40,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
+    def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
         self.client.get(get_mock_oauth_url([self.grant]))
         prof = User.objects.get(pk=self.client.session["_auth_user_id"])
