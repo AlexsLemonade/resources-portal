@@ -4,7 +4,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { LoginButton } from './LoginButton'
 import LogoSvg from './logo.svg'
-import Modal, { HeaderModalContent } from './Modal'
+import SignInModal from './SignInModal'
 
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
@@ -47,11 +47,7 @@ export default function ResourcesHeader({ className }) {
           <Anchor color="white" href="#" label="Help" />
           <Anchor color="white" href="#" label="My Account" />
           <LoginButton onClick={() => setShowing(true)} />
-          <Modal
-            showing={showing}
-            setShowing={setShowing}
-            content={<HeaderModalContent />}
-          />
+          <SignInModal showing={showing} setShowing={setShowing} />
         </Nav>
       </Box>
     </Header>
