@@ -36,8 +36,9 @@ class TestUserCreatesAccount(APITestCase):
         # Create user with ORCID
         response = self.client.get(get_mock_oauth_url([self.grant1, self.grant2]))
 
-        # Client is now logged in as user, get user ID from session data
-        user = ExpiringToken.objects.get(key=response.json()["token"]).user
+        # Get user, sign in
+        user = User.objects.get(pk=response.json()["user_id"])
+        self.client.force_authenticate(user=user)
 
         # Create resource on personal organization
         material = MaterialFactory(contact_user=user, organization=user.personal_organization)

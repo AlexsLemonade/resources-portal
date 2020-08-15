@@ -59,8 +59,7 @@ class TestNewMemberJoinsALab(APITestCase):
         # Create account (NewMember)
         response = self.client.get(get_mock_oauth_url([]))
 
-        # Client is now logged in as user, get user ID from session data
-        new_member = ExpiringToken.objects.get(key=response.json()["token"]).user
+        new_member = User.objects.get(pk=response.json()["user_id"])
 
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)

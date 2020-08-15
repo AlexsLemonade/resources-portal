@@ -77,10 +77,6 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         organization = serializer.validated_data["organization"]
         invite_or_request = serializer.validated_data["invite_or_request"]
 
-        import pdb
-
-        pdb.set_trace()
-
         if invite_or_request == "INVITE" and not request_reciever.has_perm(
             "add_members", organization
         ):

@@ -74,7 +74,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
     ):
         # Create account (Requester)
         response = self.client.get(get_mock_oauth_url([]))
-        requester = ExpiringToken.objects.get(key=response.json()["token"]).user
+        requester = User.objects.get(pk=response.json()["user_id"])
 
         # Search resources
         response = self.client.get(reverse("search-materials-list"), {"organization": "PrimaryLab"})

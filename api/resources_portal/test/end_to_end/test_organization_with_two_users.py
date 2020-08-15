@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 
 from django_expiring_token.models import ExpiringToken
 
-from resources_portal.models import Notification, Organization, User
+from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
 from resources_portal.test.factories import GrantFactory
 from resources_portal.test.utils import (
     generate_mock_orcid_authorization_response,
@@ -45,11 +45,11 @@ class TestOrganizationWithTwoUsers(APITestCase):
     def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
         response = self.client.get(get_mock_oauth_url([self.grant]))
-        prof = ExpiringToken.objects.get(key=response.json()["token"]).user
+        prof = User.objects.get(pk=response.json()["user_id"])
 
         # Create account Postdoc
         self.client.get(get_mock_oauth_url([]))
-        post_doc = ExpiringToken.objects.get(key=response.json()["token"]).user
+        post_doc = User.objects.get(pk=response.json()["user_id"])
 
         # Prof creates organization Lab with grant id
         # null members might be an issue?
@@ -120,9 +120,10 @@ class TestOrganizationWithTwoUsers(APITestCase):
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
 
-        settings_url = reverse(
-            "organization-user-setting-detail", args=[prof.organization_settings.first().id]
-        )
+        # Temporary, I want to submit another PR to make this endpoint accept a user and an org. It makes more sense
+        prof_settings = OrganizationUserSetting.objects.get(organization=lab, user=prof)
+
+        settings_url = reverse("organization-user-setting-detail", args=[prof_settings.id])
 
         settings_json = self.client.get(settings_url).json()
 
@@ -137,6 +138,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
         settings_json["misc_notif"] = False
 
         response = self.client.put(settings_url, settings_json)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks

@@ -3,8 +3,7 @@ from unittest.mock import patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from django_expiring_token.models import ExpiringToken
-
+from resources_portal.models import User
 from resources_portal.test.factories import GrantFactory, UserFactory
 from resources_portal.test.utils import (
     MOCK_EMAIL,
@@ -31,7 +30,7 @@ class TestOAuthUserCreation(APITestCase):
     def test_oauth_flow_creates_new_user(self, mock_auth_request, mock_record_request):
         response = self.client.get(self.url)
 
-        user = ExpiringToken.objects.get(key=response.json()["token"]).user
+        user = User.objects.get(pk=response.json()["user_id"])
 
         self.assertEqual(user.orcid, ORCID_AUTHORIZATION_DICT["orcid"])
 
@@ -49,7 +48,7 @@ class TestOAuthUserCreation(APITestCase):
 
         response = self.client.get(self.url)
 
-        logged_in_user = ExpiringToken.objects.get(key=response.json()["token"]).user
+        logged_in_user = User.objects.get(pk=response.json()["user_id"])
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(existing_user, logged_in_user)
