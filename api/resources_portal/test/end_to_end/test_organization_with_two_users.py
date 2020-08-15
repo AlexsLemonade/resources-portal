@@ -5,8 +5,6 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from django_expiring_token.models import ExpiringToken
-
 from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
 from resources_portal.test.factories import GrantFactory
 from resources_portal.test.utils import (

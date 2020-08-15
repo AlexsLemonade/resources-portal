@@ -6,8 +6,8 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import remove_perm
 
-from resources_portal.models import Notification, Organization, OrganizationInvitation
-from resources_portal.test.factories import OrganizationInvitationFactory, UserFactory
+from resources_portal.models import Notification, OrganizationInvitation
+from resources_portal.test.factories import OrganizationInvitationFactory
 
 fake = Faker()
 
