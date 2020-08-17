@@ -25,6 +25,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "url",
             "organization",
             "pubmed_id",
+            "is_archived",
             "additional_metadata",
             "contact_user",
             "sequence_maps",
