@@ -195,7 +195,8 @@ class Common(Configuration):
     )
 
     # Time for expiration of API tokens
-    EXPIRING_TOKEN_DURATION = timedelta(days=30)
+    # About 6 months
+    EXPIRING_TOKEN_DURATION = timedelta(weeks=26)
 
     # CORS - unrestricted
     CORS_ORIGIN_ALLOW_ALL = True
