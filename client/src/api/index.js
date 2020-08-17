@@ -33,8 +33,6 @@ const request = async (
   }
   if (authorization) config.headers.Authorization = `Token ${authorization}`
 
-  console.log('options: ', config)
-
   try {
     const response = await fetch(url, config)
     return {
@@ -53,7 +51,6 @@ const request = async (
 }
 
 export const loginUser = () => {}
-// return array of api responses
 
 export const userAuthenticate = (query) => request(getAPIURL('auth/', query))
 

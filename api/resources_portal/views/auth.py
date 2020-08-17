@@ -29,8 +29,6 @@ def remove_code_parameter_from_uri(url):
 
 class AuthViewSet(viewsets.ViewSet):
 
-    # Verify that this should be a GET/POST?
-
     http_method_names = ["get"]
 
     def retrieve(self, request, *args, **kwargs):

@@ -25,13 +25,13 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
     }
   })
   const isLoggedIn = Boolean(user && token)
-  const refreshUserData = () => {
+  const refreshUserData = async () => {
     // Check that the responses are ok here. Otherwise we could end in a bad state
     const {
       response: { token: refreshToken, userId }
-    } = api.user.refreshToken(token)
+    } = await api.user.refreshToken(token)
     setToken(refreshToken)
-    const { response: refreshUser } = api.user.getInfo(userId)
+    const { response: refreshUser } = await api.user.getInfo(userId)
     setUser(refreshUser)
   }
   const logOut = () => {
