@@ -73,7 +73,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    @computed(models.BooleanField(null=True))
+    @property
     def has_issues(self):
         return self.issues.filter(status="OPEN").count() > 0
 
