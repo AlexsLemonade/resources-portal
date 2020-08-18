@@ -107,6 +107,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             "TRANSFER_FULFILLED": lambda: f"Transfer of {self.associated_material.title} has been marked as fulfilled by "
             f"{self.associated_user.username} from {self.associated_organization.name}.",
             "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
+            "REQUEST_ISSUE_OPENED": lambda: f"{self.associated_user.username} has opened an issue for their request of {self.associated_material.title}.",
+            "REQUEST_ISSUE_CLOSED": lambda: f"An issue opened by {self.associated_user.username} for their request of {self.associated_material.title} has been closed.",
         }
 
         try:
@@ -133,6 +135,8 @@ NOTIFICATION_SETTING_DICT = {
     "TRANSFER_REJECTED": "transfer_updated_notif",
     "TRANSFER_FULFILLED": "transfer_updated_notif",
     "REMOVED_FROM_ORG": "misc_notif",
+    "REQUEST_ISSUE_OPENED": "transfer_updated_notif",
+    "REQUEST_ISSUE_CLOSED": "transfer_updated_notif",
 }
 
 

@@ -9,6 +9,7 @@ from resources_portal.models import MaterialRequest, Notification, OrganizationU
 from resources_portal.test.factories import (
     AddressFactory,
     AttachmentFactory,
+    MaterialFactory,
     MaterialRequestFactory,
     MaterialRequestIssueFactory,
     OrganizationFactory,
@@ -28,9 +29,10 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
     """
 
     def setUp(self):
-        self.request = MaterialRequestFactory()
-        self.request.status = "IN_FULFILLMENT"
-        self.request.save()
+        self.material = MaterialFactory()
+        self.request = MaterialRequestFactory(
+            material=self.material, assigned_to=self.material.contact_user, status="IN_FULFILLMENT"
+        )
 
         self.sharer = self.request.material.contact_user
         self.organization = self.request.material.organization
@@ -54,7 +56,6 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_post_request_with_valid_data_succeeds(self):
-        # TODO: Test notifications.
         self.request.status = "FULFILLED"
         self.request.save()
 
@@ -71,14 +72,14 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         self.request.refresh_from_db()
         self.assertEqual(self.request.status, "IN_FULFILLMENT")
 
-        # self.assertEqual(
-        #     len(
-        #         Notification.objects.filter(
-        #             notification_type="TRANSFER_REQUESTED", email=self.sharer.email
-        #         )
-        #     ),
-        #     1,
-        # )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="REQUEST_ISSUE_OPENED", email=self.sharer.email
+                )
+            ),
+            1,
+        )
 
     def test_post_request_unfulfilled_error(self):
         self.client.force_authenticate(user=self.user)
@@ -136,7 +137,10 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
 
 class TestSingleMaterialRequestIssueTestCase(APITestCase):
     def setUp(self):
-        self.request = MaterialRequestFactory()
+        self.material = MaterialFactory()
+        self.request = MaterialRequestFactory(
+            material=self.material, assigned_to=self.material.contact_user
+        )
         self.request.status = "IN_FULFILLMENT"
         self.request.save()
 
@@ -181,6 +185,10 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
 
+        OrganizationUserSetting.objects.get_or_create(
+            user=self.sharer, organization=self.request.material.organization
+        )
+
         self.request_issue_data["status"] = "CLOSED"
 
         response = self.client.put(self.url, self.request_issue_data)
@@ -192,10 +200,23 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         # Closing an issue should move a request back to FULFILLED
         self.request.refresh_from_db()
         self.assertEqual(self.request.status, "FULFILLED")
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
+                )
+            ),
+            1,
+        )
 
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
+        OrganizationUserSetting.objects.get_or_create(
+            user=self.sharer, organization=self.request.material.organization
+        )
+
         self.request_issue_data["status"] = "CLOSED"
 
         response = self.client.put(self.url, self.request_issue_data)
@@ -207,6 +228,15 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         # Closing an issue should move a request back to FULFILLED
         self.request.refresh_from_db()
         self.assertEqual(self.request.status, "FULFILLED")
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
+                )
+            ),
+            1,
+        )
 
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)

@@ -134,7 +134,6 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         serializer = MaterialRequestIssueSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # material_request = serializer.validated_data["material_request"]
         material_request = MaterialRequest.objects.get(pk=kwargs["parent_lookup_material_request"])
         material = material_request.material
 
@@ -144,8 +143,6 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         if material_request.status not in ["FULFILLED", "VERIFIED_FULFILLED"]:
             return Response(data={"reason": REQUEST_UNFULFILLED_ERROR}, status=400,)
 
-        # serializer.validated_data["requester"] = request.user
-
         serializer.validated_data["material_request_id"] = material_request.id
         material_request_issue = MaterialRequestIssue(**serializer.validated_data)
         material_request_issue.save()
@@ -154,20 +151,18 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         material_request.status = "IN_FULFILLMENT"
         material_request.save()
 
-        # notification = Notification(
-        #     notification_type="TRANSFER_REQUESTED",
-        #     notified_user=material_request.assigned_to,
-        #     associated_user=request.user,
-        #     associated_material=material,
-        #     associated_organization=material.organization,
-        # )
-        # notification.save()
+        notification = Notification(
+            notification_type="REQUEST_ISSUE_OPENED",
+            notified_user=material_request.assigned_to,
+            associated_user=request.user,
+            associated_material=material,
+            associated_organization=material.organization,
+        )
+        notification.save()
 
         return Response(data=model_to_dict(material_request_issue), status=201)
 
     def update(self, request, *args, **kwargs):
-        # TODO: Change the status of the request.
-        # TODO: Generate a notification.
         material_request_issue = self.get_object()
 
         if material_request_issue.status == "CLOSED":
@@ -181,11 +176,20 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        material_request.refresh_from_db()
+        if request.data["status"] == "CLOSED":
+            material_request.refresh_from_db()
+            notification = Notification(
+                notification_type="REQUEST_ISSUE_CLOSED",
+                notified_user=material_request.assigned_to,
+                associated_user=material_request.requester,
+                associated_material=material_request.material,
+                associated_organization=material_request.material.organization,
+            )
+            notification.save()
 
-        if not material_request.has_issues:
-            material_request.status = "FULFILLED"
-            material_request.save()
+            if not material_request.has_issues:
+                material_request.status = "FULFILLED"
+                material_request.save()
 
         material_request_issue.refresh_from_db()
 
