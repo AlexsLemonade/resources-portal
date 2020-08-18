@@ -3,13 +3,13 @@ import { Box, Main } from 'grommet'
 import Header from './Header'
 import { Footer } from './Footer'
 
-export const Layout = ({ children }) => {
+export const HomeLayout = ({ children }) => {
   return (
     <Box height={{ min: '100vh' }}>
       <Box gridArea="header" margin={{ bottom: 'xlarge' }}>
         <Header />
       </Box>
-      <Main width="xxlarge" alignSelf="center" overflow="visible">
+      <Main width="fill" overflow="visible">
         {children}
       </Main>
       <Footer />
@@ -17,4 +17,4 @@ export const Layout = ({ children }) => {
   )
 }
 
-export default Layout
+export default HomeLayout

@@ -2,13 +2,21 @@ import React from 'react'
 import { Grommet } from 'grommet'
 import Head from 'next/head'
 import theme from '../theme'
-import Layout from '../components/Layout'
+import { Layout } from '../components/Layout'
+import { AccountLayout } from '../components/AccountLayout'
+import { HomeLayout } from '../components/HomeLayout'
 import { ResourcesPortalContextProvider } from '../ResourcesPortalContext'
 
 // global styles
 import '../styles/app.scss'
 
-export default ({ Component, pageProps }) => {
+export default ({ Component, pageProps, router: { pathname } }) => {
+  const isHome = pathname === '/'
+  const isAccount = pathname.indexOf('/account') === 0
+  const isDefault = !isHome && !isAccount
+  /* eslint-disable-next-line react/jsx-props-no-spreading */
+  const Page = () => <Component {...pageProps} />
+
   return (
     <ResourcesPortalContextProvider>
       <Head>
@@ -19,10 +27,21 @@ export default ({ Component, pageProps }) => {
         />
       </Head>
       <Grommet theme={theme}>
-        <Layout>
-          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-          <Component {...pageProps} />
-        </Layout>
+        {isHome && (
+          <HomeLayout>
+            <Page />
+          </HomeLayout>
+        )}
+        {isAccount && (
+          <AccountLayout>
+            <Page />
+          </AccountLayout>
+        )}
+        {isDefault && (
+          <Layout>
+            <Page />
+          </Layout>
+        )}
       </Grommet>
     </ResourcesPortalContextProvider>
   )
