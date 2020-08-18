@@ -5,14 +5,11 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import MaterialRequest, Notification, OrganizationUserSetting
+from resources_portal.models import Notification, OrganizationUserSetting
 from resources_portal.test.factories import (
-    AddressFactory,
-    AttachmentFactory,
     MaterialFactory,
     MaterialRequestFactory,
     MaterialRequestIssueFactory,
-    OrganizationFactory,
     UserFactory,
 )
 from resources_portal.views.material_request_issue import (

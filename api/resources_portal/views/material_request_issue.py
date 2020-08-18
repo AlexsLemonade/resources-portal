@@ -1,6 +1,5 @@
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
@@ -11,7 +10,6 @@ from resources_portal.models import (
     MaterialRequestIssue,
     Notification,
     Organization,
-    User,
 )
 from resources_portal.views.relation_serializers import MaterialRequestRelationSerializer
 

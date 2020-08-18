@@ -1,6 +1,5 @@
 from django.db import models
 
-from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -10,7 +9,7 @@ from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
+class MaterialRequest(SafeDeleteModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"

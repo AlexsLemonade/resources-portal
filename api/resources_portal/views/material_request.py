@@ -26,6 +26,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "is_active",
             "status",
             "assigned_to",
+            "has_issues",
             "executed_mta_attachment",
             "irb_attachment",
             "material",
