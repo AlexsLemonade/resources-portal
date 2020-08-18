@@ -313,7 +313,7 @@ Home.getInitialProps = async ({ req, query }) => {
     return {}
   }
 
-  let queryJSON = {email: 'this@willchange.com'}
+  let queryJSON = { email: 'this@willchange.com' }
 
   if (query.json) {
     queryJSON = JSON.parse(query.json)
