@@ -17,6 +17,7 @@ logger = get_and_configure_logger(__name__)
 CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
 OAUTH_URL = settings.OAUTH_URL
+IS_OAUTH_SANDBOX = "sandbox" in OAUTH_URL
 
 
 def remove_code_parameter_from_uri(url):
@@ -79,7 +80,7 @@ class AuthViewSet(viewsets.ViewSet):
             email = request.GET["email"]
 
             # Get first and last name
-            api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=True)
+            api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
             summary = api.read_record_public(
                 response_json["orcid"], "person", response_json["access_token"]
             )
