@@ -2,11 +2,11 @@ import React from 'react'
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
 import Link from 'next/link'
 import { HomepageCard } from '../components/HomepageCard'
-import api, { path } from '../api'
+import api from '../api'
 import { useUser } from '../hooks/useUser'
 
 export const Home = ({ authenticatedUser, token, redirectUrl }) => {
-  const { user } = useUser(authenticatedUser, token, redirectUrl)
+  useUser(authenticatedUser, token, redirectUrl)
   const heroOverlap = '140px'
   const [showSharing, setShowSharing] = React.useState(true)
   return (
