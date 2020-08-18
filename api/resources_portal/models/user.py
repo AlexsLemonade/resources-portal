@@ -37,6 +37,7 @@ class User(AbstractUser, ComputedFieldsModel):
     refresh_token = models.TextField()
     access_token = models.TextField()
     deleted = models.BooleanField(default=False, null=False)
+    email = models.EmailField("email", blank=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
     personal_organization = models.ForeignKey(
