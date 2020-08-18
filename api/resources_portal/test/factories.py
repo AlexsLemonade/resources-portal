@@ -15,8 +15,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     id = factory.Faker("uuid4")
     username = factory.Sequence(lambda n: f"testuser{n}")
     orcid = factory.Faker("uuid4")
-    refresh_token = "a refresh token"
-    access_token = "a access token"
+    orcid_refresh_token = "a refresh token"
+    orcid_access_token = "a access token"
     password = factory.Faker(
         "password", length=10, special_chars=True, digits=True, upper_case=True, lower_case=True,
     )

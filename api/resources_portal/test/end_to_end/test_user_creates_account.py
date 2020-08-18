@@ -32,10 +32,11 @@ class TestUserCreatesAccount(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_create_account_and_list_resource(self, mock_auth_request, mock_record_request):
         # Create user with ORCID
-        self.client.get(get_mock_oauth_url([self.grant1, self.grant2]))
+        response = self.client.get(get_mock_oauth_url([self.grant1, self.grant2]))
 
-        # Client is now logged in as user, get user ID from session data
-        user = User.objects.get(pk=self.client.session["_auth_user_id"])
+        # Get user, sign in
+        user = User.objects.get(pk=response.json()["user_id"])
+        self.client.force_authenticate(user=user)
 
         # Create resource on personal organization
         material = MaterialFactory(contact_user=user, organization=user.personal_organization)

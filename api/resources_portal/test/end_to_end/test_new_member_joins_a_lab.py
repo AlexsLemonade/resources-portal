@@ -55,10 +55,9 @@ class TestNewMemberJoinsALab(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
         # Create account (NewMember)
-        self.client.get(get_mock_oauth_url([]))
+        response = self.client.get(get_mock_oauth_url([]))
 
-        # Client is now logged in as user, get user ID from session data
-        new_member = User.objects.get(pk=self.client.session["_auth_user_id"])
+        new_member = User.objects.get(pk=response.json()["user_id"])
 
         # PrimaryProf invites NewMember to join PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)

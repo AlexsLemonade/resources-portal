@@ -71,8 +71,8 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self, mock_auth_request, mock_record_request
     ):
         # Create account (Requester)
-        self.client.get(get_mock_oauth_url([]))
-        requester = User.objects.get(pk=self.client.session["_auth_user_id"])
+        response = self.client.get(get_mock_oauth_url([]))
+        requester = User.objects.get(pk=response.json()["user_id"])
 
         # Search resources
         response = self.client.get(reverse("search-materials-list"), {"organization": "PrimaryLab"})

@@ -6,9 +6,9 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
 
 from computedfields.models import ComputedFieldsModel, computed
+from django_expiring_token.models import ExpiringToken
 
 
 class NonDeletedObjectsManager(UserManager):
@@ -34,10 +34,10 @@ class User(AbstractUser, ComputedFieldsModel):
     updated_at = models.DateTimeField(auto_now=True)
     published_name = models.TextField(null=True)
     orcid = models.TextField(unique=True, null=True)
-    refresh_token = models.TextField()
-    access_token = models.TextField()
+    orcid_refresh_token = models.TextField()
+    orcid_access_token = models.TextField()
     deleted = models.BooleanField(default=False, null=False)
-    email = models.EmailField("email", blank=False, null=False, unique=True)
+    email = models.EmailField("email", blank=False, null=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
     personal_organization = models.ForeignKey(
@@ -87,4 +87,4 @@ class User(AbstractUser, ComputedFieldsModel):
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
-        Token.objects.create(user=instance)
+        ExpiringToken.objects.create(user=instance)

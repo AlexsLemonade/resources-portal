@@ -50,7 +50,7 @@ class TestMaterialListTestCase(APITestCase):
     def test_post_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.material_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_request_succeeds(self):
         self.client.force_authenticate(user=None)
@@ -180,7 +180,7 @@ class TestSingleMaterialTestCase(APITestCase):
         material_json["contact_user"] = material_json["contact_user"]["id"]
 
         response = self.client.put(self.url, material_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_deletes_a_material(self):
         self.client.force_authenticate(user=self.user)
@@ -197,7 +197,7 @@ class TestSingleMaterialTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_only_soft_deletes_objects(self):
         self.client.force_authenticate(user=self.user)

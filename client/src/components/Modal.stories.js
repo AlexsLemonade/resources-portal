@@ -4,7 +4,7 @@ import * as React from 'react'
 import theme from '../theme'
 import CreateAccountModal from './CreateAccountModal'
 import { LoginButton } from './LoginButton'
-import SignInModal from './SignInModal'
+import { SignInModal } from './SignInModal'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
   const [showing, setShowing] = React.useState(false)
