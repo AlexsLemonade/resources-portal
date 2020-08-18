@@ -33,10 +33,11 @@ class User(AbstractUser, ComputedFieldsModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     published_name = models.TextField(null=True)
-    orcid = models.TextField(unique=True)
+    orcid = models.TextField(unique=True, null=True)
     orcid_refresh_token = models.TextField()
     orcid_access_token = models.TextField()
     deleted = models.BooleanField(default=False, null=False)
+    email = models.EmailField("email", blank=False, null=False)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
     personal_organization = models.ForeignKey(
