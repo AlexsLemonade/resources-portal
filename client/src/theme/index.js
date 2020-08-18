@@ -86,7 +86,8 @@ const theme = {
           horizontal: '24px',
           vertical: '7px' // 8px - 1px for border
         }
-      }
+      },
+      large: {}
     },
     disabled: {
       opacity: 1
@@ -318,7 +319,17 @@ const theme = {
           light: 'black-tint-60'
         }
       }
-    }
+    },
+    extend: (props) =>
+      applyWhen(
+        !props.reverse,
+        `
+        align-items: start;
+        div:first-child {
+          margin-top: 4px;
+        }
+      `
+      )
   },
   clock: {
     analog: {
@@ -407,9 +418,10 @@ const theme = {
       }
     },
     help: {
-      color: 'brand',
+      color: 'black-tint-40',
       margin: {
-        start: 'none'
+        start: 'none',
+        bottom: 'xsmall'
       }
     },
     info: {
@@ -421,13 +433,37 @@ const theme = {
     },
     label: {
       margin: {
-        horizontal: 'xsmall',
-        vertical: 'xsmall'
+        horizontal: 'none',
+        bottom: 'medium'
       },
       size: 'medium'
     },
-    margin: 'medium',
-    round: '4px'
+    margin: {
+      vertical: 'medium'
+    },
+    round: '4px',
+    extend: (props) =>
+      applyAll(
+        `
+      // help
+      label + span {
+        font-style: italic;
+        font-size: 12px;
+        line-height: 18px;
+      }
+    `,
+        applyWhen(
+          props.checkbox,
+          `
+        > div {
+          border: none;
+          > div {
+            padding: 0;
+          }
+        }
+      `
+        )
+      )
   },
   global: {
     active: {
@@ -477,6 +513,8 @@ const theme = {
       }
     },
     colors: {
+      gradient: 'linear-gradient(180deg, #FDFDFD 0%, #DCF7FE 100%)',
+      'gradient-reverse': 'linear-gradient(0deg, #FDFDFD 0%, #DCF7FE 100%)',
       'alexs-navy': '#002F6C',
       'alexs-navy-tint-20': '#0051BC',
       'alexs-navy-tint-40': '#0D76FF',
@@ -496,7 +534,7 @@ const theme = {
       'turteal-tint-80': '#BAEFFE',
       'turteal-tint-90': '#DCF7FE',
       'turteal-shade-20': '#006582',
-      'turteal-shade-40': '#AAA000',
+      'turteal-shade-40': '#004C61',
       'soda-orange': '#E55517',
       'soda-orange-tint-20': '#ec7643',
       'soda-orange-tint-40': '#F09872',
@@ -609,6 +647,7 @@ const theme = {
       responsiveBreakpoint: 'small',
       small: '8px',
       xlarge: '48px',
+      xxlarge: '64px',
       gutter: '40px',
       xsmall: '4px',
       xxsmall: '2px'
@@ -629,7 +668,10 @@ const theme = {
       color: 'active-text'
     },
     input: {
-      padding: '8px',
+      font: {
+        height: '28px'
+      },
+      padding: '6px',
       weight: 400
     },
     selected: {
@@ -638,8 +680,8 @@ const theme = {
     },
     size: {
       full: '100%',
-      large: '512px',
-      medium: '224px',
+      large: `${8 * 91}px`,
+      medium: `${8 * 65}px`,
       small: '128px',
       xlarge: `${8 * 130}px`,
       xsmall: '64px',
@@ -800,9 +842,9 @@ const theme = {
   name: 'resources-portal',
   paragraph: {
     large: {
-      height: '19px',
+      height: '32px',
       maxWidth: undefined,
-      size: '15px'
+      size: '21px'
     },
     medium: {
       height: '24px',
@@ -850,9 +892,9 @@ const theme = {
   text: {
     extend: (props) => applyWhen(props.italic, 'font-style: italic'),
     large: {
-      height: '19px',
+      height: '32px',
       maxWidth: '235px',
-      size: '15px'
+      size: '21px'
     },
     medium: {
       height: '24px',
@@ -860,14 +902,14 @@ const theme = {
       size: '16px'
     },
     small: {
-      height: '15px',
+      height: '18px',
       maxWidth: '171px',
-      size: '11px'
+      size: '12px'
     },
     xlarge: {
-      height: '21px',
+      height: '42px',
       maxWidth: '277px',
-      size: '17px'
+      size: '28px'
     },
     xsmall: {
       height: '13px',
