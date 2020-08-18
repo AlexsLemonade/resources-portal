@@ -15,11 +15,9 @@ class TestCreateUserSerializer(TestCase):
             UserFactory.build(personal_organization=personal_organization)
         )
 
-    # All fields on User are either nullable or have adefualt, which means that
-    # an empty serializer is valid
     def test_serializer_with_empty_data(self):
         serializer = UserSerializer(data={})
-        self.assertTrue(serializer.is_valid())
+        self.assertFalse(serializer.is_valid())
 
     def test_serializer_with_valid_data(self):
         serializer = UserSerializer(data=self.user_data)
