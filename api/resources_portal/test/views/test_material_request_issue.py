@@ -210,6 +210,15 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
             1,
         )
 
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_FULFILLED", email=self.user.email
+                )
+            ),
+            1,
+        )
+
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 

@@ -178,6 +178,7 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
 
         if request.data["status"] == "CLOSED":
             material_request.refresh_from_db()
+
             notification = Notification(
                 notification_type="REQUEST_ISSUE_CLOSED",
                 notified_user=material_request.assigned_to,
@@ -190,6 +191,17 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
             if not material_request.has_issues:
                 material_request.status = "FULFILLED"
                 material_request.save()
+
+                # Don't notify the requester that they closed their own issue.
+                if request.user != material_request.requester:
+                    notification = Notification(
+                        notification_type="TRANSFER_FULFILLED",
+                        notified_user=material_request.requester,
+                        associated_user=request.user,
+                        associated_material=material_request.material,
+                        associated_organization=material_request.material.organization,
+                    )
+                    notification.save()
 
         material_request_issue.refresh_from_db()
 
