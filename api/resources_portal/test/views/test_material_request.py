@@ -19,7 +19,7 @@ fake = Faker()
 
 class TestMaterialRequestListTestCase(APITestCase):
     """
-    Tests /materials list operations.
+    Tests /materials-requests list operations.
     """
 
     def setUp(self):

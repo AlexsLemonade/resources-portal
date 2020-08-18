@@ -295,6 +295,14 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
                     return Response(status=403)
 
+                if (
+                    serializer.validated_data["status"] == "FULFILLED"
+                    and material_request.has_issues
+                ):
+                    for issue in material_request.issues.filter(status="OPEN"):
+                        issue.status = "CLOSED"
+                        issue.save()
+
                 send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
         serializer.save()

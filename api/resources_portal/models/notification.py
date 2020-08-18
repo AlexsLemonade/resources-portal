@@ -40,6 +40,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
         ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
         ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
+        ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
+        ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
     )
 
     objects = SafeDeleteManager()

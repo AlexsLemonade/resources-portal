@@ -1,5 +1,6 @@
 from django.db import models
 
+from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -9,7 +10,7 @@ from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialRequest(SafeDeleteModel):
+class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
@@ -22,11 +23,12 @@ class MaterialRequest(SafeDeleteModel):
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),
         ("APPROVED", "APPROVED"),
+        ("IN_FULFILLMENT", "IN_FULFILLMENT"),
+        ("FULFILLED", "FULFILLED"),
+        ("VERIFIED_FULFILLED", "VERIFIED_FULFILLED"),
         ("REJECTED", "REJECTED"),
         ("INVALID", "INVALID"),
         ("CANCELLED", "CANCELLED"),
-        ("FULFILLED", "FULFILLED"),
-        ("VERIFIED_FULFILLED", "VERIFIED_FULFILLED"),
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -70,6 +72,10 @@ class MaterialRequest(SafeDeleteModel):
     assigned_to = models.ForeignKey(
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
+
+    @computed(models.BooleanField(null=True))
+    def has_issues(self):
+        return self.issues.filter(status="OPEN").count() > 0
 
     def save(self, *args, **kwargs):
         if self.assigned_to is None:
