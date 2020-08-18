@@ -95,8 +95,12 @@ def send_transfer_update_notif(status, request):
         send_material_request_notif("TRANSFER_APPROVED", request, request.requester)
     elif status == "REJECTED":
         send_material_request_notif("TRANSFER_REJECTED", request, request.requester)
+    elif status == "CANCELLED":
+        send_material_request_notif("TRANSFER_CANCELLED", request, request.assigned_to)
     elif status == "FULFILLED":
         send_material_request_notif("TRANSFER_FULFILLED", request, request.requester)
+    elif status == "VERIFIED_FULFILLED":
+        send_material_request_notif("TRANSFER_VERIFIED_FULFILLED", request, request.assigned_to)
     else:
         return
 
@@ -265,6 +269,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
                 if not (cancelling or verifying):
                     return Response(status=403)
+
+                send_transfer_update_notif(serializer.validated_data["status"], material_request)
 
             # Can't make it read-only because organization members
             # should be able to change it.

@@ -38,7 +38,9 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
         ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
         ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
+        ("TRANSFER_CANCELLED", "TRANSFER_CANCELLED"),
         ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
+        ("TRANSFER_VERIFIED_FULFILLED", "TRANSFER_VERIFIED_FULFILLED"),
         ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
         ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
         ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
@@ -104,8 +106,12 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             f'"{self.associated_material.title}".',
             "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
             "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
+            "TRANSFER_CANCELLED": lambda: f"Transfer of {self.associated_material.title} has been cancelled.",
             "TRANSFER_FULFILLED": lambda: f"Transfer of {self.associated_material.title} has been marked as fulfilled by "
             f"{self.associated_user.username} from {self.associated_organization.name}.",
+            "TRANSFER_VERIFIED_FULFILLED": lambda: f"Transfer of {self.associated_material.title}"
+            f" from {self.associated_organization.name} has been verified as fulfilled by "
+            f"{self.associated_user.username}.",
             "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
             "REQUEST_ISSUE_OPENED": lambda: f"{self.associated_user.username} has opened an issue for their request of {self.associated_material.title}.",
             "REQUEST_ISSUE_CLOSED": lambda: f"An issue opened by {self.associated_user.username} for their request of {self.associated_material.title} has been closed.",
@@ -133,7 +139,9 @@ NOTIFICATION_SETTING_DICT = {
     "TRANSFER_REQUESTED": "transfer_requested_notif",
     "TRANSFER_APPROVED": "transfer_updated_notif",
     "TRANSFER_REJECTED": "transfer_updated_notif",
+    "TRANSFER_CANCELLED": "transfer_updated_notif",
     "TRANSFER_FULFILLED": "transfer_updated_notif",
+    "TRANSFER_VERIFIED_FULFILLED": "transfer_updated_notif",
     "REMOVED_FROM_ORG": "misc_notif",
     "REQUEST_ISSUE_OPENED": "transfer_updated_notif",
     "REQUEST_ISSUE_CLOSED": "transfer_updated_notif",
