@@ -52,6 +52,11 @@ class SearchMaterialsEndpointTestCase(APITestCase):
         self.assertEqual(first_result_id, self.material1.id)
 
     def test_filter_on_organization_retrieves_all_organization_materials(self):
+        # Archive one material to make sure it goes to the bottom of the list.
+        archived_material = Material.objects.get(id=1)
+        archived_material.is_archived = True
+        archived_material.save()
+
         self.client.force_authenticate(user=self.primary_prof)
 
         search_url = reverse("search-materials-list") + "?organization=" + self.primary_lab.name
@@ -59,10 +64,14 @@ class SearchMaterialsEndpointTestCase(APITestCase):
         response = self.client.get(search_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        material_count = int(response.json()["count"])
+        response_json = response.json()
+        material_count = int(response_json["count"])
+
+        # Make sure archived materials are last:
+        self.assertEqual(response_json["results"][-1]["id"], archived_material.id)
 
         material_titles = []
-        for material in response.json()["results"]:
+        for material in response_json["results"]:
             material_titles.append(material["title"])
 
         self.assertEqual(material_count, len(self.primary_lab.materials.all()))

@@ -34,6 +34,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     organisms = serializers.ListField(read_only=True)
+    is_archived = serializers.BooleanField(read_only=True)
     has_publication = serializers.BooleanField(read_only=True)
     has_pre_print = serializers.BooleanField(read_only=True)
     additional_info = serializers.CharField(read_only=True)
@@ -79,6 +80,7 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "created_at",
             "updated_at",
             "organisms",
+            "is_archived",
             "has_publication",
             "has_pre_print",
             "additional_info",
@@ -162,6 +164,12 @@ class MaterialFacetedSearchFilterBackend(FacetedSearchFilterBackend):
                 description="Allows filtering the results by the owner's published_name",
             ),
             openapi.Parameter(
+                name="is_archived",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by has_publication",
+            ),
+            openapi.Parameter(
                 name="has_publication",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
@@ -220,6 +228,7 @@ class MaterialDocumentView(DocumentViewSet):
     # Define search fields
     search_fields = {
         "title": {"boost": 10},
+        "is_archived": None,
         "category": None,
         "contact_user": None,
         "additional_metadata": None,
@@ -239,6 +248,7 @@ class MaterialDocumentView(DocumentViewSet):
         "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
         "organization": {"field": "organization.name"},
         "title": "title",
+        "is_archived": "is_archived",
         "contact_user.email": "contact_user.email",
         "contact_user.published_name": "contact_user.published_name",
     }
@@ -247,12 +257,14 @@ class MaterialDocumentView(DocumentViewSet):
     post_filter_fields = {
         "category": {"field": "category"},
         "organisms": {"field": "organisms"},
+        "is_archived": {"field": "is_archived"},
         "has_publication": {"field": "has_publication"},
         "has_pre_print": {"field": "has_pre_print"},
     }
 
     # Define ordering fields
     ordering_fields = {
+        "is_archived": "is_archived",
         "id": "id",
         "title": "title.raw",
         "category": "category.raw",
@@ -263,6 +275,7 @@ class MaterialDocumentView(DocumentViewSet):
     # Specify default ordering
     ordering = (
         "_score",
+        "is_archived",
         "updated_at",
         "id",
     )
@@ -276,6 +289,7 @@ class MaterialDocumentView(DocumentViewSet):
             "facet": TermsFacet,
             "enabled": True,
         },
+        "is_archived": {"field": "is_archived", "facet": TermsFacet, "enabled": True},
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
         "organization": {"field": "organization.name", "facet": TermsFacet, "enabled": True},
