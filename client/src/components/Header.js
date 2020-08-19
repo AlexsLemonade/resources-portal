@@ -40,7 +40,7 @@ export default function ResourcesHeader({ className }) {
             <Anchor color="white" href="#" label="Search" />
           </Link>
           <Link href="/resources">
-            <Anchor color="white" href="#" label="List Resource" />
+            <Anchor color="white" href="#" label="Add Resource" />
           </Link>
           <Anchor color="white" href="#" label="Help" />
           <HeaderAccountLink />
