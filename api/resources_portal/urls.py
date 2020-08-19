@@ -11,6 +11,7 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 from resources_portal.views import (
     AddressViewSet,
     AttachmentViewSet,
+    AuthViewSet,
     GrantMaterialViewSet,
     GrantViewSet,
     ImportViewSet,
@@ -101,6 +102,7 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
+urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"get": "retrieve"}), name="auth"))
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(

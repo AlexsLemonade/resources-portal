@@ -62,7 +62,7 @@ class TestSingleGrantTestCase(APITestCase):
 
     def test_grant_requires_auth(self):
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_cannot_get_someone_elses_grant(self):
         user = UserFactory()

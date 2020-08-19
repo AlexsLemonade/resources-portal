@@ -1,11 +1,10 @@
-import { Box, Button, Heading, Text } from 'grommet'
+import { Box, Heading, Text } from 'grommet'
 import * as React from 'react'
-import ORCIDLogo from '../images/grant.svg'
 import {
   AccountCreationInfo,
   Modal,
   ORCIDDescription,
-  ResourcesButton
+  ORCIDSignInButton
 } from './Modal'
 
 const CreateAccountModalContent = ({ title }) => {
@@ -20,7 +19,7 @@ const CreateAccountModalContent = ({ title }) => {
           {title}
         </Heading>
       </Box>
-      <Box direction="row" margin={{ top: 'large' }} height="350px">
+      <Box direction="row" margin={{ top: 'large' }} height={{ min: '300px' }}>
         <Box
           align="center"
           width={{ min: '400px' }}
@@ -32,15 +31,13 @@ const CreateAccountModalContent = ({ title }) => {
             margin={{ top: 'medium' }}
             height={{ min: '40px' }}
           >
-            <Button
-              label="Sign in with ORCID iD"
-              icon={<ORCIDLogo />}
-              primary
-            />
+            <ORCIDSignInButton label="Sign in with ORCID iD" />
           </Box>
         </Box>
         <Box margin={{ left: '30px' }}>
-          <AccountCreationInfo button={<ResourcesButton />} />
+          <AccountCreationInfo
+            button={<ORCIDSignInButton label="Create or Connect ORCID iD" />}
+          />
         </Box>
       </Box>
       <Box

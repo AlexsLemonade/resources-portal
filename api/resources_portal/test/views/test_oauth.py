@@ -30,7 +30,7 @@ class TestOAuthUserCreation(APITestCase):
     def test_oauth_flow_creates_new_user(self, mock_auth_request, mock_record_request):
         response = self.client.get(self.url)
 
-        user = User.objects.get(pk=self.client.session["_auth_user_id"])
+        user = User.objects.get(pk=response.json()["user_id"])
 
         self.assertEqual(user.orcid, ORCID_AUTHORIZATION_DICT["orcid"])
 
@@ -48,7 +48,7 @@ class TestOAuthUserCreation(APITestCase):
 
         response = self.client.get(self.url)
 
-        logged_in_user = User.objects.get(pk=self.client.session["_auth_user_id"])
+        logged_in_user = User.objects.get(pk=response.json()["user_id"])
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(existing_user, logged_in_user)

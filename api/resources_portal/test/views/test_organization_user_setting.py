@@ -44,7 +44,7 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_updates_settings(self):
         self.client.force_authenticate(user=self.user)
@@ -82,7 +82,7 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         settings_json["change_in_request_status_notif"] = False
 
         response = self.client.put(self.url, settings_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_new_member_added_to_organization_creates_settings(self):
         self.client.force_authenticate(user=self.invitation.requester)
