@@ -172,6 +172,15 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     material = factory.SubFactory(MaterialFactory)
 
 
+class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.MaterialRequestIssue"
+
+    description = "I never received my package!"
+    status = "OPEN"
+    material_request = factory.SubFactory(MaterialRequestFactory)
+
+
 class LeafGrantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Grant"

@@ -10,6 +10,7 @@ from resources_portal.test.factories import (
     AddressFactory,
     AttachmentFactory,
     MaterialRequestFactory,
+    MaterialRequestIssueFactory,
     OrganizationFactory,
     UserFactory,
 )
@@ -19,7 +20,7 @@ fake = Faker()
 
 class TestMaterialRequestListTestCase(APITestCase):
     """
-    Tests /materials list operations.
+    Tests /materials-requests list operations.
     """
 
     def setUp(self):
@@ -174,6 +175,28 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_put_request_fulfilled_closes_issues(self):
+        # Make the request IN_FULFILLMENT, add an open issue, and
+        # verify that has_issues reports it correctly
+        self.request.status = "IN_FULFILLMENT"
+        self.request.save()
+        issue = MaterialRequestIssueFactory(material_request=self.request)
+
+        self.request.refresh_from_db()
+        self.assertTrue(self.request.has_issues)
+
+        self.client.force_authenticate(user=self.sharer)
+
+        self.material_request_data["status"] = "FULFILLED"
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.request.refresh_from_db()
+        self.assertFalse(self.request.has_issues)
+        issue.refresh_from_db()
+        self.assertEqual(issue.status, "CLOSED")
 
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
