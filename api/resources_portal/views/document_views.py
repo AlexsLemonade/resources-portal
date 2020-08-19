@@ -167,7 +167,7 @@ class MaterialFacetedSearchFilterBackend(FacetedSearchFilterBackend):
                 name="is_archived",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
-                description="Allows filtering the results by has_publication",
+                description="Allows filtering the results by is_archived",
             ),
             openapi.Parameter(
                 name="has_publication",
@@ -257,7 +257,6 @@ class MaterialDocumentView(DocumentViewSet):
     post_filter_fields = {
         "category": {"field": "category"},
         "organisms": {"field": "organisms"},
-        "is_archived": {"field": "is_archived"},
         "has_publication": {"field": "has_publication"},
         "has_pre_print": {"field": "has_pre_print"},
     }
