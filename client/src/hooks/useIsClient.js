@@ -1,6 +1,6 @@
 import React from 'react'
 
-// Some things are only available on the cliet like window and localStorage
+// Some things are only available on the client like window and localStorage
 // Other times we dont want to SSR certain pages
 // This hook helps with that.
 //
