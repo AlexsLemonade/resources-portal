@@ -22,11 +22,12 @@ class MaterialRequest(SafeDeleteModel):
     STATUS_CHOICES = (
         ("PENDING", "PENDING"),
         ("APPROVED", "APPROVED"),
+        ("IN_FULFILLMENT", "IN_FULFILLMENT"),
+        ("FULFILLED", "FULFILLED"),
+        ("VERIFIED_FULFILLED", "VERIFIED_FULFILLED"),
         ("REJECTED", "REJECTED"),
         ("INVALID", "INVALID"),
         ("CANCELLED", "CANCELLED"),
-        ("FULFILLED", "FULFILLED"),
-        ("VERIFIED_FULFILLED", "VERIFIED_FULFILLED"),
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -70,6 +71,10 @@ class MaterialRequest(SafeDeleteModel):
     assigned_to = models.ForeignKey(
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
+
+    @property
+    def has_issues(self):
+        return self.issues.filter(status="OPEN").count() > 0
 
     def save(self, *args, **kwargs):
         if self.assigned_to is None:

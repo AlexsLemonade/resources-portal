@@ -16,6 +16,7 @@ from resources_portal.views import (
     GrantViewSet,
     ImportViewSet,
     MaterialDocumentView,
+    MaterialRequestIssueViewSet,
     MaterialRequestViewSet,
     MaterialViewSet,
     OrganizationDocumentView,
@@ -75,7 +76,12 @@ router.register(
     basename="organization-user-setting",
 )
 
-router.register(r"material-requests", MaterialRequestViewSet, basename="material-request")
+router.register(r"material-requests", MaterialRequestViewSet, basename="material-request").register(
+    r"issues",
+    MaterialRequestIssueViewSet,
+    basename="material-requests-issues",
+    parents_query_lookups=["material_request"],
+)
 
 search_router = DefaultRouter()
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")

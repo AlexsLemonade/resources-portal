@@ -17,20 +17,29 @@ from resources_portal.test.utils import clean_test_file_uploads
 
 class TestResourceListedAndRequested(APITestCase):
     """
-    Tests the flow of listing a resource and requesting it.
+    Tests the flow of listing a resource, requesting it, and creating/resolving an issue..
+
     The flow of the test is as follows:
     1. The PrimaryProf lists a new resource with PrimaryLab.
     2. SecondaryProf requests the resource.
     3. Postdoc approves the request.
     4. SecondaryProf upload the signed MTA.
-    5. Postdoc uploads the executed MTA.
+    5. Postdoc uploads the executed MTA and marks the request fulfilled.
+    6. SecondaryProf creates an issue for the request.
+    7. Postdoc resolves the issue.
+    8. SecondaryProf verifies the request as fulfilled.
 
     During the test, the following notifications (and no more) will be sent:
 
     1. The Postdoc receives a notification that a resource was requested
     2. SecondaryProf is notified that her request was approved.
     3. Postdoc receives notification that SecondaryProf has signed MTA.
-    3. SecondaryProf receives notification that Postdoc has uploaded executed MTA.
+    4. SecondaryProf receives notification that Postdoc has uploaded executed MTA.
+    5. SecondaryProf receives notification that Postdoc has fulfilled his request.
+    6. Postdoc receives a notification that SecondaryProf has created an issue.
+    7. SecondaryProf receives a notification that Postdoc closed his issue.
+    8. SecondaryProf receives a notification that Postdoc fulfilled his request.
+    9. Postdoc receives a notification that SecondaryProf verified the request was fulfilled.
     """
 
     def setUp(self):
@@ -136,7 +145,7 @@ class TestResourceListedAndRequested(APITestCase):
             1,
         )
 
-        # Postdoc uploads the executed MTA
+        # Postdoc uploads the executed MTA and marks the request fulfilled.
         self.client.force_authenticate(user=self.post_doc)
         executed_mta_data = {
             "filename": "executed_mta",
@@ -154,7 +163,9 @@ class TestResourceListedAndRequested(APITestCase):
 
         executed_mta_id = response.data["id"]
 
-        response = self.client.put(request_url, {"executed_mta_attachment": executed_mta_id})
+        response = self.client.put(
+            request_url, {"executed_mta_attachment": executed_mta_id, "status": "FULFILLED"}
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -166,6 +177,81 @@ class TestResourceListedAndRequested(APITestCase):
             ),
             1,
         )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_FULFILLED", email=self.secondary_prof.email
+                )
+            ),
+            1,
+        )
+
+        # SecondaryProf creates an issue for the request.
+        self.client.force_authenticate(user=self.secondary_prof)
+
+        request_issue_json = {"status": "OPEN", "description": "I never got the package!"}
+        issue_response = self.client.post(
+            reverse("material-requests-issues-list", args=[request_id]), request_issue_json
+        )
+        self.assertEqual(issue_response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="REQUEST_ISSUE_OPENED", email=self.post_doc.email
+                )
+            ),
+            1,
+        )
+
+        # Postdoc resolves the issue.
+        self.client.force_authenticate(user=self.post_doc)
+
+        request_issue_json = {"status": "CLOSED"}
+        issue_response = self.client.put(
+            reverse(
+                "material-requests-issues-detail", args=[request_id, issue_response.json()["id"]]
+            ),
+            request_issue_json,
+        )
+        self.assertEqual(issue_response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="REQUEST_ISSUE_CLOSED", email=self.post_doc.email
+                )
+            ),
+            1,
+        )
+
+        # This is the second time the request was marked as fulfilled,
+        # so now there should be 2!
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_FULFILLED", email=self.secondary_prof.email
+                )
+            ),
+            2,
+        )
+
+        # SecondaryProf verifies the request as fulfilled.
+        self.client.force_authenticate(user=self.secondary_prof)
+        response = self.client.put(
+            request_url,
+            {"executed_mta_attachment": executed_mta_id, "status": "VERIFIED_FULFILLED"},
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="TRANSFER_VERIFIED_FULFILLED", email=self.post_doc.email
+                )
+            ),
+            1,
+        )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 4)
+        self.assertEqual(len(Notification.objects.all()), 9)

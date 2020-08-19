@@ -30,8 +30,6 @@ class OrganizationGrantTestCase(APITestCase):
         self.grant.user = self.organization1.owner
         self.grant.save()
 
-        self.url = reverse("organization-detail", args=[self.grant.id])
-
     def test_get_single_organization_not_allowed(self):
         self.client.force_authenticate(user=self.organization1.owner)
         url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
