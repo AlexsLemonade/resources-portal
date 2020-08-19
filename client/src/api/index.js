@@ -72,9 +72,26 @@ export default {
         method: 'POST',
         body: { token }
       }),
-    login: async (authCode, originUrl, loginAttributes) => {
+    login: async (authCode, originUrl) => {
       const tokenRequest = await userAuthenticate({
-        ...loginAttributes,
+        origin_url: originUrl,
+        code: authCode
+      })
+
+      if (!tokenRequest.isOk) {
+        return [tokenRequest]
+      }
+
+      const userRequest = await userGetInfo(
+        tokenRequest.response.user_id,
+        tokenRequest.response.token
+      )
+
+      return [tokenRequest, userRequest]
+    },
+    create: async (authCode, originUrl, accountCreationAttributes) => {
+      const tokenRequest = await userAuthenticate({
+        ...accountCreationAttributes,
         origin_url: originUrl,
         code: authCode
       })

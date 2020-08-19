@@ -1,3 +1,5 @@
+from json import loads
+
 from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import viewsets
@@ -100,12 +102,22 @@ class AuthViewSet(viewsets.ViewSet):
             org = Organization.objects.create(owner=user)
             user.personal_organization = org
 
-            grant_ids = request.GET.getlist("grant_id")
+            grant_json = loads(request.GET["json"])
 
-            for grant_id in grant_ids:
-                grant_query_set = Grant.objects.filter(pk=grant_id)
-                if grant_query_set.exists():
-                    user.grants.add(grant_query_set.first())
+            for grant_info in grant_json:
+                if not grant_info["title"]:
+                    logger.error(
+                        f"Attribute 'title' not found in provided json for user grant creation: {grant_info}"
+                    )
+                if not grant_info["funder_id"]:
+                    logger.error(
+                        f"Attribute 'funder_id' not found in provided json for user grant creation: {grant_info}"
+                    )
+
+                grant = Grant.objects.create(
+                    title=grant_info["title"], funder_id=grant_info["funder_id"], user=user
+                )
+                user.grants.add(grant)
 
             user.save()
 

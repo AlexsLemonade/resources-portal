@@ -21,7 +21,12 @@ export const SignInModalContent = () => {
       </Box>
       <Box margin={{ top: 'large', bottom: 'small' }} height="240px">
         <AccountCreationInfo
-          button={<ORCIDSignInButton label="Create or Connect ORCID iD" />}
+          button={(
+            <ORCIDSignInButton
+              label="Create or Connect ORCID iD"
+              redirectUrl={process.env.CLIENT_HOST}
+            />
+          )}
         />
       </Box>
       <Box

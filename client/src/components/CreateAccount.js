@@ -1,8 +1,8 @@
-import { Anchor, Box, Button, Text } from 'grommet'
+import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import * as React from 'react'
-import ORCIDLogo from '../images/grant.svg'
+import { ORCIDSignInButton } from './Modal'
 
-export const CreateAccountStep = ({ ORCID }) => {
+export const CreateAccountStep = ({ ORCID, redirectUrl }) => {
   return (
     <Box>
       <Text>
@@ -22,7 +22,10 @@ export const CreateAccountStep = ({ ORCID }) => {
       >
         <Text>Our records show that your ORCID iD is {ORCID}</Text>
         <Box align="center" pad="medium" gap="large">
-          <Button label="Sign in with ORCID iD" icon={<ORCIDLogo />} primary />
+          <ORCIDSignInButton
+            label="Sign in with ORCID iD"
+            redirectUrl={redirectUrl}
+          />
         </Box>
       </Box>
       <Box margin={{ bottom: 'large' }}>
@@ -41,6 +44,22 @@ export const CreateAccountStep = ({ ORCID }) => {
         />
       </Box>
     </Box>
+  )
+}
+
+export const EnterEmailStep = ({ setLocalEmail }) => {
+  const [email, setEmail] = React.useState('')
+  const onClick = () => {
+    setLocalEmail(email)
+  }
+  return (
+    <>
+      <TextInput
+        placeholder="Enter email"
+        onChange={(event) => setEmail(event.target.value)}
+      />
+      <Button label="Submit" onClick={onClick} />
+    </>
   )
 }
 
