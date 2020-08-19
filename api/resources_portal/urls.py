@@ -12,6 +12,7 @@ from resources_portal.views import (
     AddressViewSet,
     AttachmentViewSet,
     AuthViewSet,
+    FulfillmentNoteViewSet,
     GrantMaterialViewSet,
     GrantViewSet,
     ImportViewSet,
@@ -80,6 +81,12 @@ router.register(r"material-requests", MaterialRequestViewSet, basename="material
     r"issues",
     MaterialRequestIssueViewSet,
     basename="material-requests-issues",
+    parents_query_lookups=["material_request"],
+)
+router.register(r"material-requests", MaterialRequestViewSet, basename="material-request").register(
+    r"fulfillment-notes",
+    FulfillmentNoteViewSet,
+    basename="material-requests-notes",
     parents_query_lookups=["material_request"],
 )
 

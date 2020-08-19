@@ -181,6 +181,15 @@ class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):
     material_request = factory.SubFactory(MaterialRequestFactory)
 
 
+class FulfillmentNoteFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.FulfillmentNote"
+
+    created_by = factory.SubFactory(UserFactory)
+    material_request = factory.SubFactory(MaterialRequestFactory)
+    text = "Your tracking code is 123XYZ."
+
+
 class LeafGrantFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Grant"
