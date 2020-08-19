@@ -80,7 +80,7 @@ class MaterialRequest(SafeDeleteModel):
             return False
 
         if self.status == "APPROVED":
-            return not self.requires_action_requester()
+            return not self.requires_action_requester
         else:
             return True
 
