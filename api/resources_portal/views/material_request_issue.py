@@ -62,26 +62,6 @@ class IsRequesterOrIsInOrg(BasePermission):
         )
 
 
-# def send_material_request_issue_notif(notif_type, issue, notified_user):
-#     notification = Notification(
-#         notification_type=notif_type,
-#         notified_user=notified_user,
-#         associated_user=issue.assigned_to,
-#         associated_material=issue.request.material,
-#         associated_organization=issue.request.material.organization,
-#     )
-#     notification.save()
-
-
-# def send_transfer_update_notif(status, request):
-#     if status == "OPENED":
-#         send_material_request_issue_notif("REQUEST_ISSUE_OPENED", request, request.requester)
-#     elif status == "CLOSED":
-#         send_material_request_issue_notif("REQUEST_ISSUE_CLOSED", request, request.requester)
-#     else:
-#         return
-
-
 class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
     # No delete, these just get closed.
     http_method_names = ["get", "list", "post", "put", "patch", "head", "options"]
@@ -100,8 +80,6 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
             return MaterialRequestIssue.objects.filter(
                 material_request_id__in=viewable_requests.values("id")
             )
-            # viewable_requests = requests_made_by_user.union(requests_viewable_by_user)
-            # return MaterialRequestIssue.objects.filter(material_request__in=viewable_requests)
         else:
             return MaterialRequestIssue.objects.all()
 
@@ -127,8 +105,6 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
-        # TODO: Generate a notification
-
         serializer = MaterialRequestIssueSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 

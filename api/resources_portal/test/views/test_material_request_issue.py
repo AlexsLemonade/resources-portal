@@ -112,7 +112,7 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         self.request.save()
         self.client.force_authenticate(user=None)
         response = self.client.post(self.url, self.request_issue_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)
@@ -129,7 +129,7 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class TestSingleMaterialRequestIssueTestCase(APITestCase):
@@ -177,7 +177,7 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
@@ -258,7 +258,7 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.request_issue_data["status"] = "CLOSED"
 
         response = self.client.put(self.url, self.request_issue_data)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_fails(self):
         self.client.force_authenticate(user=self.user)
