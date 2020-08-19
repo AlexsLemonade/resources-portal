@@ -76,8 +76,13 @@ class MaterialRequest(SafeDeleteModel):
 
     @property
     def requires_action_sharer(self):
-        # Coming next!
-        return True
+        if not self.is_active:
+            return False
+
+        if self.status == "APPROVED":
+            return not self.requires_action_requester()
+        else:
+            return True
 
     @property
     def requires_action_requester(self):
@@ -90,12 +95,6 @@ class MaterialRequest(SafeDeleteModel):
             and self.requester_signed_mta_attachment is None
         )
         return missing_irb or missing_mta
-
-    # Sharer:
-    # requires actions
-    # you are sharer you are assigned request and not awaiting additional documents
-    # Requester:
-    # when status is awaiting additional documents
 
     @property
     def has_issues(self):
