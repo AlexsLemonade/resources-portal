@@ -53,7 +53,7 @@ class SearchMaterialsEndpointTestCase(APITestCase):
 
     def test_filter_on_organization_retrieves_all_organization_materials(self):
         # Archive one material to make sure it goes to the bottom of the list.
-        archived_material = Material.objects.get(id=1)
+        archived_material = Material.objects.first()
         archived_material.is_archived = True
         archived_material.save()
 

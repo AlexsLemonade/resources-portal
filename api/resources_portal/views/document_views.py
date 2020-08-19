@@ -228,7 +228,6 @@ class MaterialDocumentView(DocumentViewSet):
     # Define search fields
     search_fields = {
         "title": {"boost": 10},
-        "is_archived": None,
         "category": None,
         "contact_user": None,
         "additional_metadata": None,
