@@ -63,13 +63,38 @@ class MaterialRequest(SafeDeleteModel):
         help_text="Attachment containing the MTA after it has been signed by all parties.",
     )
 
-    is_active = models.BooleanField(default=True)
-
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")
 
     assigned_to = models.ForeignKey(
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
+
+    @property
+    def is_active(self):
+        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT"]
+
+    @property
+    def requires_action_sharer(self):
+        # Coming next!
+        return True
+
+    @property
+    def requires_action_requester(self):
+        if self.status != "APPROVED":
+            return False
+
+        missing_irb = self.material.needs_irb and self.irb_attachment is None
+        missing_mta = (
+            self.material.mta_attachment is not None
+            and self.requester_signed_mta_attachment is None
+        )
+        return missing_irb or missing_mta
+
+    # Sharer:
+    # requires actions
+    # you are sharer you are assigned request and not awaiting additional documents
+    # Requester:
+    # when status is awaiting additional documents
 
     def save(self, *args, **kwargs):
         if self.assigned_to is None:
