@@ -38,7 +38,7 @@ Content-Type application/json
    "irb_attachment":"None",
    "executed_mta_attachment":"None",
    "is_active":true,
-   "status":"PENDING",
+   "status":"OPEN",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
 }
 ```
@@ -70,7 +70,7 @@ Content-Type application/json
    "irb_attachment":14,
    "executed_mta_attachment":13,
    "is_active":true,
-   "status":"PENDING",
+   "status":"OPEN",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
 }
 ```
@@ -100,7 +100,7 @@ Content-Type application/json
       "irb_attachment":14,
       "executed_mta_attachment":13,
       "is_active":true,
-      "status":"PENDING",
+      "status":"OPEN",
       "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
       }
 ]
@@ -145,7 +145,7 @@ Content-Type application/json
    "irb_attachment":14,
    "executed_mta_attachment":13,
    "is_active":True,
-   "status":"PENDING",
+   "status":"OPEN",
    "assigned_to":"f75bd715-e188-4c4e-80a3-623793770730"
 }
 ```
