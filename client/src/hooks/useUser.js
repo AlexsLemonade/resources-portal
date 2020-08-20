@@ -40,6 +40,8 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
   }
   return {
     user,
+    setUser,
+    setToken,
     token,
     isLoggedIn,
     refreshUserData,

@@ -1,5 +1,6 @@
 import { Box, Button, Heading } from 'grommet'
 import React from 'react'
+import api from '../../api'
 import {
   CreateAccountStep,
   EnterEmailStep,
@@ -8,38 +9,92 @@ import {
 } from '../../components/CreateAccount'
 import { ProgressBar } from '../../components/ProgressBar'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useUser } from '../../hooks/useUser'
 
-const getStepContent = ({ step, ORCID, setEmail, redirectUrl }) => {
+const getStepContent = ({ step, ORCID, grantInfo, setEmail, increment }) => {
   const stepDict = {
-    'Create Account': (
-      <CreateAccountStep
-        ORCID={ORCID}
-        redirectUrl={decodeURI(
-          `${process.env.CLIENT_HOST}${redirectUrl}&stepNum=1`
-        )}
-      />
-    ),
+    'Create Account': <CreateAccountStep ORCID={ORCID} />,
     'Enter Email': <EnterEmailStep setLocalEmail={setEmail} />,
-    'Verify Grant Information': <VerifyGrantStep />,
+    'Verify Grant Information': (
+      <VerifyGrantStep grantInfo={grantInfo} increment={increment} />
+    ),
     'Next Steps': <NextStepsStep />
   }
   return stepDict[step]
 }
 
-const CreateAccountPage = ({
-  stepNum = 0,
+const CreateAccount = ({
+  stepNum,
   ORCID,
   email,
-  grants,
-  redirectUrl
+  grantInfo,
+  code,
+  originUrl
 }) => {
-  const [currentIndex, setCurrentIndex] = React.useState(stepNum)
+  const [currentIndex, setCurrentIndex] = React.useState(0)
   const decrement = () => setCurrentIndex(Math.max(0, currentIndex - 1))
   const increment = () =>
     setCurrentIndex(Math.min(steps.length - 1, currentIndex + 1))
-
   const [storedEmail, setStoredEmail] = useLocalStorage('email', email)
-  const [storedGrants, setStoredGrants] = useLocalStorage('grants', grants)
+  const [storedGrants, setStoredGrants] = useLocalStorage(
+    'grantInfo',
+    grantInfo
+  )
+
+  React.useEffect(() => {
+    // Once you have redirected past the first step, subsequent renders
+    // don't redirect to the step in the url.
+    if (stepNum && currentIndex === 0) {
+      setCurrentIndex(stepNum, 10)
+    }
+
+    if (email) {
+      setStoredEmail(email)
+    }
+
+    if (grantInfo) {
+      setStoredGrants(grantInfo)
+    }
+  })
+
+  const { setUser, setToken, setLoginRedirectUrl } = useUser()
+
+  React.useEffect(() => {
+    const callCreateUser = async () => {
+      if (code) {
+        const [tokenRequest, userRequest] = await api.user.create({
+          code,
+          originUrl,
+          email,
+          grantInfo
+        })
+
+        if (!tokenRequest.isOk) {
+          console.log('error', tokenRequest)
+          return {}
+        }
+
+        const { token } = tokenRequest.response
+        const redirectUrl = originUrl
+
+        if (!userRequest.isOk) {
+          console.log('errror', userRequest)
+          return {}
+        }
+
+        const authenticatedUser = userRequest.response
+
+        return { authenticatedUser, token, redirectUrl }
+      }
+      return {}
+    }
+
+    const { authenticatedUser, token, redirectUrl } = callCreateUser()
+
+    setUser(authenticatedUser)
+    setToken(token)
+    setLoginRedirectUrl(redirectUrl)
+  })
 
   let steps = []
 
@@ -52,18 +107,6 @@ const CreateAccountPage = ({
   }
   steps.push('Next Steps')
 
-  const stepContent = []
-  let i = 0
-  for (const step of steps) {
-    stepContent.push(
-      <Box key={step}>
-        {currentIndex === i &&
-          getStepContent({ step, ORCID, setStoredEmail, redirectUrl })}
-      </Box>
-    )
-    i += 1
-  }
-
   return (
     <Box width={{ min: '500px', max: '800px' }}>
       <Heading serif border="none" level="4">
@@ -74,27 +117,23 @@ const CreateAccountPage = ({
           <ProgressBar steps={steps} index={currentIndex} />
         </Box>
       </Box>
-      {stepContent}
+      {steps.map((step, i) => (
+        <Box key={step}>
+          {currentIndex === i &&
+            getStepContent({
+              step,
+              ORCID,
+              grantInfo: storedGrants,
+              setStoredEmail,
+              increment
+            })}
+        </Box>
+      ))}
       <Button onClick={increment} />
       <Button onClick={decrement} />
     </Box>
   )
 }
-
-const CreateAccount = ({ stepNum, code, email, grants, redirectUrl }) => (
-  <div className="container">
-    <main>
-      <CreateAccountPage
-        ORCID="XXXX-XXXX-XXXX"
-        stepNum={stepNum}
-        code={code}
-        email={email}
-        grants={grants}
-        redirectUrl={redirectUrl}
-      />
-    </main>
-  </div>
-)
 
 CreateAccount.getInitialProps = async ({ req, query }) => {
   let queryJSON = {}
@@ -105,11 +144,12 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
 
   const initialProps = {}
 
-  initialProps.code = query.code
-  initialProps.stepNum = query.stepNum
+  initialProps.ORCID = query.ORCID
+  initialProps.stepNum = parseInt(query.stepNum, 10)
   initialProps.email = queryJSON.email
-  initialProps.grants = queryJSON.grant_info
-  initialProps.redirectUrl = req.url
+  initialProps.grantInfo = queryJSON.grant_info
+  initialProps.originUrl = decodeURI(`http://${req.headers.host}${req.url}`)
+  initialProps.code = query.code
 
   return initialProps
 }

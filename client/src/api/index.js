@@ -89,9 +89,10 @@ export default {
 
       return [tokenRequest, userRequest]
     },
-    create: async (authCode, originUrl, accountCreationAttributes) => {
+    create: async (authCode, originUrl, email, grantInfo) => {
       const tokenRequest = await userAuthenticate({
-        ...accountCreationAttributes,
+        email,
+        grantInfo,
         origin_url: originUrl,
         code: authCode
       })
@@ -99,13 +100,7 @@ export default {
       if (!tokenRequest.isOk) {
         return [tokenRequest]
       }
-
-      const userRequest = await userGetInfo(
-        tokenRequest.response.user_id,
-        tokenRequest.response.token
-      )
-
-      return [tokenRequest, userRequest]
+      return {}
     }
   }
 }

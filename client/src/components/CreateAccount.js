@@ -1,8 +1,9 @@
 import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import * as React from 'react'
+import GrantIcon from '../images/grant.svg'
 import { ORCIDSignInButton } from './Modal'
 
-export const CreateAccountStep = ({ ORCID, redirectUrl }) => {
+export const CreateAccountStep = ({ ORCID }) => {
   return (
     <Box>
       <Text>
@@ -17,14 +18,18 @@ export const CreateAccountStep = ({ ORCID, redirectUrl }) => {
         align="center"
         width="large"
         alignSelf="center"
-        margin={{ top: 'large' }}
+        margin={{ top: 'small' }}
         border={[{ size: 'small', side: 'bottom', color: 'black-tint-95' }]}
       >
-        <Text>Our records show that your ORCID iD is {ORCID}</Text>
-        <Box align="center" pad="medium" gap="large">
+        <Box>
+          {ORCID && (
+            <Text>Our records show that your ORCID iD is {ORCID}.</Text>
+          )}
+        </Box>
+        <Box align="center" pad="medium" gap="medium">
           <ORCIDSignInButton
             label="Sign in with ORCID iD"
-            redirectUrl={redirectUrl}
+            redirectUrl={`${process.env.CLIENT_HOST}/create-account?stepNum=1`}
           />
         </Box>
       </Box>
@@ -63,10 +68,44 @@ export const EnterEmailStep = ({ setLocalEmail }) => {
   )
 }
 
-export const VerifyGrantStep = () => {
+export const VerifyGrantStep = ({ grantInfo, increment }) => {
   return (
-    <Box>
-      <Text>TODO Verify grant step goes here.</Text>
+    <Box gap="medium">
+      <Text weight="bold">Your account has been created!</Text>
+      <Text>
+        Please take a moment to verify the grants you have recieved from Alex's
+        Lemonade Stand Foundation.
+      </Text>
+      <Text margin={{ top: 'small' }} weight="bold">
+        Grants Recieved
+      </Text>
+      <Box gap="medium">
+        {grantInfo.map((grant) => (
+          <Box key={grant.funder_id} direction="row" align="center">
+            <Box pad="small">
+              <GrantIcon />
+            </Box>
+            <Box direction="column">
+              <Text>{grant.title}</Text>
+              <Text size="small">Grant ID: {grant.funder_id}</Text>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+      <Box
+        direction="row"
+        gap="medium"
+        basis="3/4"
+        alignSelf="end"
+        margin={{ top: 'medium' }}
+      >
+        <Button label="Report missing/incorrect information" />
+        <Button
+          label="This information is correct"
+          onClick={increment}
+          primary
+        />
+      </Box>
     </Box>
   )
 }
