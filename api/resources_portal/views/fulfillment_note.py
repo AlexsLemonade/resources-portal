@@ -41,6 +41,17 @@ class IsSharer(BasePermission):
         return request.user in organization.members.all()
 
 
+class IsRequesterOrSharer(BasePermission):
+    def has_object_permission(self, request, view, obj):
+        material_request = MaterialRequest.objects.get(
+            pk=view.kwargs["parent_lookup_material_request"]
+        )
+        return (
+            request.user == material_request.requester
+            or request.user in material_request.material.organization.members.all()
+        )
+
+
 class FulfillmentNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = FulfillmentNote.objects.all().order_by("-created_at")
 
@@ -53,6 +64,8 @@ class FulfillmentNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "list":
             permission_classes = [IsAdminUser]
+        elif self.action == "retrieve":
+            permission_classes = [IsAuthenticated, IsRequesterOrSharer]
         else:
             permission_classes = [IsAuthenticated, IsSharer]
 
