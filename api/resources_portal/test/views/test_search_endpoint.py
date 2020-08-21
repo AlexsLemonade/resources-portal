@@ -59,7 +59,12 @@ class SearchMaterialsEndpointTestCase(APITestCase):
 
         self.client.force_authenticate(user=self.primary_prof)
 
-        search_url = reverse("search-materials-list") + "?organization=" + self.primary_lab.name
+        search_url = (
+            reverse("search-materials-list")
+            + "?organization="
+            + self.primary_lab.name
+            + "&limit=25"
+        )
 
         response = self.client.get(search_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
