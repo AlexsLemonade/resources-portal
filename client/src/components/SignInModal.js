@@ -21,12 +21,15 @@ export const SignInModalContent = () => {
       </Box>
       <Box margin={{ top: 'large', bottom: 'small' }} height="240px">
         <AccountCreationInfo
-          button={(
+          button={
+            // prettier and eslint disagree on what should be done
+            // about this line, so I had to disable one of them.
+            // eslint-disable-next-line react/jsx-wrap-multilines
             <ORCIDSignInButton
               label="Create or Connect ORCID iD"
               redirectUrl={process.env.CLIENT_HOST}
             />
-          )}
+          }
         />
       </Box>
       <Box

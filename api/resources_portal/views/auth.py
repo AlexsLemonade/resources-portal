@@ -102,22 +102,23 @@ class AuthViewSet(viewsets.ViewSet):
             org = Organization.objects.create(owner=user)
             user.personal_organization = org
 
-            grant_json = loads(request.GET["json"])
+            if request.GET.get("json"):
+                grant_json = loads(request.GET.get("json"))
 
-            for grant_info in grant_json:
-                if not grant_info["title"]:
-                    logger.error(
-                        f"Attribute 'title' not found in provided json for user grant creation: {grant_info}"
-                    )
-                if not grant_info["funder_id"]:
-                    logger.error(
-                        f"Attribute 'funder_id' not found in provided json for user grant creation: {grant_info}"
-                    )
+                for grant_info in grant_json:
+                    if not grant_info["title"]:
+                        logger.error(
+                            f"Attribute 'title' not found in provided json for user grant creation: {grant_info}"
+                        )
+                    if not grant_info["funder_id"]:
+                        logger.error(
+                            f"Attribute 'funder_id' not found in provided json for user grant creation: {grant_info}"
+                        )
 
-                grant = Grant.objects.create(
-                    title=grant_info["title"], funder_id=grant_info["funder_id"], user=user
-                )
-                user.grants.add(grant)
+                    grant = Grant.objects.create(
+                        title=grant_info["title"], funder_id=grant_info["funder_id"], user=user
+                    )
+                    user.grants.add(grant)
 
             user.save()
 
