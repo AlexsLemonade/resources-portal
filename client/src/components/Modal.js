@@ -55,7 +55,7 @@ export const ORCIDSignInButton = ({ label, redirectUrl }) => {
 
   const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${
     process.env.ORCID_CLIENT_ID
-  }&response_type=code&scope=/authenticate&redirect_uri=${encodeURI(
+  }&response_type=code&scope=/authenticate&redirect_uri=${decodeURI(
     redirectUrl
   )}`
 

@@ -1,111 +1,37 @@
 import { Box, Button, Heading } from 'grommet'
 import React from 'react'
-import api from '../../api'
-import {
-  CreateAccountStep,
-  EnterEmailStep,
-  NextStepsStep,
-  VerifyGrantStep
-} from '../../components/CreateAccount'
 import { ProgressBar } from '../../components/ProgressBar'
+import { useCreateUser } from '../../hooks/useCreateUser'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useUser } from '../../hooks/useUser'
 
-const getStepContent = ({ step, ORCID, grantInfo, setEmail, increment }) => {
-  const stepDict = {
-    'Create Account': <CreateAccountStep ORCID={ORCID} />,
-    'Enter Email': <EnterEmailStep setLocalEmail={setEmail} />,
-    'Verify Grant Information': (
-      <VerifyGrantStep grantInfo={grantInfo} increment={increment} />
-    ),
-    'Next Steps': <NextStepsStep />
-  }
-  return stepDict[step]
-}
-
-const CreateAccount = ({
-  stepNum,
-  ORCID,
-  email,
-  grantInfo,
-  code,
-  originUrl
-}) => {
-  const [currentIndex, setCurrentIndex] = React.useState(0)
-  const decrement = () => setCurrentIndex(Math.max(0, currentIndex - 1))
-  const increment = () =>
-    setCurrentIndex(Math.min(steps.length - 1, currentIndex + 1))
-  const [storedEmail, setStoredEmail] = useLocalStorage('email', email)
-  const [storedGrants, setStoredGrants] = useLocalStorage(
-    'grantInfo',
-    grantInfo
+const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
+  const createUser = useCreateUser(email, grants, ORCID)
+  const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState()
+  const [stepsAlreadyGenerated, setStepsAlreadyGenerated] = useLocalStorage(
+    'stepsAlreadyGenerated',
+    false
   )
 
+  const { user } = useUser()
+
   React.useEffect(() => {
-    // Once you have redirected past the first step, subsequent renders
-    // don't redirect to the step in the url.
-    if (stepNum && currentIndex === 0) {
-      setCurrentIndex(stepNum, 10)
-    }
-
-    if (email) {
-      setStoredEmail(email)
-    }
-
-    if (grantInfo) {
-      setStoredGrants(grantInfo)
+    if (code && !user) {
+      createUser.createAndLoginUser(code, originUrl)
     }
   })
 
-  const { setUser, setToken, setLoginRedirectUrl } = useUser()
-
-  React.useEffect(() => {
-    const callCreateUser = async () => {
-      if (code) {
-        const [tokenRequest, userRequest] = await api.user.create({
-          code,
-          originUrl,
-          email,
-          grantInfo
-        })
-
-        if (!tokenRequest.isOk) {
-          console.log('error', tokenRequest)
-          return {}
-        }
-
-        const { token } = tokenRequest.response
-        const redirectUrl = originUrl
-
-        if (!userRequest.isOk) {
-          console.log('errror', userRequest)
-          return {}
-        }
-
-        const authenticatedUser = userRequest.response
-
-        return { authenticatedUser, token, redirectUrl }
-      }
-      return {}
-    }
-
-    const { authenticatedUser, token, redirectUrl } = callCreateUser()
-
-    setUser(authenticatedUser)
-    setToken(token)
-    setLoginRedirectUrl(redirectUrl)
-  })
-
-  let steps = []
-
-  steps = ['Create Account']
-  if (!storedEmail) {
-    steps.push('Enter Email')
+  if (!stepsAlreadyGenerated) {
+    createUser.generateSteps()
+    setStepsAlreadyGenerated(true)
   }
-  if (storedGrants) {
-    steps.push('Verify Grant Information')
+
+  console.log('initialsteps: ', createUser.steps)
+
+  if (stepName && !redirectAlreadyFired) {
+    createUser.setCurrentStep(stepName)
+    setRedirectAlreadyFired(true)
   }
-  steps.push('Next Steps')
 
   return (
     <Box width={{ min: '500px', max: '800px' }}>
@@ -114,23 +40,20 @@ const CreateAccount = ({
       </Heading>
       <Box width={{ min: '400px', max: '700px' }}>
         <Box pad="medium">
-          <ProgressBar steps={steps} index={currentIndex} />
+          <ProgressBar
+            steps={createUser.steps}
+            index={createUser.getStepIndex()}
+          />
         </Box>
       </Box>
-      {steps.map((step, i) => (
+      {createUser.steps.map((step) => (
         <Box key={step}>
-          {currentIndex === i &&
-            getStepContent({
-              step,
-              ORCID,
-              grantInfo: storedGrants,
-              setStoredEmail,
-              increment
-            })}
+          {createUser.currentStep === step &&
+            createUser.getStepComponent(step, createUser)}
         </Box>
       ))}
-      <Button onClick={increment} />
-      <Button onClick={decrement} />
+      <Button onClick={createUser.stepBack} />
+      <Button onClick={createUser.stepForward} />
     </Box>
   )
 }
@@ -145,11 +68,11 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
   const initialProps = {}
 
   initialProps.ORCID = query.ORCID
-  initialProps.stepNum = parseInt(query.stepNum, 10)
   initialProps.email = queryJSON.email
-  initialProps.grantInfo = queryJSON.grant_info
-  initialProps.originUrl = decodeURI(`http://${req.headers.host}${req.url}`)
+  initialProps.grants = queryJSON.grant_info
   initialProps.code = query.code
+  initialProps.originUrl = decodeURI(`http://${req.headers.host}${req.url}`)
+  initialProps.stepName = query.stepName
 
   return initialProps
 }

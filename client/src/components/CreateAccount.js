@@ -3,7 +3,7 @@ import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
 import { ORCIDSignInButton } from './Modal'
 
-export const CreateAccountStep = ({ ORCID }) => {
+export const CreateAccountStep = ({ ORCID, nextStep }) => {
   return (
     <Box>
       <Text>
@@ -29,7 +29,7 @@ export const CreateAccountStep = ({ ORCID }) => {
         <Box align="center" pad="medium" gap="medium">
           <ORCIDSignInButton
             label="Sign in with ORCID iD"
-            redirectUrl={`${process.env.CLIENT_HOST}/create-account?stepNum=1`}
+            redirectUrl={`${process.env.CLIENT_HOST}/create-account?stepName=${nextStep}`}
           />
         </Box>
       </Box>
@@ -52,23 +52,36 @@ export const CreateAccountStep = ({ ORCID }) => {
   )
 }
 
-export const EnterEmailStep = ({ setLocalEmail }) => {
-  const [email, setEmail] = React.useState('')
-  const onClick = () => {
-    setLocalEmail(email)
+export const EnterEmailStep = ({ createUser }) => {
+  console.log('*******************', createUser)
+  const onChange = (email) => {
+    createUser.setEmail(email, true)
+    createUser.save()
   }
+  const onClick = () => {
+    createUser.setCurrentStep('Create Account')
+  }
+  console.log(createUser.validEmail())
   return (
     <>
       <TextInput
         placeholder="Enter email"
-        onChange={(event) => setEmail(event.target.value)}
+        onChange={(event) => onChange(event.target.value)}
+        value={createUser.createUser.email}
+        type="email"
       />
-      <Button label="Submit" onClick={onClick} />
+      <Button
+        label="Submit"
+        onChange={onChange}
+        disabled={!createUser.validEmail()}
+        onClick={onClick}
+      />
     </>
   )
 }
 
-export const VerifyGrantStep = ({ grantInfo, increment }) => {
+export const VerifyGrantStep = ({ createUser }) => {
+  console.log(createUser.createUser.grants)
   return (
     <Box gap="medium">
       <Text weight="bold">Your account has been created!</Text>
@@ -80,7 +93,7 @@ export const VerifyGrantStep = ({ grantInfo, increment }) => {
         Grants Recieved
       </Text>
       <Box gap="medium">
-        {grantInfo.map((grant) => (
+        {createUser.createUser.grants.map((grant) => (
           <Box key={grant.funder_id} direction="row" align="center">
             <Box pad="small">
               <GrantIcon />
@@ -102,7 +115,7 @@ export const VerifyGrantStep = ({ grantInfo, increment }) => {
         <Button label="Report missing/incorrect information" />
         <Button
           label="This information is correct"
-          onClick={increment}
+          onClick={createUser.stepForward}
           primary
         />
       </Box>

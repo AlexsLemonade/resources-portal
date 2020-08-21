@@ -36,6 +36,7 @@ class AuthViewSet(viewsets.ViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         if "code" not in request.GET:
+            print("code")
             return JsonResponse(
                 {
                     "error": f"Code parameter was not found in the URL: {request.build_absolute_uri()}"
@@ -43,6 +44,7 @@ class AuthViewSet(viewsets.ViewSet):
                 status=400,
             )
         elif "origin_url" not in request.GET:
+            print("origin_url")
             return JsonResponse(
                 {
                     "error": f"Origin URL parameter was not found in the URL: {request.build_absolute_uri()}"
@@ -72,6 +74,7 @@ class AuthViewSet(viewsets.ViewSet):
         # Create user if neccessary
         if not user:
             if "email" not in request.GET:
+                print("email")
                 return JsonResponse(
                     {
                         "error": "There is no user associated with the given URL and no 'email' parameter was provided to create one."
