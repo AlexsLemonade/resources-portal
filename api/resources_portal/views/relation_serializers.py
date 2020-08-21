@@ -11,6 +11,7 @@ from rest_framework import serializers
 from resources_portal.models import (
     Address,
     Attachment,
+    FulfillmentNote,
     Grant,
     Material,
     MaterialRequest,
@@ -207,5 +208,17 @@ class AddressRelationSerializer(serializers.ModelSerializer):
             "country",
             "created_at",
             "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+
+class FulfillmentNoteRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FulfillmentNote
+        fields = (
+            "id",
+            "created_by",
+            "material_request",
+            "text",
         )
         read_only_fields = ("id", "created_at", "updated_at")
