@@ -64,8 +64,6 @@ export const useCreateUser = (email, grants, ORCID) => {
     }
   }
 
-  console.log('email : ', createUser.email)
-
   const callCreateUser = async (code, originUrl, loginEmail, loginGrants) => {
     const [tokenRequest, userRequest] = await api.user.create(
       code,
@@ -95,7 +93,6 @@ export const useCreateUser = (email, grants, ORCID) => {
   const createAndLoginUser = (code, originUrl) => {
     callCreateUser(code, originUrl, createUser.email, createUser.grants).then(
       ({ authenticatedUser, token, redirectUrl }) => {
-        console.log(authenticatedUser)
         if (authenticatedUser && authenticatedUser.id) {
           setUser(authenticatedUser)
         }
@@ -110,22 +107,26 @@ export const useCreateUser = (email, grants, ORCID) => {
   }
 
   const generateSteps = () => {
-    // Generate initial steps
-    const stepsArray = []
-    if (!createUser.email || createUser.needsEmail) {
-      stepsArray.push('Enter Email')
-    }
-    stepsArray.push('Create Account')
-    if (createUser.grants) {
-      stepsArray.push('Verify Grant Information')
-    }
-    stepsArray.push('Next Steps')
+    React.useEffect(() => {
+      // Generate initial steps
+      const stepsArray = []
+      if (!createUser.email || createUser.needsEmail) {
+        stepsArray.push('Enter Email')
+      }
+      stepsArray.push('Create Account')
+      if (createUser.grants) {
+        stepsArray.push('Verify Grant Information')
+      }
+      stepsArray.push('Next Steps')
 
-    if (steps.length === 0) {
-      setSteps(stepsArray)
-    }
+      if (steps.length === 0) {
+        setSteps(stepsArray)
+      }
 
-    setCurrentStep(stepsArray[0])
+      if (currentStep === '') {
+        setCurrentStep(stepsArray[0])
+      }
+    })
   }
 
   const setEmail = (newEmail, needsEmail) => {
@@ -147,10 +148,6 @@ export const useCreateUser = (email, grants, ORCID) => {
     return true
   }
 
-  const getStepIndex = () => {
-    return steps.indexOf(currentStep)
-  }
-
   const getStepComponent = (step, instance) => {
     return getStepDict(instance)[step]
   }
@@ -162,7 +159,6 @@ export const useCreateUser = (email, grants, ORCID) => {
     currentStep,
     setCurrentStep,
     generateSteps,
-    getStepIndex,
     createAndLoginUser,
     stepForward,
     stepBack,

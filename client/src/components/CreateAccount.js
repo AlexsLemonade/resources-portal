@@ -53,7 +53,6 @@ export const CreateAccountStep = ({ ORCID, nextStep }) => {
 }
 
 export const EnterEmailStep = ({ createUser }) => {
-  console.log('*******************', createUser)
   const onChange = (email) => {
     createUser.setEmail(email, true)
     createUser.save()
@@ -61,7 +60,6 @@ export const EnterEmailStep = ({ createUser }) => {
   const onClick = () => {
     createUser.setCurrentStep('Create Account')
   }
-  console.log(createUser.validEmail())
   return (
     <>
       <TextInput

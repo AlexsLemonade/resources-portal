@@ -2,16 +2,11 @@ import { Box, Button, Heading } from 'grommet'
 import React from 'react'
 import { ProgressBar } from '../../components/ProgressBar'
 import { useCreateUser } from '../../hooks/useCreateUser'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useUser } from '../../hooks/useUser'
 
 const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
   const createUser = useCreateUser(email, grants, ORCID)
-  const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState()
-  const [stepsAlreadyGenerated, setStepsAlreadyGenerated] = useLocalStorage(
-    'stepsAlreadyGenerated',
-    false
-  )
+  const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
 
   const { user } = useUser()
 
@@ -21,12 +16,7 @@ const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
     }
   })
 
-  if (!stepsAlreadyGenerated) {
-    createUser.generateSteps()
-    setStepsAlreadyGenerated(true)
-  }
-
-  console.log('initialsteps: ', createUser.steps)
+  createUser.generateSteps()
 
   if (stepName && !redirectAlreadyFired) {
     createUser.setCurrentStep(stepName)
@@ -42,7 +32,7 @@ const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
         <Box pad="medium">
           <ProgressBar
             steps={createUser.steps}
-            index={createUser.getStepIndex()}
+            index={createUser.steps.indexOf(createUser.currentStep)}
           />
         </Box>
       </Box>
