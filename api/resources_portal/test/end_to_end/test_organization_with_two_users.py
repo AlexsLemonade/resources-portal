@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
-from resources_portal.test.factories import GrantFactory
 from resources_portal.test.utils import (
     MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
