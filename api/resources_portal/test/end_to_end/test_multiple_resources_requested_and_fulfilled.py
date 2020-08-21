@@ -17,6 +17,7 @@ from resources_portal.models import (
     User,
 )
 from resources_portal.test.utils import (
+    clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -46,6 +47,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
     def setUp(self):
         populate_dev_database()
+        clean_test_file_uploads()
 
         # Put newly created materials in the search index
         call_command("search_index", "-f", "--rebuild")

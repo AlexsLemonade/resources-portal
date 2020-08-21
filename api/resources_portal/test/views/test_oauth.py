@@ -4,9 +4,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import User
-from resources_portal.test.factories import GrantFactory, UserFactory
+from resources_portal.test.factories import UserFactory
 from resources_portal.test.utils import (
     MOCK_EMAIL,
+    MOCK_GRANTS,
     ORCID_AUTHORIZATION_DICT,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
@@ -20,10 +21,7 @@ class TestOAuthUserCreation(APITestCase):
     """
 
     def setUp(self):
-        self.grant1 = GrantFactory()
-        self.grant2 = GrantFactory()
-
-        self.url = get_mock_oauth_url([self.grant1, self.grant2])
+        self.url = get_mock_oauth_url(MOCK_GRANTS)
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
@@ -36,8 +34,7 @@ class TestOAuthUserCreation(APITestCase):
 
         self.assertEqual(user.email, MOCK_EMAIL)
 
-        self.assertTrue(self.grant1 in user.grants.all())
-        self.assertTrue(self.grant2 in user.grants.all())
+        self.assertEqual(len(user.grants.all()), 2)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

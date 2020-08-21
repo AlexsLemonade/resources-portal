@@ -105,7 +105,7 @@ class AuthViewSet(viewsets.ViewSet):
             if request.GET.get("json"):
                 grant_json = loads(request.GET.get("json"))
 
-                for grant_info in grant_json:
+                for grant_info in grant_json["grant_info"]:
                     if not grant_info["title"]:
                         logger.error(
                             f"Attribute 'title' not found in provided json for user grant creation: {grant_info}"

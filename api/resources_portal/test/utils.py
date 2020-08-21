@@ -1,6 +1,7 @@
 import os
 import shutil
 import uuid
+from json import dumps
 
 from django.conf import settings
 from django.urls import reverse
@@ -12,6 +13,7 @@ fake = Faker()
 MOCK_AUTHORIZATION_CODE = "mock"
 MOCK_EMAIL = fake.email()
 MOCK_ORIGIN_URL = "http://an-origin-url"
+MOCK_GRANTS = [{"title": "Grant1", "funder_id": "12345"}, {"title": "Grant2", "funder_id": "56789"}]
 
 first_name = fake.first_name()
 last_name = fake.last_name()
@@ -54,7 +56,7 @@ def generate_mock_orcid_record_response(*args, **kwargs):
     return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
 
 
-def get_mock_oauth_url(grants):
+def get_mock_oauth_url(grant_info):
     base_url = reverse("auth")
     url = (
         f"{base_url}"
@@ -63,8 +65,11 @@ def get_mock_oauth_url(grants):
         f"&origin_url={MOCK_ORIGIN_URL}"
     )
 
-    for grant in grants:
-        url += f"&grant_id={grant.id}"
+    query_object = {"grant_info": grant_info}
+    query_json = dumps(query_object)
+
+    if grant_info:
+        url += f"&json={str(query_json)}"
 
     return url
 

@@ -65,7 +65,7 @@ export const EnterEmailStep = ({ createUser }) => {
       <TextInput
         placeholder="Enter email"
         onChange={(event) => onChange(event.target.value)}
-        value={createUser.createUser.email}
+        value={createUser.createUser.email || ''}
         type="email"
       />
       <Button

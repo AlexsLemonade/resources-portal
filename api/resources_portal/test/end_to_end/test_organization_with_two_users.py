@@ -8,6 +8,7 @@ from rest_framework.test import APITestCase
 from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
 from resources_portal.test.factories import GrantFactory
 from resources_portal.test.utils import (
+    MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
     get_mock_oauth_url,
@@ -33,8 +34,6 @@ class TestOrganizationWithTwoUsers(APITestCase):
     """
 
     def setUp(self):
-        self.grant = GrantFactory()
-
         material_data = loads(open("./dev_data/materials.json").read())
         self.material_json = material_data["materials"][0]
 
@@ -42,7 +41,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
-        response = self.client.get(get_mock_oauth_url([self.grant]))
+        response = self.client.get(get_mock_oauth_url([MOCK_GRANTS[0]]))
         prof = User.objects.get(pk=response.json()["user_id"])
 
         # Create account Postdoc
