@@ -69,7 +69,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         invitation_json = {
             "organization": lab.id,
-            "request_reciever": prof.id,
+            "request_receiver": prof.id,
             "requester": post_doc.id,
             "invite_or_request": "INVITE",
         }

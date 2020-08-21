@@ -25,7 +25,7 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
             "status",
             "invite_or_request",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
         read_only_fields = (
@@ -33,7 +33,7 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
 
@@ -41,6 +41,8 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     queryset = OrganizationInvitation.objects.all()
     serializer_class = OrganizationInvitationSerializer
+
+    http_method_names = ["post", "options"]
 
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
@@ -50,14 +52,19 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
                 user=invitation.requester, organization=invitation.organization
             )
 
-        notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
+        # This is the logic we'll want for the invitation flow, but
+        # for now just notify the invitation receiver.
+        # notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
+        # if invitation.invite_or_request == "INVITE":
+        #     notified_user = invitation.request_receiver
+        #     associated_user = invitation.requester
+        # else:
+        #     notified_user = invitation.requester
+        #     associated_user = invitation.request_receiver
 
-        if invitation.invite_or_request == "INVITE":
-            notified_user = invitation.request_reciever
-            associated_user = invitation.requester
-        else:
-            notified_user = invitation.requester
-            associated_user = invitation.request_reciever
+        notification_type = "ADDED_TO_ORG"
+        notified_user = invitation.request_receiver
+        associated_user = invitation.requester
 
         notification = Notification(
             notification_type=notification_type,
@@ -73,15 +80,15 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
         serializer = OrganizationInvitationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        request_reciever = serializer.validated_data["request_reciever"]
+        request_receiver = serializer.validated_data["request_receiver"]
         organization = serializer.validated_data["organization"]
         invite_or_request = serializer.validated_data["invite_or_request"]
 
-        if invite_or_request == "INVITE" and not request_reciever.has_perm(
+        if invite_or_request == "INVITE" and not request_receiver.has_perm(
             "add_members", organization
         ):
             return Response(
-                data={"detail": f"{request_reciever} does not have permission to add members"},
+                data={"detail": f"{request_receiver} does not have permission to add members"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
@@ -89,68 +96,82 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
             notification = Notification(
                 notification_type="ORG_INVITE_CREATED",
                 notified_user=request.user,
-                associated_user=request_reciever,
+                associated_user=request_receiver,
                 associated_organization=organization,
             )
             notification.save()
         else:
             notification = Notification(
                 notification_type="ORG_REQUEST_CREATED",
-                notified_user=request_reciever,
+                notified_user=request_receiver,
                 associated_user=request.user,
                 associated_organization=organization,
             )
             notification.save()
 
-        return super(OrganizationInvitationViewSet, self).create(request, *args, **kwargs)
+        # Facilitate adding without confirmation by making the
+        # invitation accepted automatically.
+        request.data["status"] = "ACCEPTED"
 
-    def update(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-        invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
+        response = super(OrganizationInvitationViewSet, self).create(request, *args, **kwargs)
 
-        requester_accepting = (
-            request.user == invitation.requester and invitation.invite_or_request == "INVITE"
-        )
-        request_reciever_approving = (
-            request.user == invitation.request_reciever
-            and invitation.invite_or_request == "REQUEST"
-        )
+        # questionable
+        invitation = OrganizationInvitation.objects.get(id=response.data["id"])
 
-        if not (requester_accepting or request_reciever_approving):
-            return Response(
-                data={
-                    "detail": f"The current user, {request.user}, is not the correct user to handle invitation id {invitation.id}"
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
+        self.update_organizations(request.data["status"], invitation)
 
-        if not invitation.status == "PENDING":
-            return Response(
-                data={
-                    "detail": f"Invitation id {invitation.id} has already been resolved with a status of {invitation.status}"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        return response
 
-        new_status = request.data["status"]
-        response_status = super(OrganizationInvitationViewSet, self).update(
-            request, *args, **kwargs
-        )
-        self.update_organizations(new_status, invitation)
-        return response_status
+    # For now, we don't need to update or destroy because we allow users to
+    # be added to organizatons without confirmation.
 
-    def destroy(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    # def update(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return Response(status=status.HTTP_401_UNAUTHORIZED)
+    #     invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
 
-        invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
-        if not request.user == invitation.requester:
-            return Response(
-                data={
-                    "detail": f"The current user, {request.user}, is not the requester of invitation id {invitation.id}"
-                },
-                status=status.HTTP_403_FORBIDDEN,
-            )
+    #     requester_accepting = (
+    #         request.user == invitation.requester and invitation.invite_or_request == "INVITE"
+    #     )
+    #     request_receiver_approving = (
+    #         request.user == invitation.request_receiver
+    #         and invitation.invite_or_request == "REQUEST"
+    #     )
 
-        return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kwargs)
+    #     if not (requester_accepting or request_receiver_approving):
+    #         return Response(
+    #             data={
+    #                 "detail": f"The current user, {request.user}, is not the correct user to handle invitation id {invitation.id}"
+    #             },
+    #             status=status.HTTP_403_FORBIDDEN,
+    #         )
+
+    #     if not invitation.status == "PENDING":
+    #         return Response(
+    #             data={
+    #                 "detail": f"Invitation id {invitation.id} has already been resolved with a status of {invitation.status}"
+    #             },
+    #             status=status.HTTP_400_BAD_REQUEST,
+    #         )
+
+    #     new_status = request.data["status"]
+    #     response_status = super(OrganizationInvitationViewSet, self).update(
+    #         request, *args, **kwargs
+    #     )
+    #     self.update_organizations(new_status, invitation)
+    #     return response_status
+
+    # def destroy(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+    #     invitation = OrganizationInvitation.objects.get(pk=kwargs["pk"])
+    #     if not request.user == invitation.requester:
+    #         return Response(
+    #             data={
+    #                 "detail": f"The current user, {request.user}, is not the requester of invitation id {invitation.id}"
+    #             },
+    #             status=status.HTTP_403_FORBIDDEN,
+    #         )
+
+    #     return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kwargs)

@@ -24,6 +24,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         ordering = ["created_at", "id"]
 
     NOTIFICATION_TYPES = (
+        ("ADDED_TO_ORG", "ADDED_TO_ORG"),
         ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
         ("ORG_INVITE_CREATED", "ORG_INVITE_CREATED"),
         ("ORG_INVITE_ACCEPTED", "ORG_INVITE_ACCEPTED"),
@@ -80,6 +81,8 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         # This dict of lambdas is neccessary because not all notifications have a material or organization,
         # so evaluating them all as a dict results in a NoneType error.
         alert_messages = {
+            "ADDED_TO_ORG": lambda: f"{self.associated_user.username} has added you to the organization  "
+            f"{self.associated_organization.name}.",
             "ORG_REQUEST_CREATED": lambda: f"{self.associated_user.username} is requesting to join "
             f"{self.associated_organization.name}.",
             "ORG_INVITE_CREATED": lambda: f"{self.associated_user.username} has invited you to join "

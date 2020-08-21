@@ -34,7 +34,7 @@ class OrganizationInvitation(SafeDeleteModel):
     requester = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="invitations"
     )
-    request_reciever = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
+    request_receiver = models.ForeignKey(User, blank=False, null=False, on_delete=models.CASCADE)
     organization = models.ForeignKey(
         Organization, blank=False, null=False, on_delete=models.CASCADE
     )
