@@ -31,6 +31,8 @@ class UserRelationSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "email",
+            "full_name",
             "created_at",
             "updated_at",
         )
