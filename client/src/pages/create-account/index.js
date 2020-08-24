@@ -46,7 +46,7 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
 
   return {
     ORCID: query.ORCID,
-    email: queryJSON.email,
+    email: query.email,
     grants: queryJSON.grant_info,
     code: query.code,
     originUrl: decodeURI(`http://${req.headers.host}${req.url}`),
