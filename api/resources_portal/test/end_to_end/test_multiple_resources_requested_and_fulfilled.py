@@ -20,7 +20,7 @@ from resources_portal.test.utils import (
     clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_oauth_url,
+    get_mock_auth_data,
 )
 
 
@@ -73,7 +73,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self, mock_auth_request, mock_record_request
     ):
         # Create account (Requester)
-        response = self.client.get(get_mock_oauth_url([]))
+        response = self.client.post(reverse("auth"), get_mock_auth_data([]))
         requester = User.objects.get(pk=response.json()["user_id"])
 
         # Search resources

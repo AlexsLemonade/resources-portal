@@ -10,11 +10,43 @@ import {
 import { useLocalStorage } from './useLocalStorage'
 import { useUser } from './useUser'
 
-export const useCreateUser = (email, grants, ORCID) => {
+export const useCreateUser = (
+  email,
+  grants,
+  ORCID,
+  queryCode,
+  initialRedirectUrl
+) => {
   const [createUser, setCreateUser] = useLocalStorage('createUser', {})
   const [currentStep, setCurrentStep] = useLocalStorage('currentStep', '')
   const [steps, setSteps] = useLocalStorage('steps', [])
   const { user, setUser, setToken, setLoginRedirectUrl } = useUser()
+
+  React.useEffect(() => {
+    // If ORCID has returned the auth code to this page, sign the user in
+    if (queryCode && !user) {
+      createAndLoginUser(queryCode, initialRedirectUrl)
+    }
+
+    // Generate initial steps
+    const stepsArray = []
+    if (!createUser.email || createUser.needsEmail) {
+      stepsArray.push('Enter Email')
+    }
+    stepsArray.push('Create Account')
+    if (createUser.grants) {
+      stepsArray.push('Verify Grant Information')
+    }
+    stepsArray.push('Next Steps')
+
+    if (steps.length === 0) {
+      setSteps(stepsArray)
+    }
+
+    if (currentStep === '') {
+      setCurrentStep(stepsArray[0])
+    }
+  })
 
   const save = () => {
     setCreateUser({ ...createUser })
@@ -72,7 +104,7 @@ export const useCreateUser = (email, grants, ORCID) => {
       JSON.stringify(loginGrants)
     )
 
-    if (!tokenRequest.isOk) {
+    if (!tokenRequest.status === 200) {
       console.log('error', tokenRequest)
       return { error: tokenRequest }
     }
@@ -80,7 +112,7 @@ export const useCreateUser = (email, grants, ORCID) => {
     const { token } = tokenRequest.response
     const redirectUrl = originUrl
 
-    if (!userRequest.isOk) {
+    if (!userRequest.status === 200) {
       console.log('error', userRequest)
       return { error: userRequest }
     }
@@ -104,29 +136,6 @@ export const useCreateUser = (email, grants, ORCID) => {
         }
       }
     )
-  }
-
-  const generateSteps = () => {
-    React.useEffect(() => {
-      // Generate initial steps
-      const stepsArray = []
-      if (!createUser.email || createUser.needsEmail) {
-        stepsArray.push('Enter Email')
-      }
-      stepsArray.push('Create Account')
-      if (createUser.grants) {
-        stepsArray.push('Verify Grant Information')
-      }
-      stepsArray.push('Next Steps')
-
-      if (steps.length === 0) {
-        setSteps(stepsArray)
-      }
-
-      if (currentStep === '') {
-        setCurrentStep(stepsArray[0])
-      }
-    })
   }
 
   const setEmail = (newEmail, needsEmail) => {
@@ -158,7 +167,6 @@ export const useCreateUser = (email, grants, ORCID) => {
     steps,
     currentStep,
     setCurrentStep,
-    generateSteps,
     createAndLoginUser,
     stepForward,
     stepBack,

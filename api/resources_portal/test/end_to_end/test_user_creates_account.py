@@ -12,7 +12,7 @@ from resources_portal.test.utils import (
     MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_oauth_url,
+    get_mock_auth_data,
 )
 
 
@@ -29,7 +29,7 @@ class TestUserCreatesAccount(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_create_account_and_list_resource(self, mock_auth_request, mock_record_request):
         # Create user with ORCID
-        response = self.client.get(get_mock_oauth_url(MOCK_GRANTS))
+        response = self.client.post(reverse("auth"), get_mock_auth_data(MOCK_GRANTS))
 
         # Get user, sign in
         user = User.objects.get(pk=response.json()["user_id"])

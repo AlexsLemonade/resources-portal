@@ -10,7 +10,7 @@ from resources_portal.test.utils import (
     clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_oauth_url,
+    get_mock_auth_data,
 )
 
 
@@ -55,7 +55,7 @@ class TestNewMemberJoinsALab(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
         # Create account (NewMember)
-        response = self.client.get(get_mock_oauth_url([]))
+        response = self.client.post(reverse("auth"), get_mock_auth_data([]))
 
         new_member = User.objects.get(pk=response.json()["user_id"])
 

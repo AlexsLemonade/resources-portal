@@ -2,21 +2,10 @@ import { Box, Button, Heading } from 'grommet'
 import React from 'react'
 import { ProgressBar } from '../../components/ProgressBar'
 import { useCreateUser } from '../../hooks/useCreateUser'
-import { useUser } from '../../hooks/useUser'
 
 const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
-  const createUser = useCreateUser(email, grants, ORCID)
+  const createUser = useCreateUser(email, grants, ORCID, code, originUrl)
   const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
-
-  const { user } = useUser()
-
-  React.useEffect(() => {
-    if (code && !user) {
-      createUser.createAndLoginUser(code, originUrl)
-    }
-  })
-
-  createUser.generateSteps()
 
   if (stepName && !redirectAlreadyFired) {
     createUser.setCurrentStep(stepName)
@@ -55,16 +44,14 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
     queryJSON = JSON.parse(query.json)
   }
 
-  const initialProps = {}
-
-  initialProps.ORCID = query.ORCID
-  initialProps.email = queryJSON.email
-  initialProps.grants = queryJSON.grant_info
-  initialProps.code = query.code
-  initialProps.originUrl = decodeURI(`http://${req.headers.host}${req.url}`)
-  initialProps.stepName = query.stepName
-
-  return initialProps
+  return {
+    ORCID: query.ORCID,
+    email: queryJSON.email,
+    grants: queryJSON.grant_info,
+    code: query.code,
+    originUrl: decodeURI(`http://${req.headers.host}${req.url}`),
+    stepName: query.stepName
+  }
 }
 
 export default CreateAccount

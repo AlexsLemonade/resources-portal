@@ -10,7 +10,7 @@ from resources_portal.test.utils import (
     MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_oauth_url,
+    get_mock_auth_data,
 )
 
 
@@ -40,11 +40,11 @@ class TestOrganizationWithTwoUsers(APITestCase):
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
-        response = self.client.get(get_mock_oauth_url([MOCK_GRANTS[0]]))
+        response = self.client.post(reverse("auth"), get_mock_auth_data([MOCK_GRANTS[0]]))
         prof = User.objects.get(pk=response.json()["user_id"])
 
         # Create account Postdoc
-        self.client.get(get_mock_oauth_url([]))
+        response = self.client.post(reverse("auth"), get_mock_auth_data([]))
         post_doc = User.objects.get(pk=response.json()["user_id"])
 
         # Prof creates organization Lab with grant id

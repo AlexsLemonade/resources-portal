@@ -15,7 +15,6 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
   const router = useRouter()
   React.useEffect(() => {
     if (defaultUser && defaultToken) {
-      // Component cannot update other component may be coming from here
       setUser(defaultUser)
       setToken(defaultToken)
       if (loginRedirectUrl) {
@@ -31,7 +30,7 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
       response: { token: refreshToken, userId }
     } = await api.user.refreshToken(token)
     setToken(refreshToken)
-    const { response: refreshUser } = await api.user.getInfo(userId)
+    const { response: refreshUser } = await api.user.getInfo(userId, token)
     setUser(refreshUser)
   }
   const logOut = () => {

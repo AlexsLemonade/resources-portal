@@ -56,22 +56,16 @@ def generate_mock_orcid_record_response(*args, **kwargs):
     return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
 
 
-def get_mock_oauth_url(grant_info):
-    base_url = reverse("auth")
-    url = (
-        f"{base_url}"
-        f"?code={MOCK_AUTHORIZATION_CODE}"
-        f"&email={MOCK_EMAIL}"
-        f"&origin_url={MOCK_ORIGIN_URL}"
-    )
-
-    query_object = {"grant_info": grant_info}
-    query_json = dumps(query_object)
+def get_mock_auth_data(grant_info):
+    """
+    Takes a list of grant info, in the form [{"title": "Title 1", "funder_id": "12345"}...]
+    """
+    data = {"code": MOCK_AUTHORIZATION_CODE, "email": MOCK_EMAIL, "origin_url": MOCK_ORIGIN_URL}
 
     if grant_info:
-        url += f"&json={str(query_json)}"
+        data["grant_info"] = grant_info
 
-    return url
+    return data
 
 
 def clean_test_file_uploads():

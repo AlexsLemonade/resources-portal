@@ -52,7 +52,11 @@ const request = async (
 
 export const loginUser = () => {}
 
-export const userAuthenticate = (query) => request(getAPIURL('auth/', query))
+export const userAuthenticate = (data) =>
+  request(getAPIURL('auth/'), {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 
 export const userGetInfo = (userId, authorization) =>
   request(`${getAPIURL(`users/${userId}`)}`, { authorization })

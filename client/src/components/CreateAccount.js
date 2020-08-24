@@ -79,7 +79,6 @@ export const EnterEmailStep = ({ createUser }) => {
 }
 
 export const VerifyGrantStep = ({ createUser }) => {
-  console.log(createUser.createUser.grants)
   return (
     <Box gap="medium">
       <Text weight="bold">Your account has been created!</Text>
