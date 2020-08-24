@@ -109,7 +109,7 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
-urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"get": "retrieve"}), name="auth"))
+urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"post": "create"}), name="auth"))
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(
