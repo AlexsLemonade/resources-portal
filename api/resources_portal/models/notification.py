@@ -128,6 +128,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
 
 # This enumerates the types of notifications so users can silence the types they don't want.
 NOTIFICATION_SETTING_DICT = {
+    "ADDED_TO_ORG": "change_in_request_status_notif",
     "ORG_REQUEST_CREATED": "request_assigned_notif",
     "ORG_INVITE_CREATED": "new_request_notif",
     "ORG_INVITE_ACCEPTED": "change_in_request_status_notif",
