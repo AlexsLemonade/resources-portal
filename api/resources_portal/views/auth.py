@@ -1,5 +1,3 @@
-from json import loads
-
 from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import viewsets

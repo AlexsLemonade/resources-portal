@@ -1,10 +1,8 @@
 import os
 import shutil
 import uuid
-from json import dumps
 
 from django.conf import settings
-from django.urls import reverse
 
 from faker import Faker
 
