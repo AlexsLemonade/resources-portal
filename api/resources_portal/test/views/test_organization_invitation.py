@@ -44,6 +44,8 @@ class OrganizationInvitationListTestCase(APITestCase):
             1,
         )
 
+        self.assertIn(self.invitation.request_receiver, self.invitation.organization.members.all())
+
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
             "add_members", self.invitation.request_receiver, self.invitation.organization,

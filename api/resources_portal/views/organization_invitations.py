@@ -46,29 +46,28 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     def update_organizations(self, new_status, invitation):
         if new_status == "ACCEPTED":
-            invitation.organization.members.add(invitation.requester)
-            invitation.organization.assign_member_perms(invitation.requester)
+            if invitation.invite_or_request == "INVITE":
+                new_member = invitation.request_receiver
+                associated_user = invitation.requester
+            else:
+                new_member = invitation.requester
+                associated_user = invitation.request_receiver
+
+            invitation.organization.members.add(new_member)
+            invitation.organization.assign_member_perms(new_member)
             OrganizationUserSetting.objects.get_or_create(
-                user=invitation.requester, organization=invitation.organization
+                user=new_member, organization=invitation.organization
             )
 
         # This is the logic we'll want for the invitation flow, but
-        # for now just notify the invitation receiver.
+        # for now they're always being added.
         # notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
-        # if invitation.invite_or_request == "INVITE":
-        #     notified_user = invitation.request_receiver
-        #     associated_user = invitation.requester
-        # else:
-        #     notified_user = invitation.requester
-        #     associated_user = invitation.request_receiver
 
         notification_type = "ADDED_TO_ORG"
-        notified_user = invitation.request_receiver
-        associated_user = invitation.requester
 
         notification = Notification(
             notification_type=notification_type,
-            notified_user=notified_user,
+            notified_user=new_member,
             associated_user=associated_user,
             associated_organization=invitation.organization,
         )
