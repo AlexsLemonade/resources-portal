@@ -44,28 +44,28 @@
       "organization_id": "4",
       "status": "PENDING",
       "invite_or_request": "INVITE",
-      "request_reciever_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
+      "request_receiver_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
       "requester_id": "10000000-0f5a-4165-b518-b2386a753d6f"
     },
     {
       "organization_id": "3",
       "status": "ACCEPTED",
       "invite_or_request": "INVITE",
-      "request_reciever_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "request_receiver_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "requester_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     },
     {
       "organization_id": "1",
       "status": "REJECTED",
       "invite_or_request": "INVITE",
-      "request_reciever_id": "10000000-0f5a-4165-b518-b2386a753d6f",
+      "request_receiver_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "requester_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     },
     {
       "organization_id": "1",
       "status": "INVALID",
       "invite_or_request": "INVITE",
-      "request_reciever_id": "20000000-a55d-42b7-b53e-056956e18b8c",
+      "request_receiver_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "requester_id": "30000000-231f-4dc8-bbfa-02bccfb0372c"
     }
   ]

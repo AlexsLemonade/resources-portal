@@ -6,8 +6,8 @@ from faker import Faker
 
 from resources_portal.models import OrganizationUserSetting
 from resources_portal.test.factories import (
-    OrganizationInvitationFactory,
     OrganizationUserSettingFactory,
+    PersonalOrganizationFactory,
     UserFactory,
 )
 
@@ -20,16 +20,14 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
     """
 
     def setUp(self):
-        self.settings = OrganizationUserSettingFactory()
-        self.user = self.settings.user
+        self.user = UserFactory()
+        self.user.personal_organization = PersonalOrganizationFactory(owner=self.user)
+        self.settings = OrganizationUserSettingFactory(
+            user=self.user, organization=self.user.personal_organization
+        )
         self.organization = self.settings.organization
         self.url = reverse("organization-user-setting-detail", args=[self.settings.id])
         self.different_user = UserFactory()
-
-        self.invitation = OrganizationInvitationFactory(
-            requester=self.different_user, organization=self.organization
-        )
-        self.invitation_url = reverse("invitation-detail", args=[self.invitation.id])
 
     def test_get_request_returns_a_users_settings(self):
         self.client.force_authenticate(user=self.user)
@@ -85,14 +83,19 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_new_member_added_to_organization_creates_settings(self):
-        self.client.force_authenticate(user=self.invitation.requester)
-        invitation_json = self.client.get(self.invitation_url).json()
-        invitation_json["status"] = "ACCEPTED"
-        self.client.put(self.invitation_url, invitation_json)
+        self.client.force_authenticate(user=self.user)
+        invitation_json = {
+            "status": "ACCEPTED",
+            "invite_or_request": "INVITE",
+            "requester": self.user.id,
+            "request_receiver": self.different_user.id,
+            "organization": self.organization.id,
+        }
+        self.client.post(reverse("invitation-list"), invitation_json, format="json")
 
         self.assertTrue(
             OrganizationUserSetting.objects.filter(
-                user=self.different_user, organization=self.invitation.organization
+                user=self.different_user, organization=self.organization
             ).exists()
         )
 

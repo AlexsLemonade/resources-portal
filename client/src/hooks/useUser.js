@@ -15,7 +15,6 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
   const router = useRouter()
   React.useEffect(() => {
     if (defaultUser && defaultToken) {
-      // Component cannot update other component may be coming from here
       setUser(defaultUser)
       setToken(defaultToken)
       if (loginRedirectUrl) {
@@ -26,13 +25,20 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
   })
   const isLoggedIn = Boolean(user && token)
   const refreshUserData = async () => {
-    // Check that the responses are ok here. Otherwise we could end in a bad state
     const {
-      response: { token: refreshToken, userId }
+      response: { token: refreshToken, userId, isOk: tokenIsOk }
     } = await api.user.refreshToken(token)
-    setToken(refreshToken)
-    const { response: refreshUser } = await api.user.getInfo(userId)
-    setUser(refreshUser)
+    if (tokenIsOk) {
+      setToken(refreshToken)
+    }
+
+    const { response: refreshUser, isOk: userIsOk } = await api.user.getInfo(
+      userId,
+      token
+    )
+    if (userIsOk) {
+      setUser(refreshUser)
+    }
   }
   const logOut = () => {
     setUser()
@@ -40,6 +46,8 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
   }
   return {
     user,
+    setUser,
+    setToken,
     token,
     isLoggedIn,
     refreshUserData,

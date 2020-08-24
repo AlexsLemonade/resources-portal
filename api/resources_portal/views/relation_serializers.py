@@ -31,6 +31,8 @@ class UserRelationSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "email",
+            "full_name",
             "created_at",
             "updated_at",
         )
@@ -178,7 +180,7 @@ class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
             "status",
             "invite_or_request",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
         read_only_fields = (
@@ -186,7 +188,7 @@ class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
 

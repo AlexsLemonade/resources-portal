@@ -2,7 +2,7 @@
 Supports viewing and updating user settings.
 
 ## Description
-User settings determine what notifications a user will recieve. They can toggle each of a number of categories of notifications on or off.
+User settings determine what notifications a user will receive. They can toggle each of a number of categories of notifications on or off.
 
 ## Get information on a user's settings:
 
@@ -45,11 +45,11 @@ Parameters:
 
 Name                             | Type | Description
 ---------------------------------|------|---
-new_request_notif                | bool | Specifies whether the user will recieve notifications of new requests from the assocoiated organization.
-change_in_request_status_notif   | bool | Specifies whether the user will recieve notifications of changes in requests from the assocoiated organization.
-request_approval_determined_notif| bool | Specifies whether the user will recieve notifications when requests are approved/denied.
-request_assigned_notif           | bool | Specifies whether the user will recieve notifications when a new request is assigned to them.
-reminder_notif                   | bool | Specifies whether the user will recieve notifications reminding them of outstanding requirements.
+new_request_notif                | bool | Specifies whether the user will receive notifications of new requests from the assocoiated organization.
+change_in_request_status_notif   | bool | Specifies whether the user will receive notifications of changes in requests from the assocoiated organization.
+request_approval_determined_notif| bool | Specifies whether the user will receive notifications when requests are approved/denied.
+request_assigned_notif           | bool | Specifies whether the user will receive notifications when a new request is assigned to them.
+reminder_notif                   | bool | Specifies whether the user will receive notifications reminding them of outstanding requirements.
 
 *Note:*
 
