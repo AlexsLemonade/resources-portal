@@ -64,32 +64,35 @@ class TestNewMemberJoinsALab(APITestCase):
 
         invitation_json = {
             "organization": self.primary_lab.id,
-            "request_reciever": self.primary_prof.id,
-            "requester": new_member.id,
+            "request_receiver": new_member.id,
+            "requester": self.primary_prof.id,
             "invite_or_request": "INVITE",
         }
 
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        invitation_id = response.data["id"]
-
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+            len(Notification.objects.filter(notification_type="ADDED_TO_ORG")),
+            1
+            # Once we re-enable invitation acceptances this will need to change back.
+            # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
         )
 
-        # NewMember accepts the invitation to join PrimaryLab
-        self.client.force_authenticate(user=new_member)
+        # We currently allow adding to orgs without acceptance.
+        # # NewMember accepts the invitation to join PrimaryLab
+        # self.client.force_authenticate(user=new_member)
 
-        response = self.client.patch(
-            reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
-        )
+        # invitation_id = response.data["id"]
+        # response = self.client.patch(
+        #     reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
+        # )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
-        )
+        # self.assertEqual(
+        #     len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+        # )
 
         # PostDoc is removed from PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
@@ -193,4 +196,4 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 6)
+        self.assertEqual(len(Notification.objects.all()), 5)

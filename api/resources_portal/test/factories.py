@@ -117,7 +117,7 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.OrganizationInvitation"
 
     requester = factory.SubFactory(UserFactory)
-    request_reciever = factory.SubFactory(UserFactory)
+    request_receiver = factory.SubFactory(UserFactory)
     organization = factory.SubFactory(OrganizationFactory)
 
     status = "PENDING"
@@ -125,12 +125,12 @@ class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
 
     @post_generation
     def post(self, create, extracted, **kwargs):
-        request_reciever = User.objects.get(id=self.request_reciever.id)
+        requester = User.objects.get(id=self.requester.id)
         newOrg = Organization.objects.get(id=self.organization.id)
 
-        OrganizationUserSetting.objects.get_or_create(user=request_reciever, organization=newOrg)
+        OrganizationUserSetting.objects.get_or_create(user=requester, organization=newOrg)
 
-        assign_perm("add_members", request_reciever, newOrg)
+        assign_perm("add_members", requester, newOrg)
 
 
 class OrganizationUserSettingFactory(factory.django.DjangoModelFactory):
