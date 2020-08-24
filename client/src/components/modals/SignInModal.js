@@ -1,11 +1,11 @@
 import { Box, Heading } from 'grommet'
 import * as React from 'react'
+import { Modal } from '../Modal'
 import {
   AccountCreationInfo,
-  Modal,
   ORCIDDescription,
   ORCIDSignInButton
-} from './Modal'
+} from './CommonModalContent'
 
 export const SignInModalContent = () => {
   return (
@@ -21,7 +21,15 @@ export const SignInModalContent = () => {
       </Box>
       <Box margin={{ top: 'large', bottom: 'small' }} height="240px">
         <AccountCreationInfo
-          button={<ORCIDSignInButton label="Create or Connect ORCID iD" />}
+          button={
+            // prettier and eslint disagree on what should be done
+            // about this line, so I had to disable one of them.
+            // eslint-disable-next-line react/jsx-wrap-multilines
+            <ORCIDSignInButton
+              label="Create or Connect ORCID iD"
+              redirectUrl={process.env.CLIENT_HOST}
+            />
+          }
         />
       </Box>
       <Box
@@ -37,11 +45,9 @@ export const SignInModalContent = () => {
 
 export const SignInModal = ({ showing, setShowing }) => {
   return (
-    <Modal
-      showing={showing}
-      setShowing={setShowing}
-      content={<SignInModalContent />}
-    />
+    <Modal showing={showing} setShowing={setShowing}>
+      <SignInModalContent />
+    </Modal>
   )
 }
 
