@@ -60,32 +60,35 @@ class TransferOfResource(APITestCase):
 
         invitation_json = {
             "organization": self.primary_lab.id,
-            "request_receiver": self.primary_prof.id,
-            "requester": self.post_doc.id,
+            "request_receiver": self.post_doc.id,
+            "requester": self.primary_prof.id,
             "invite_or_request": "INVITE",
         }
 
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        invitation_id = response.data["id"]
-
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+            len(Notification.objects.filter(notification_type="ADDED_TO_ORG")),
+            1
+            # Once we re-enable invitation acceptances this will need to change back.
+            # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
         )
 
-        # The Postdoc accepts the invitation
-        self.client.force_authenticate(user=self.post_doc)
+        # We currently allow adding to orgs without acceptance.
+        # # The Postdoc accepts the invitation
+        # self.client.force_authenticate(user=self.post_doc)
 
-        response = self.client.patch(
-            reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
-        )
+        # invitation_id = response.data["id"]
+        # response = self.client.patch(
+        #     reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
+        # )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
-        )
+        # self.assertEqual(
+        #     len(Notification.objects.filter(notification_type="ORG_INVITE_ACCEPTED")), 1
+        # )
 
         # The PostDoc transfers the resource to PrimaryLab
         self.client.force_authenticate(user=self.post_doc)
@@ -101,4 +104,4 @@ class TransferOfResource(APITestCase):
         self.assertEqual(material.organization, self.primary_lab)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 2)
+        self.assertEqual(len(Notification.objects.all()), 1)

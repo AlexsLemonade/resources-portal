@@ -77,34 +77,39 @@ class TestOrganizationWithTwoUsers(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        invitation_id = response.data["id"]
-
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="ORG_INVITE_CREATED", email=post_doc.email
+                    notification_type="ADDED_TO_ORG",
+                    email=post_doc.email
+                    # Once we re-enable invitation acceptances this
+                    # will need to change back.
+                    # notification_type="ORG_INVITE_CREATED",
+                    # email=post_doc.email
                 )
             ),
             1,
         )
 
-        # Postdoc accepts invitation to join Lab
-        self.client.force_authenticate(user=post_doc)
+        # We currently allow adding to orgs without acceptance.
+        # # Postdoc accepts invitation to join Lab
+        # self.client.force_authenticate(user=post_doc)
 
-        response = self.client.patch(
-            reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
-        )
+        # invitation_id = response.data["id"]
+        # response = self.client.patch(
+        #     reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
+        # )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_INVITE_ACCEPTED", email=prof.email
-                )
-            ),
-            1,
-        )
+        # self.assertEqual(
+        #     len(
+        #         Notification.objects.filter(
+        #             notification_type="ORG_INVITE_ACCEPTED", email=prof.email
+        #         )
+        #     ),
+        #     1,
+        # )
 
         # Prof lists resource under Lab
         self.client.force_authenticate(user=prof)
@@ -140,4 +145,4 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 2)
+        self.assertEqual(len(Notification.objects.all()), 1)

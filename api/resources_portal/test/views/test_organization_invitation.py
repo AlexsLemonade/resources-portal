@@ -48,7 +48,7 @@ class OrganizationInvitationListTestCase(APITestCase):
 
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
-            "add_members", self.invitation.request_receiver, self.invitation.organization,
+            "add_members", self.invitation.requester, self.invitation.organization,
         )
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

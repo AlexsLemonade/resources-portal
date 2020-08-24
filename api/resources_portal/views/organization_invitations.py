@@ -79,34 +79,33 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
         serializer = OrganizationInvitationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        request_receiver = serializer.validated_data["request_receiver"]
+        requester = serializer.validated_data["requester"]
         organization = serializer.validated_data["organization"]
         invite_or_request = serializer.validated_data["invite_or_request"]
 
-        if invite_or_request == "INVITE" and not request_receiver.has_perm(
-            "add_members", organization
-        ):
+        if invite_or_request == "INVITE" and not requester.has_perm("add_members", organization):
             return Response(
-                data={"detail": f"{request_receiver} does not have permission to add members"},
+                data={"detail": f"{requester} does not have permission to add members"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        if request.data["invite_or_request"] == "INVITE":
-            notification = Notification(
-                notification_type="ORG_INVITE_CREATED",
-                notified_user=request.user,
-                associated_user=request_receiver,
-                associated_organization=organization,
-            )
-            notification.save()
-        else:
-            notification = Notification(
-                notification_type="ORG_REQUEST_CREATED",
-                notified_user=request_receiver,
-                associated_user=request.user,
-                associated_organization=organization,
-            )
-            notification.save()
+        # For now invitations are auto-accepted so we don't need these notifications.
+        # if request.data["invite_or_request"] == "INVITE":
+        #     notification = Notification(
+        #         notification_type="ORG_INVITE_CREATED",
+        #         notified_user=request.user,
+        #         associated_user=request_receiver,
+        #         associated_organization=organization,
+        #     )
+        #     notification.save()
+        # else:
+        #     notification = Notification(
+        #         notification_type="ORG_REQUEST_CREATED",
+        #         notified_user=request_receiver,
+        #         associated_user=request.user,
+        #         associated_organization=organization,
+        #     )
+        #     notification.save()
 
         # Facilitate adding without confirmation by making the
         # invitation accepted automatically.
