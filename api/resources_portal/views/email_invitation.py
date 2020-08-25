@@ -37,7 +37,6 @@ def email_invitation_view(request):
     )
     if settings.AWS_SES_DOMAIN:
         cta = "Create an account"
-        # TODO: Is this correct? Is there a special page to send them to?
         invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
         formatted_html = (
             EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
