@@ -1,8 +1,8 @@
-import React from 'react'
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
 import Link from 'next/link'
-import { HomepageCard } from '../components/HomepageCard'
+import React from 'react'
 import api from '../api'
+import { HomepageCard } from '../components/HomepageCard'
 import { useUser } from '../hooks/useUser'
 
 export const Home = ({ authenticatedUser, token, redirectUrl }) => {

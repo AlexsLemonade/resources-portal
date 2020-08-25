@@ -22,18 +22,20 @@ Authorization tokens are issued and returned when a user registers. A registered
 
 **Request**:
 
-`POST` `api-token-auth/`
+`POST` `/auth`
 
 Parameters:
 
-Name | Type | Description
----|---|---
-username | string | The user's username
-password | string | The user's password
+Name       | Type   | Description
+-----------|--------|---
+code       | string | An authorization code issued through ORCID OAuth
+origin_url | string | The URL of the endpoint the user is authenticated from. Must match the redirect_url used to retrieve the ORCID auth code.
 
 **Response**:
 ```json
 {
-    "token" : "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b"
+    "user_id" : "10000000-0f5a-4165-b518-b2386a753d6f",
+    "token" : "9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b",
+    "expires" : "2021-02-22T17:09:15.513Z"
 }
 ```
