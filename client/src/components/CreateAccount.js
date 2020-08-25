@@ -54,18 +54,36 @@ export const CreateAccountStep = ({ ORCID, nextStep }) => {
 
 export const EnterEmailStep = ({ createUser }) => {
   const onChange = (email) => {
-    createUser.setEmail(email, true)
+    createUser.setEmail(email)
     createUser.save()
   }
   const onClick = () => {
-    createUser.setCurrentStep('Create Account')
+    createUser.setNeedsEmail(false)
+    createUser.stepForward()
   }
+  if (createUser.user) {
+    return (
+      <>
+        <Box>
+          <Text>
+            The following email was retrieved from your ORCID record:{' '}
+            {createUser.user.email}
+          </Text>
+          <Button label="Continue" onClick={createUser.stepForward} />
+        </Box>
+      </>
+    )
+  }
+
   return (
     <>
+      <Box>
+        <Text>Enter your email below:</Text>
+      </Box>
       <TextInput
         placeholder="Enter email"
         onChange={(event) => onChange(event.target.value)}
-        value={createUser.createUser.email || ''}
+        value={createUser.createUser.email || createUser.email}
         type="email"
       />
       <Button

@@ -313,23 +313,16 @@ Home.getInitialProps = async ({ req, query }) => {
     return {}
   }
 
-  let queryJSON = { email: 'this@willchange.com' }
-
-  if (query.json) {
-    queryJSON = JSON.parse(query.json)
-  }
-
   const [tokenRequest, userRequest] = await api.user.login(
     query.code,
-    decodeURI(`http://${req.headers.host}${req.url}`),
-    queryJSON
+    decodeURI(`http://${req.headers.host}${req.url}`)
   )
 
   const initialProps = {}
 
   if (tokenRequest.isOk) {
     initialProps.token = tokenRequest.response.token
-    initialProps.redirectUrl = queryJSON.origin_url
+    initialProps.redirectUrl = decodeURI(`/`)
   }
 
   if (userRequest.isOk) {

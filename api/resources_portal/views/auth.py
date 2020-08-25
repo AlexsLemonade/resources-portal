@@ -33,7 +33,6 @@ class AuthViewSet(viewsets.ViewSet):
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
-        logger.error(request.data)
         if "code" not in request.data:
             return JsonResponse(
                 {
@@ -70,21 +69,31 @@ class AuthViewSet(viewsets.ViewSet):
 
         # Create user if neccessary
         if not user:
-            if "email" not in request.data:
-                return JsonResponse(
-                    {
-                        "error": "There is no user associated with the given URL and no 'email' parameter was provided to create one."
-                    },
-                    status=400,
-                )
-
-            email = request.data["email"]
-
-            # Get first and last name
             api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
+
             summary = api.read_record_public(
                 response_json["orcid"], "person", response_json["access_token"]
             )
+
+            email = ""
+
+            if "email" in request.data:
+                email = request.data["email"]
+            else:
+                if len(summary["emails"]["email"]) == 0:
+                    return JsonResponse(
+                        {
+                            "error": "There were no emails made availible on the provided ORCID record. Please provide an email in the POST request.",
+                            "needs_email": True,
+                        },
+                        status=400,
+                    )
+
+                # Use the email first added to the ORCID account
+                email = summary["emails"]["email"][0]["email"]
+
+            # Get first and last name
+
             first_name = summary["name"]["given-names"]["value"]
             last_name = summary["name"]["family-name"]["value"]
 
