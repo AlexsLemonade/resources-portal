@@ -63,7 +63,7 @@ The following notifcation settings are in place:
 The PrimProf's protocol was requested by SecondaryProf and transferred to him by PostDoc.
 
 There are four orgainzation invitations:
-- A pending request from PrimProf to join SecondaryProfOrg, managed by SecProf
+- An open request from PrimProf to join SecondaryProfOrg, managed by SecProf
 - A accepted request for PostDoc to join PrimaryLab, managed by PrimProf
 - A rejected request for SecProf to join PrimaryLab, managed by PrimProf
 - A invalid request for SecProf to join PrimaryLab, managed by PostDoc. This would have become invalid because PostDoc lost permissions to invite/approve requests to join the organizations

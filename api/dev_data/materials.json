@@ -508,7 +508,6 @@
       "requester_signed_mta_attachment_id": "2",
       "executed_mta_attachment_id": "3",
       "irb_attachment_id": "4",
-      "is_active": false,
       "status": "closed",
       "assigned_to_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "material_id": "2",
