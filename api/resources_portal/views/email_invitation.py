@@ -49,7 +49,8 @@ def email_invitation_view(request):
             "resources_portal/email_assets/ccrr-logo.svg",
             "resources_portal/email_assets/alexs-logo.svg",
         ]
-        send_mail(source, email, subject, body, formatted_html, attachments)
+        logger.info("Sending an email invitation to {email}.")
+        send_mail(source, [email], subject, body, formatted_html, attachments)
     else:
         logger.info(f"In prod an email would have been sent to {email}:")
         print(body)
