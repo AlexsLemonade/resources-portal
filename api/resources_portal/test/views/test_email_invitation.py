@@ -1,12 +1,10 @@
-from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Address
-from resources_portal.test.factories import AddressFactory, UserFactory
+from resources_portal.test.factories import UserFactory
 
 fake = Faker()
 
@@ -28,6 +26,7 @@ class EmailInvitationTestCase(APITestCase):
     def test_post(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, {"email": "kurt.wheeler91@gmail.com"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_post_malformed_fails(self):
         self.client.force_authenticate(user=self.user)
