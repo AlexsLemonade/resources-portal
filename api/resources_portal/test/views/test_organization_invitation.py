@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import remove_perm
 
-from resources_portal.models import Notification, OrganizationInvitation
+from resources_portal.models import Notification
 from resources_portal.test.factories import OrganizationInvitationFactory
 
 fake = Faker()
@@ -32,21 +32,23 @@ class OrganizationInvitationListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(
-            str(self.invitation_data["request_reciever"]), response.json()["request_reciever"]
+            str(self.invitation_data["request_receiver"]), response.json()["request_receiver"]
         )
 
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="ORG_INVITE_CREATED", email=self.invitation.requester.email
+                    notification_type="ADDED_TO_ORG", email=self.invitation.request_receiver.email
                 )
             ),
             1,
         )
 
+        self.assertIn(self.invitation.request_receiver, self.invitation.organization.members.all())
+
     def test_post_request_with_invalid_permissions_fails(self):
         remove_perm(
-            "add_members", self.invitation.request_reciever, self.invitation.organization,
+            "add_members", self.invitation.requester, self.invitation.organization,
         )
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -65,206 +67,207 @@ class OrganizationInvitationListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
-class TestSingleOrganizationInvitationTestCase(APITestCase):
-    """
-    Tests /invitations detail operations.
-    """
+# We don't yet need these methods
+# class TestSingleOrganizationInvitationTestCase(APITestCase):
+#     """
+#     Tests /invitations detail operations.
+#     """
 
-    def setUp(self):
-        self.invitation = OrganizationInvitationFactory()
-        self.url = reverse("invitation-detail", args=[self.invitation.id])
-        Notification.objects.all().delete()
+#     def setUp(self):
+#         self.invitation = OrganizationInvitationFactory()
+#         self.url = reverse("invitation-detail", args=[self.invitation.id])
+#         Notification.objects.all().delete()
 
-    def test_get_request_returns_a_given_invitation(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     def test_get_request_returns_a_given_invitation(self):
+#         response = self.client.get(self.url)
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_request_approved_by_request_reciever_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.request_reciever)
-        invitation_json = self.client.get(self.url).json()
+# def test_request_approved_by_request_receiver_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.request_receiver)
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "REQUEST"
-        self.invitation.save()
-        invitation_json["status"] = "ACCEPTED"
+#     self.invitation.invite_or_request = "REQUEST"
+#     self.invitation.save()
+#     invitation_json["status"] = "ACCEPTED"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_REQUEST_ACCEPTED", email=self.invitation.requester.email
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertTrue(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_REQUEST_ACCEPTED", email=self.invitation.requester.email
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_invite_approved_by_requester_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.requester)
+# def test_invite_approved_by_requester_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
 
-        invitation_json = self.client.get(self.url).json()
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "INVITE"
-        self.invitation.save()
-        invitation_json["status"] = "ACCEPTED"
+#     self.invitation.invite_or_request = "INVITE"
+#     self.invitation.save()
+#     invitation_json["status"] = "ACCEPTED"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_INVITE_ACCEPTED",
-                    email=self.invitation.request_reciever.email,
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertTrue(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_INVITE_ACCEPTED",
+#                 email=self.invitation.request_receiver.email,
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_request_rejected_by_request_reciever_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.request_reciever)
+# def test_request_rejected_by_request_receiver_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.request_receiver)
 
-        invitation_json = self.client.get(self.url).json()
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "REQUEST"
-        self.invitation.save()
-        invitation_json["status"] = "REJECTED"
+#     self.invitation.invite_or_request = "REQUEST"
+#     self.invitation.save()
+#     invitation_json["status"] = "REJECTED"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_REQUEST_REJECTED", email=self.invitation.requester.email
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertFalse(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_REQUEST_REJECTED", email=self.invitation.requester.email
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_invite_rejected_by_requester_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.requester)
+# def test_invite_rejected_by_requester_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
 
-        invitation_json = self.client.get(self.url).json()
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "INVITE"
-        self.invitation.save()
-        invitation_json["status"] = "REJECTED"
+#     self.invitation.invite_or_request = "INVITE"
+#     self.invitation.save()
+#     invitation_json["status"] = "REJECTED"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_INVITE_REJECTED",
-                    email=self.invitation.request_reciever.email,
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertFalse(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_INVITE_REJECTED",
+#                 email=self.invitation.request_receiver.email,
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_request_invalid_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.request_reciever)
+# def test_request_invalid_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.request_receiver)
 
-        invitation_json = self.client.get(self.url).json()
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "REQUEST"
-        self.invitation.save()
-        invitation_json["status"] = "INVALID"
+#     self.invitation.invite_or_request = "REQUEST"
+#     self.invitation.save()
+#     invitation_json["status"] = "INVALID"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_REQUEST_INVALID", email=self.invitation.requester.email
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertFalse(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_REQUEST_INVALID", email=self.invitation.requester.email
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_invite_invalid_suceeds(self):
-        self.client.force_authenticate(user=self.invitation.requester)
+# def test_invite_invalid_suceeds(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
 
-        invitation_json = self.client.get(self.url).json()
+#     invitation_json = self.client.get(self.url).json()
 
-        self.invitation.invite_or_request = "INVITE"
-        self.invitation.save()
-        invitation_json["status"] = "INVALID"
+#     self.invitation.invite_or_request = "INVITE"
+#     self.invitation.save()
+#     invitation_json["status"] = "INVALID"
 
-        invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
+#     invitation = OrganizationInvitation.objects.get(pk=self.invitation.id)
 
-        response = self.client.put(self.url, invitation_json)
+#     response = self.client.put(self.url, invitation_json)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(invitation.requester in invitation.organization.members.all())
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="ORG_INVITE_INVALID",
-                    email=self.invitation.request_reciever.email,
-                )
-            ),
-            1,
-        )
+#     self.assertEqual(response.status_code, status.HTTP_200_OK)
+#     self.assertFalse(invitation.requester in invitation.organization.members.all())
+#     self.assertEqual(
+#         len(
+#             Notification.objects.filter(
+#                 notification_type="ORG_INVITE_INVALID",
+#                 email=self.invitation.request_receiver.email,
+#             )
+#         ),
+#         1,
+#     )
 
-    def test_put_request_from_wrong_user_fails(self):
-        self.client.force_authenticate(user=self.invitation.requester)
-        invitation_json = self.client.get(self.url).json()
+# def test_put_request_from_wrong_user_fails(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
+#     invitation_json = self.client.get(self.url).json()
 
-        invitation_json["status"] = "ACCEPTED"
-        self.invitation.invite_or_request = "REQUEST"
-        self.invitation.save()
+#     invitation_json["status"] = "ACCEPTED"
+#     self.invitation.invite_or_request = "REQUEST"
+#     self.invitation.save()
 
-        response = self.client.put(self.url, invitation_json)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+#     response = self.client.put(self.url, invitation_json)
+#     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_put_request_without_authentication_fails(self):
-        self.client.force_authenticate(user=None)
-        invitation_json = self.client.get(self.url).json()
+# def test_put_request_without_authentication_fails(self):
+#     self.client.force_authenticate(user=None)
+#     invitation_json = self.client.get(self.url).json()
 
-        invitation_json["status"] = "ACCEPTED"
+#     invitation_json["status"] = "ACCEPTED"
 
-        response = self.client.put(self.url, invitation_json)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+#     response = self.client.put(self.url, invitation_json)
+#     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_request_deletes_invitation(self):
-        self.client.force_authenticate(user=self.invitation.requester)
-        invitation_id = self.invitation.id
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(OrganizationInvitation.objects.filter(id=invitation_id).count(), 0)
+# def test_delete_request_deletes_invitation(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
+#     invitation_id = self.invitation.id
+#     response = self.client.delete(self.url)
+#     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+#     self.assertEqual(OrganizationInvitation.objects.filter(id=invitation_id).count(), 0)
 
-    def test_delete_request_from_non_requester_fails(self):
-        self.client.force_authenticate(user=self.invitation.request_reciever)
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+# def test_delete_request_from_non_requester_fails(self):
+#     self.client.force_authenticate(user=self.invitation.request_receiver)
+#     response = self.client.delete(self.url)
+#     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_delete_request_from_unauthenticated_fails(self):
-        self.client.force_authenticate(user=None)
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+# def test_delete_request_from_unauthenticated_fails(self):
+#     self.client.force_authenticate(user=None)
+#     response = self.client.delete(self.url)
+#     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_delete_request_only_soft_deletes_objects(self):
-        self.client.force_authenticate(user=self.invitation.requester)
-        invitation_id = self.invitation.id
-        response = self.client.delete(self.url)
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)
+# def test_delete_request_only_soft_deletes_objects(self):
+#     self.client.force_authenticate(user=self.invitation.requester)
+#     invitation_id = self.invitation.id
+#     response = self.client.delete(self.url)
+#     self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+#     self.assertEqual(OrganizationInvitation.deleted_objects.filter(id=invitation_id).count(), 1)

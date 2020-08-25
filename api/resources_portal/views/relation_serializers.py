@@ -11,6 +11,7 @@ from rest_framework import serializers
 from resources_portal.models import (
     Address,
     Attachment,
+    FulfillmentNote,
     Grant,
     Material,
     MaterialRequest,
@@ -30,10 +31,19 @@ class UserRelationSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
+            "email",
+            "full_name",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("username", "first_name", "last_name", "created_at", "updated_at")
+        read_only_fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "created_at",
+            "updated_at",
+        )
         extra_kwargs = {"id": {"read_only": False}}
 
 
@@ -177,7 +187,7 @@ class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
             "status",
             "invite_or_request",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
         read_only_fields = (
@@ -185,7 +195,7 @@ class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "organization",
-            "request_reciever",
+            "request_receiver",
             "requester",
         )
 
@@ -207,5 +217,17 @@ class AddressRelationSerializer(serializers.ModelSerializer):
             "country",
             "created_at",
             "updated_at",
+        )
+        read_only_fields = ("id", "created_at", "updated_at")
+
+
+class FulfillmentNoteRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FulfillmentNote
+        fields = (
+            "id",
+            "created_by",
+            "material_request",
+            "text",
         )
         read_only_fields = ("id", "created_at", "updated_at")

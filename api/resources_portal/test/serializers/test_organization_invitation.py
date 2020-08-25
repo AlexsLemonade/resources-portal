@@ -9,7 +9,7 @@ class TestOrganizationInvitationSerializer(TestCase):
     def setUp(self):
         self.invitation = OrganizationInvitationFactory()
         self.invitation_data = model_to_dict(self.invitation)
-        reference_fields = ("requester", "organization", "request_reciever")
+        reference_fields = ("requester", "organization", "request_receiver")
 
         for field in reference_fields:
             self.invitation_data[field] = str(self.invitation_data[field])

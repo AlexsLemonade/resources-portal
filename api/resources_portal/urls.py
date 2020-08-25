@@ -12,6 +12,7 @@ from resources_portal.views import (
     AddressViewSet,
     AttachmentViewSet,
     AuthViewSet,
+    FulfillmentNoteViewSet,
     GrantMaterialViewSet,
     GrantViewSet,
     ImportViewSet,
@@ -82,6 +83,12 @@ router.register(r"material-requests", MaterialRequestViewSet, basename="material
     basename="material-requests-issues",
     parents_query_lookups=["material_request"],
 )
+router.register(r"material-requests", MaterialRequestViewSet, basename="material-request").register(
+    r"fulfillment-notes",
+    FulfillmentNoteViewSet,
+    basename="material-requests-notes",
+    parents_query_lookups=["material_request"],
+)
 
 search_router = DefaultRouter()
 search_router.register(r"materials", MaterialDocumentView, basename="search-materials")
@@ -102,7 +109,7 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
-urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"get": "retrieve"}), name="auth"))
+urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"post": "create"}), name="auth"))
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(
