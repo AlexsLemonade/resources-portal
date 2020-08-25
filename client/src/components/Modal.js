@@ -45,7 +45,7 @@ export const AccountCreationInfo = ({ button }) => {
   )
 }
 
-export const ORCIDSignInButton = ({ label }) => {
+export const ORCIDSignInButton = ({ label, redirectUrl }) => {
   let orcidPrefix = ''
   if (process.env.IS_DEVELOPMENT) {
     orcidPrefix = 'https://sandbox.orcid.org/'
@@ -53,7 +53,12 @@ export const ORCIDSignInButton = ({ label }) => {
     orcidPrefix = 'https://orcid.org/'
   }
 
-  const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${process.env.ORCID_CLIENT_ID}&response_type=code&scope=/authenticate&redirect_uri=${process.env.CLIENT_HOST}`
+  const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${
+    process.env.ORCID_CLIENT_ID
+  }&response_type=code&scope=/authenticate&redirect_uri=${decodeURI(
+    redirectUrl
+  )}`
+
   return (
     <Box
       alignSelf="center"

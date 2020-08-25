@@ -5,7 +5,7 @@ export const ResourcesPortalContext = React.createContext({})
 
 export const ResourcesPortalContextProvider = ({ children }) => {
   const [search, setSearch] = React.useState({})
-  const [user, setUser] = useLocalStorage('user', {})
+  const [user, setUser] = useLocalStorage('user', undefined)
   const [token, setToken] = useLocalStorage('token', '')
 
   return (
