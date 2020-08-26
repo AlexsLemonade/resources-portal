@@ -45,12 +45,20 @@ def email_invitation_view(request):
         )
         subject = f"CCRR: {request.user.full_name} has invited you to create an account"
         source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
-        attachments = [
-            "resources_portal/email_assets/ccrr-logo.svg",
-            "resources_portal/email_assets/alexs-logo.svg",
+        embedded_images = [
+            {
+                "content_id": "ccrr-logo",
+                "file_path": "resources_portal/email_assets/ccrr-logo.svg",
+                "subtype": "image/svg+xml",
+            },
+            {
+                "content_id": "alexs-logo",
+                "file_path": "resources_portal/email_assets/alexs-logo.svg",
+                "subtype": "image/svg+xml",
+            },
         ]
         logger.info("Sending an email invitation to {email}.")
-        send_mail(source, [email], subject, body, formatted_html, attachments)
+        send_mail(source, [email], subject, body, formatted_html, embedded_images)
     else:
         logger.info(f"In prod an email would have been sent to {email}:")
         print(body)

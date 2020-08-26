@@ -1,5 +1,6 @@
 import os
 from email.mime.application import MIMEApplication
+from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -14,7 +15,7 @@ def create_multipart_message(
     title: str,
     text: str = None,
     html: str = None,
-    attachments: list = None,
+    embedded_images: list = [],
 ) -> MIMEMultipart:
     """
     Creates a MIME multipart message object.
@@ -45,14 +46,12 @@ def create_multipart_message(
         part = MIMEText(html, "html")
         msg.attach(part)
 
-    # Add attachments
-    for attachment in attachments or []:
-        with open(attachment, "rb") as f:
-            part = MIMEApplication(f.read())
-            part.add_header(
-                "Content-Disposition", "attachment", filename=os.path.basename(attachment)
-            )
-            msg.attach(part)
+    for embedded_image in embedded_images:
+        with open(embedded_image["file_path"], "rb") as f:
+            image_part = MIMEImage(f.read(), embedded_image["subtype"])
+
+        image_part.add_header("Content-ID", embedded_image["content_id"])
+        msg.attach(image_part)
 
     return msg
 
