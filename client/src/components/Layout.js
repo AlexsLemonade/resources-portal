@@ -4,6 +4,7 @@ import Header from './Header'
 import { Footer } from './Footer'
 
 export const Layout = ({ children }) => {
+  // TODO: Dynamic height for alerts changing also responsive
   return (
     <Box height={{ min: '100vh' }}>
       <Box gridArea="header" margin={{ bottom: 'xlarge' }}>

@@ -1,10 +1,12 @@
 import React from 'react'
 import { Box, Heading, Main } from 'grommet'
 import { useRouter } from 'next/router'
+import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
 
 export const AccountLayout = ({ children }) => {
+  const isClient = useIsClient()
   const router = useRouter()
   const links = [
     {
@@ -43,9 +45,10 @@ export const AccountLayout = ({ children }) => {
     setActive(link)
   }
 
-  return (
+  return isClient(
+    '',
     <Box height={{ min: '100vh' }}>
-      <Box gridArea="header" margin={{ bottom: 'xlarge' }}>
+      <Box margin={{ bottom: 'xlarge' }}>
         <Header />
       </Box>
       <Main width="xxlarge" alignSelf="center" overflow="visible">
