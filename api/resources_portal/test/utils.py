@@ -3,7 +3,6 @@ import shutil
 import uuid
 
 from django.conf import settings
-from django.urls import reverse
 
 from faker import Faker
 
@@ -12,6 +11,7 @@ fake = Faker()
 MOCK_AUTHORIZATION_CODE = "mock"
 MOCK_EMAIL = fake.email()
 MOCK_ORIGIN_URL = "http://an-origin-url"
+MOCK_GRANTS = [{"title": "Grant1", "funder_id": "12345"}, {"title": "Grant2", "funder_id": "56789"}]
 
 first_name = fake.first_name()
 last_name = fake.last_name()
@@ -54,19 +54,16 @@ def generate_mock_orcid_record_response(*args, **kwargs):
     return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
 
 
-def get_mock_oauth_url(grants):
-    base_url = reverse("auth")
-    url = (
-        f"{base_url}"
-        f"?code={MOCK_AUTHORIZATION_CODE}"
-        f"&email={MOCK_EMAIL}"
-        f"&origin_url={MOCK_ORIGIN_URL}"
-    )
+def get_mock_auth_data(grant_info):
+    """
+    Takes a list of grant info, in the form [{"title": "Title 1", "funder_id": "12345"}...]
+    """
+    data = {"code": MOCK_AUTHORIZATION_CODE, "email": MOCK_EMAIL, "origin_url": MOCK_ORIGIN_URL}
 
-    for grant in grants:
-        url += f"&grant_id={grant.id}"
+    if grant_info:
+        data["grant_info"] = grant_info
 
-    return url
+    return data
 
 
 def clean_test_file_uploads():

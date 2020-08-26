@@ -204,8 +204,17 @@ class TestResourceListedAndRequested(APITestCase):
             1,
         )
 
-        # Postdoc resolves the issue.
+        # Postdoc creates a fulfillment note and resolves the issue.
         self.client.force_authenticate(user=self.post_doc)
+
+        fulfillment_note_json = {
+            "text": "Whoops, forgot to actually ship the package.",
+            "material_request": request_id,
+        }
+        fulfillment_note_response = self.client.post(
+            reverse("material-requests-notes-list", args=[request_id]), fulfillment_note_json,
+        )
+        self.assertEqual(fulfillment_note_response.status_code, status.HTTP_201_CREATED)
 
         request_issue_json = {"status": "CLOSED"}
         issue_response = self.client.put(
@@ -252,6 +261,9 @@ class TestResourceListedAndRequested(APITestCase):
             ),
             1,
         )
+
+        # SecondaryProf can view the fulfillment note
+        self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
         self.assertEqual(len(Notification.objects.all()), 9)

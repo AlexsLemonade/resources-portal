@@ -30,17 +30,18 @@ def remove_code_parameter_from_uri(url):
 
 class AuthViewSet(viewsets.ViewSet):
 
-    http_method_names = ["get"]
+    http_method_names = ["post"]
 
-    def retrieve(self, request, *args, **kwargs):
-        if "code" not in request.GET:
+    def create(self, request, *args, **kwargs):
+        logger.error(request.data)
+        if "code" not in request.data:
             return JsonResponse(
                 {
                     "error": f"Code parameter was not found in the URL: {request.build_absolute_uri()}"
                 },
                 status=400,
             )
-        elif "origin_url" not in request.GET:
+        elif "origin_url" not in request.data:
             return JsonResponse(
                 {
                     "error": f"Origin URL parameter was not found in the URL: {request.build_absolute_uri()}"
@@ -48,8 +49,8 @@ class AuthViewSet(viewsets.ViewSet):
                 status=400,
             )
 
-        authorization_code = request.GET["code"]
-        origin_url = request.GET["origin_url"]
+        authorization_code = request.data["code"]
+        origin_url = request.data["origin_url"]
 
         data = {
             "client_id": CLIENT_ID,
@@ -69,7 +70,7 @@ class AuthViewSet(viewsets.ViewSet):
 
         # Create user if neccessary
         if not user:
-            if "email" not in request.GET:
+            if "email" not in request.data:
                 return JsonResponse(
                     {
                         "error": "There is no user associated with the given URL and no 'email' parameter was provided to create one."
@@ -77,7 +78,7 @@ class AuthViewSet(viewsets.ViewSet):
                     status=400,
                 )
 
-            email = request.GET["email"]
+            email = request.data["email"]
 
             # Get first and last name
             api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
@@ -100,12 +101,23 @@ class AuthViewSet(viewsets.ViewSet):
             org = Organization.objects.create(owner=user)
             user.personal_organization = org
 
-            grant_ids = request.GET.getlist("grant_id")
+            if "grant_info" in request.data:
+                grant_json = request.data["grant_info"]
 
-            for grant_id in grant_ids:
-                grant_query_set = Grant.objects.filter(pk=grant_id)
-                if grant_query_set.exists():
-                    user.grants.add(grant_query_set.first())
+                for grant_info in grant_json:
+                    if not grant_info["title"]:
+                        logger.error(
+                            f"Attribute 'title' not found in provided json for user grant creation: {grant_info}"
+                        )
+                    if not grant_info["funder_id"]:
+                        logger.error(
+                            f"Attribute 'funder_id' not found in provided json for user grant creation: {grant_info}"
+                        )
+
+                    grant = Grant.objects.create(
+                        title=grant_info["title"], funder_id=grant_info["funder_id"], user=user
+                    )
+                    user.grants.add(grant)
 
             user.save()
 

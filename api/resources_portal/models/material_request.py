@@ -20,7 +20,7 @@ class MaterialRequest(SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE
 
     STATUS_CHOICES = (
-        ("PENDING", "PENDING"),
+        ("OPEN", "OPEN"),
         ("APPROVED", "APPROVED"),
         ("IN_FULFILLMENT", "IN_FULFILLMENT"),
         ("FULFILLED", "FULFILLED"),
@@ -64,13 +64,37 @@ class MaterialRequest(SafeDeleteModel):
         help_text="Attachment containing the MTA after it has been signed by all parties.",
     )
 
-    is_active = models.BooleanField(default=True)
-
-    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="PENDING")
+    status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="OPEN")
 
     assigned_to = models.ForeignKey(
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
+
+    @property
+    def is_active(self):
+        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT"]
+
+    @property
+    def requires_action_sharer(self):
+        if not self.is_active:
+            return False
+
+        if self.status == "APPROVED":
+            return not self.requires_action_requester
+        else:
+            return True
+
+    @property
+    def requires_action_requester(self):
+        if self.status != "APPROVED":
+            return False
+
+        missing_irb = self.material.needs_irb and self.irb_attachment is None
+        missing_mta = (
+            self.material.mta_attachment is not None
+            and self.requester_signed_mta_attachment is None
+        )
+        return missing_irb or missing_mta
 
     @property
     def has_issues(self):

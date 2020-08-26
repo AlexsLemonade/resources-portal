@@ -9,6 +9,7 @@ from guardian.shortcuts import get_objects_for_user
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
+    FulfillmentNoteRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
 )
@@ -27,17 +28,21 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "status",
             "assigned_to",
             "has_issues",
+            "requires_action_sharer",
+            "requires_action_requester",
             "executed_mta_attachment",
             "irb_attachment",
             "material",
             "requester",
             "requester_signed_mta_attachment",
+            "fulfillment_notes",
             "address",
             "created_at",
             "updated_at",
         )
         read_only_fields = (
             "id",
+            "fulfillment_notes",
             "created_at",
             "updated_at",
             "requester",
@@ -48,6 +53,7 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     requester = UserRelationSerializer()
     material = MaterialRelationSerializer()
+    fulfillment_notes = FulfillmentNoteRelationSerializer(many=True, read_only=True)
     address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
@@ -181,7 +187,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         requirements_list = []
 
-        if request.status == "PENDING":
+        if request.status == "OPEN":
             requirements_list.append("NEEDS_TO_BE_APPROVED")
 
         if material.needs_mta and not request.requester_signed_mta_attachment:
@@ -316,6 +322,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         material_request.refresh_from_db()
 
         response_data = model_to_dict(material_request)
+        response_data = MaterialRequestDetailSerializer(material_request).data
         response_data["requirements"] = self.get_material_requirements()
 
         return Response(data=response_data, status=200)

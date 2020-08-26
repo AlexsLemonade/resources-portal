@@ -3,7 +3,7 @@ import Link from 'next/link'
 import * as React from 'react'
 import { useUser } from '../hooks/useUser'
 import { LoginButton } from './LoginButton'
-import { SignInModal } from './SignInModal'
+import { SignInModal } from './modals/SignInModal'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()

@@ -1,8 +1,9 @@
-import { Anchor, Box, Button, Text } from 'grommet'
+import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import * as React from 'react'
-import ORCIDLogo from '../images/grant.svg'
+import GrantIcon from '../images/grant.svg'
+import { ORCIDSignInButton } from './modals/CommonModalContent'
 
-export const CreateAccountStep = ({ ORCID }) => {
+export const CreateAccountStep = ({ ORCID, nextStep }) => {
   return (
     <Box>
       <Text>
@@ -17,12 +18,19 @@ export const CreateAccountStep = ({ ORCID }) => {
         align="center"
         width="large"
         alignSelf="center"
-        margin={{ top: 'large' }}
+        margin={{ top: 'small' }}
         border={[{ size: 'small', side: 'bottom', color: 'black-tint-95' }]}
       >
-        <Text>Our records show that your ORCID iD is {ORCID}</Text>
-        <Box align="center" pad="medium" gap="large">
-          <Button label="Sign in with ORCID iD" icon={<ORCIDLogo />} primary />
+        <Box>
+          {ORCID && (
+            <Text>Our records show that your ORCID iD is {ORCID}.</Text>
+          )}
+        </Box>
+        <Box align="center" pad="medium" gap="medium">
+          <ORCIDSignInButton
+            label="Sign in with ORCID iD"
+            redirectUrl={`${process.env.CLIENT_HOST}/create-account?stepName=${nextStep}`}
+          />
         </Box>
       </Box>
       <Box margin={{ bottom: 'large' }}>
@@ -44,10 +52,70 @@ export const CreateAccountStep = ({ ORCID }) => {
   )
 }
 
-export const VerifyGrantStep = () => {
+export const EnterEmailStep = ({ createUser }) => {
+  const onChange = (email) => {
+    createUser.setEmail(email, true)
+    createUser.save()
+  }
+  const onClick = () => {
+    createUser.setCurrentStep('Create Account')
+  }
   return (
-    <Box>
-      <Text>TODO Verify grant step goes here.</Text>
+    <>
+      <TextInput
+        placeholder="Enter email"
+        onChange={(event) => onChange(event.target.value)}
+        value={createUser.createUser.email || ''}
+        type="email"
+      />
+      <Button
+        label="Submit"
+        onChange={onChange}
+        disabled={!createUser.validEmail()}
+        onClick={onClick}
+      />
+    </>
+  )
+}
+
+export const VerifyGrantStep = ({ createUser }) => {
+  return (
+    <Box gap="medium">
+      <Text weight="bold">Your account has been created!</Text>
+      <Text>
+        Please take a moment to verify the grants you have recieved from Alex's
+        Lemonade Stand Foundation.
+      </Text>
+      <Text margin={{ top: 'small' }} weight="bold">
+        Grants Recieved
+      </Text>
+      <Box gap="medium">
+        {createUser.createUser.grants.map((grant) => (
+          <Box key={grant.funder_id} direction="row" align="center">
+            <Box pad="small">
+              <GrantIcon />
+            </Box>
+            <Box direction="column">
+              <Text>{grant.title}</Text>
+              <Text size="small">Grant ID: {grant.funder_id}</Text>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+      <Box
+        direction="row"
+        gap="medium"
+        basis="3/4"
+        alignSelf="end"
+        margin={{ top: 'medium' }}
+      >
+        <Button label="Report missing/incorrect information" />
+        <Button
+          label="This information is correct"
+          onClick={createUser.stepForward}
+          primary
+        />
+      </Box>
     </Box>
   )
 }

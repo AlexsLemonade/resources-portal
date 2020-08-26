@@ -6,12 +6,13 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import User
-from resources_portal.test.factories import GrantFactory, MaterialFactory
+from resources_portal.test.factories import MaterialFactory
 from resources_portal.test.utils import (
     MOCK_EMAIL,
+    MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_oauth_url,
+    get_mock_auth_data,
 )
 
 
@@ -24,15 +25,11 @@ class TestUserCreatesAccount(APITestCase):
     2. List resource on personal organization.
     """
 
-    def setUp(self):
-        self.grant1 = GrantFactory()
-        self.grant2 = GrantFactory()
-
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_create_account_and_list_resource(self, mock_auth_request, mock_record_request):
         # Create user with ORCID
-        response = self.client.get(get_mock_oauth_url([self.grant1, self.grant2]))
+        response = self.client.post(reverse("auth"), get_mock_auth_data(MOCK_GRANTS))
 
         # Get user, sign in
         user = User.objects.get(pk=response.json()["user_id"])
@@ -51,5 +48,4 @@ class TestUserCreatesAccount(APITestCase):
 
         # User assertions
         self.assertEqual(user.email, MOCK_EMAIL)
-        self.assertTrue(self.grant1 in user.grants.all())
-        self.assertTrue(self.grant2 in user.grants.all())
+        self.assertEqual(len(user.grants.all()), 2)
