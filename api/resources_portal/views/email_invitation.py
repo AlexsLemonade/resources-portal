@@ -49,12 +49,12 @@ def email_invitation_view(request):
             {
                 "content_id": "ccrr-logo",
                 "file_path": "resources_portal/email_assets/ccrr-logo.svg",
-                "subtype": "image/svg+xml",
+                "subtype": "svg+xml",
             },
             {
                 "content_id": "alexs-logo",
                 "file_path": "resources_portal/email_assets/alexs-logo.svg",
-                "subtype": "image/svg+xml",
+                "subtype": "svg+xml",
             },
         ]
         logger.info("Sending an email invitation to {email}.")
