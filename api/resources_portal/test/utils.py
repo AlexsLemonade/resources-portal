@@ -58,6 +58,11 @@ def generate_mock_orcid_record_response(*args, **kwargs):
     return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
 
 
+def generate_random_mock_orcid_record_response(*args, **kwargs):
+    ORCID_SUMMARY_DICT["orcid-identifier"]["path"] = uuid.uuid4()
+    return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
+
+
 def get_mock_auth_data(grant_info):
     """
     Takes a list of grant info, in the form [{"title": "Title 1", "funder_id": "12345"}...]

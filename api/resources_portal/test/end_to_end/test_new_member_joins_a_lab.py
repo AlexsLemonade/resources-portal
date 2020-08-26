@@ -7,6 +7,8 @@ from rest_framework.test import APITestCase
 from resources_portal.management.commands.populate_dev_database import populate_dev_database
 from resources_portal.models import Material, Notification, Organization, User
 from resources_portal.test.utils import (
+    MOCK_EMAIL,
+    MOCK_GRANTS,
     clean_test_file_uploads,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
@@ -49,13 +51,26 @@ class TestNewMemberJoinsALab(APITestCase):
 
         self.primary_lab.assign_member_perms(self.post_doc)
 
+        self.user_data = {
+            "email": MOCK_EMAIL,
+            "grant_info": MOCK_GRANTS,
+        }
+
         Notification.objects.all().delete()
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_new_member_joins_a_lab(self, mock_auth_request, mock_record_request):
         # Create account (NewMember)
-        response = self.client.post(reverse("auth"), get_mock_auth_data([]))
+        response = self.client.post(
+            reverse("orcid-credentials"), {"code": "MOCKCODE", "origin_url": "mock.origin.com"}
+        )
+
+        self.user_data["orcid"] = response.json()["orcid"]
+        self.user_data["access_token"] = response.json()["access_token"]
+        self.user_data["refresh_token"] = response.json()["refresh_token"]
+
+        response = self.client.post(reverse("user-list"), self.user_data)
 
         new_member = User.objects.get(pk=response.json()["user_id"])
 

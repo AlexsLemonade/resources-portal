@@ -79,13 +79,15 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
         serializer = OrganizationInvitationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        requester = serializer.validated_data["requester"]
+        request_receiver = serializer.validated_data["request_receiver"]
         organization = serializer.validated_data["organization"]
         invite_or_request = serializer.validated_data["invite_or_request"]
 
-        if invite_or_request == "INVITE" and not requester.has_perm("add_members", organization):
+        if invite_or_request == "INVITE" and not request_receiver.has_perm(
+            "add_members", organization
+        ):
             return Response(
-                data={"detail": f"{requester} does not have permission to add members"},
+                data={"detail": f"{request_receiver} does not have permission to add members"},
                 status=status.HTTP_403_FORBIDDEN,
             )
 
