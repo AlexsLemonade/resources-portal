@@ -2,15 +2,9 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import viewsets
 
-import orcid
 import requests
-from django_expiring_token.authentication import token_expire_handler
-from django_expiring_token.models import ExpiringToken
 
 from resources_portal.config.logging import get_and_configure_logger
-from resources_portal.models.grant import Grant
-from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
 
 logger = get_and_configure_logger(__name__)
 
@@ -35,7 +29,7 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         if "code" not in request.data:
             return JsonResponse(
-                {"error": f"Code parameter was not found in the request."}, status=400,
+                {"error": "Code parameter was not found in the request."}, status=400,
             )
         elif "origin_url" not in request.data:
             return JsonResponse(

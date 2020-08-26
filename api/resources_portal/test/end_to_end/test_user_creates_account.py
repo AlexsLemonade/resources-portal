@@ -12,7 +12,6 @@ from resources_portal.test.utils import (
     MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_auth_data,
 )
 
 
