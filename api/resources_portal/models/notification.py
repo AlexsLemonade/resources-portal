@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
@@ -9,7 +11,13 @@ from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.config.logging import get_and_configure_logger
-from resources_portal.emailer import send_mail
+from resources_portal.emailer import (
+    EMAIL_SOURCE,
+    LOGO_EMBEDDED_IMAGE_CONFIGS,
+    NOTIFICATIONS_URL,
+    PLAIN_TEXT_EMAIL_FOOTER,
+    send_mail,
+)
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.organization import Organization
@@ -18,6 +26,12 @@ from resources_portal.models.user import User
 
 logger = get_and_configure_logger(__name__)
 
+
+EMAIL_HTML_BODY = (
+    Path("resources_portal/email_assets/resources-portal-email-templated-inlined.html")
+    .read_text()
+    .replace("\n", "")
+)
 NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_ASSIGNED": {
         "plain_text_email": (
@@ -194,54 +208,51 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
     ):
         return
 
+    # All the properties which can be used in template strings in the
+    # config. If they don't get set because the association doesn't
+    # exist, then they better not be needed.
+    # TODO: create and raise a NotificationsMisconfigured exception if this isn't true.
+    available_properties = {
+        "notifications_url": NOTIFICATIONS_URL,
+        "material_category": None,
+        "material_name": None,
+        "request_url": None,
+    }
+    if instance.associated_material:
+        available_properties["material_category"] = instance.associated_material.category
+        available_properties["material_name"] = instance.associated_material.title
+    if instance.associated_material_request:
+        available_properties["request_url"] = instance.associated_material_request.get_url()
+
+    notification_config = NOTIFICATIONS[instance.notification_type]
+    cta = notification_config["CTA"].format(**available_properties)
+    cta_link = getattr(instance, notification_config["CTA_link_field"]).frontend_URL
+    plain_text_email = (
+        notification_config["plain_text_email"].format(**available_properties)
+        + PLAIN_TEXT_EMAIL_FOOTER
+    )
+    body = notification_config["body"].format(**available_properties)
+    subject = notification_config["subject"].format(**available_properties)
+
+    formatted_html = (
+        EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
+        .replace("REPLACE_CTA", cta)
+        .replace("REPLACE_INVITATION_LINK", cta_link)
+    )
+
+    logger.info("Sending an email notification to {email}.")
+
     if settings.AWS_SES_DOMAIN:
-        send_mail()
+        send_mail(
+            EMAIL_SOURCE,
+            [instance.notified_email],
+            subject,
+            plain_text_email,
+            formatted_html,
+            LOGO_EMBEDDED_IMAGE_CONFIGS,
+        )
     else:
         logger.info(
             f'In prod the following message will be sent to the following address: "'
             f'"{instance.message}", "{instance.notified_user.email}".'
         )
-
-
-@receiver(post_save, sender="resources_portal.Notification")
-def send_email_notification(sender, instance=None, created=False, **kwargs):
-    source_template = "Resources Portal Mail Robot <no-reply@{}>"
-
-    # Check instance.delivered to allow creating a notification
-    # without triggering an email.
-    if created and not instance.delivered:
-        # Check if user has settings turned on for this notificiation
-        if instance.notified_user in instance.associated_organization.members.all():
-            user_setting = OrganizationUserSetting.objects.get(
-                user=instance.notified_user, organization=instance.associated_organization
-            )
-            if not getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
-                return
-
-        instance.email = instance.notified_user.email
-
-        if settings.AWS_SES_DOMAIN:
-            # Create a new SES resource and specify a region.
-            # I need to pass region in as a env var.
-            client = boto3.client("ses", region_name=settings.AWS_REGION)
-
-            # Provide the contents of the email.
-            client.send_email(
-                Destination={"ToAddresses": [instance.email]},
-                Message={
-                    "Body": {"Text": {"Charset": "UTF-8", "Data": instance.message}},
-                    "Subject": {
-                        "Charset": "UTF-8",
-                        "Data": "You have a new notification from the Resources Portal!",
-                    },
-                },
-                Source=source_template.format(settings.AWS_SES_DOMAIN),
-            )
-        else:
-            logger.info(
-                f'In prod the following message will be sent to the following address: "'
-                f'"{instance.message}", "{instance.notified_user.email}".'
-            )
-
-        instance.delivered = True
-        instance.save()

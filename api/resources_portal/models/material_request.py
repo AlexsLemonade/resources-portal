@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
@@ -99,6 +100,10 @@ class MaterialRequest(SafeDeleteModel):
     @property
     def has_issues(self):
         return self.issues.filter(status="OPEN").count() > 0
+
+    @property
+    def frontend_URL(self):
+        return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
     def save(self, *args, **kwargs):
         if self.assigned_to is None:

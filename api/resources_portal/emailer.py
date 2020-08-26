@@ -7,7 +7,35 @@ from django.conf import settings
 
 import boto3
 
+EMAIL_SOURCE = (
+    f"Resources Portal Mail Robot <no-reply@{settings.AWS_SES_DOMAIN}>"
+    if settings.AWS_SES_DOMAIN
+    else "Resources Portal Mail Robot"
+)
 EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
+LOGO_EMBEDDED_IMAGE_CONFIGS = [
+    {
+        "content_id": "ccrr-logo",
+        "file_path": "resources_portal/email_assets/ccrr-logo.png",
+        "subtype": "png",
+    },
+    {
+        "content_id": "alexs-logo",
+        "file_path": "resources_portal/email_assets/alexs-logo.png",
+        "subtype": "png",
+    },
+]
+NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/settings"
+# The blank line in this footer is intentional:
+PLAIN_TEXT_EMAIL_FOOTER = """
+
+You are receiving this email because you subscribed to receive notifications from CCRR portal.
+Manage Notifications ({notifications_url})
+Alex's Lemonade Stand Foundation
+111 Presidential Blvd, Suite 203, Bala Cynwyd,  PA 19004
+""".format(
+    notifications_url=NOTIFICATIONS_URL
+)
 
 
 def create_multipart_message(
