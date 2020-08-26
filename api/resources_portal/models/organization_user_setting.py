@@ -19,15 +19,8 @@ class OrganizationUserSetting(SafeDeleteModel):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    new_request_notif = models.BooleanField(default=True)
-    change_in_request_status_notif = models.BooleanField(default=True)
-    request_approval_determined_notif = models.BooleanField(default=True)
-    request_assigned_notif = models.BooleanField(default=True)
-    reminder_notif = models.BooleanField(default=True)
-    transfer_requested_notif = models.BooleanField(default=True)
-    transfer_updated_notif = models.BooleanField(default=True)
-    perms_granted_notif = models.BooleanField(default=True)
-    misc_notif = models.BooleanField(default=True)
+    non_assigned_notifications = models.BooleanField(default=False)
+    weekly_digest = models.BooleanField(default=True)
 
     user = models.ForeignKey(
         "User",
@@ -44,6 +37,3 @@ class OrganizationUserSetting(SafeDeleteModel):
         on_delete=models.CASCADE,
         related_name="user_settings",
     )
-
-    # TODO: Add individual settings here
-    # new_resource_request = models.BooleanField(default=True)

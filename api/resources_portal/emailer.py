@@ -7,6 +7,8 @@ from django.conf import settings
 
 import boto3
 
+EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
+
 
 def create_multipart_message(
     sender: str,
@@ -58,20 +60,16 @@ def create_multipart_message(
 
 
 def send_mail(
-    sender: str,
-    recipients: list,
-    title: str,
-    text: str = None,
-    html: str = None,
-    attachments: list = None,
+    recipients: list, title: str, text: str = None, html: str = None, attachments: list = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
-    msg = create_multipart_message(sender, recipients, title, text, html, attachments)
+    source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
+    msg = create_multipart_message(source, recipients, title, text, html, attachments)
     ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
     return ses_client.send_raw_email(
-        Source=sender, Destinations=recipients, RawMessage={"Data": msg.as_string()}
+        Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
     )

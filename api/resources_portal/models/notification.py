@@ -9,12 +9,33 @@ from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.config.logging import get_and_configure_logger
+from resources_portal.emailer import send_mail
 from resources_portal.models.material import Material
+from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.organization import Organization
 from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
 
 logger = get_and_configure_logger(__name__)
+
+NOTIFICATIONS = {
+    "MATERIAL_REQUEST_SHARER_ASSIGNED": {
+        "plain_text_email": (
+            "You have been assigned to a new request for {material_category}, "
+            " {material_name}.\n\nView request details ({request_url}"
+        ),
+        "subject": "You are assigned to a new request",
+        "body": "You have been assigned to a new request for {material_category}, .",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    }
+}
 
 
 class Notification(ComputedFieldsModel, SafeDeleteModel):
@@ -23,29 +44,30 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
-    NOTIFICATION_TYPES = (
-        ("ADDED_TO_ORG", "ADDED_TO_ORG"),
-        ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
-        ("ORG_INVITE_CREATED", "ORG_INVITE_CREATED"),
-        ("ORG_INVITE_ACCEPTED", "ORG_INVITE_ACCEPTED"),
-        ("ORG_REQUEST_ACCEPTED", "ORG_REQUEST_ACCEPTED"),
-        ("ORG_INVITE_REJECTED", "ORG_INVITE_REJECTED"),
-        ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
-        ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
-        ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
-        ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
-        ("EXECUTED_MTA_UPLOADED", "EXECUTED_MTA_UPLOADED"),
-        ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
-        ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
-        ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
-        ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
-        ("TRANSFER_CANCELLED", "TRANSFER_CANCELLED"),
-        ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
-        ("TRANSFER_VERIFIED_FULFILLED", "TRANSFER_VERIFIED_FULFILLED"),
-        ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
-        ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
-        ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
-    )
+    NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATIONS.keys())
+    # NOTIFICATION_TYPES = (
+    #     ("ADDED_TO_ORG", "ADDED_TO_ORG"),
+    #     ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
+    #     ("ORG_INVITE_CREATED", "ORG_INVITE_CREATED"),
+    #     ("ORG_INVITE_ACCEPTED", "ORG_INVITE_ACCEPTED"),
+    #     ("ORG_REQUEST_ACCEPTED", "ORG_REQUEST_ACCEPTED"),
+    #     ("ORG_INVITE_REJECTED", "ORG_INVITE_REJECTED"),
+    #     ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
+    #     ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
+    #     ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
+    #     ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
+    #     ("EXECUTED_MTA_UPLOADED", "EXECUTED_MTA_UPLOADED"),
+    #     ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
+    #     ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
+    #     ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
+    #     ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
+    #     ("TRANSFER_CANCELLED", "TRANSFER_CANCELLED"),
+    #     ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
+    #     ("TRANSFER_VERIFIED_FULFILLED", "TRANSFER_VERIFIED_FULFILLED"),
+    #     ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
+    #     ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
+    #     ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
+    # )
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -69,6 +91,9 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
     )
     associated_material = models.ForeignKey(
         Material, blank=False, null=True, on_delete=models.CASCADE
+    )
+    associated_material_request = models.ForeignKey(
+        MaterialRequest, blank=False, null=True, on_delete=models.CASCADE
     )
 
     email = models.EmailField(blank=False, null=True)
@@ -150,6 +175,32 @@ NOTIFICATION_SETTING_DICT = {
     "REQUEST_ISSUE_OPENED": "transfer_updated_notif",
     "REQUEST_ISSUE_CLOSED": "transfer_updated_notif",
 }
+
+
+@receiver(post_save, sender="resources_portal.Notification")
+def send_email_notification(sender, instance=None, created=False, **kwargs):
+    # Check instance.delivered to allow creating a notification
+    # without triggering an email.
+    if not (
+        created
+        and not instance.delivered
+        and (
+            instance.notified_user.non_assigned_notifications
+            or (
+                instance.associated_material_request
+                and instance.notified_user == instance.associated_material_request
+            )
+        )
+    ):
+        return
+
+    if settings.AWS_SES_DOMAIN:
+        send_mail()
+    else:
+        logger.info(
+            f'In prod the following message will be sent to the following address: "'
+            f'"{instance.message}", "{instance.notified_user.email}".'
+        )
 
 
 @receiver(post_save, sender="resources_portal.Notification")
