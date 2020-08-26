@@ -31,22 +31,401 @@ EMAIL_HTML_BODY = (
     .replace("\n", "")
 )
 NOTIFICATIONS = {
-    "MATERIAL_REQUEST_SHARER_ASSIGNED": {
-        "plain_text_email": (
-            "You have been assigned to a new request for {material_category}, "
-            " {material_name}.\n\nView request details ({request_url}"
-        ),
+    "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW": {
         "subject": "You are assigned to a new request",
         "body": "You have been assigned to a new request for {material_category}, .",
         "CTA": "View Request",
         "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\nYou have been assigned to a new request for {material_category}, "
+            " {material_name}.\n\nView request details ({request_url})",
+        ),
         "required_associations": [
             "associated_user",
             "associated_material",
             "associated_material_request",
             "associated_organization",
         ],
-    }
+    },
+    "MATERIAL_REQUEST_SHARER_RECEIVED": {
+        "subject": "<team name>: New Request for <resource type>",
+        "body": "<Team name> received a new request received for <resource type> <resource name>.",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n <Team name> received a new request received for <resource type>,"
+            " {material_name}.\n\nView request details ({request_url})"
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_ASSIGNED": {
+        "subject": "<team name>: You are assigned to a request for <resource type>",
+        "body": "You have been assigned to a request for <resource type>, <resource name> from <Requester>.",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\nYou have been assigned to a request for {material_category},"
+            " {material_name} from <Requester>.\n\nView request details ({request_url})",
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_ASSIGNMENT": {
+        "subject": "<team member> assigned to request for <resource type>",
+        "body": " <team member> has been assigned to a request for <resource type>, <resource name> from <Requester>",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<team member> has been assigned to a request for <resource type>,"
+            " {material_name} from <Requester>.\n\nView request details ({request_url})",
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_APPROVED": {
+        "subject": "Request for <resource type> accepted",
+        "body": (
+            "You/<Team member> accepted a request for <resource type>, <resource name> from <Requester>."
+            "Waiting for <Requester> to provide the following information:\n{required_information}"
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\nYou/<Team member> accepted a request for <resource type>, <resource name> from <Requester>."
+            "\nWaiting for <Requester> to provide the following information:\n{required_information}:"
+            "\n\nView request details ({request_url})"
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_RECEIVED_INFO": {
+        "subject": "Action Required: Received additional information from <Requester>",
+        "body": "<Requester> provided the following required items for a request for <resource type>, <resource name>:\n{provided_information}",
+        "CTA": "Review Items",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<Requester> provided the following required items for a request for"
+            " <resource type>, <resource name>:{provided_information}\n\nReview items ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_RECEIVED_MTA": {
+        "subject": "Action Required: Request for <resource type>",
+        "body": (
+            "<Requester> provided the following additional documents for a request for"
+            " <resource type><resource name>\n - MTA signed by <Requester>"
+            "\nPlease sign and upload the requester signed MTA"
+        ),
+        "CTA": "Upload Fully Executed MTA",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<Requester> provided the following additional documents"
+            " for a request for <resource type>, <resource name>"
+            "\n- MTA signed by <Requester> \nPlease sign and upload the requester signed MTA."
+            "\n\nUpload fully executed MTA. ({request_url})."
+        ),
+        "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_EXECUTED_MTA": {
+        "subject": "Uploaded executed MTA for request for <resource type>",
+        "body": (
+            "You/<Team member> uploaded the fully executed MTA for a request for"
+            " <resource type>, <resource name> from <Requester name>."
+            "\nPlease make arrangements to send the <resource type> to <Requester>."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\nYou/<Team member> uploaded the fully executed MTA"
+            " for a request for <resource type>, <resource name> from <Requester name>."
+            "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_FULFILLED": {
+        "subject": "Fulfilled: Request for <resource type>",
+        "body": (
+            "You/<Team member> marked a request for <resource type>, <resource name>"
+            " from <Requester> as Fulfilled."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\nYou/<Team member> marked a request for <resource type>,"
+            " <resource name> from <Requester> as Fulfilled."
+            "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_SHARER_VERIFIED": {
+        "subject": "<Requester> received <resource type>",
+        "body": "<Requester> confirmed receipt of <resource type>, <resource name>.",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<Requester> confirmed receipt of <resource type>, <resource name>."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_ISSUE_SHARER_REPORTED": {
+        "subject": "Issue reported: Request for <resource type>",
+        "body": (
+            "<Requester> has reported an issue with a fulfilled request for"
+            " <resource type>, <resource name>.\n<Description of issue> "
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<Requester> has reported an issue with a fulfilled request for"
+            " <resource type>, <resource name>.\n<Description of issue>"
+            "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_ACCEPTED": {
+        "subject": "Action required: Request for <resource type> accepted",
+        "body": (
+            "<team name> has accepted your request for <resource type>, <resource name> "
+            "on the condition that you provide the following items:\n{required_information}"
+        ),
+        "CTA": "Provide Additional Items",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<team name> has accepted your request for <resource type>, <resource name> "
+            "on the condition that you provide the following items:\n{required_information}"
+            "\n\nProvide Additional Items. ({request_url})."
+        ),
+        "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT": {
+        "subject": "In fulfillment: Request for <resource type> accepted",
+        "body": (
+            "<team name> has accepted your request for <resource type>,"
+            " <resource name> and is working to fulfill your request."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<team name> has accepted your request for <resource type>,"
+            " <resource name> and is working to fulfill your request."
+            "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA": {
+        "subject": "Executed MTA uploaded for request for <resource type>",
+        "body": (
+            "<team name> has uploaded the fully executed MTA for your request for"
+            " <resource type>, <resource name> and is working to fulfill your request."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<team name> has uploaded the fully executed MTA for your"
+            " request for <resource type>, <resource name> and is working to fulfill your request."
+            "\n\nView request details. ({request_url})."
+        ),
+        "attachments": ["MATERIAL_EXECUTED_MTA"],
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_FULFILLED": {
+        "subject": "Fulfilled: Request for <resource type>",
+        "body": (
+            "<team name> marked your request for <resource type>,"
+            " <resource name> as fulfilled.\nPlease view fulfilment notes for details."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n<team name> marked your request for <resource type>,"
+            " <resource name> as fulfilled.\nPlease view fulfilment notes for details. "
+            "\n\nView fulfillment notes. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_ADDED": {
+        "subject": "<team name>: New <resource type> added",
+        "body": ("<Team Member> added a new <resource type>, <resource name> to <team name>."),
+        "CTA": "View Resource",
+        "CTA_link_field": "associated_material",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> added a new <resource type>, <resource name> to <team name>."
+            "\n\nView resource. ({resource_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_ARCHIVED": {
+        "subject": "<team name>: <resource type> archived",
+        "body": ("<Team Member> archived <resource type>, <resource name> from <team name>."),
+        "CTA": "View Archived Resource",
+        "CTA_link_field": "associated_material",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> archived <resource type>, <resource name> from <team name>."
+            "\n\nView archived resource. ({resource_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_DELETED": {
+        "subject": "<team name>:<resource type> deleted",
+        "body": ("<Team Member> deleted <resource type>, <resource name> from <team name>."),
+        "CTA": "YOU CAN'T DO ANYTHING ABOUT IT!",
+        "CTA_link_field": "associated_material",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> deleted <resource type>, <resource name> from <team name>."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_organization",
+        ],
+    },
+    "ORGANIZTION_NEW_MEMBER": {
+        "subject": "<team name>: New member added",
+        "body": ("<Team Member> was added to <team name>."),
+        "CTA": "View Members",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> was added to <team name>."
+            "\n\nView members. ({organization_url})."
+        ),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
+    "ORGANIZTION_BECAME_OWNER": {
+        "subject": "<team name>: You have been made owner",
+        "body": (
+            "<Old owner> has made you the owner of <team name>."
+            "\nYou can now add new team members and remove members and resources."
+        ),
+        "CTA": "Manage Team",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> was added to <team name>."
+            "\n\nManage team. ({organization_url})."
+        ),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
+    "ORGANIZTION_NEW_OWNER": {
+        "subject": "<team name>: New owner",
+        "body": ("<Team Member> is now the owner of <team name>."),
+        "CTA": "View Team",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": (
+            "{your_name},\n<Team Member> is now the owner of <team name>."
+            "\n\nView team. ({organization_url})."
+        ),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
+    "ORGANIZTION_MEMBER_LEFT": {
+        "subject": "<team name>: Member left team",
+        "body": ("<Team Member> left <team name>."),
+        "CTA": "None?",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": ("{your_name},\n<Team Member> left <team name>"),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
+    "ORGANIZTION_NEW_GRANT": {
+        "subject": "<team name>: New grant linked",
+        "body": (
+            "<Team Member> linked a new grant <Grant Name> with <team name>."
+            "\nTeam members can now add resources associated with the grant."
+        ),
+        "CTA": "View Team Grants",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": (
+            "{your_name},<Team Member> linked a new grant <Grant Name> with <team name>. "
+            "\nTeam members can now add resources associated with the grant."
+            "\n\nView team grants. ({organization_url})."
+        ),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
+    "ORGANIZATION_INVITE": {
+        "subject": "You have been added to <team name>",
+        "body": (" <Team Owner> has added you to their team, <team name>."),
+        "CTA": "View Team",
+        "CTA_link_field": "associated_organization",
+        "plain_text_email": (
+            "{your_name},<Team Owner> has added you to their team, <team name>."
+            "\n\nView team. ({organization_url})."
+        ),
+        "required_associations": ["associated_user", "associated_organization",],
+    },
 }
 
 

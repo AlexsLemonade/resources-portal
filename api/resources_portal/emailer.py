@@ -29,6 +29,8 @@ NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/se
 # The blank line in this footer is intentional:
 PLAIN_TEXT_EMAIL_FOOTER = """
 
+The CCRR Team
+-----
 You are receiving this email because you subscribed to receive notifications from CCRR portal.
 Manage Notifications ({notifications_url})
 Alex's Lemonade Stand Foundation
