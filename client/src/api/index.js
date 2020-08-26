@@ -4,6 +4,13 @@ export const host = process.env.API_HOST
 export const version = process.env.API_VERSION
 export const path = `${host}/${version}/`
 
+// create new form data object and attach keys from object
+const formDataFromKeys = (obj, ...keys) => {
+  const formData = new FormData()
+  keys.forEach((key) => formData.append(key, obj[key]))
+  return formData
+}
+
 const getAPIURL = (endpoint = '', query = {}) => {
   const search = new URLSearchParams()
 
@@ -24,24 +31,53 @@ const request = async (
   url,
   { headers = {}, authorization, ...options } = {}
 ) => {
-  const { body } = options
-  const config = { ...options }
-  config.body = body
-  config.headers = {
-    'content-type': 'application/json',
-    ...headers
+  const Authorization = authorization ? `Token ${authorization}` : undefined
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization,
+      ...headers
+    },
+    ...options
   }
-  if (authorization) config.headers.Authorization = `Token ${authorization}`
 
   try {
     const response = await fetch(url, config)
     return {
-      isOk: true,
+      isOk: response.ok,
       status: response.status,
       response: await response.json()
     }
   } catch (e) {
-    console.log(e)
+    return {
+      isOk: false,
+      status: e.status,
+      error: e
+    }
+  }
+}
+
+const formDataRequest = async (
+  url,
+  { headers = {}, authorization, ...options } = {}
+) => {
+  const Authorization = authorization ? `Token ${authorization}` : undefined
+  const config = {
+    headers: {
+      Authorization,
+      ...headers
+    },
+    ...options
+  }
+
+  try {
+    const response = await fetch(url, config)
+    return {
+      isOk: response.ok,
+      status: response.status,
+      response: await response.json()
+    }
+  } catch (e) {
     return {
       isOk: false,
       status: e.status,
@@ -66,13 +102,13 @@ export default {
     resources: (query) => request(getAPIURL('search/materials', query))
   },
   resources: {
-    find: (id) => request(getAPIURL(`materials/${id}`))
+    detail: (id) => request(getAPIURL(`materials/${id}`))
   },
   user: {
     authenticate: userAuthenticate,
     getInfo: userGetInfo,
     refreshToken: (token) =>
-      request(`${getAPIURL('refresh-token/')}`, {
+      request(getAPIURL('refresh-token/'), {
         method: 'POST',
         body: { token }
       }),
@@ -111,6 +147,49 @@ export default {
       )
 
       return [tokenRequest, userRequest]
+    }
+  },
+  teams: {
+    get: (organizationId, authorization) =>
+      request(getAPIURL(`organizations/${organizationId}/`), {
+        authorization
+      }),
+    grants: {
+      get: (organizationId, authorization) =>
+        request(getAPIURL(`organizations/${organizationId}/grants/`), {
+          authorization
+        })
+    },
+    resources: {
+      get: (organizationId, authorization) =>
+        request(getAPIURL(`organizations/${organizationId}/materials/`), {
+          authorization
+        })
+    }
+  },
+  attachments: {
+    create: async (attachment, authorization) => {
+      const formData = formDataFromKeys(attachment, 'file', 'description')
+      return formDataRequest(getAPIURL('attachments/'), {
+        authorization,
+        method: 'POST',
+        body: formData
+      })
+    },
+    update: (id, attachment, authorization) => {
+      // take the attachment object and only PUT the changable things
+      const formData = formDataFromKeys(attachment, 'description')
+      return request(getAPIURL(`attachments/${id}/`), {
+        authorization,
+        method: 'PATCH',
+        body: formData
+      })
+    },
+    delete: (id, authorization) => {
+      return request(getAPIURL(`attachments/${id}/`), {
+        authorization,
+        method: 'DELETE'
+      })
     }
   }
 }

@@ -1,11 +1,11 @@
 import { Box, Heading } from 'grommet'
 import * as React from 'react'
+import { Modal } from '../Modal'
 import {
   AccountCreationInfo,
-  Modal,
   ORCIDDescription,
   ORCIDSignInButton
-} from './Modal'
+} from './CommonModalContent'
 
 export const SignInModalContent = () => {
   return (
@@ -45,11 +45,9 @@ export const SignInModalContent = () => {
 
 export const SignInModal = ({ showing, setShowing }) => {
   return (
-    <Modal
-      showing={showing}
-      setShowing={setShowing}
-      content={<SignInModalContent />}
-    />
+    <Modal showing={showing} setShowing={setShowing}>
+      <SignInModalContent />
+    </Modal>
   )
 }
 

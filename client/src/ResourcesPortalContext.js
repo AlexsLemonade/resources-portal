@@ -7,10 +7,20 @@ export const ResourcesPortalContextProvider = ({ children }) => {
   const [search, setSearch] = React.useState({})
   const [user, setUser] = useLocalStorage('user', undefined)
   const [token, setToken] = useLocalStorage('token', '')
+  const [alertsQueues, setAlertsQueues] = React.useState({})
 
   return (
     <ResourcesPortalContext.Provider
-      value={{ search, setSearch, user, setUser, token, setToken }}
+      value={{
+        search,
+        setSearch,
+        user,
+        setUser,
+        token,
+        setToken,
+        alertsQueues,
+        setAlertsQueues
+      }}
     >
       {children}
     </ResourcesPortalContext.Provider>
