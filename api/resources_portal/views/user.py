@@ -12,6 +12,7 @@ from resources_portal.views.relation_serializers import (
 )
 
 
+# This shouldn't change a thing!
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
