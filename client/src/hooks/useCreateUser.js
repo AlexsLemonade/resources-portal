@@ -45,13 +45,20 @@ export const useCreateUser = (
       save()
     }
 
-    // If ORCID has returned the auth code to this page, sign the user in
-    if (queryCode && !user && !needsEmail) {
-      if (Object.keys(orcidInfo).length === 0) {
-        api.user.getORCID(queryCode, initialRedirectUrl).then((response) => {
-          setOrcidInfo({ ...response.response })
-        })
-      }
+    // If we have the auth code, get the ORCID info
+    if (queryCode && Object.keys(orcidInfo).length === 0) {
+      api.user.getORCID(queryCode, initialRedirectUrl).then((response) => {
+        setOrcidInfo({ ...response.response })
+      })
+    }
+
+    //  Once we have that info, login the user
+    if (
+      queryCode &&
+      Object.keys(orcidInfo).length !== 0 &&
+      !user &&
+      !needsEmail
+    ) {
       createAndLoginUser(
         orcidInfo.orcid,
         orcidInfo.access_token,
@@ -121,8 +128,6 @@ export const useCreateUser = (
       loginEmail,
       JSON.stringify(loginGrants)
     )
-
-    console.log(tokenRequest)
 
     if (tokenRequest.status === 401) {
       setNeedsEmail(true)
