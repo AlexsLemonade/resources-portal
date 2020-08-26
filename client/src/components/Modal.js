@@ -1,7 +1,9 @@
 import { Anchor, Box, Button, Layer, Text } from 'grommet'
 import * as React from 'react'
-import Cross from '../images/cross-black-tint-30.svg'
-import ORCIDLogo from '../images/grant.svg'
+// import Cross from '../images/cross-black-tint-30.svg'
+// import ORCIDLogo from '../images/grant.svg'
+const Cross = Box
+const ORCIDLogo = Box
 
 export const ORCIDDescription = () => {
   return (
