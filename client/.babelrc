@@ -9,7 +9,8 @@
             {
               "cleanupIDs": {
                 "minify": false
-              }
+              },
+              convertTransform: false
             }
           ]
         }

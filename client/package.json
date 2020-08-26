@@ -16,17 +16,18 @@
     "grommet-icons": "^4.4.0",
     "isomorphic-unfetch": "^3.0.0",
     "next": "9.3.2",
+    "qs": "^6.8.0",
     "raw-loader": "^4.0.1",
     "react": "16.13.0",
     "react-dom": "16.13.0",
     "react-dropzone": "^10.2.2",
     "sass": "^1.26.3",
     "styled-components": "^5.0.1",
-    "yup": "^0.29.1",
-    "qs": "^6.8.0"
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
+    "@babel/eslint-parser": "^7.11.4",
     "babel-loader": "8.0.4",
     "babel-plugin-inline-react-svg": "^1.1.1",
     "babel-plugin-styled-components": "^1.10.7",
