@@ -1,11 +1,11 @@
 import { Box, Heading, Text } from 'grommet'
 import * as React from 'react'
+import { Modal } from '../Modal'
 import {
   AccountCreationInfo,
-  Modal,
   ORCIDDescription,
   ORCIDSignInButton
-} from './Modal'
+} from './CommonModalContent'
 
 const CreateAccountModalContent = ({ title }) => {
   return (
@@ -44,7 +44,7 @@ const CreateAccountModalContent = ({ title }) => {
         alignSelf="center"
         height="0px"
         width="large"
-        margin={{ top: 'large' }}
+        margin={{ top: 'small' }}
         border={[{ size: 'small', side: 'top', color: 'black-tint-95' }]}
       />
       <ORCIDDescription />
@@ -54,11 +54,9 @@ const CreateAccountModalContent = ({ title }) => {
 
 const CreateAccountModal = ({ showing, setShowing, title }) => {
   return (
-    <Modal
-      showing={showing}
-      setShowing={setShowing}
-      content={<CreateAccountModalContent title={title} />}
-    />
+    <Modal showing={showing} setShowing={setShowing}>
+      <CreateAccountModalContent title={title} />
+    </Modal>
   )
 }
 

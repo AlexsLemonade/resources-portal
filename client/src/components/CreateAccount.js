@@ -1,7 +1,7 @@
 import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
-import { ORCIDSignInButton } from './Modal'
+import { ORCIDSignInButton } from './modals/CommonModalContent'
 
 export const CreateAccountStep = ({ ORCID, nextStep }) => {
   return (
