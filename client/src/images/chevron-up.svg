@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="16px" viewBox="0 0 24 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icons/chevron-up</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M12,10.5822704 L21.4673913,1.87405647e-13 L24,2.88607375 C16.1050725,11.6371219 12.1050725,16.0084266 12,15.9999878 C11.8913043,16.0042072 7.89130435,11.6329025 4.60565563e-14,2.88607375 L2.5326087,1.87405647e-13 L12,10.5822704 Z" id="icons/chevron-up--path-1"></path>
+    </defs>
+    <g id="icons/chevron-up--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons/chevron-up--icons-badges-variations" transform="translate(-264.000000, -477.000000)">
+            <g id="icons/chevron-up--icons/chevron-up" transform="translate(264.000000, 473.000000)">
+                <rect id="icons/chevron-up--Rectangle" x="0" y="0" width="24" height="24"></rect>
+                <g transform="translate(0.000000, 4.000000)">
+                    <mask id="icons/chevron-up--mask-2" fill="white">
+                        <use xlink:href="#icons/chevron-up--path-1"></use>
+                    </mask>
+                    <use id="icons/chevron-up--Shape" fill="#4A4A4A" fill-rule="nonzero" transform="translate(12.000000, 8.000000) scale(1, -1) translate(-12.000000, -8.000000) " xlink:href="#icons/chevron-up--path-1"></use>
+                    <g id="icons/chevron-up--color/black-tint/0-000000" mask="url(#icons/chevron-up--mask-2)" fill="#000000" fill-rule="evenodd">
+                        <rect id="icons/chevron-up--gray-70-4A4A4A" x="0" y="0" width="24" height="16"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

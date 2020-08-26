@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="24px" viewBox="0 0 16 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icons/chevron-right</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M9,14.5822704 L18.4673913,4 L21,6.88607375 C13.1050725,15.6371219 9.10507246,20.0084266 9,19.9999878 C8.89130435,20.0042072 4.89130435,15.6329025 -3,6.88607375 L-0.467391304,4 L9,14.5822704 Z" id="icons/chevron-right--path-1"></path>
+    </defs>
+    <g id="icons/chevron-right--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons/chevron-right--icons-badges-variations" transform="translate(-234.000000, -473.000000)">
+            <g id="icons/chevron-right--icons/chevron-right" transform="translate(229.000000, 473.000000)">
+                <rect id="icons/chevron-right--Rectangle" x="0" y="0" width="24" height="24"></rect>
+                <g transform="translate(4.000000, 0.000000)">
+                    <mask id="icons/chevron-right--mask-2" fill="white">
+                        <use xlink:href="#icons/chevron-right--path-1"></use>
+                    </mask>
+                    <use id="icons/chevron-right--Shape" fill="#4A4A4A" fill-rule="nonzero" transform="translate(9.000000, 12.000000) scale(-1, 1) rotate(90.000000) translate(-9.000000, -12.000000) " xlink:href="#icons/chevron-right--path-1"></use>
+                    <g id="icons/chevron-right--color/black-tint/0-000000" mask="url(#icons/chevron-right--mask-2)" fill="#000000" fill-rule="evenodd">
+                        <rect id="icons/chevron-right--gray-70-4A4A4A" x="0" y="0" width="17" height="24"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
