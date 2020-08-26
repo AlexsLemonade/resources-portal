@@ -1,5 +1,5 @@
 import React from 'react'
-import { DrillDownNav } 'components/DrillDownNav'
+import { DrillDownNav } from 'components/DrillDownNav'
 
 export const Request = ({ id }) => {
   return (
