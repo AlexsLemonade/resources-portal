@@ -151,18 +151,18 @@ export default {
   },
   teams: {
     get: (organizationId, authorization) =>
-    request(getAPIURL(`organizations/${organizationId}/`), {
+      request(getAPIURL(`organizations/${organizationId}/`), {
         authorization
       }),
     grants: {
       get: (organizationId, authorization) =>
-      request(getAPIURL(`organizations/${organizationId}/grants/`), {
+        request(getAPIURL(`organizations/${organizationId}/grants/`), {
           authorization
         })
     },
     resources: {
       get: (organizationId, authorization) =>
-      request(getAPIURL(`organizations/${organizationId}/materials/`), {
+        request(getAPIURL(`organizations/${organizationId}/materials/`), {
           authorization
         })
     }
