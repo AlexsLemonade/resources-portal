@@ -11,7 +11,6 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 from resources_portal.views import (
     AddressViewSet,
     AttachmentViewSet,
-    CreateUserViewSet,
     FulfillmentNoteViewSet,
     GrantMaterialViewSet,
     GrantViewSet,
@@ -112,9 +111,7 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
-urlpatterns.append(
-    path("v1/create-user/", CreateUserViewSet.as_view({"post": "create"}), name="create-user")
-)
+
 urlpatterns.append(
     path(
         "v1/orcid-credentials/",

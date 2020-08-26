@@ -18,13 +18,17 @@ last_name = fake.last_name()
 
 ORCID_AUTHORIZATION_DICT = {
     "name": f"{first_name} {last_name}",
-    "orcid": str(uuid.uuid4()),
-    "access_token": str(uuid.uuid4()),
-    "refresh_token": str(uuid.uuid4()),
+    "orcid": "ORCID",
+    "access_token": "ACCESS_TOKEN",
+    "refresh_token": "REFRESH_TOKEN",
 }
 
 ORCID_SUMMARY_DICT = {
-    "name": {"given-names": {"value": first_name}, "family-name": {"value": last_name}}
+    "person": {
+        "name": {"given-names": {"value": first_name}, "family-name": {"value": last_name}},
+        "emails": {"email": [{"email": "email@email.com"}]},
+    },
+    "orcid-identifier": {"path": "ORCID"},
 }
 
 

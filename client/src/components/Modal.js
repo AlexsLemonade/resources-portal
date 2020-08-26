@@ -1,6 +1,6 @@
 import { Box, Button, Layer } from 'grommet'
 import * as React from 'react'
-import Cross from '../images/cross-black-tint-30.svg'
+import Cross from '../images/cross.svg'
 
 export const Modal = ({ showing, setShowing, children }) => {
   return (

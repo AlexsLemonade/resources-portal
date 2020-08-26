@@ -33,7 +33,6 @@ class LoginViewSet(viewsets.ViewSet):
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
-        logger.error(request.data)
         if "code" not in request.data:
             return JsonResponse(
                 {

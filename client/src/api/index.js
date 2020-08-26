@@ -57,7 +57,7 @@ export const userLogin = (data) =>
   })
 
 export const userCreate = (data) =>
-  request(getAPIURL('create-user/'), {
+  request(getAPIURL('user/'), {
     method: 'POST',
     body: JSON.stringify(data)
   })

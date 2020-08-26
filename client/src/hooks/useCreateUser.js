@@ -122,6 +122,8 @@ export const useCreateUser = (
       JSON.stringify(loginGrants)
     )
 
+    console.log(tokenRequest)
+
     if (tokenRequest.status === 401) {
       setNeedsEmail(true)
       return { error: tokenRequest }
