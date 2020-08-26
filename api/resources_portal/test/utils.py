@@ -59,8 +59,9 @@ def generate_mock_orcid_record_response(*args, **kwargs):
 
 
 def generate_random_mock_orcid_record_response(*args, **kwargs):
-    ORCID_SUMMARY_DICT["orcid-identifier"]["path"] = uuid.uuid4()
-    return MockORCIDRecordResponse(ORCID_SUMMARY_DICT)
+    summary_dict = ORCID_SUMMARY_DICT.copy()
+    summary_dict["orcid-identifier"]["path"] = uuid.uuid4()
+    return MockORCIDRecordResponse(summary_dict)
 
 
 def get_mock_auth_data(grant_info):

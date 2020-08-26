@@ -78,8 +78,8 @@ class TestNewMemberJoinsALab(APITestCase):
 
         invitation_json = {
             "organization": self.primary_lab.id,
-            "request_receiver": new_member.id,
-            "requester": self.primary_prof.id,
+            "request_receiver": self.primary_prof.id,
+            "requester": new_member.id,
             "invite_or_request": "INVITE",
         }
 
