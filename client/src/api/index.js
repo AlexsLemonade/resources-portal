@@ -4,7 +4,7 @@ export const host = process.env.API_HOST
 export const version = process.env.API_VERSION
 export const path = `${host}/${version}/`
 
-// create new form data object and attack keys from object
+// create new form data object and attach keys from object
 const formDataFromKeys = (obj, ...keys) => {
   const formData = new FormData()
   keys.forEach((key) => formData.append(key, obj[key]))
