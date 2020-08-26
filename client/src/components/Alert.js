@@ -2,10 +2,10 @@ import React from 'react'
 import { Box, Button, Text } from 'grommet'
 import styled from 'styled-components'
 
-import Info from '../images/info-white.svg'
-import Warning from '../images/warning-white.svg'
-import Check from '../images/check-white.svg'
-import Cross from '../images/cross-white.svg'
+import Info from '../images/info.svg'
+import Warning from '../images/warning.svg'
+import Check from '../images/check.svg'
+import Cross from '../images/cross.svg'
 
 const types = {
   info: {

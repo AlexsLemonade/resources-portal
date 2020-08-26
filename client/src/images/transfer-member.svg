@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="20px" viewBox="0 0 24 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icons/transfer-member</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M17.5319296,2.00223521 C17.3743476,2.02118691 17.2558188,2.15523528 17.2560338,2.3142552 L17.2560338,6.0406285 L9.22174558,6.0406285 C9.0501395,6.0415806 8.91124908,6.18070787 8.9102596,6.35264564 L8.9102596,10.6584822 C8.91124908,10.83042 9.0501395,10.9695472 9.22174558,10.9704993 L17.2560338,10.9704993 L17.2560338,14.6968869 C17.2593871,14.8221266 17.3367632,14.9333693 17.4528712,14.9798775 C17.5689792,15.0263858 17.7015712,14.9992479 17.7901725,14.9108415 L23.9116977,8.72397591 C24.0294341,8.60226004 24.0294341,8.40886779 23.9116977,8.28715192 L17.7901725,2.09138296 C17.7222375,2.02364651 17.6270897,1.99080063 17.5319296,2.00223521 L17.5319296,2.00223521 Z M6.40128844,9.00033395 C6.33064798,9.00793391 6.26468482,9.03936977 6.21422602,9.08948171 L0.0927009745,15.276333 C0.0333732372,15.3352639 3.28749234e-15,15.415499 0,15.4992024 C-3.28749234e-15,15.5829058 0.0333732372,15.6631409 0.0927009745,15.7220718 L6.21422602,21.908926 C6.3040081,21.9981907 6.43856334,22.0245922 6.55531917,21.975853 C6.67207499,21.9271137 6.74811573,21.8127998 6.74807996,21.6860709 L6.74807996,17.9685952 L14.7826529,17.9685952 C14.9542535,17.9676432 15.0931417,17.8285246 15.0941389,17.6565923 L15.0941389,13.3507415 C15.0960409,13.2665864 15.0641212,13.1851934 15.0055498,13.1248458 C14.9469784,13.0644983 14.866666,13.0302556 14.7826529,13.0298096 L6.74807996,13.0298096 L6.74807996,9.3123511 C6.74807793,9.22326496 6.7102876,9.13837754 6.6441321,9.07885575 C6.5779766,9.01933397 6.48969059,8.9907873 6.40128844,9.00033395 L6.40128844,9.00033395 Z" id="icons/transfer-member--path-1"></path>
+    </defs>
+    <g id="icons/transfer-member--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons/transfer-member--icons-badges-variations" transform="translate(-298.000000, -398.000000)">
+            <g id="icons/transfer-member--icons/transfer-member" transform="translate(298.000000, 396.000000)">
+                <g id="icons/transfer-member--noun_transfer_1463364" stroke-width="1" fill-rule="evenodd" transform="translate(0.000000, 2.000000)"></g>
+                <mask id="icons/transfer-member--mask-2" fill="white">
+                    <use xlink:href="#icons/transfer-member--path-1"></use>
+                </mask>
+                <use id="icons/transfer-member--Shape" fill="#1A1A1A" fill-rule="nonzero" xlink:href="#icons/transfer-member--path-1"></use>
+                <g id="icons/transfer-member--color/black-tint/0-000000" mask="url(#icons/transfer-member--mask-2)" fill="#000000" fill-rule="evenodd">
+                    <rect id="icons/transfer-member--gray-70-4A4A4A" x="0" y="0" width="24" height="24"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

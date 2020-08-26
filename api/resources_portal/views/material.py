@@ -23,6 +23,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "category",
             "title",
             "url",
+            "organisms",
             "organization",
             "pubmed_id",
             "is_archived",

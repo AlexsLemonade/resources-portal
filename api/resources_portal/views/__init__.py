@@ -6,6 +6,7 @@ from resources_portal.views.document_views import (
     OrganizationDocumentView,
     UserDocumentView,
 )
+from resources_portal.views.email_invitation import email_invitation_view
 from resources_portal.views.fulfillment_note import FulfillmentNoteViewSet
 from resources_portal.views.grant import GrantViewSet
 from resources_portal.views.grant_material import GrantMaterialViewSet

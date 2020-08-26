@@ -42,7 +42,7 @@
   "organization_invitations": [
     {
       "organization_id": "4",
-      "status": "PENDING",
+      "status": "OPEN",
       "invite_or_request": "INVITE",
       "request_receiver_id": "30000000-231f-4dc8-bbfa-02bccfb0372c",
       "requester_id": "10000000-0f5a-4165-b518-b2386a753d6f"

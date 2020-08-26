@@ -32,6 +32,7 @@ from resources_portal.views import (
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
+    email_invitation_view,
     local_file_view,
 )
 
@@ -122,6 +123,7 @@ urlpatterns.append(
     )
 )
 urlpatterns.append(path("v1/login/", LoginViewSet.as_view({"post": "create"}), name="login"))
+urlpatterns.append(path("v1/email-invitation/", email_invitation_view, name="email-invitation"))
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(

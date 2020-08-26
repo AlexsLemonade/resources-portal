@@ -28,6 +28,8 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "status",
             "assigned_to",
             "has_issues",
+            "requires_action_sharer",
+            "requires_action_requester",
             "executed_mta_attachment",
             "irb_attachment",
             "material",
@@ -185,7 +187,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         requirements_list = []
 
-        if request.status == "PENDING":
+        if request.status == "OPEN":
             requirements_list.append("NEEDS_TO_BE_APPROVED")
 
         if material.needs_mta and not request.requester_signed_mta_attachment:

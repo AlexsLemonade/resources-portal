@@ -167,7 +167,6 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     executed_mta_attachment = factory.SubFactory(AttachmentFactory)
     irb_attachment = factory.SubFactory(AttachmentFactory)
     requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
-    is_active = True
 
     material = factory.SubFactory(MaterialFactory)
 

@@ -90,6 +90,7 @@ class MaterialDocument(Document):
     # Basic Fields
     id = fields.IntegerField()
     url = fields.TextField()
+    is_archived = fields.BooleanField()
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
