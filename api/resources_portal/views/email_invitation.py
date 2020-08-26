@@ -48,13 +48,13 @@ def email_invitation_view(request):
         embedded_images = [
             {
                 "content_id": "ccrr-logo",
-                "file_path": "resources_portal/email_assets/ccrr-logo.svg",
-                "subtype": "image/svg+xml",
+                "file_path": "resources_portal/email_assets/ccrr-logo.png",
+                "subtype": "png",
             },
             {
                 "content_id": "alexs-logo",
-                "file_path": "resources_portal/email_assets/alexs-logo.svg",
-                "subtype": "image/svg+xml",
+                "file_path": "resources_portal/email_assets/alexs-logo.png",
+                "subtype": "png",
             },
         ]
         logger.info("Sending an email invitation to {email}.")

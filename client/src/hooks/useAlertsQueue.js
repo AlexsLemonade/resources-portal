@@ -1,38 +1,35 @@
 import React from 'react'
-
-export const AlertsContext = React.createContext({ alerts: {} })
+import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useAlertsQueue = (queue = 'main') => {
-  const context = React.useContext(AlertsContext)
+  const { alertsQueues, setAlertsQueues } = React.useContext(
+    ResourcesPortalContext
+  )
 
-  const [alerts, setAlerts] = React.useState(context.alerts)
-
-  if (!alerts[queue]) alerts[queue] = []
+  const alertsQueue = alertsQueues[queue] || []
 
   const addAlert = (message, type = 'info') => {
-    context.alerts[queue].push({
+    alertsQueue.push({
       time: Date.now(),
       message,
       type
     })
-    setAlerts({ ...context.alerts })
+    setAlertsQueues({ ...alertsQueues, [queue]: alertsQueue })
   }
 
   const removeAlert = (alertToRemove) => {
-    const newAlerts = context.alerts[queue].filter((a) => {
+    const newAlerts = alertsQueue.filter((a) => {
       return a.time !== alertToRemove.time
     })
-    context.alerts[queue] = newAlerts
-    setAlerts({ ...context.alerts })
+    setAlertsQueues({ ...alertsQueues, [queue]: newAlerts })
   }
 
   const clearAlerts = () => {
-    context.alerts[queue] = []
-    setAlerts({ ...context.alerts })
+    setAlertsQueues({ ...alertsQueues, [queue]: [] })
   }
 
   return {
-    alerts: context.alerts[queue],
+    alerts: alertsQueue,
     addAlert,
     clearAlerts,
     removeAlert

@@ -1,26 +1,23 @@
+import Icon from 'components/Icon'
 import { Box, Button, Text } from 'grommet'
 import React from 'react'
 import styled from 'styled-components'
-import Check from '../images/check.svg'
-import Cross from '../images/cross.svg'
-import Info from '../images/info.svg'
-import Warning from '../images/warning.svg'
 
 const types = {
   info: {
-    Icon: Info,
+    icon: 'Check',
     background: 'brand',
     multipleBackground: 'turteal-shade-20',
     color: 'white'
   },
   error: {
-    Icon: Warning,
+    icon: 'Warning',
     background: 'error',
     multipleBackground: 'error-shade-20',
     color: 'white'
   },
   success: {
-    Icon: Check,
+    icon: 'Warning',
     background: 'success',
     multipleBackground: 'success-shade-20',
     color: 'white'
@@ -38,8 +35,7 @@ export const Alert = ({
   height = '56px',
   onRemove
 }) => {
-  const { background, color, Icon } = types[type]
-
+  const { background, color, icon } = types[type]
   return (
     <Box direction="row">
       <Box
@@ -51,9 +47,9 @@ export const Alert = ({
         pad={{ left: height }}
       >
         <Box direction="row" align="center">
-          {Icon && (
+          {icon && (
             <Box alignContents="center" margin={{ right: '8px' }}>
-              <Icon />
+              <Icon name={icon} color="white" />
             </Box>
           )}
           <Box>
@@ -62,7 +58,12 @@ export const Alert = ({
         </Box>
       </Box>
       <Box background={background} width={{ min: height }} height={height}>
-        <CloseAlertButton fill plain icon={<Cross />} onClick={onRemove} />
+        <CloseAlertButton
+          fill
+          plain
+          icon={<Icon name="Cross" color="white" />}
+          onClick={onRemove}
+        />
       </Box>
     </Box>
   )

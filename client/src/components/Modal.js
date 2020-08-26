@@ -1,6 +1,6 @@
+import Icon from 'components/Icon'
 import { Box, Button, Layer } from 'grommet'
 import * as React from 'react'
-import Cross from '../images/cross.svg'
 
 export const Modal = ({ showing, setShowing, children }) => {
   return (
@@ -19,7 +19,7 @@ export const Modal = ({ showing, setShowing, children }) => {
           >
             <Box alignSelf="end">
               <Button
-                icon={<Cross />}
+                icon={<Icon color="black-tint-30" name="Cross" />}
                 onClick={() => setShowing(false)}
                 alignSelf="start"
               />

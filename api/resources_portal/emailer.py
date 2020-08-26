@@ -1,3 +1,4 @@
+import os
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -48,7 +49,10 @@ def create_multipart_message(
         with open(embedded_image["file_path"], "rb") as f:
             image_part = MIMEImage(f.read(), embedded_image["subtype"])
 
-        image_part.add_header("Content-ID", embedded_image["content_id"])
+        image_part.add_header("Content-ID", f"<{embedded_image['content_id']}>")
+        image_part.add_header(
+            "Content-Disposition", "inline", filename=os.path.basename(embedded_image["file_path"])
+        )
         msg.attach(image_part)
 
     return msg
