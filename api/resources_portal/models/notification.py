@@ -5,7 +5,6 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-import boto3
 from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
@@ -21,14 +20,13 @@ from resources_portal.emailer import (
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.organization import Organization
-from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
 
 logger = get_and_configure_logger(__name__)
 
 
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/resources-portal-email-templated-inlined.html")
+    Path("resources_portal/email_assets/notification-email-templated-inlined.html")
     .read_text()
     .replace("\n", "")
 )
@@ -165,32 +163,6 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
             raise ValueError(f'"{self.notification_type}" is not a valid notification type')
 
 
-# This enumerates the types of notifications so users can silence the types they don't want.
-NOTIFICATION_SETTING_DICT = {
-    "ADDED_TO_ORG": "change_in_request_status_notif",
-    "ORG_REQUEST_CREATED": "request_assigned_notif",
-    "ORG_INVITE_CREATED": "new_request_notif",
-    "ORG_INVITE_ACCEPTED": "change_in_request_status_notif",
-    "ORG_REQUEST_ACCEPTED": "change_in_request_status_notif",
-    "ORG_INVITE_REJECTED": "change_in_request_status_notif",
-    "ORG_REQUEST_REJECTED": "change_in_request_status_notif",
-    "ORG_INVITE_INVALID": "change_in_request_status_notif",
-    "ORG_REQUEST_INVALID": "change_in_request_status_notif",
-    "SIGNED_MTA_UPLOADED": "transfer_updated_notif",
-    "EXECUTED_MTA_UPLOADED": "transfer_updated_notif",
-    "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
-    "TRANSFER_REQUESTED": "transfer_requested_notif",
-    "TRANSFER_APPROVED": "transfer_updated_notif",
-    "TRANSFER_REJECTED": "transfer_updated_notif",
-    "TRANSFER_CANCELLED": "transfer_updated_notif",
-    "TRANSFER_FULFILLED": "transfer_updated_notif",
-    "TRANSFER_VERIFIED_FULFILLED": "transfer_updated_notif",
-    "REMOVED_FROM_ORG": "misc_notif",
-    "REQUEST_ISSUE_OPENED": "transfer_updated_notif",
-    "REQUEST_ISSUE_CLOSED": "transfer_updated_notif",
-}
-
-
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
     # Check instance.delivered to allow creating a notification
@@ -207,6 +179,8 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
         )
     ):
         return
+
+    # TODO: validate that the notification has all its required associations.
 
     # All the properties which can be used in template strings in the
     # config. If they don't get set because the association doesn't
