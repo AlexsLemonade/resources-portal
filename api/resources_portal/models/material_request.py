@@ -110,9 +110,9 @@ class MaterialRequest(SafeDeleteModel):
         # TODO: figure out shipping information.
         required_info = ""
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
-            required_info += "- Signed MTA"
+            required_info += "- Signed MTA\n"
         if self.material.needs_irb and not self.irb_attachment:
-            required_info += "- IRB Approval"
+            required_info += "- IRB Approval\n"
 
         return required_info
 

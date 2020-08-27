@@ -6,7 +6,6 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from computedfields.models import ComputedFieldsModel
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -93,6 +92,10 @@ class Notification(SafeDeleteModel):
                     self.notified_user == self.associated_material_request.requester
                     or self.notified_user == self.associated_material_request.assigned_to
                 )
+            )
+            or (
+                "always_send" in NOTIFICATIONS[self.notification_type]
+                and NOTIFICATIONS[self.notification_type]["always_send"]
             )
         )
 

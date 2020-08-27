@@ -1,6 +1,23 @@
 """This is a configuration dict for all the different types of notifications.
 
-TODO: write more docs here.
+This dict is used by the Notification model to create email text based on a notification type.
+
+The `subject`, `body`, and `plain_text_email` email keys will be
+formatted with properties in Notfication.get_email_dict(). If a new
+notification type needs additional properties, make sure to define
+them in that method.
+
+The `required_associations` lists fields of Notification which will be
+needed for this type of notification. These will be validated by a
+pre_save hook to make sure a Notification has all the associations
+needed to format its messages.
+
+CTA_link_field is the field that will be used to get the link to
+provide in the Call To Action button in the email. It should be
+included in `required_associations` and it must have a `frontend_url`
+property which is the link to the resource's page in the frontend.
+
+
 """
 NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW": {
@@ -344,6 +361,7 @@ NOTIFICATIONS = {
             "\n\nView members. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "always_send": True,
     },
     "ORGANIZTION_BECAME_OWNER": {
         "subject": "{organization_name}: You have been made owner",
@@ -403,5 +421,6 @@ NOTIFICATIONS = {
             "\n\nView team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "always_send": True,
     },
 }
