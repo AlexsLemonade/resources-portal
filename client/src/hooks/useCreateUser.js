@@ -1,13 +1,7 @@
+import { CreateUserContext } from 'contexts/CreateUserContext'
 import React from 'react'
 import { string } from 'yup'
 import api from '../api'
-import {
-  CreateAccountStep,
-  EnterEmailStep,
-  NextStepsStep,
-  VerifyGrantStep
-} from '../components/CreateAccount'
-import { useLocalStorage } from './useLocalStorage'
 import { useUser } from './useUser'
 
 export const useCreateUser = (
@@ -17,13 +11,21 @@ export const useCreateUser = (
   queryCode,
   initialRedirectUrl
 ) => {
-  const [createUser, setCreateUser] = useLocalStorage('createUser', {})
-  const [orcidInfo, setOrcidInfo] = useLocalStorage('orcidInfo', {})
-  const [currentStep, setCurrentStep] = useLocalStorage('currentStep', '')
-  const [steps, setSteps] = useLocalStorage('steps', [])
-  const [needsEmail, setNeedsEmail] = useLocalStorage('needsEmail', false)
   const { user, setUser, setToken, setLoginRedirectUrl } = useUser()
-
+  const {
+    createUser,
+    setCreateUser,
+    orcidInfo,
+    setOrcidInfo,
+    steps,
+    setSteps,
+    currentStep,
+    setCurrentStep,
+    needsEmail,
+    setNeedsEmail,
+    authCodeUsed,
+    setAuthCodeUsed
+  } = React.useContext(CreateUserContext)
   const save = () => {
     setCreateUser({ ...createUser })
   }
@@ -47,10 +49,11 @@ export const useCreateUser = (
 
   React.useEffect(() => {
     // If we have the auth code, get the ORCID info
-    if (queryCode && Object.keys(orcidInfo).length === 0) {
+    if (queryCode && Object.keys(orcidInfo).length === 0 && !authCodeUsed) {
       api.user.getORCID(queryCode, initialRedirectUrl).then((response) => {
         setOrcidInfo({ ...response.response })
       })
+      setAuthCodeUsed(true)
     }
 
     //  Once we have that info, login the user
@@ -101,20 +104,6 @@ export const useCreateUser = (
     }
   }
 
-  const getStepDict = (instance) => {
-    return {
-      'Create Account': (
-        <CreateAccountStep
-          ORCID={ORCID}
-          nextStep={steps[steps.indexOf(currentStep) + 1]}
-        />
-      ),
-      'Enter Email': <EnterEmailStep createUser={instance} />,
-      'Verify Grant Information': <VerifyGrantStep createUser={instance} />,
-      'Next Steps': <NextStepsStep />
-    }
-  }
-
   const callCreateUser = async (
     orcid,
     accessToken,
@@ -135,7 +124,7 @@ export const useCreateUser = (
       return { error: tokenRequest }
     }
 
-    if (tokenRequest.error) {
+    if (!tokenRequest.isOk) {
       console.log('error', tokenRequest)
       return { error: tokenRequest }
     }
@@ -152,24 +141,23 @@ export const useCreateUser = (
     return { authenticatedUser, token }
   }
 
-  const createAndLoginUser = (orcid, accessToken, refreshToken) => {
-    callCreateUser(
+  const createAndLoginUser = async (orcid, accessToken, refreshToken) => {
+    const { authenticatedUser, token, redirectUrl } = await callCreateUser(
       orcid,
       accessToken,
       refreshToken,
       createUser.email,
       createUser.grants
-    ).then(({ authenticatedUser, token, redirectUrl }) => {
-      if (authenticatedUser && authenticatedUser.id) {
-        setUser(authenticatedUser)
-      }
-      if (token) {
-        setToken(token)
-      }
-      if (redirectUrl) {
-        setLoginRedirectUrl(redirectUrl)
-      }
-    })
+    )
+    if (authenticatedUser && authenticatedUser.id) {
+      setUser(authenticatedUser)
+    }
+    if (token) {
+      setToken(token)
+    }
+    if (redirectUrl) {
+      setLoginRedirectUrl(redirectUrl)
+    }
   }
 
   const setEmail = (newEmail) => {
@@ -190,8 +178,12 @@ export const useCreateUser = (
     return true
   }
 
-  const getStepComponent = (step, instance) => {
-    return getStepDict(instance)[step]
+  const getNextStep = () => {
+    const nextStepIndex = Math.min(
+      steps.length - 1,
+      steps.indexOf(currentStep) + 1
+    )
+    return steps[nextStepIndex]
   }
 
   return {
@@ -204,7 +196,7 @@ export const useCreateUser = (
     setNeedsEmail,
     stepForward,
     stepBack,
-    getStepComponent,
+    getNextStep,
     setGrants,
     setEmail,
     save,

@@ -1,9 +1,12 @@
 import { Anchor, Box, Button, Text, TextInput } from 'grommet'
+import { useAlertsQueue } from 'hooks/useAlertsQueue'
+import { useCreateUser } from 'hooks/useCreateUser'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
 import { ORCIDSignInButton } from './modals/CommonModalContent'
 
-export const CreateAccountStep = ({ ORCID, nextStep }) => {
+export const CreateAccountStep = () => {
+  const { ORCID, getNextStep } = useCreateUser()
   return (
     <Box>
       <Text>
@@ -29,7 +32,9 @@ export const CreateAccountStep = ({ ORCID, nextStep }) => {
         <Box align="center" pad="medium" gap="medium">
           <ORCIDSignInButton
             label="Sign in with ORCID iD"
-            redirectUrl={`${process.env.CLIENT_HOST}/create-account?stepName=${nextStep}`}
+            redirectUrl={`${
+              process.env.CLIENT_HOST
+            }/create-account?stepName=${getNextStep()}`}
           />
         </Box>
       </Box>
@@ -52,24 +57,33 @@ export const CreateAccountStep = ({ ORCID, nextStep }) => {
   )
 }
 
-export const EnterEmailStep = ({ createUser }) => {
+export const EnterEmailStep = () => {
+  const {
+    setEmail,
+    setNeedsEmail,
+    stepForward,
+    save,
+    user,
+    createUser,
+    validEmail
+  } = useCreateUser()
   const onChange = (email) => {
-    createUser.setEmail(email)
-    createUser.save()
+    setEmail(email)
+    save()
   }
   const onClick = () => {
-    createUser.setNeedsEmail(false)
-    createUser.stepForward()
+    setNeedsEmail(false)
+    stepForward()
   }
-  if (createUser.user) {
+  if (user) {
     return (
       <>
         <Box>
           <Text>
             The following email was retrieved from your ORCID record:{' '}
-            {createUser.user.email}
+            {user.email}
           </Text>
-          <Button label="Continue" onClick={createUser.stepForward} />
+          <Button label="Continue" onClick={stepForward} />
         </Box>
       </>
     )
@@ -83,20 +97,22 @@ export const EnterEmailStep = ({ createUser }) => {
       <TextInput
         placeholder="Enter email"
         onChange={(event) => onChange(event.target.value)}
-        value={createUser.createUser.email || ''}
+        value={createUser.email || ''}
         type="email"
       />
       <Button
         label="Submit"
         onChange={onChange}
-        disabled={!createUser.validEmail()}
+        disabled={!validEmail()}
         onClick={onClick}
       />
     </>
   )
 }
 
-export const VerifyGrantStep = ({ createUser }) => {
+export const VerifyGrantStep = () => {
+  const { stepForward, createUser } = useCreateUser()
+  const { addAlert } = useAlertsQueue()
   return (
     <Box gap="medium">
       <Text weight="bold">Your account has been created!</Text>
@@ -108,7 +124,7 @@ export const VerifyGrantStep = ({ createUser }) => {
         Grants Recieved
       </Text>
       <Box gap="medium">
-        {createUser.createUser.grants.map((grant) => (
+        {createUser.grants.map((grant) => (
           <Box key={grant.funder_id} direction="row" align="center">
             <Box pad="small">
               <GrantIcon />
@@ -130,7 +146,10 @@ export const VerifyGrantStep = ({ createUser }) => {
         <Button label="Report missing/incorrect information" />
         <Button
           label="This information is correct"
-          onClick={createUser.stepForward}
+          onClick={() => {
+            addAlert('Your account was created', 'success')
+            stepForward()
+          }}
           primary
         />
       </Box>
