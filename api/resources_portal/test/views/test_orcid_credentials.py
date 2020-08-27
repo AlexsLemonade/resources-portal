@@ -6,15 +6,11 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import User
 from resources_portal.test.factories import UserFactory
 from resources_portal.test.utils import (
-    MOCK_EMAIL,
-    MOCK_GRANTS,
     ORCID_AUTHORIZATION_DICT,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
-    get_mock_auth_data,
 )
 
 fake = Faker()

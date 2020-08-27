@@ -4,7 +4,6 @@ from rest_framework import serializers, viewsets
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 import orcid
-import requests
 from django_expiring_token.authentication import token_expire_handler
 from django_expiring_token.models import ExpiringToken
 
@@ -12,7 +11,6 @@ from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import User
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
 from resources_portal.views.relation_serializers import (
     AddressRelationSerializer,
     AttachmentRelationSerializer,
@@ -108,20 +106,20 @@ class UserViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if "orcid" not in request.data:
             return JsonResponse(
-                {"error": f"orcid parameter was not found in the request."}, status=400,
+                {"error": "orcid parameter was not found in the request."}, status=400,
             )
 
         if "access_token" not in request.data:
             return JsonResponse(
-                {"error": f"access_token parameter was not found in the request."}, status=400,
+                {"error": "access_token parameter was not found in the request."}, status=400,
             )
         if "refresh_token" not in request.data:
             return JsonResponse(
-                {"error": f"refresh_token parameter was not found in the request."}, status=400,
+                {"error": "refresh_token parameter was not found in the request."}, status=400,
             )
         if User.objects.filter(orcid=request.data["orcid"]).exists():
             return JsonResponse(
-                {"error": f"A user with the provided ORCID already exists."}, status=400,
+                {"error": "A user with the provided ORCID already exists."}, status=400,
             )
 
         api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
