@@ -1,8 +1,8 @@
 import {
-    CreateAccountStep,
-    EnterEmailStep,
-    NextStepsStep,
-    VerifyGrantStep
+  CreateAccountStep,
+  EnterEmailStep,
+  NextStepsStep,
+  VerifyGrantStep
 } from 'components/CreateAccount'
 import { ProgressBar } from 'components/ProgressBar'
 import { Box, Button, Heading } from 'grommet'
