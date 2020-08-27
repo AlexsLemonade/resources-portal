@@ -14,6 +14,7 @@ from resources_portal.test.utils import (
     ORCID_AUTHORIZATION_DICT,
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
+    get_mock_auth_data,
 )
 
 fake = Faker()
