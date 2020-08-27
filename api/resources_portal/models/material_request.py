@@ -105,6 +105,28 @@ class MaterialRequest(SafeDeleteModel):
     def frontend_URL(self):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
+    @property
+    def required_information_text(self):
+        # TODO: figure out shipping information.
+        required_info = ""
+        if self.material.mta_attachment and not self.requester_signed_mta_attachment:
+            required_info += "- Signed MTA"
+        if self.material.needs_irb and not self.irb_attachment:
+            required_info += "- IRB Approval"
+
+        return required_info
+
+    @property
+    def provided_information_text(self):
+        # TODO: figure out shipping information.
+        provided_info = ""
+        if self.requester_signed_mta_attachment:
+            provided_info += "- Signed MTA"
+        if not self.irb_attachment:
+            provided_info += "- IRB Approval"
+
+        return provided_info
+
     def save(self, *args, **kwargs):
         if self.assigned_to is None:
             self.assigned_to = self.material.contact_user

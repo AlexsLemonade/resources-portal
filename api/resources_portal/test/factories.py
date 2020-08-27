@@ -26,6 +26,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
     is_staff = False
+    receive_non_assigned_notifs = False
+    receive_weekly_digest = True
     # This can get recursive, so if someone needs it they can
     # construct it and pass it in.
     personal_organization = None
