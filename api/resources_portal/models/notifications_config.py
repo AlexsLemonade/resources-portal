@@ -361,7 +361,6 @@ NOTIFICATIONS = {
             "\n\nView members. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
-        "always_send": True,
     },
     "ORGANIZTION_BECAME_OWNER": {
         "subject": "{organization_name}: You have been made owner",
@@ -376,6 +375,7 @@ NOTIFICATIONS = {
             "\n\nManage team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "always_send": True,
     },
     "ORGANIZTION_NEW_OWNER": {
         "subject": "{organization_name}: New owner",

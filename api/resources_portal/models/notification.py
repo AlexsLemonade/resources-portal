@@ -97,6 +97,12 @@ class Notification(SafeDeleteModel):
                 "always_send" in NOTIFICATIONS[self.notification_type]
                 and NOTIFICATIONS[self.notification_type]["always_send"]
             )
+            or (
+                # Special case for this because it's always sent if
+                # the user is the owner but not otherwise.
+                self.notification_type == "ORGANIZTION_NEW_MEMBER"
+                and self.notified_user == self.associated_organization.owner
+            )
         )
 
     def get_email_dict(self):
