@@ -28,23 +28,24 @@ export const useCreateUser = (
     setCreateUser({ ...createUser })
   }
 
+  let needsSave = false
+
+  if (email && !createUser.email) {
+    createUser.email = email
+    needsSave = true
+  }
+
+  if (grants && !createUser.grants) {
+    createUser.grants = grants
+    needsSave = true
+  }
+
+  if (needsSave) {
+    save()
+    needsSave = false
+  }
+
   React.useEffect(() => {
-    let needsSave = false
-
-    if (email && !createUser.email) {
-      createUser.email = email
-      needsSave = true
-    }
-
-    if (grants && !createUser.grants) {
-      createUser.grants = grants
-      needsSave = true
-    }
-
-    if (needsSave) {
-      save()
-    }
-
     // If we have the auth code, get the ORCID info
     if (queryCode && Object.keys(orcidInfo).length === 0) {
       api.user.getORCID(queryCode, initialRedirectUrl).then((response) => {
