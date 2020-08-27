@@ -87,8 +87,8 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         invitation_json = {
             "status": "ACCEPTED",
             "invite_or_request": "INVITE",
-            "requester": self.different_user.id,
-            "request_receiver": self.user.id,
+            "requester": self.user.id,
+            "request_receiver": self.different_user.id,
             "organization": self.organization.id,
         }
         self.client.post(reverse("invitation-list"), invitation_json, format="json")

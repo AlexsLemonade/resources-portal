@@ -1,3 +1,4 @@
+import copy
 import os
 import shutil
 import uuid
@@ -59,7 +60,7 @@ def generate_mock_orcid_record_response(*args, **kwargs):
 
 
 def generate_random_mock_orcid_record_response(*args, **kwargs):
-    summary_dict = ORCID_SUMMARY_DICT.copy()
+    summary_dict = copy.deepcopy(ORCID_SUMMARY_DICT)
     summary_dict["orcid-identifier"]["path"] = uuid.uuid4()
     return MockORCIDRecordResponse(summary_dict)
 
