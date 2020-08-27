@@ -1,11 +1,12 @@
 from pathlib import Path
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from computedfields.models import ComputedFieldsModel, computed
+from computedfields.models import ComputedFieldsModel
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -35,36 +36,13 @@ EMAIL_HTML_BODY = (
 )
 
 
-class Notification(ComputedFieldsModel, SafeDeleteModel):
+class Notification(SafeDeleteModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
     NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATIONS.keys())
-    # NOTIFICATION_TYPES = (
-    #     ("ADDED_TO_ORG", "ADDED_TO_ORG"),
-    #     ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
-    #     ("ORG_INVITE_CREATED", "ORG_INVITE_CREATED"),
-    #     ("ORG_INVITE_ACCEPTED", "ORG_INVITE_ACCEPTED"),
-    #     ("ORG_REQUEST_ACCEPTED", "ORG_REQUEST_ACCEPTED"),
-    #     ("ORG_INVITE_REJECTED", "ORG_INVITE_REJECTED"),
-    #     ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
-    #     ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
-    #     ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
-    #     ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
-    #     ("EXECUTED_MTA_UPLOADED", "EXECUTED_MTA_UPLOADED"),
-    #     ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
-    #     ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
-    #     ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
-    #     ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
-    #     ("TRANSFER_CANCELLED", "TRANSFER_CANCELLED"),
-    #     ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
-    #     ("TRANSFER_VERIFIED_FULFILLED", "TRANSFER_VERIFIED_FULFILLED"),
-    #     ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
-    #     ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
-    #     ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
-    # )
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -119,17 +97,9 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
         )
 
     def get_email_dict(self):
-
-        # TODO: validate that the notification has all its required associations.
-
         # All the properties which can be used in template strings in the
         # config. If they don't get set because the association doesn't
         # exist, then they better not be needed.
-        # TODO: create and raise a NotificationsMisconfigured exception if
-        # this isn't true.
-        # I should also make a test where I create a notification with
-        # every association, change it's type to each one in the dict, and
-        # then make sure that every variable has no more { or }s.
         props = {
             "notifications_url": NOTIFICATIONS_URL,
             "your_name": self.notified_user.full_name,
@@ -181,6 +151,18 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
                 .replace("REPLACE_INVITATION_LINK", cta_link)
             ),
         }
+
+
+@receiver(pre_save, sender="resources_portal.Notification")
+def validate_associations(sender, instance=None, created=False, **kwargs):
+    if not instance.notification_type:
+        raise ValidationError("Notifications must have notification_type set.")
+
+    for association in NOTIFICATIONS[instance.notification_type]["required_associations"]:
+        if not getattr(instance, association):
+            raise ValidationError(
+                f"Notifications of type {instance.notification_type} must have {association} set."
+            )
 
 
 @receiver(post_save, sender="resources_portal.Notification")
