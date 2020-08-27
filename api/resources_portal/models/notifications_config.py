@@ -88,13 +88,13 @@ NOTIFICATIONS = {
         "subject": "Request for {material_category} accepted",
         "body": (
             "{you_or_other_name_upper} accepted a request for {material_category}, {material_name} from {requester_name}."
-            "Waiting for {requester_name} to provide the following information:\n{required_info}"
+            "Waiting for {requester_name} to provide the following information:<br>{required_info_html}"
         ),
         "CTA": "View Request",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
-            "\nWaiting for {requester_name} to provide the following information:\n{required_info}:"
+            "\nWaiting for {requester_name} to provide the following information:\n{required_info_plain}:"
             "\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -106,12 +106,12 @@ NOTIFICATIONS = {
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED_INFO": {
         "subject": "Action Required: Received additional information from {requester_name}",
-        "body": "{requester_name} provided the following required items for a request for {material_category}, {material_name}:\n{provided_info}",
+        "body": "{requester_name} provided the following required items for a request for {material_category}, {material_name}:<br>{provided_info_html}",
         "CTA": "Review Items",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} provided the following required items for a request for"
-            " {material_category}, {material_name}:{provided_info}\n\nReview items ({request_url})."
+            " {material_category}, {material_name}:{provided_info_plain}\n\nReview items ({request_url})."
         ),
         "required_associations": [
             "associated_user",
@@ -222,13 +222,13 @@ NOTIFICATIONS = {
         "subject": "Action required: Request for {material_category} accepted",
         "body": (
             "{organization_name} has accepted your request for {material_category}, {material_name} "
-            "on the condition that you provide the following items:\n{required_info}"
+            "on the condition that you provide the following items:<br>{required_info_html}"
         ),
         "CTA": "Provide Additional Items",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} has accepted your request for {material_category}, {material_name} "
-            "on the condition that you provide the following items:\n{required_info}"
+            "on the condition that you provide the following items:\n{required_info_plain}"
             "\n\nProvide Additional Items. ({request_url})."
         ),
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
@@ -339,6 +339,8 @@ NOTIFICATIONS = {
         "body": (
             "{other_name} deleted {material_category}, {material_name} from {organization_name}."
         ),
+        # TODO: Remove this CTA and make the button something that is
+        # only added if this field is present.
         "CTA": "YOU CAN'T DO ANYTHING ABOUT IT!",
         "CTA_link_field": "associated_material",
         "plain_text_email": (

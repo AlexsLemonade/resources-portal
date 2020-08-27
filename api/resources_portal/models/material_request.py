@@ -106,7 +106,7 @@ class MaterialRequest(SafeDeleteModel):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
     @property
-    def required_information_text(self):
+    def required_info_plain_text(self):
         # TODO: figure out shipping information.
         required_info = ""
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
@@ -117,14 +117,36 @@ class MaterialRequest(SafeDeleteModel):
         return required_info
 
     @property
-    def provided_information_text(self):
+    def provided_info_plain_text(self):
         # TODO: figure out shipping information.
         provided_info = ""
         if self.requester_signed_mta_attachment:
-            provided_info += "- Signed MTA"
+            provided_info += "- Signed MTA\n"
         if not self.irb_attachment:
-            provided_info += "- IRB Approval"
+            provided_info += "- IRB Approval\n"
 
+    @property
+    def required_info_html(self):
+        # TODO: figure out shipping information.
+        required_info = "<list>"
+        if self.material.mta_attachment and not self.requester_signed_mta_attachment:
+            required_info += "<ul>Signed MTA</ul>"
+        if self.material.needs_irb and not self.irb_attachment:
+            required_info += "<ul>IRB Approval</ul>"
+
+        required_info += "</list>"
+        return required_info
+
+    @property
+    def provided_info_html(self):
+        # TODO: figure out shipping information.
+        provided_info = "<list>"
+        if self.requester_signed_mta_attachment:
+            provided_info += "<ul>Signed MTA</ul>"
+        if not self.irb_attachment:
+            provided_info += "<ul>IRB Approval</ul>"
+
+        provided_info += "</list>"
         return provided_info
 
     def save(self, *args, **kwargs):
