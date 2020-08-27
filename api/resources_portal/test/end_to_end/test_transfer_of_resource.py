@@ -60,8 +60,8 @@ class TransferOfResource(APITestCase):
 
         invitation_json = {
             "organization": self.primary_lab.id,
-            "request_receiver": self.primary_prof.id,
-            "requester": self.post_doc.id,
+            "request_receiver": self.post_doc.id,
+            "requester": self.primary_prof.id,
             "invite_or_request": "INVITE",
         }
 
