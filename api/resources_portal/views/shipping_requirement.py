@@ -15,6 +15,7 @@ class ShippingRequirementSerializer(serializers.ModelSerializer):
             "id",
             "needs_shipping_address",
             "needs_payment",
+            "sharer_pays_shipping",
             "accepts_shipping_code",
             "accepts_reimbursement",
             "accepts_other_payment_methods",
