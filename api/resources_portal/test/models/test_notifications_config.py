@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -56,3 +57,16 @@ class TestMaterialListTestCase(APITestCase):
             for _, formatted_text in email_dict.items():
                 self.assertNotIn("{", formatted_text)
                 self.assertNotIn("}", formatted_text)
+
+    def test_missing_required_field_errors(self):
+        with self.assertRaises(ValidationError):
+            self.notification.notification_type = "MATERIAL_ADDED"
+            self.notification.associated_material = None
+            self.notification.save()
+
+    def test_missing_non_required_field_ok(self):
+        self.notification.notification_type = "ORGANIZTION_NEW_MEMBER"
+        self.notification.associated_material = None
+        self.notification.save()
+
+        # Lack of exception means it was ok!
