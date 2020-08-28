@@ -37,7 +37,7 @@ class IsAdminUser(BasePermission):
         return request.user.is_superuser
 
 
-class IsInOrganization(BasePermission):
+class IsInOrganizationCreate(BasePermission):
     def has_permission(self, request, view):
         if "organization" not in request.data:
             return False
@@ -49,6 +49,8 @@ class IsInOrganization(BasePermission):
 
         return request.user in organization.members.all()
 
+
+class IsInOrganization(BasePermission):
     def has_object_permission(self, request, view, obj):
         if not obj.organization:
             return False
@@ -68,6 +70,8 @@ class ShippingRequirementViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "list":
             permission_classes = [IsAdminUser]
+        elif self.action == "create":
+            permission_classes = [IsInOrganizationCreate]
         else:
             permission_classes = [IsAuthenticated, IsInOrganization]
 

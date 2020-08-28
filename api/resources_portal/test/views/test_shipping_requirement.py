@@ -32,7 +32,7 @@ class ShippingRequirementListTestCase(APITestCase):
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_with_valid_data_succeeds(self):
         self.client.force_authenticate(user=self.user)
