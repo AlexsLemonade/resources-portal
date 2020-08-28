@@ -5,7 +5,7 @@ from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.attachment import Attachment
-from resources_portal.models.shipping_requirements import ShippingRequirements
+from resources_portal.models.shipping_requirement import ShippingRequirement
 from resources_portal.models.user import User
 
 
@@ -61,7 +61,7 @@ class Material(SafeDeleteModel):
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
     shipping_requirements = models.ForeignKey(
-        ShippingRequirements, blank=False, null=True, on_delete=models.deletion.SET_NULL
+        ShippingRequirement, blank=False, null=True, on_delete=models.deletion.SET_NULL
     )
 
     import_source = models.CharField(max_length=32, null=True, choices=IMPORTED_CHOICES)
