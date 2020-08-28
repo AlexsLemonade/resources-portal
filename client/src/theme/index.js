@@ -1,6 +1,6 @@
-import React from 'react'
-import { normalizeColor } from 'grommet/utils'
 import { Blank } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
+import React from 'react'
 
 const applyAll = (...rules) => rules.concat()
 const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
@@ -561,6 +561,7 @@ const theme = {
       'black-tint-90': '#E5E5E5',
       'black-tint-95': '#F2F2F2',
       white: '#FDFDFD',
+      red: '#DB3B28',
       info: '#002F6C', // alexs-navy-base
       success: '#41A36D',
       'success-shade-20': '#348257',

@@ -4,6 +4,7 @@ import * as React from 'react'
 import theme from '../theme'
 import { LoginButton } from './LoginButton'
 import CreateAccountModal from './modals/CreateAccountModal'
+import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
 import { SignInModal } from './modals/SignInModal'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
@@ -40,6 +41,16 @@ storiesOf('Modal', module).add('Sign in from resource request', () => {
         showing={showing}
         setShowing={setShowing}
       />
+    </Grommet>
+  )
+})
+
+storiesOf('Modal', module).add('Incorrect grant', () => {
+  const [showing, setShowing] = React.useState(false)
+  return (
+    <Grommet theme={theme}>
+      <LoginButton onClick={() => setShowing(true)} />
+      <IncorrectGrantModal showing={showing} setShowing={setShowing} />
     </Grommet>
   )
 })
