@@ -1,6 +1,8 @@
 """This is a configuration dict for all the different types of notifications.
 
-This dict is used by the Notification model to create email text based on a notification type.
+This dict is used by the Notification model to create email text based
+on a notification type. It's also used to determine who to create
+notifications for and who to send them to.
 
 The `subject`, `body`, and `plain_text_email` email keys will be
 formatted with properties in Notfication.get_email_dict(). If a new
@@ -17,7 +19,21 @@ provide in the Call To Action button in the email. It should be
 included in `required_associations` and it must have a `frontend_url`
 property which is the link to the resource's page in the frontend.
 
+CTA is the text for the Call to Action button.
 
+always_send will make the notification send regardless of user settings.
+
+send_to_organization -- if True the notifier will create one
+Notification instance per member of the organization.
+
+send_to_primary_user -- if False the notifier will not create a
+notification for the primary_user. Can be used in conjunction with
+send_to_organziation to send messages to the rest of user's
+organization but not the user themself.
+
+send_to_associated_user -- If False will exclude the associated
+user from associated_organization.members if send_to_organziation is
+True.
 """
 NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW": {
@@ -51,6 +67,8 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
+        "send_to_primary_user": False,
     },
     "MATERIAL_REQUEST_SHARER_ASSIGNED": {
         "subject": "{organization_name}: You are assigned to a request for {material_category}",
@@ -83,6 +101,8 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
+        "send_to_primary_user": False,
     },
     "MATERIAL_REQUEST_SHARER_APPROVED": {
         "subject": "Request for {material_category} accepted",
@@ -103,6 +123,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED_INFO": {
         "subject": "Action Required: Received additional information from {requester_name}",
@@ -119,6 +140,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED_MTA": {
         "subject": "Action Required: Request for {material_category}",
@@ -142,6 +164,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_SHARER_EXECUTED_MTA": {
         "subject": "Uploaded executed MTA for request for {material_category}",
@@ -163,6 +186,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_SHARER_FULFILLED": {
         "subject": "Fulfilled: Request for {material_category}",
@@ -183,6 +207,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_SHARER_VERIFIED": {
         "subject": "{requester_name} received {material_category}",
@@ -196,6 +221,7 @@ NOTIFICATIONS = {
             "associated_material_request",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_ISSUE_SHARER_REPORTED": {
         "subject": "Issue reported: Request for {material_category}",
@@ -217,6 +243,7 @@ NOTIFICATIONS = {
             "associated_material_request_issue",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_REQUEST_REQUESTER_ACCEPTED": {
         "subject": "Action required: Request for {material_category} accepted",
@@ -316,6 +343,7 @@ NOTIFICATIONS = {
             "associated_material",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_ARCHIVED": {
         "subject": "{organization_name}: {material_category} archived",
@@ -333,6 +361,7 @@ NOTIFICATIONS = {
             "associated_material",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "MATERIAL_DELETED": {
         "subject": "{organization_name}:{material_category} deleted",
@@ -352,6 +381,7 @@ NOTIFICATIONS = {
             "associated_material",
             "associated_organization",
         ],
+        "send_to_organization": True,
     },
     "ORGANIZTION_NEW_MEMBER": {
         "subject": "{organization_name}: New member added",
@@ -363,6 +393,7 @@ NOTIFICATIONS = {
             "\n\nView members. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "send_to_organization": True,
     },
     "ORGANIZTION_BECAME_OWNER": {
         "subject": "{organization_name}: You have been made owner",
@@ -389,6 +420,8 @@ NOTIFICATIONS = {
             "\n\nView team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "send_to_organization": True,
+        "send_to_associated_user": False,
     },
     "ORGANIZTION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
@@ -397,6 +430,7 @@ NOTIFICATIONS = {
         "CTA_link_field": "associated_organization",
         "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
         "required_associations": ["associated_user", "associated_organization",],
+        "send_to_organization": True,
     },
     "ORGANIZTION_NEW_GRANT": {
         "subject": "{organization_name}: New grant linked",
@@ -412,6 +446,7 @@ NOTIFICATIONS = {
             "\n\nView team grants. ({organization_url})."
         ),
         "required_associations": ["associated_user", "associated_organization",],
+        "send_to_organization": True,
     },
     "ORGANIZATION_INVITE": {
         "subject": "You have been added to {organization_name}",
