@@ -79,3 +79,12 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 def create_owner_settings(sender, instance=None, created=False, **kwargs):
     if created:
         OrganizationUserSetting.objects.get_or_create(user=instance.owner, organization=instance)
+
+
+@receiver(post_save, sender="resources_portal.Organization")
+def add_owner_to_members(sender, instance=None, created=False, **kwargs):
+    """Ensure the owner is always a member of the organization.
+    """
+    if instance and instance.owner:
+        if instance.members.filter(id=instance.owner.id).count() < 1:
+            instance.members.add(instance.owner)
