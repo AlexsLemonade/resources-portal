@@ -98,7 +98,7 @@ class AuthViewSet(viewsets.ViewSet):
                 email=email,
             )
 
-            org = Organization.objects.create(owner=user)
+            org = Organization.objects.create(owner=user, title="Your Resources")
             user.personal_organization = org
 
             if "grant_info" in request.data:
