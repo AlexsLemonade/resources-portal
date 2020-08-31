@@ -394,6 +394,7 @@ NOTIFICATIONS = {
         ),
         "required_associations": ["associated_user", "associated_organization",],
         "send_to_organization": True,
+        "send_to_primary_user": False,
     },
     "ORGANIZTION_BECAME_OWNER": {
         "subject": "{organization_name}: You have been made owner",

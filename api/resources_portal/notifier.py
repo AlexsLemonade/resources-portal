@@ -6,7 +6,7 @@ from resources_portal.models import (
     Organization,
     User,
 )
-from resources_portal.models.notification_config import NOTIFICATIONS
+from resources_portal.models.notifications_config import NOTIFICATIONS
 
 
 def send_notifications(
@@ -19,10 +19,13 @@ def send_notifications(
     material_request: MaterialRequest = None,
     material_request_issue: MaterialRequestIssue = None,
 ):
-    notification_config = NOTIFICATIONS["notification_type"]
+    notification_config = NOTIFICATIONS[notification_type]
 
     # Default to sending to primary user.
-    if "send_to_primary_user" not in NOTIFICATIONS or notification_config["send_to_primary_user"]:
+    if (
+        "send_to_primary_user" not in notification_config
+        or notification_config["send_to_primary_user"]
+    ):
         notification = Notification(
             notification_type=notification_type,
             notified_user=primary_user,

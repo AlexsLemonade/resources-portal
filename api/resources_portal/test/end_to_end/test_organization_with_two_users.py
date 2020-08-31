@@ -75,18 +75,17 @@ class TestOrganizationWithTwoUsers(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # Both are notified.
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="ADDED_TO_ORG",
-                    email=post_doc.email
+                    notification_type="ORGANIZTION_NEW_MEMBER"
                     # Once we re-enable invitation acceptances this
                     # will need to change back.
                     # notification_type="ORG_INVITE_CREATED",
-                    # email=post_doc.email
                 )
             ),
-            1,
+            2,
         )
 
         # We currently allow adding to orgs without acceptance.
@@ -143,4 +142,4 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 1)
+        self.assertEqual(len(Notification.objects.all()), 2)

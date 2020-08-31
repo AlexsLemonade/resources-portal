@@ -72,9 +72,10 @@ class TestNewMemberJoinsALab(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # PostDoc, PrimaryProf, and NewMember are all notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ADDED_TO_ORG")),
-            1
+            len(Notification.objects.filter(notification_type="ORGANIZTION_NEW_MEMBER")),
+            3
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
         )
@@ -102,7 +103,10 @@ class TestNewMemberJoinsALab(APITestCase):
 
         self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="REMOVED_FROM_ORG")), 1)
+        # PostDoc, PrimaryProf, and NewMember are all notified.
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZTION_MEMBER_LEFT")), 3
+        )
 
         # All materials assigned to PostDoc will be reassigned to the owner when PostDoc leaves the organization.
         for material in self.primary_lab.materials.all():
@@ -196,4 +200,4 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 5)
+        self.assertEqual(len(Notification.objects.all()), 9)
