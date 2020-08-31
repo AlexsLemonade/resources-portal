@@ -29,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "invitations",
             "organizations",
             "owned_organizations",
+            "personal_organization",
             "assignments",
             "addresses",
             "created_at",
@@ -46,10 +47,12 @@ class UserSerializer(serializers.ModelSerializer):
             "organizations",
             "addresses",
             "owned_organizations",
+            "personal_organization",
         )
 
     owned_attachments = AttachmentRelationSerializer(many=True, read_only=True)
     organizations = OrganizationRelationSerializer(many=True, read_only=True)
+    personal_organization = OrganizationRelationSerializer(read_only=True)
     owned_organizations = OrganizationRelationSerializer(many=True, read_only=True)
     material_requests = MaterialRequestRelationSerializer(many=True, read_only=True)
     grants = GrantRelationSerializer(many=True, read_only=True)
