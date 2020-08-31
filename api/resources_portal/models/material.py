@@ -105,7 +105,7 @@ def fix_attachment_organizations(
         # Nothing to do during creation.
         return
 
-    attachments_needing_update = instance.sequence_maps.exclude(owned_by_org__isnull=True).exclude(
+    attachments_needing_update = instance.sequence_maps.exclude(
         owned_by_org=instance.organization
     )
     if attachments_needing_update.count() > 0:
