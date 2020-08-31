@@ -73,7 +73,11 @@ class User(AbstractUser, ComputedFieldsModel):
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def owned_pulbic_organizations(self):
+    def public_organizations(self):
+        return self.organizations.exclude(id=self.personal_organization.id)
+
+    @property
+    def owned_public_organizations(self):
         return self.owned_organizations.exclude(id=self.personal_organization.id)
 
     def save(self, *args, **kwargs):
