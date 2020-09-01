@@ -11,7 +11,6 @@ export const CreateUserContextProvider = ({ children }) => {
   const [needsEmail, setNeedsEmail] = useLocalStorage('needsEmail', false)
   const [authCodeUsed, setAuthCodeUsed] = React.useState(false)
   const [error, setError] = React.useState('')
-  const [alert, setAlert] = React.useState('')
 
   return (
     <CreateUserContext.Provider
