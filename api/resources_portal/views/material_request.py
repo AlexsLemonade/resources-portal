@@ -28,6 +28,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "is_active",
             "rejection_reason",
             "status",
+            "requester_abstract",
             "assigned_to",
             "has_issues",
             "requires_action_sharer",
@@ -75,16 +76,12 @@ class CanViewRequestsOrIsRequester(BasePermission):
         )
 
 
-class CanApproveRequests(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("approve_requests", obj.material.organization)
-
-
 class CanApproveRequestsOrIsRequester(BasePermission):
     def has_object_permission(self, request, view, obj):
         return (
             request.user.has_perm("approve_requests", obj.material.organization)
             or request.user == obj.requester
+            or request.user == obj.assigned_to
         )
 
 

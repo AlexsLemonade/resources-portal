@@ -17,5 +17,5 @@ from resources_portal.models.notification import Notification
 from resources_portal.models.organization import Organization
 from resources_portal.models.organization_invitation import OrganizationInvitation
 from resources_portal.models.organization_user_setting import OrganizationUserSetting
-from resources_portal.models.shipping_requirements import ShippingRequirements
+from resources_portal.models.shipping_requirement import ShippingRequirement
 from resources_portal.models.user import User

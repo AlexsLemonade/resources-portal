@@ -114,6 +114,20 @@ class MaterialFactory(factory.django.DjangoModelFactory):
     organization = factory.SubFactory(OrganizationFactory)
 
 
+class ShippingRequirementFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.ShippingRequirement"
+
+    organization = factory.SubFactory(OrganizationFactory)
+    restrictions = "North America only."
+    needs_shipping_address = True
+    needs_payment = True
+    sharer_pays_shipping = True
+    accepts_shipping_code = True
+    accepts_reimbursement = False
+    accepts_other_payment_methods = False
+
+
 class OrganizationInvitationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.OrganizationInvitation"
@@ -172,6 +186,7 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
 
     rejection_reason = "I won't have my science used for Evil!"
     material = factory.SubFactory(MaterialFactory)
+    requester_abstract = "We need these for science!"
 
 
 class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):

@@ -1,7 +1,7 @@
-import React from 'react'
-import { Box, Button, Text } from 'grommet'
-import styled from 'styled-components'
 import Icon from 'components/Icon'
+import { Box, Button, Text } from 'grommet'
+import React from 'react'
+import styled from 'styled-components'
 
 const types = {
   info: {

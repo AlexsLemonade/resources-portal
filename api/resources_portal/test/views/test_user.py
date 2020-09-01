@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -6,6 +8,13 @@ from faker import Faker
 
 from resources_portal.models import User
 from resources_portal.test.factories import UserFactory
+from resources_portal.test.utils import (
+    MOCK_EMAIL,
+    MOCK_GRANTS,
+    ORCID_AUTHORIZATION_DICT,
+    generate_mock_orcid_authorization_response,
+    generate_mock_orcid_record_response,
+)
 
 fake = Faker()
 
@@ -29,10 +38,55 @@ class TestUserListTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_post_not_allowed(self):
-        self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class TestUserPostTestCase(APITestCase):
+    """
+    Tests /users POST requests.
+    """
+
+    def setUp(self):
+        self.user = UserFactory()
+        self.url = reverse("user-list")
+        self.user_data = {
+            "orcid": "000000-111111-222222",
+            "access_token": "12345",
+            "refresh_token": "56789",
+            "email": MOCK_EMAIL,
+            "grant_info": MOCK_GRANTS,
+        }
+
+    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
+    @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
+    def test_post_creates_new_user_through_oauth(self, mock_auth_request, mock_record_request):
+        response = self.client.post(self.url, self.user_data)
+
+        user = User.objects.get(pk=response.json()["user_id"])
+
+        self.assertEqual(user.orcid, ORCID_AUTHORIZATION_DICT["orcid"])
+
+        self.assertEqual(user.email, MOCK_EMAIL)
+
+        self.assertEqual(len(user.grants.all()), 2)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
+    @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
+    def test_post_with_invalid_grants_returns_error(self, mock_auth_request, mock_record_request):
+        self.user_data["grant_info"][0].pop("funder_id")
+
+        response = self.client.post(self.url, self.user_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
+    @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
+    def test_post_with_existing_orcid_returns_error(self, mock_auth_request, mock_record_request):
+        self.user_data["orcid"] = self.user.orcid
+
+        response = self.client.post(self.url, self.user_data)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class TestUserDetailTestCase(APITestCase):

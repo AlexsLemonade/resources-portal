@@ -74,6 +74,14 @@ class User(AbstractUser, ComputedFieldsModel):
     def full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def public_organizations(self):
+        return self.organizations.exclude(id=self.personal_organization.id)
+
+    @property
+    def owned_public_organizations(self):
+        return self.owned_organizations.exclude(id=self.personal_organization.id)
+
     def save(self, *args, **kwargs):
         self.id = uuid.UUID(str(self.id))
         super(User, self).save(*args, **kwargs)

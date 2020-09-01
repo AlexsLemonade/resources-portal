@@ -18,7 +18,7 @@ from resources_portal.models import (
     MaterialShareEvent,
     Organization,
     OrganizationInvitation,
-    ShippingRequirements,
+    ShippingRequirement,
     User,
 )
 
@@ -120,9 +120,9 @@ class AttachmentRelationSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created_at", "updated_at")
 
 
-class ShippingRequirementsRelationSerializer(serializers.ModelSerializer):
+class ShippingRequirementRelationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ShippingRequirements
+        model = ShippingRequirement
         fields = (
             "id",
             "created_at",
@@ -133,6 +133,7 @@ class ShippingRequirementsRelationSerializer(serializers.ModelSerializer):
             "accepts_reimbursement",
             "accepts_other_payment_methods",
             "restrictions",
+            "organization",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
@@ -145,6 +146,7 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
             "is_active",
             "rejection_reason",
             "status",
+            "requester_abstract",
             "assigned_to",
             "executed_mta_attachment",
             "irb_attachment",

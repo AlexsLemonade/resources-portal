@@ -86,16 +86,28 @@ const formDataRequest = async (
   }
 }
 
-export const loginUser = () => {}
+export const userLogin = (data) =>
+  request(getAPIURL('login/'), {
+    method: 'POST',
+    body: JSON.stringify(data)
+  })
 
-export const userAuthenticate = (data) =>
-  request(getAPIURL('auth/'), {
+export const userCreate = (data) =>
+  request(getAPIURL('users/'), {
     method: 'POST',
     body: JSON.stringify(data)
   })
 
 export const userGetInfo = (userId, authorization) =>
   request(`${getAPIURL(`users/${userId}`)}`, { authorization })
+
+export const userGetORCID = (authCode, originUrl) => {
+  const credentialResponse = request(`${getAPIURL('orcid-credentials/')}`, {
+    method: 'POST',
+    body: JSON.stringify({ code: authCode, origin_url: originUrl })
+  })
+  return credentialResponse
+}
 
 export default {
   search: {
@@ -105,7 +117,6 @@ export default {
     detail: (id) => request(getAPIURL(`materials/${id}`))
   },
   user: {
-    authenticate: userAuthenticate,
     getInfo: userGetInfo,
     refreshToken: (token) =>
       request(getAPIURL('refresh-token/'), {
@@ -113,7 +124,7 @@ export default {
         body: { token }
       }),
     login: async (authCode, originUrl) => {
-      const tokenRequest = await userAuthenticate({
+      const tokenRequest = await userLogin({
         origin_url: originUrl,
         code: authCode
       })
@@ -129,12 +140,13 @@ export default {
 
       return [tokenRequest, userRequest]
     },
-    create: async (authCode, originUrl, email, grants) => {
-      const tokenRequest = await userAuthenticate({
+    create: async (orcid, accessToken, refreshToken, email, grants) => {
+      const tokenRequest = await userCreate({
         email,
         grants,
-        origin_url: originUrl,
-        code: authCode
+        orcid,
+        access_token: accessToken,
+        refresh_token: refreshToken
       })
 
       if (!tokenRequest.isOk) {
@@ -147,7 +159,8 @@ export default {
       )
 
       return [tokenRequest, userRequest]
-    }
+    },
+    getORCID: userGetORCID
   },
   teams: {
     get: (organizationId, authorization) =>
