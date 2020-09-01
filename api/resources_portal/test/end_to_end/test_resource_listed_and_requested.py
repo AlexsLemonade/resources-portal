@@ -191,7 +191,6 @@ class TestResourceListedAndRequested(APITestCase):
             len(
                 Notification.objects.filter(
                     notification_type="MATERIAL_REQUEST_REQUESTER_FULFILLED",
-                    email=self.secondary_prof.email,
                 )
             ),
             1,
@@ -237,16 +236,6 @@ class TestResourceListedAndRequested(APITestCase):
         )
         self.assertEqual(issue_response.status_code, status.HTTP_200_OK)
 
-        # Do we need an equivalent here?
-        # self.assertEqual(
-        #     len(
-        #         Notification.objects.filter(
-        #             notification_type="REQUEST_ISSUE_CLOSED", email=self.post_doc.email
-        #         )
-        #     ),
-        #     1,
-        # )
-
         # This is the second time the request was marked as fulfilled,
         # so now there should be 2x!
         self.assertEqual(
@@ -257,7 +246,6 @@ class TestResourceListedAndRequested(APITestCase):
             len(
                 Notification.objects.filter(
                     notification_type="MATERIAL_REQUEST_REQUESTER_FULFILLED",
-                    email=self.secondary_prof.email,
                 )
             ),
             2,
@@ -280,4 +268,4 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 19)
+        self.assertEqual(len(Notification.objects.all()), 18)

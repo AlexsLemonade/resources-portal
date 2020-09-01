@@ -150,8 +150,6 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         if request.data["status"] == "CLOSED":
             material_request.refresh_from_db()
 
-            # Do we need a ISSUE_CLOSED here?
-
             if not material_request.has_issues:
                 material_request.status = "FULFILLED"
                 material_request.save()
@@ -159,6 +157,16 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
                 send_notifications(
                     "MATERIAL_REQUEST_SHARER_FULFILLED",
                     material_request.assigned_to,
+                    request.user,
+                    material_request.material.organization,
+                    material=material_request.material,
+                    material_request=material_request,
+                    material_request_issue=material_request_issue,
+                )
+
+                send_notifications(
+                    "MATERIAL_REQUEST_REQUESTER_FULFILLED",
+                    material_request.requester,
                     request.user,
                     material_request.material.organization,
                     material=material_request.material,
