@@ -2,13 +2,13 @@ import { Anchor } from 'grommet'
 import Link from 'next/link'
 import * as React from 'react'
 import { useUser } from '../hooks/useUser'
-import { CreateOrLoginModal } from './CreateOrLogin'
+import { CreateOrLoginButton } from './CreateOrLogin'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
 
   if (!isLoggedIn) {
-    return <CreateOrLoginModal title="Create a BioResources Portal Account" />
+    return <CreateOrLoginButton title="Create a BioResources Portal Account" />
   }
 
   return (

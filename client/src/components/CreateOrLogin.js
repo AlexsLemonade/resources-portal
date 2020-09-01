@@ -118,7 +118,7 @@ const CreateOrLogin = ({ title, includeSignInSection }) => {
   )
 }
 
-export const CreateOrLoginModal = ({ title, includeSignInSection }) => {
+export const CreateOrLoginButton = ({ title, includeSignInSection }) => {
   const [showing, setShowing] = React.useState(false)
 
   return (
@@ -134,4 +134,4 @@ export const CreateOrLoginModal = ({ title, includeSignInSection }) => {
   )
 }
 
-export default CreateOrLoginModal
+export default CreateOrLoginButton

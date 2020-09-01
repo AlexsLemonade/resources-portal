@@ -2,12 +2,12 @@ import { storiesOf } from '@storybook/react'
 import { Grommet } from 'grommet'
 import * as React from 'react'
 import theme from '../theme'
-import { CreateOrLoginModal } from './CreateOrLogin'
+import { CreateOrLoginButton } from './CreateOrLogin'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
   return (
     <Grommet theme={theme}>
-      <CreateOrLoginModal title="Create a BioResources Portal Account" />
+      <CreateOrLoginButton title="Create a BioResources Portal Account" />
     </Grommet>
   )
 })
@@ -15,7 +15,7 @@ storiesOf('Modal', module).add('Sign in from header', () => {
 storiesOf('Modal', module).add('Sign in from search', () => {
   return (
     <Grommet theme={theme}>
-      <CreateOrLoginModal
+      <CreateOrLoginButton
         title="Sign In / Create Account"
         includeSignInSection
       />
@@ -26,7 +26,7 @@ storiesOf('Modal', module).add('Sign in from search', () => {
 storiesOf('Modal', module).add('Sign in from resource request', () => {
   return (
     <Grommet theme={theme}>
-      <CreateOrLoginModal
+      <CreateOrLoginButton
         title="Please sign in to contact submitter"
         includeSignInSection
       />
