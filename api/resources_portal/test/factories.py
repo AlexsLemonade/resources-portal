@@ -170,6 +170,7 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     irb_attachment = factory.SubFactory(AttachmentFactory)
     requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
 
+    rejection_reason = "I won't have my science used for Evil!"
     material = factory.SubFactory(MaterialFactory)
 
 

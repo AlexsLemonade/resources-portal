@@ -143,6 +143,7 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "is_active",
+            "rejection_reason",
             "status",
             "assigned_to",
             "executed_mta_attachment",

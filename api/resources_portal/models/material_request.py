@@ -65,6 +65,7 @@ class MaterialRequest(SafeDeleteModel):
         help_text="Attachment containing the MTA after it has been signed by all parties.",
     )
 
+    rejection_reason = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="OPEN")
 
     assigned_to = models.ForeignKey(

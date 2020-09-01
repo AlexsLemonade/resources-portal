@@ -135,6 +135,7 @@ class Notification(SafeDeleteModel):
         if self.associated_material_request:
             props["request_url"] = self.associated_material_request.frontend_URL
             props["requester_name"] = self.associated_material_request.requester.full_name
+            props["rejection_reason"] = self.associated_material_request.rejection_reason
             props["required_info_plain"] = self.associated_material_request.required_info_plain_text
             props["provided_info_plain"] = self.associated_material_request.provided_info_plain_text
             props["required_info_html"] = self.associated_material_request.required_info_html

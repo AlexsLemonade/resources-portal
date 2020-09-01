@@ -26,6 +26,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "is_active",
+            "rejection_reason",
             "status",
             "assigned_to",
             "has_issues",

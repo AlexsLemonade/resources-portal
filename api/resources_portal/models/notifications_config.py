@@ -125,6 +125,44 @@ NOTIFICATIONS = {
         ],
         "send_to_organization": True,
     },
+    "MATERIAL_REQUEST_SHARER_REJECTED": {
+        "subject": "Request for {material_category} rejected",
+        "body": (
+            "{you_or_other_name_upper} rejected a request for {material_category},"
+            " {material_name} for the below reason:<br>{rejection_reason}"
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n{you_or_other_name} rejected a request for {material_category},"
+            " {material_name} for the below reason:\n{rejection_reason}"
+            "\n\nView request details ({request_url})"
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+        "send_to_organization": True,
+    },
+    "MATERIAL_REQUEST_SHARER_CANCELLED": {
+        "subject": "Request for {material_category} cancelled",
+        "body": "{requester_name} rejected a request for {material_category}, {material_name}.",
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n{requester_name} cancelled a request for {material_category},"
+            " {material_name}\n\nView request details ({request_url})"
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+        "send_to_organization": True,
+    },
     "MATERIAL_REQUEST_SHARER_RECEIVED_INFO": {
         "subject": "Action Required: Received additional information from {requester_name}",
         "body": "{requester_name} provided the following required items for a request for {material_category}, {material_name}:<br>{provided_info_html}",
@@ -321,6 +359,42 @@ NOTIFICATIONS = {
             "{your_name},\n{organization_name} marked your request for {material_category},"
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details. "
             "\n\nView fulfillment notes. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_REJECTED": {
+        "subject": "Request for {material_category} rejected",
+        "body": (
+            "{organization_name} rejected your request for {material_category}, {material_name} "
+            "for the below reason:<br>{rejection_reason}"
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n{organization_name} rejected your request for"
+            " {material_category}, {material_name} for the below reason:\n{rejection_reason}"
+            "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_CANCELLED": {
+        "subject": "Request for {material_category} cancelled",
+        "body": ("You cancelled your request for {material_category}, {material_name}."),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "You cancelled your request for {material_category}, {material_name}."
+            "\n\nView request details. ({request_url})."
         ),
         "required_associations": [
             "associated_user",
