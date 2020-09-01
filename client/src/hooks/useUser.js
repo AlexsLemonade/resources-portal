@@ -1,26 +1,15 @@
-import { useRouter } from 'next/router'
 import React from 'react'
 import api from '../api'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
-import { useLocalStorage } from './useLocalStorage'
 
-export const useUser = (defaultUser, defaultToken, redirectUrl) => {
-  const [loginRedirectUrl, setLoginRedirectUrl] = useLocalStorage(
-    'redirectUrl',
-    redirectUrl
-  )
+export const useUser = (defaultUser, defaultToken) => {
   const { user, setUser, token, setToken } = React.useContext(
     ResourcesPortalContext
   )
-  const router = useRouter()
   React.useEffect(() => {
     if (defaultUser && defaultToken) {
       setUser(defaultUser)
       setToken(defaultToken)
-      if (loginRedirectUrl) {
-        setLoginRedirectUrl()
-        router.replace(loginRedirectUrl)
-      }
     }
   })
   const isLoggedIn = Boolean(user && token)
@@ -51,7 +40,6 @@ export const useUser = (defaultUser, defaultToken, redirectUrl) => {
     token,
     isLoggedIn,
     refreshUserData,
-    logOut,
-    setLoginRedirectUrl
+    logOut
   }
 }

@@ -2,19 +2,14 @@ import { Anchor } from 'grommet'
 import Link from 'next/link'
 import * as React from 'react'
 import { useUser } from '../hooks/useUser'
-import { LoginButton } from './LoginButton'
-import { SignInModal } from './modals/SignInModal'
+import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
-  const [showing, setShowing] = React.useState(false)
 
   if (!isLoggedIn) {
     return (
-      <>
-        <LoginButton onClick={() => setShowing(true)} />
-        <SignInModal showing={showing} setShowing={setShowing} />
-      </>
+      <CreateAccountLoginButton title="Create a BioResources Portal Account" />
     )
   }
 

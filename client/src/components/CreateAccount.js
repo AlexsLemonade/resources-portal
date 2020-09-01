@@ -4,7 +4,7 @@ import { useCreateUser } from 'hooks/useCreateUser'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
 import NextSteps from '../images/join-by-invite-next-steps.svg'
-import { ORCIDSignInButton } from './modals/CommonModalContent'
+import { ORCIDSignInButton } from './CreateAccountLoginButton'
 import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
 
 export const CreateAccountStep = () => {

@@ -28,6 +28,7 @@ from resources_portal.views import (
     OrganizationMemberViewSet,
     OrganizationUserSettingViewSet,
     OrganizationViewSet,
+    ShippingRequirementViewSet,
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
@@ -77,6 +78,9 @@ router.register(
     r"organization-user-settings",
     OrganizationUserSettingViewSet,
     basename="organization-user-setting",
+)
+router.register(
+    r"shipping-requirements", ShippingRequirementViewSet, basename="shipping-requirement"
 )
 
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request").register(

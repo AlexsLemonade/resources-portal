@@ -58,7 +58,7 @@ class MaterialDocument(Document):
         }
     )
 
-    shipping_requirements = fields.ObjectField(
+    shipping_requirement = fields.ObjectField(
         properties={
             "needs_shipping_address": fields.BooleanField(),
             "needs_payment": fields.BooleanField(),
