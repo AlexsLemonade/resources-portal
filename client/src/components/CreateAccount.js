@@ -118,13 +118,12 @@ export const VerifyGrantStep = () => {
   const { stepForward, createUser } = useCreateUser()
   const { addAlert } = useAlertsQueue()
   const [showing, setShowing] = React.useState(false)
+  const [alert, setAlert] = React.useState()
 
   if (alert) {
-    addAlert(alert, 'success')
-    setAlert('')
+    addAlert(alert.message, alert.type)
+    setAlert()
   }
-
-  const [alert, setAlert] = React.useState('')
 
   return (
     <Box gap="medium">

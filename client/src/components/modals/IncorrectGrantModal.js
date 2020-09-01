@@ -8,14 +8,26 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
   const onChange = (newMessage) => {
     setMessage(newMessage)
   }
-  const onClick = () => {
+  const onClick = async () => {
     setShowing(false)
     if (message) {
-      api.user.submitGrantComplaint(message)
-      setAlert(
-        'Your message was sent to the ALSF Grants Team. They will be in touch with you shortly.'
-      )
+      const response = await api.user.submitGrantComplaint(message)
+      if (response.isOk) {
+        setAlert({
+          message:
+            'Your message was sent to the ALSF Grants Team. They will be in touch with you shortly.',
+          type: 'success'
+        })
+      } else {
+        setAlert({
+          message: 'There was an error submitting the issue.',
+          type: 'error'
+        })
+      }
     }
+  }
+  const messageEmpty = () => {
+    return message === ''
   }
   return (
     <Box
@@ -35,7 +47,7 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
       </Box>
       <Box direction="row" gap="small">
         <Text weight="bold">Tell us what is wrong</Text>
-        <Text italic="true" color="red">
+        <Text italic="true" color="error">
           (Required)
         </Text>
       </Box>
@@ -54,7 +66,12 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
         />
       </Box>
       <Box alignSelf="end" width="100px" margin={{ top: 'large' }}>
-        <Button label="Send" onClick={onClick} primary />
+        <Button
+          label="Send"
+          onClick={onClick}
+          disabled={messageEmpty()}
+          primary
+        />
       </Box>
     </Box>
   )
