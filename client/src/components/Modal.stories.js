@@ -2,43 +2,33 @@ import { storiesOf } from '@storybook/react'
 import { Grommet } from 'grommet'
 import * as React from 'react'
 import theme from '../theme'
-import { LoginButton } from './LoginButton'
-import CreateAccountModal from './modals/CreateAccountModal'
-import { SignInModal } from './modals/SignInModal'
+import { CreateOrLoginModal } from './CreateOrLogin'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
-  const [showing, setShowing] = React.useState(false)
   return (
     <Grommet theme={theme}>
-      <LoginButton onClick={() => setShowing(true)} />
-      <SignInModal showing={showing} setShowing={setShowing} />
+      <CreateOrLoginModal title="Create a BioResources Portal Account" />
     </Grommet>
   )
 })
 
 storiesOf('Modal', module).add('Sign in from search', () => {
-  const [showing, setShowing] = React.useState(false)
   return (
     <Grommet theme={theme}>
-      <LoginButton onClick={() => setShowing(true)} />
-      <CreateAccountModal
+      <CreateOrLoginModal
         title="Sign In / Create Account"
-        showing={showing}
-        setShowing={setShowing}
+        includeSignInSection
       />
     </Grommet>
   )
 })
 
 storiesOf('Modal', module).add('Sign in from resource request', () => {
-  const [showing, setShowing] = React.useState(false)
   return (
     <Grommet theme={theme}>
-      <LoginButton onClick={() => setShowing(true)} />
-      <CreateAccountModal
+      <CreateOrLoginModal
         title="Please sign in to contact submitter"
-        showing={showing}
-        setShowing={setShowing}
+        includeSignInSection
       />
     </Grommet>
   )
