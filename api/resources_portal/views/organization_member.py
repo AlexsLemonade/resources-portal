@@ -53,6 +53,6 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                 material.contact_user = organization.owner
                 material.save()
 
-        send_notifications("ORGANIZTION_MEMBER_LEFT", user, user, organization)
+        send_notifications("ORGANIZATION_MEMBER_LEFT", user, user, organization)
 
         return Response(status=204)

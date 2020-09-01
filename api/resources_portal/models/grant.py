@@ -30,7 +30,7 @@ class Grant(SafeDeleteModel):
     organizations = models.ManyToManyField("Organization", through="GrantOrganizationAssociation")
     materials = models.ManyToManyField("Material", through="GrantMaterialAssociation")
 
-    def set_on_personal_organiztion(self):
+    def set_on_personal_organization(self):
         if self.user and self.user.personal_organization:
             GrantOrganizationAssociation.objects.get_or_create(
                 grant=self, organization=self.user.personal_organization
@@ -65,8 +65,8 @@ class Grant(SafeDeleteModel):
 
                 # Then add the new association, if there's still an
                 # organization to add it to.
-                self.set_on_personal_organiztion()
+                self.set_on_personal_organization()
         else:
             # This was just created, make sure the personal
             # organization of user is linked if they both exist.
-            self.set_on_personal_organiztion()
+            self.set_on_personal_organization()

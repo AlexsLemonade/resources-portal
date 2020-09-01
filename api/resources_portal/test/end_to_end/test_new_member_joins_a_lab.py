@@ -105,7 +105,7 @@ class TestNewMemberJoinsALab(APITestCase):
 
         # PostDoc, PrimaryProf, and NewMember are all notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORGANIZTION_MEMBER_LEFT")), 3
+            len(Notification.objects.filter(notification_type="ORGANIZATION_MEMBER_LEFT")), 3
         )
 
         # All materials assigned to PostDoc will be reassigned to the owner when PostDoc leaves the organization.

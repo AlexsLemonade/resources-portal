@@ -396,7 +396,7 @@ NOTIFICATIONS = {
         "send_to_organization": True,
         "send_to_primary_user": False,
     },
-    "ORGANIZTION_BECAME_OWNER": {
+    "ORGANIZATION_BECAME_OWNER": {
         "subject": "{organization_name}: You have been made owner",
         "body": (
             "{other_name} has made you the owner of {organization_name}."
@@ -411,7 +411,7 @@ NOTIFICATIONS = {
         "required_associations": ["associated_user", "associated_organization",],
         "always_send": True,
     },
-    "ORGANIZTION_NEW_OWNER": {
+    "ORGANIZATION_NEW_OWNER": {
         "subject": "{organization_name}: New owner",
         "body": "{other_name} is now the owner of {organization_name}.",
         "CTA": "View Team",
@@ -424,7 +424,7 @@ NOTIFICATIONS = {
         "send_to_organization": True,
         "send_to_associated_user": False,
     },
-    "ORGANIZTION_MEMBER_LEFT": {
+    "ORGANIZATION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
         "CTA": "None?",
@@ -433,7 +433,7 @@ NOTIFICATIONS = {
         "required_associations": ["associated_user", "associated_organization",],
         "send_to_organization": True,
     },
-    "ORGANIZTION_NEW_GRANT": {
+    "ORGANIZATION_NEW_GRANT": {
         "subject": "{organization_name}: New grant linked",
         "body": (
             "{other_name} linked a new grant {grant_name} with {organization_name}."
