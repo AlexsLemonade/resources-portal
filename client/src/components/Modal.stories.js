@@ -1,9 +1,8 @@
 import { storiesOf } from '@storybook/react'
-import { Grommet } from 'grommet'
+import { Box, Button, Grommet } from 'grommet'
 import * as React from 'react'
 import theme from '../theme'
 import { CreateAccountLoginButton } from './CreateAccountLoginButton'
-import { LoginButton } from './LoginButton'
 import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
@@ -37,7 +36,12 @@ storiesOf('Modal', module).add('Incorrect grant', () => {
   const [showing, setShowing] = React.useState(false)
   return (
     <Grommet theme={theme}>
-      <LoginButton onClick={() => setShowing(true)} />
+      <Box align="center" pad="small">
+        <Button
+          onClick={() => setShowing(true)}
+          label="Report missing/incorrect information"
+        />
+      </Box>
       <IncorrectGrantModal showing={showing} setShowing={setShowing} />
     </Grommet>
   )

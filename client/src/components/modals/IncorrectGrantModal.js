@@ -26,9 +26,6 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
       }
     }
   }
-  const messageEmpty = () => {
-    return message === ''
-  }
   return (
     <Box
       width="600px"
@@ -66,12 +63,7 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
         />
       </Box>
       <Box alignSelf="end" width="100px" margin={{ top: 'large' }}>
-        <Button
-          label="Send"
-          onClick={onClick}
-          disabled={messageEmpty()}
-          primary
-        />
+        <Button label="Send" onClick={onClick} disabled={!message} primary />
       </Box>
     </Box>
   )
