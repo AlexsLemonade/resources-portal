@@ -6,7 +6,10 @@ import ORCIDLogo from '../images/grant.svg'
 import { LoginButton } from './LoginButton'
 import { Modal } from './Modal'
 
-export const ORCIDSignInButton = ({ label }) => {
+export const ORCIDSignInButton = ({
+  label,
+  redirectUrl = process.env.CLIENT_HOST
+}) => {
   const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 
   let orcidPrefix = ''
@@ -19,7 +22,7 @@ export const ORCIDSignInButton = ({ label }) => {
   const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${
     process.env.ORCID_CLIENT_ID
   }&response_type=code&scope=/authenticate&redirect_uri=${decodeURI(
-    process.env.CLIENT_HOST
+    redirectUrl
   )}`
 
   return (
