@@ -197,7 +197,16 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(
             len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 1
         )
-        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
+            ),
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_APPROVED")),
+            2,
+        )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 9)
+        self.assertEqual(len(Notification.objects.all()), 11)

@@ -156,11 +156,13 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         self.assertEqual(
             len(
-                Notification.objects.filter(
-                    notification_type="TRANSFER_APPROVED", email=requester.email
-                )
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
             ),
             2,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_APPROVED")),
+            4,
         )
 
         # The Requester uploads two signed MTAs
@@ -271,4 +273,4 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 10)
+        self.assertEqual(len(Notification.objects.all()), 14)

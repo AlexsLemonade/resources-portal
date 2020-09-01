@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
+from resources_portal.notifier import send_notifications
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
@@ -99,7 +100,22 @@ def send_material_request_notif(notif_type, request, notified_user):
 
 def send_transfer_update_notif(status, request):
     if status == "APPROVED":
-        send_material_request_notif("TRANSFER_APPROVED", request, request.requester)
+        send_notifications(
+            "MATERIAL_REQUEST_REQUESTER_ACCEPTED",
+            request.requester,
+            request.requester,
+            request.material.organization,
+            material=request.material,
+            material_request=request,
+        )
+        send_notifications(
+            "MATERIAL_REQUEST_SHARER_APPROVED",
+            request.assigned_to,
+            request.assigned_to,
+            request.material.organization,
+            material=request.material,
+            material_request=request,
+        )
     elif status == "REJECTED":
         send_material_request_notif("TRANSFER_REJECTED", request, request.requester)
     elif status == "CANCELLED":

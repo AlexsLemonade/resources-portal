@@ -106,11 +106,13 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(
             len(
-                Notification.objects.filter(
-                    notification_type="TRANSFER_APPROVED", email=self.secondary_prof.email
-                )
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
             ),
             1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_APPROVED")),
+            2,
         )
 
         # SecondaryProf uploads the signed MTA
@@ -268,4 +270,4 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 11)
+        self.assertEqual(len(Notification.objects.all()), 13)
