@@ -11,7 +11,7 @@ export const useCreateUser = (
   queryCode,
   initialRedirectUrl
 ) => {
-  const { user, setUser, setToken, setLoginRedirectUrl } = useUser()
+  const { user, setUser, setToken } = useUser()
   const {
     createUser,
     setCreateUser,
@@ -26,6 +26,7 @@ export const useCreateUser = (
     authCodeUsed,
     setAuthCodeUsed
   } = React.useContext(CreateUserContext)
+
   const save = () => {
     setCreateUser({ ...createUser })
   }
@@ -142,7 +143,7 @@ export const useCreateUser = (
   }
 
   const createAndLoginUser = async (orcid, accessToken, refreshToken) => {
-    const { authenticatedUser, token, redirectUrl } = await callCreateUser(
+    const { authenticatedUser, token } = await callCreateUser(
       orcid,
       accessToken,
       refreshToken,
@@ -154,9 +155,6 @@ export const useCreateUser = (
     }
     if (token) {
       setToken(token)
-    }
-    if (redirectUrl) {
-      setLoginRedirectUrl(redirectUrl)
     }
   }
 

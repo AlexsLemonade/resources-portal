@@ -1,10 +1,11 @@
 import { Anchor, Box, Button, Text } from 'grommet'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
 import ORCIDLogo from '../../images/grant.svg'
 
 export const ORCIDDescription = () => {
   return (
-    <Box height="300px">
+    <Box height="160px">
       <Box margin={{ top: 'large', bottom: 'small' }}>
         <Text weight="bold">What is an ORCID iD?</Text>
       </Box>
@@ -45,6 +46,10 @@ export const AccountCreationInfo = ({ button }) => {
 }
 
 export const ORCIDSignInButton = ({ label, redirectUrl }) => {
+  const [clientRedirectUrl, setClientRedirectUrl] = useLocalStorage(
+    'clientRedirectUrl'
+  )
+
   let orcidPrefix = ''
   if (process.env.IS_DEVELOPMENT) {
     orcidPrefix = 'https://sandbox.orcid.org/'
@@ -65,7 +70,17 @@ export const ORCIDSignInButton = ({ label, redirectUrl }) => {
       margin={{ top: 'small' }}
       width="320px"
     >
-      <Button label={label} href={orcidUrl} icon={<ORCIDLogo />} primary />
+      <Button
+        label={label}
+        href={orcidUrl}
+        icon={<ORCIDLogo />}
+        onClick={() =>
+          setClientRedirectUrl(
+            window.location.pathname + window.location.search
+          )
+        }
+        primary
+      />
     </Box>
   )
 }
