@@ -29,9 +29,12 @@ logger = get_and_configure_logger(__name__)
 
 
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/notification-email-templated-inlined.html")
+    Path("resources_portal/email_assets/notification_email_templated_inlined.html")
     .read_text()
     .replace("\n", "")
+)
+CTA_HTML = (
+    Path("resources_portal/email_assets/cta_templated_inlined.html").read_text().replace("\n", "")
 )
 
 
@@ -146,8 +149,18 @@ class Notification(SafeDeleteModel):
         notification_config = NOTIFICATIONS[self.notification_type]
 
         body = notification_config["body"].format(**props)
-        cta = notification_config["CTA"].format(**props)
-        cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL
+        formatted_html = EMAIL_HTML_BODY.replace("REPLACE_FULL_NAME", props["your_name"]).replace(
+            "REPLACE_MAIN_TEXT", body
+        )
+        formatted_cta_html = ""
+        if "CTA" in notification_config and "CTA_link_field" in notification_config:
+            cta = notification_config["CTA"].format(**props)
+            cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL
+            formatted_cta_html = CTA_HTML.replace("REPLACE_CTA", cta).replace(
+                "REPLACE_LINK_CTA", cta_link
+            )
+
+        formatted_html = formatted_html.replace("REPLACE_HTML_CTA", formatted_cta_html)
 
         return {
             "body": body,
@@ -157,11 +170,7 @@ class Notification(SafeDeleteModel):
                 notification_config["plain_text_email"].format(**props) + PLAIN_TEXT_EMAIL_FOOTER
             ),
             "subject": notification_config["subject"].format(**props),
-            "formatted_html": (
-                EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
-                .replace("REPLACE_CTA", cta)
-                .replace("REPLACE_INVITATION_LINK", cta_link)
-            ),
+            "formatted_html": formatted_html,
         }
 
 

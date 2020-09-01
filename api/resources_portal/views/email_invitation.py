@@ -18,7 +18,7 @@ from resources_portal.emailer import (
 logger = get_and_configure_logger(__name__)
 
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/invitation-email-templated-inlined.html")
+    Path("resources_portal/email_assets/invitation_email_templated_inlined.html")
     .read_text()
     .replace("\n", "")
 )
