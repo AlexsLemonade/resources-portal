@@ -2,7 +2,7 @@ import { Anchor } from 'grommet'
 import Link from 'next/link'
 import * as React from 'react'
 import { useUser } from '../hooks/useUser'
-import { CreateAccountLoginButton } from './CreateOrLogin'
+import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()

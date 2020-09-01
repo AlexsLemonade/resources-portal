@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/react'
 import { Grommet } from 'grommet'
 import * as React from 'react'
 import theme from '../theme'
-import { CreateAccountLoginButton } from './CreateOrLogin'
+import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
   return (

@@ -44,7 +44,7 @@ export const ORCIDSignInButton = ({ label }) => {
   )
 }
 
-const CreateOrLogin = ({ title, showSignIn = true }) => {
+export const CreateOrLogin = ({ title, showSignIn = true }) => {
   return (
     <Box width="800px" gap="medium">
       <Box
