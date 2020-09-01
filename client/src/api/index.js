@@ -109,6 +109,12 @@ export const userGetORCID = (authCode, originUrl) => {
   return credentialResponse
 }
 
+export const userSubmitGrantComplaint = async (message) => {
+  // TODO: hook this up the the relevant API endpoint
+  console.log('This message will be sent to the grants team: ', message)
+  return {}
+}
+
 export default {
   search: {
     resources: (query) => request(getAPIURL('search/materials', query))
@@ -160,7 +166,8 @@ export default {
 
       return [tokenRequest, userRequest]
     },
-    getORCID: userGetORCID
+    getORCID: userGetORCID,
+    submitGrantComplaint: userSubmitGrantComplaint
   },
   teams: {
     get: (organizationId, authorization) =>

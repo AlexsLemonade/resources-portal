@@ -1,6 +1,6 @@
-import React from 'react'
-import { normalizeColor } from 'grommet/utils'
 import { Blank } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
+import React from 'react'
 
 const applyAll = (...rules) => rules.concat()
 const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
