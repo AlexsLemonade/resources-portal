@@ -195,13 +195,14 @@ class TestResourceListedAndRequested(APITestCase):
         )
         self.assertEqual(issue_response.status_code, status.HTTP_201_CREATED)
 
+        # Both the PrimaryProf and the Postdoc are notified.
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_OPENED", email=self.post_doc.email
+                    notification_type="MATERIAL_REQUEST_ISSUE_SHARER_REPORTED"
                 )
             ),
-            1,
+            2,
         )
 
         # Postdoc creates a fulfillment note and resolves the issue.
@@ -266,4 +267,4 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 9)
+        self.assertEqual(len(Notification.objects.all()), 10)

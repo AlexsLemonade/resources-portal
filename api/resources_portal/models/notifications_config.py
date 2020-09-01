@@ -208,6 +208,7 @@ NOTIFICATIONS = {
             "associated_organization",
         ],
         "send_to_organization": True,
+        "send_to_associated_user": False,
     },
     "MATERIAL_REQUEST_SHARER_VERIFIED": {
         "subject": "{requester_name} received {material_category}",
@@ -244,6 +245,7 @@ NOTIFICATIONS = {
             "associated_organization",
         ],
         "send_to_organization": True,
+        "send_to_associated_user": False,
     },
     "MATERIAL_REQUEST_REQUESTER_ACCEPTED": {
         "subject": "Action required: Request for {material_category} accepted",

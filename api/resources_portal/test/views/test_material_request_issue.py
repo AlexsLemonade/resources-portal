@@ -72,10 +72,10 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_OPENED", email=self.sharer.email
+                    notification_type="MATERIAL_REQUEST_ISSUE_SHARER_REPORTED"
                 )
             ),
-            1,
+            self.organization.members.count(),
         )
 
     def test_post_request_unfulfilled_error(self):
@@ -182,9 +182,8 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
 
-        OrganizationUserSetting.objects.get_or_create(
-            user=self.sharer, organization=self.request.material.organization
-        )
+        organization = self.request.material.organization
+        OrganizationUserSetting.objects.get_or_create(user=self.sharer, organization=organization)
 
         self.request_issue_data["status"] = "CLOSED"
 
@@ -198,30 +197,26 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.request.refresh_from_db()
         self.assertEqual(self.request.status, "FULFILLED")
 
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
-                )
-            ),
-            1,
-        )
+        # Do we need an equivalent notification for this?
+        # self.assertEqual(
+        #     len(
+        #         Notification.objects.filter(
+        #             notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
+        #         )
+        #     ),
+        #     1,
+        # )
 
         self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="TRANSFER_FULFILLED", email=self.user.email
-                )
-            ),
-            1,
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
+            organization.members.count(),
         )
 
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
-        OrganizationUserSetting.objects.get_or_create(
-            user=self.sharer, organization=self.request.material.organization
-        )
+        organization = self.request.material.organization
+        OrganizationUserSetting.objects.get_or_create(user=self.sharer, organization=organization)
 
         self.request_issue_data["status"] = "CLOSED"
 
@@ -236,12 +231,8 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.assertEqual(self.request.status, "FULFILLED")
 
         self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
-                )
-            ),
-            1,
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
+            organization.members.count(),
         )
 
     def test_put_request_without_permission_forbidden(self):

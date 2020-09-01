@@ -20,22 +20,14 @@ def send_notifications(
     material_request_issue: MaterialRequestIssue = None,
 ):
     notification_config = NOTIFICATIONS[notification_type]
+    recipients = set()
 
     # Default to sending to primary user.
     if (
         "send_to_primary_user" not in notification_config
         or notification_config["send_to_primary_user"]
     ):
-        notification = Notification(
-            notification_type=notification_type,
-            notified_user=primary_user,
-            associated_user=associated_user,
-            associated_organization=organization,
-            associated_material=material,
-            associated_material_request=material_request,
-            associated_material_request_issue=material_request_issue,
-        )
-        notification.save()
+        recipients.add(primary_user)
 
     if (
         "send_to_organization" in notification_config
@@ -48,16 +40,18 @@ def send_notifications(
             and not notification_config["send_to_associated_user"]
             and associated_user
         ):
-            members.exclude(associated_user)
+            members.exclude(id=associated_user.id)
 
-        for member in members.all():
-            notification = Notification(
-                notification_type=notification_type,
-                notified_user=member,
-                associated_user=associated_user,
-                associated_organization=organization,
-                associated_material=material,
-                associated_material_request=material_request,
-                associated_material_request_issue=material_request_issue,
-            )
-            notification.save()
+        recipients = recipients | set(members.all())
+
+    for recipient in recipients:
+        notification = Notification(
+            notification_type=notification_type,
+            notified_user=recipient,
+            associated_user=associated_user,
+            associated_organization=organization,
+            associated_material=material,
+            associated_material_request=material_request,
+            associated_material_request_issue=material_request_issue,
+        )
+        notification.save()

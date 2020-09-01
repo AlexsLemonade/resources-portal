@@ -194,7 +194,7 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
             LOGO_EMBEDDED_IMAGE_CONFIGS,
         )
     else:
-        logger.info(
+        logger.debug(
             f'In prod the following message will be sent to "{instance.notified_user.email}": "'
             f'{email_dict["plain_text_email"]}".'
         )
