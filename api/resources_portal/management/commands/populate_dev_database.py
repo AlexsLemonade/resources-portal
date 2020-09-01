@@ -16,7 +16,7 @@ from resources_portal.models import (
     Notification,
     Organization,
     OrganizationInvitation,
-    ShippingRequirements,
+    ShippingRequirement,
     User,
 )
 
@@ -73,7 +73,7 @@ def populate_dev_database():
 
     # add shipping requirements
     shipping_requirements_json = loads(open("./dev_data/shipping_requirements.json").read())
-    add_class_to_database(shipping_requirements_json["shipping_requirements"], ShippingRequirements)
+    add_class_to_database(shipping_requirements_json["shipping_requirements"], ShippingRequirement)
 
     # add Cl
     organizations_json = loads(open("./dev_data/organizations.json").read())

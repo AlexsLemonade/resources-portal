@@ -1,11 +1,13 @@
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.models.attachment import Attachment
-from resources_portal.models.shipping_requirements import ShippingRequirements
+from resources_portal.models.shipping_requirement import ShippingRequirement
 from resources_portal.models.user import User
 
 
@@ -61,7 +63,7 @@ class Material(SafeDeleteModel):
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
     shipping_requirements = models.ForeignKey(
-        ShippingRequirements, blank=False, null=True, on_delete=models.deletion.SET_NULL
+        ShippingRequirement, blank=False, null=True, on_delete=models.deletion.SET_NULL
     )
 
     import_source = models.CharField(max_length=32, null=True, choices=IMPORTED_CHOICES)
@@ -91,3 +93,28 @@ class Material(SafeDeleteModel):
 
     def has_pre_print(self):
         return not (self.pre_print_doi == "" and self.pre_print_title == "")
+
+
+@receiver(post_save, sender="resources_portal.Material")
+def fix_attachment_organizations(
+    sender, instance=None, created=False, update_fields=None, **kwargs
+):
+    """If the organziation changes, update the attachment.
+    """
+    if created or not instance:
+        # Nothing to do during creation.
+        return
+
+    attachments_needing_update = instance.sequence_maps.exclude(owned_by_org=instance.organization)
+    if attachments_needing_update.count() > 0:
+        for attachment in attachments_needing_update.all():
+            attachment.owned_by_org = instance.organization
+            attachment.save()
+
+    if (
+        instance.mta_attachment
+        and instance.mta_attachment.owned_by_org
+        and instance.mta_attachment.owned_by_org != instance.organization
+    ):
+        instance.mta_attachment.owned_by_org = instance.organization
+        instance.mta_attachment.save()

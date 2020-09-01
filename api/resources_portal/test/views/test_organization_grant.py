@@ -5,7 +5,12 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import Grant
-from resources_portal.test.factories import GrantFactory, PersonalOrganizationFactory, UserFactory
+from resources_portal.test.factories import (
+    AttachmentFactory,
+    GrantFactory,
+    PersonalOrganizationFactory,
+    UserFactory,
+)
 
 fake = Faker()
 
@@ -144,8 +149,14 @@ class OrganizationGrantTestCase(APITestCase):
         material1 = materials[0]
         material2 = materials[1]
         material1.organization = self.organization1
+        material1.mta_attachment = AttachmentFactory(
+            owned_by_user=user, owned_by_org=material1.organization
+        )
         material1.save()
         material2.organization = self.organization1
+        material2.mta_attachment = AttachmentFactory(
+            owned_by_user=user, owned_by_org=material2.organization
+        )
         material2.save()
 
         # Create a personal organization for grant2.user (factory
@@ -165,6 +176,7 @@ class OrganizationGrantTestCase(APITestCase):
 
         for material in grant.materials.all():
             self.assertEqual(user.personal_organization, material.organization)
+            self.assertEqual(user.personal_organization, material.mta_attachment.owned_by_org)
 
     def test_delete_fails_if_not_grant_owner(self):
         self.client.force_authenticate(user=self.organization2.owner)

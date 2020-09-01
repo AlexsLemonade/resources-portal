@@ -10,7 +10,7 @@ from resources_portal.models import Material, Organization
 from resources_portal.views.material_request import MaterialRequestSerializer
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
-    ShippingRequirementsRelationSerializer,
+    ShippingRequirementRelationSerializer,
     UserRelationSerializer,
 )
 
@@ -38,6 +38,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "shipping_requirements",
             "import_source",
             "grants",
+            "organisms",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",
@@ -70,7 +71,7 @@ class MaterialSerializer(serializers.ModelSerializer):
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserRelationSerializer()
     mta_attachment = AttachmentRelationSerializer()
-    shipping_requirements = ShippingRequirementsRelationSerializer()
+    shipping_requirements = ShippingRequirementRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
 
 

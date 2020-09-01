@@ -55,9 +55,9 @@ class AttachmentDetailSerializer(AttachmentSerializer):
 class OwnsAttachmentOrIsAdmin(BasePermission):
     def has_object_permission(self, request, view, obj):
         return (
-            request.user in obj.owned_by_org.members.all()
-            or request.user == obj.owned_by_user
+            request.user == obj.owned_by_user
             or request.user.is_staff
+            or (obj.owned_by_org and request.user in obj.owned_by_org.members.all())
         )
 
 
