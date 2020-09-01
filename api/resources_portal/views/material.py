@@ -35,7 +35,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "needs_irb",
             "needs_abstract",
             "imported",
-            "shipping_requirements",
+            "shipping_requirement",
             "import_source",
             "grants",
             "organisms",
@@ -71,7 +71,7 @@ class MaterialSerializer(serializers.ModelSerializer):
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserRelationSerializer()
     mta_attachment = AttachmentRelationSerializer()
-    shipping_requirements = ShippingRequirementRelationSerializer()
+    shipping_requirement = ShippingRequirementRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
 
 
