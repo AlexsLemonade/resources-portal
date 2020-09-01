@@ -44,7 +44,7 @@ export const ORCIDSignInButton = ({ label }) => {
   )
 }
 
-const CreateOrLogin = ({ title, includeSignInSection }) => {
+const CreateOrLogin = ({ title, showSignIn = true }) => {
   return (
     <Box width="800px" gap="medium">
       <Box
@@ -57,7 +57,7 @@ const CreateOrLogin = ({ title, includeSignInSection }) => {
         </Heading>
       </Box>
       <Box direction="row">
-        {includeSignInSection && (
+        {showSignIn && (
           <Box
             align="center"
             width={{ min: '400px' }}
@@ -118,20 +118,17 @@ const CreateOrLogin = ({ title, includeSignInSection }) => {
   )
 }
 
-export const CreateOrLoginButton = ({ title, includeSignInSection }) => {
+export const CreateAccountLoginButton = ({ title, showSignIn }) => {
   const [showing, setShowing] = React.useState(false)
 
   return (
     <>
       <LoginButton onClick={() => setShowing(true)} />
       <Modal showing={showing} setShowing={setShowing}>
-        <CreateOrLogin
-          title={title}
-          includeSignInSection={includeSignInSection}
-        />
+        <CreateOrLogin title={title} showSignIn={showSignIn} />
       </Modal>
     </>
   )
 }
 
-export default CreateOrLoginButton
+export default CreateAccountLoginButton
