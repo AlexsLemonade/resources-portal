@@ -159,9 +159,14 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", notified_user=new_member
+                    notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED_NEW",
+                    notified_user=new_member,
                 )
             ),
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_RECEIVED")),
             1,
         )
 
@@ -209,7 +214,12 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA"
+                )
+            ),
+            1,
         )
         self.assertEqual(
             len(
@@ -223,4 +233,4 @@ class TestNewMemberJoinsALab(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 11)
+        self.assertEqual(len(Notification.objects.all()), 12)

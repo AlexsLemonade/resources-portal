@@ -22,13 +22,6 @@ def send_notifications(
     notification_config = NOTIFICATIONS[notification_type]
     recipients = set()
 
-    # Default to sending to primary user.
-    if (
-        "send_to_primary_user" not in notification_config
-        or notification_config["send_to_primary_user"]
-    ):
-        recipients.add(primary_user)
-
     if (
         "send_to_organization" in notification_config
         and notification_config["send_to_organization"]
@@ -43,6 +36,15 @@ def send_notifications(
             members.exclude(id=associated_user.id)
 
         recipients = recipients | set(members.all())
+
+    # Default to sending to primary user.
+    if (
+        "send_to_primary_user" not in notification_config
+        or notification_config["send_to_primary_user"]
+    ):
+        recipients = recipients | set([primary_user])
+    else:
+        recipients = recipients - set([primary_user])
 
     for recipient in recipients:
         notification = Notification(

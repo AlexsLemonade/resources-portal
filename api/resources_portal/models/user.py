@@ -59,6 +59,9 @@ class User(AbstractUser, ComputedFieldsModel):
         )
     )
     def username(self):
+        if self.username:
+            return self.username
+
         users_with_same_name_count = (
             User.objects.filter(first_name=self.first_name, last_name=self.last_name)
             .exclude(pk=self.id)

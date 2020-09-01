@@ -141,24 +141,9 @@ class TestOrganizationWithTwoUsers(APITestCase):
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
 
-        # Temporary, I want to submit another PR to make this endpoint accept a user and an org. It makes more sense
-        prof_settings = OrganizationUserSetting.objects.get(organization=lab, user=prof)
-
-        settings_url = reverse("organization-user-setting-detail", args=[prof_settings.id])
-
-        settings_json = self.client.get(settings_url).json()
-
-        settings_json["new_request_notif"] = False
-        settings_json["change_in_request_status_notif"] = False
-        settings_json["request_approval_determined_notif"] = False
-        settings_json["request_assigned_notif"] = False
-        settings_json["reminder_notif"] = False
-        settings_json["transfer_requested_notif"] = False
-        settings_json["transfer_updated_notif"] = False
-        settings_json["perms_granted_notif"] = False
-        settings_json["misc_notif"] = False
-
-        response = self.client.put(settings_url, settings_json)
+        prof_changes = {"non_assigned_notifications": False, "weekly_digest": False}
+        prof_url = reverse("user-detail", args=[prof.id])
+        response = self.client.patch(prof_url, prof_changes)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

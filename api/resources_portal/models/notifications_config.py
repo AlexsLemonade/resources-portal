@@ -185,7 +185,7 @@ NOTIFICATIONS = {
         "body": (
             "{requester_name} provided the following additional documents for a request for"
             " {material_category}{material_name}\n - MTA signed by {requester_name}"
-            "\nPlease sign and upload the requester signed MTA"
+            "\nPlease sign and upload the fully executed MTA."
         ),
         "CTA": "Upload Fully Executed MTA",
         "CTA_link_field": "associated_material_request",
@@ -246,7 +246,6 @@ NOTIFICATIONS = {
             "associated_organization",
         ],
         "send_to_organization": True,
-        "send_to_associated_user": False,
     },
     "MATERIAL_REQUEST_SHARER_VERIFIED": {
         "subject": "{requester_name} received {material_category}",
