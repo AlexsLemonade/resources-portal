@@ -145,6 +145,7 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
             "id",
             "is_active",
             "status",
+            "requester_abstract",
             "assigned_to",
             "executed_mta_attachment",
             "irb_attachment",

@@ -26,6 +26,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "id",
             "is_active",
             "status",
+            "requester_abstract",
             "assigned_to",
             "has_issues",
             "requires_action_sharer",
