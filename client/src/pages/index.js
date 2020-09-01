@@ -1,14 +1,28 @@
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
+import { useLocalStorage } from 'hooks/useLocalStorage'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import React from 'react'
 import api from '../api'
 import { HomepageCard } from '../components/HomepageCard'
 import { useUser } from '../hooks/useUser'
 
-export const Home = ({ authenticatedUser, token, redirectUrl }) => {
-  useUser(authenticatedUser, token, redirectUrl)
+export const Home = ({ authenticatedUser, token }) => {
+  useUser(authenticatedUser, token)
   const heroOverlap = '140px'
   const [showSharing, setShowSharing] = React.useState(true)
+  const [clientRedirectUrl, setClientRedirectUrl] = useLocalStorage(
+    'clientRedirectUrl',
+    ''
+  )
+
+  const router = useRouter()
+
+  if (clientRedirectUrl) {
+    router.replace(clientRedirectUrl)
+    setClientRedirectUrl()
+  }
+
   return (
     <>
       <Box width="fill" pad={{ bottom: heroOverlap }}>
@@ -313,23 +327,16 @@ Home.getInitialProps = async ({ req, query }) => {
     return {}
   }
 
-  let queryJSON = { email: 'this@willchange.com' }
-
-  if (query.json) {
-    queryJSON = JSON.parse(query.json)
-  }
-
   const [tokenRequest, userRequest] = await api.user.login(
     query.code,
-    decodeURI(`http://${req.headers.host}${req.url}`),
-    queryJSON
+    decodeURI(`http://${req.headers.host}${req.url}`)
   )
 
   const initialProps = {}
 
   if (tokenRequest.isOk) {
     initialProps.token = tokenRequest.response.token
-    initialProps.redirectUrl = queryJSON.origin_url
+    initialProps.redirectUrl = decodeURI(`/`)
   }
 
   if (userRequest.isOk) {

@@ -1,6 +1,5 @@
 from resources_portal.views.address import AddressViewSet
 from resources_portal.views.attachment import AttachmentViewSet, local_file_view
-from resources_portal.views.auth import AuthViewSet
 from resources_portal.views.document_views import (
     MaterialDocumentView,
     OrganizationDocumentView,
@@ -11,9 +10,11 @@ from resources_portal.views.fulfillment_note import FulfillmentNoteViewSet
 from resources_portal.views.grant import GrantViewSet
 from resources_portal.views.grant_material import GrantMaterialViewSet
 from resources_portal.views.import_materials import ImportViewSet
+from resources_portal.views.login import LoginViewSet
 from resources_portal.views.material import MaterialViewSet
 from resources_portal.views.material_request import MaterialRequestViewSet
 from resources_portal.views.material_request_issue import MaterialRequestIssueViewSet
+from resources_portal.views.orcid_credentials import ORCIDCredentialsViewSet
 from resources_portal.views.organization import OrganizationViewSet
 from resources_portal.views.organization_grant import OrganizationGrantViewSet
 from resources_portal.views.organization_invitations import OrganizationInvitationViewSet

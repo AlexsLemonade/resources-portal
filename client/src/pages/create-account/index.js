@@ -1,39 +1,18 @@
-import { Box, Button, Heading } from 'grommet'
+import { CreateUserContextProvider } from 'contexts/CreateUserContext'
+import { Box } from 'grommet'
+import dynamic from 'next/dynamic'
 import React from 'react'
-import { ProgressBar } from '../../components/ProgressBar'
-import { useCreateUser } from '../../hooks/useCreateUser'
 
-const CreateAccount = ({ ORCID, email, grants, stepName, code, originUrl }) => {
-  const createUser = useCreateUser(email, grants, ORCID, code, originUrl)
-  const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
-
-  if (stepName && !redirectAlreadyFired) {
-    createUser.setCurrentStep(stepName)
-    setRedirectAlreadyFired(true)
-  }
-
+const CreateUser = dynamic(() => import('components/CreateUser'), {
+  ssr: false
+})
+const CreateAccount = (props) => {
   return (
-    <Box width={{ min: '500px', max: '800px' }}>
-      <Heading serif border="none" level="4">
-        Create an Account
-      </Heading>
-      <Box width={{ min: '400px', max: '700px' }}>
-        <Box pad="medium">
-          <ProgressBar
-            steps={createUser.steps}
-            index={createUser.steps.indexOf(createUser.currentStep)}
-          />
-        </Box>
+    <CreateUserContextProvider>
+      <Box width={{ min: '500px', max: '800px' }}>
+        <CreateUser props={props} />
       </Box>
-      {createUser.steps.map((step) => (
-        <Box key={step}>
-          {createUser.currentStep === step &&
-            createUser.getStepComponent(step, createUser)}
-        </Box>
-      ))}
-      <Button onClick={createUser.stepBack} />
-      <Button onClick={createUser.stepForward} />
-    </Box>
+    </CreateUserContextProvider>
   )
 }
 

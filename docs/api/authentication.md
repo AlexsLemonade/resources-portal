@@ -22,7 +22,7 @@ Authorization tokens are issued and returned when a user registers. A registered
 
 **Request**:
 
-`POST` `/auth`
+`POST` `/login`
 
 Parameters:
 

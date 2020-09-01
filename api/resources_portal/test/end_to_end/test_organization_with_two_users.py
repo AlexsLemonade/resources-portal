@@ -7,10 +7,10 @@ from rest_framework.test import APITestCase
 
 from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
 from resources_portal.test.utils import (
+    MOCK_EMAIL,
     MOCK_GRANTS,
     generate_mock_orcid_authorization_response,
-    generate_mock_orcid_record_response,
-    get_mock_auth_data,
+    generate_random_mock_orcid_record_response,
 )
 
 
@@ -36,15 +36,36 @@ class TestOrganizationWithTwoUsers(APITestCase):
         material_data = loads(open("./dev_data/materials.json").read())
         self.material_json = material_data["materials"][0]
 
-    @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
+        self.user_data = {
+            "email": MOCK_EMAIL,
+            "grant_info": MOCK_GRANTS,
+        }
+
+    @patch("orcid.PublicAPI", side_effect=generate_random_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_organization_with_two_users(self, mock_auth_request, mock_record_request):
         # Create account Prof
-        response = self.client.post(reverse("auth"), get_mock_auth_data([MOCK_GRANTS[0]]))
+        response = self.client.post(
+            reverse("orcid-credentials"), {"code": "MOCKCODE", "origin_url": "mock.origin.com"}
+        )
+
+        self.user_data["orcid"] = response.json()["orcid"]
+        self.user_data["access_token"] = response.json()["access_token"]
+        self.user_data["refresh_token"] = response.json()["refresh_token"]
+
+        response = self.client.post(reverse("user-list"), self.user_data)
         prof = User.objects.get(pk=response.json()["user_id"])
 
         # Create account Postdoc
-        response = self.client.post(reverse("auth"), get_mock_auth_data([]))
+        response = self.client.post(
+            reverse("orcid-credentials"), {"code": "MOCKCODE", "origin_url": "mock.origin.com"}
+        )
+
+        self.user_data["orcid"] = response.json()["orcid"]
+        self.user_data["access_token"] = response.json()["access_token"]
+        self.user_data["refresh_token"] = response.json()["refresh_token"]
+
+        response = self.client.post(reverse("user-list"), self.user_data)
         post_doc = User.objects.get(pk=response.json()["user_id"])
 
         # Prof creates organization Lab with grant id
@@ -67,8 +88,8 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         invitation_json = {
             "organization": lab.id,
-            "request_receiver": prof.id,
-            "requester": post_doc.id,
+            "request_receiver": post_doc.id,
+            "requester": prof.id,
             "invite_or_request": "INVITE",
         }
 

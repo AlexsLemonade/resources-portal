@@ -21,7 +21,7 @@ class OrganizationInvitationListTestCase(APITestCase):
         self.url = reverse("invitation-list")
         self.invitation = OrganizationInvitationFactory()
         self.invitation_data = model_to_dict(self.invitation)
-        self.client.force_authenticate(user=self.invitation.requester)
+        self.client.force_authenticate(user=self.invitation.request_receiver)
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})

@@ -11,15 +11,16 @@ from rest_framework_extensions.routers import ExtendedSimpleRouter
 from resources_portal.views import (
     AddressViewSet,
     AttachmentViewSet,
-    AuthViewSet,
     FulfillmentNoteViewSet,
     GrantMaterialViewSet,
     GrantViewSet,
     ImportViewSet,
+    LoginViewSet,
     MaterialDocumentView,
     MaterialRequestIssueViewSet,
     MaterialRequestViewSet,
     MaterialViewSet,
+    ORCIDCredentialsViewSet,
     OrganizationDocumentView,
     OrganizationGrantViewSet,
     OrganizationInvitationViewSet,
@@ -114,7 +115,15 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
-urlpatterns.append(path("v1/auth/", AuthViewSet.as_view({"post": "create"}), name="auth"))
+
+urlpatterns.append(
+    path(
+        "v1/orcid-credentials/",
+        ORCIDCredentialsViewSet.as_view({"post": "create"}),
+        name="orcid-credentials",
+    )
+)
+urlpatterns.append(path("v1/login/", LoginViewSet.as_view({"post": "create"}), name="login"))
 urlpatterns.append(path("v1/email-invitation/", email_invitation_view, name="email-invitation"))
 
 if settings.LOCAL_FILE_DIRECTORY:

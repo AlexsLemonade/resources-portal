@@ -1,6 +1,6 @@
+import Icon from 'components/Icon'
 import { Box, Button, Layer } from 'grommet'
 import * as React from 'react'
-import Icon from 'components/Icon'
 
 export const Modal = ({ showing, setShowing, children }) => {
   return (
