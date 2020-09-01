@@ -144,6 +144,19 @@ class TestSingleAttachmentTestCase(APITestCase):
         self.attachment.refresh_from_db()
         self.assertEqual(description, self.attachment.description)
 
+    def test_patch_request_from_member_of_owning_org_succeeds(self):
+        self.client.force_authenticate(user=self.user_in_org)
+
+        description = "A different description."
+        self.attachment_json = {"description": description}
+
+        response = self.client.patch(self.url, self.attachment_json, format="multipart")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.attachment.refresh_from_db()
+        self.assertEqual(description, self.attachment.description)
+
     def test_put_request_from_user_not_in_organization_fails(self):
         self.client.force_authenticate(user=self.non_owner)
 
