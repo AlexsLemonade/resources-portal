@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
+from resources_portal.models import Notification, Organization, User
 from resources_portal.test.utils import (
     MOCK_EMAIL,
     MOCK_GRANTS,
