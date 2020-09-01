@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-newline */
 import { Anchor, Box, Button, Text } from 'grommet'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
@@ -46,9 +47,7 @@ export const AccountCreationInfo = ({ button }) => {
 }
 
 export const ORCIDSignInButton = ({ label, redirectUrl }) => {
-  const [clientRedirectUrl, setClientRedirectUrl] = useLocalStorage(
-    'clientRedirectUrl'
-  )
+  const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 
   let orcidPrefix = ''
   if (process.env.IS_DEVELOPMENT) {
