@@ -44,7 +44,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["post", "options"]
 
-    def update_organizations(self, new_status, invitation):
+    def update_organizations(self, new_status, invitation, old_member):
         if new_status == "ACCEPTED":
             if invitation.invite_or_request == "INVITE":
                 new_member = invitation.request_receiver
@@ -67,6 +67,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         send_notifications(
             "ORGANIZATION_NEW_MEMBER", new_member, new_member, invitation.organization
         )
+        send_notifications("ORGANIZATION_INVITE", new_member, old_member, invitation.organization)
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -111,7 +112,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         # questionable
         invitation = OrganizationInvitation.objects.get(id=response.data["id"])
 
-        self.update_organizations(request.data["status"], invitation)
+        self.update_organizations(request.data["status"], invitation, request.user)
 
         return response
 

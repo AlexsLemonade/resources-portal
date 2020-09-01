@@ -71,9 +71,12 @@ class TransferOfResource(APITestCase):
         # Both users are notified.
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
-            2
+            1
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.

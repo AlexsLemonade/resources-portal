@@ -106,7 +106,10 @@ class TestOrganizationWithTwoUsers(APITestCase):
                     # notification_type="ORG_INVITE_CREATED",
                 )
             ),
-            2,
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.

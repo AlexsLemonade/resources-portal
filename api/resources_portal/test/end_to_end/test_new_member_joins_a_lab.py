@@ -86,12 +86,15 @@ class TestNewMemberJoinsALab(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-        # PostDoc, PrimaryProf, and NewMember are all notified.
+        # PostDoc and PrimaryProf are notified.
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
-            3
+            2
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.
