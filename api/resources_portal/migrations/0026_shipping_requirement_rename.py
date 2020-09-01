@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("resources_portal", "0025_materialrequest_requester_abstract.py"),
+        ("resources_portal", "0025_materialrequest_requester_abstract"),
     ]
 
     operations = [
