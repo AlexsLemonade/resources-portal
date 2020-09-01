@@ -65,6 +65,7 @@ class MaterialRequest(SafeDeleteModel):
     )
 
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="OPEN")
+    requester_abstract = models.TextField(blank=True, null=True)
 
     assigned_to = models.ForeignKey(
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"

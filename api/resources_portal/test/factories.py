@@ -183,6 +183,7 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
 
     material = factory.SubFactory(MaterialFactory)
+    abstract = "We made these using science!"
 
 
 class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):
