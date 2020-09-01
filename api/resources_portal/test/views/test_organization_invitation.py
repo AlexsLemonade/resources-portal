@@ -38,7 +38,7 @@ class OrganizationInvitationListTestCase(APITestCase):
         # The new and old members are all notified.
         num_members = self.invitation.organization.members.count()
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORGANIZTION_NEW_MEMBER")),
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
             num_members,
         )
 

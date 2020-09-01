@@ -70,7 +70,7 @@ class TransferOfResource(APITestCase):
 
         # Both users are notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORGANIZTION_NEW_MEMBER")),
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
             2
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1

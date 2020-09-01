@@ -74,7 +74,7 @@ class TestNewMemberJoinsALab(APITestCase):
 
         # PostDoc, PrimaryProf, and NewMember are all notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORGANIZTION_NEW_MEMBER")),
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
             3
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1

@@ -100,7 +100,7 @@ class Notification(SafeDeleteModel):
             or (
                 # Special case for this because it's always sent if
                 # the user is the owner but not otherwise.
-                self.notification_type == "ORGANIZTION_NEW_MEMBER"
+                self.notification_type == "ORGANIZATION_NEW_MEMBER"
                 and self.notified_user == self.associated_organization.owner
             )
         )

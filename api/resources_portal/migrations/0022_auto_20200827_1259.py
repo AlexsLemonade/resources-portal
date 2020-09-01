@@ -123,7 +123,7 @@ class Migration(migrations.Migration):
                     ("MATERIAL_ADDED", "MATERIAL_ADDED"),
                     ("MATERIAL_ARCHIVED", "MATERIAL_ARCHIVED"),
                     ("MATERIAL_DELETED", "MATERIAL_DELETED"),
-                    ("ORGANIZTION_NEW_MEMBER", "ORGANIZTION_NEW_MEMBER"),
+                    ("ORGANIZATION_NEW_MEMBER", "ORGANIZATION_NEW_MEMBER"),
                     ("ORGANIZTION_BECAME_OWNER", "ORGANIZTION_BECAME_OWNER"),
                     ("ORGANIZTION_NEW_OWNER", "ORGANIZTION_NEW_OWNER"),
                     ("ORGANIZTION_MEMBER_LEFT", "ORGANIZTION_MEMBER_LEFT"),

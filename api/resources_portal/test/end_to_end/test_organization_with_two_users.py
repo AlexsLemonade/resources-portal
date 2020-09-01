@@ -79,7 +79,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="ORGANIZTION_NEW_MEMBER"
+                    notification_type="ORGANIZATION_NEW_MEMBER"
                     # Once we re-enable invitation acceptances this
                     # will need to change back.
                     # notification_type="ORG_INVITE_CREATED",

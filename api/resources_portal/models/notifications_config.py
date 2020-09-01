@@ -383,7 +383,7 @@ NOTIFICATIONS = {
         ],
         "send_to_organization": True,
     },
-    "ORGANIZTION_NEW_MEMBER": {
+    "ORGANIZATION_NEW_MEMBER": {
         "subject": "{organization_name}: New member added",
         "body": "{other_name} was added to {organization_name}.",
         "CTA": "View Members",

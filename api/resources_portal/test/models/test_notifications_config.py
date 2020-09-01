@@ -65,7 +65,7 @@ class TestMaterialListTestCase(APITestCase):
             self.notification.save()
 
     def test_missing_non_required_field_ok(self):
-        self.notification.notification_type = "ORGANIZTION_NEW_MEMBER"
+        self.notification.notification_type = "ORGANIZATION_NEW_MEMBER"
         self.notification.associated_material = None
         self.notification.save()
 

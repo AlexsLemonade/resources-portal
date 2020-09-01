@@ -65,7 +65,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         # notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
         send_notifications(
-            "ORGANIZTION_NEW_MEMBER", new_member, new_member, invitation.organization
+            "ORGANIZATION_NEW_MEMBER", new_member, new_member, invitation.organization
         )
 
     def create(self, request, *args, **kwargs):
