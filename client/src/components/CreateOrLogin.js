@@ -6,7 +6,7 @@ import ORCIDLogo from '../images/grant.svg'
 import { LoginButton } from './LoginButton'
 import { Modal } from './Modal'
 
-export const ORCIDSignInButton = ({ label, redirectUrl }) => {
+export const ORCIDSignInButton = ({ label }) => {
   const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 
   let orcidPrefix = ''
@@ -19,7 +19,7 @@ export const ORCIDSignInButton = ({ label, redirectUrl }) => {
   const orcidUrl = `${orcidPrefix}oauth/authorize?client_id=${
     process.env.ORCID_CLIENT_ID
   }&response_type=code&scope=/authenticate&redirect_uri=${decodeURI(
-    redirectUrl
+    process.env.CLIENT_HOST
   )}`
 
   return (
@@ -87,10 +87,7 @@ const CreateOrLogin = ({ title, includeSignInSection }) => {
               You can use your BioResources Portal account to request resources,
               share your resources, and track and manage requests.
             </Text>
-            <ORCIDSignInButton
-              label="Create or Connect ORCID iD"
-              redirectUrl={process.env.CLIENT_HOST}
-            />
+            <ORCIDSignInButton label="Create or Connect ORCID iD" />
           </Box>
         </Box>
       </Box>
