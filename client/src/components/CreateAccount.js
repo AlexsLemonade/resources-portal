@@ -3,7 +3,7 @@ import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useCreateUser } from 'hooks/useCreateUser'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
-import { ORCIDSignInButton } from './modals/CommonModalContent'
+import { ORCIDSignInButton } from './CreateAccountLoginButton'
 
 export const CreateAccountStep = () => {
   const { ORCID, getNextStep } = useCreateUser()
