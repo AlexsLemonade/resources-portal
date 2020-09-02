@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.test.factories import UserFactory
+from resources_portal.test.factories import GrantFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
 
@@ -16,6 +16,8 @@ class ReportIssueTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
+        self.user.organizations.add(OrganizationFactory())
+        self.user.grants.add(GrantFactory())
         self.url = reverse("report-issue")
 
     def test_get(self):
