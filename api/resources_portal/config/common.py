@@ -200,3 +200,5 @@ class Common(Configuration):
 
     # CORS - unrestricted
     CORS_ORIGIN_ALLOW_ALL = True
+
+    GRANTS_TEAM_EMAIL = None
