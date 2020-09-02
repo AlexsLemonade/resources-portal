@@ -108,14 +108,19 @@ class AttachmentRelationSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = (
             "id",
-            "created_at",
-            "updated_at",
             "filename",
             "description",
-            "s3_bucket",
-            "s3_key",
+            "download_url",
+            "s3_resource_deleted",
+            "created_at",
+            "updated_at",
             "sequence_map_for",
-            "deleted",
+            "mta_materials",
+            "requests_signed_mta",
+            "requests_irb",
+            "requests_executed_mta",
+            "owned_by_org",
+            "owned_by_user",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
