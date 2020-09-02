@@ -32,6 +32,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "sequence_maps",
             "mta_attachment",
             "needs_mta",
+            "has_publication",
             "needs_irb",
             "needs_abstract",
             "imported",
@@ -48,7 +49,15 @@ class MaterialSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps", "requests")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "sequence_maps",
+            "requests",
+            "needs_mta",
+            "has_publication",
+        )
 
     def validate(self, data):
         """Only allow materials with no open requests to be archived.
@@ -92,6 +101,17 @@ class HasEditResources(BasePermission):
 
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all()
+    filterset_fields = (
+        "id",
+        "category",
+        "pubmed_id",
+        "is_archived",
+        "needs_irb",
+        "needs_abstract",
+        "imported",
+        "import_source",
+        "pre_print_doi",
+    )
 
     def get_serializer_class(self):
         if self.action == "retrieve":
