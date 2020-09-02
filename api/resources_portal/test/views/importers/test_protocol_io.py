@@ -13,6 +13,7 @@ class ImportProtocolTestCase(APITestCase):
 
     def setUp(self):
         self.url = reverse("materials-import")
+        self.create_url = reverse("material-list")
 
         self.test_protocol_doi = "dx.doi.org/10.17504/protocols.io.c4gytv"
         self.test_protocol_name = "Lysis Buffer (20 mL)"
@@ -38,12 +39,19 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS_IO",
+                "import_source": "PROTOCOLS_IO",
                 "protocol_doi": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
         )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -60,7 +68,7 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS_IO",
+                "import_source": "PROTOCOLS_IO",
                 "protocol_doi": self.invalid_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
@@ -73,47 +81,11 @@ class ImportProtocolTestCase(APITestCase):
         response = self.client.post(
             self.url,
             {
-                "import_type": "PROTOCOLS_IO",
+                "import_source": "PROTOCOLS_IO",
                 "study_accession": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
         )
 
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_import_from_user_who_does_not_own_grant_fails(self):
-        self.client.force_authenticate(user=self.user)
-
-        self.org.members.remove(self.user)
-        self.org.save()
-
-        response = self.client.post(
-            self.url,
-            {
-                "import_type": "PROTOCOLS_IO",
-                "study_accession": self.test_protocol_doi,
-                "organization_id": self.org.id,
-                "grant_id": self.grant.id,
-            },
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_import_from_user_not_in_organization_fails(self):
-        self.client.force_authenticate(user=self.user)
-
-        self.user.grants.remove(self.grant)
-        self.user.save()
-
-        response = self.client.post(
-            self.url,
-            {
-                "import_type": "PROTOCOLS_IO",
-                "study_accession": self.test_protocol_doi,
-                "organization_id": self.org.id,
-                "grant_id": self.grant.id,
-            },
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
