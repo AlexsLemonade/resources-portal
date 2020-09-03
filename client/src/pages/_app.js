@@ -9,7 +9,6 @@ import { ResourcesPortalContextProvider } from '../ResourcesPortalContext'
 import '../styles/app.scss'
 import theme from '../theme'
 
-
 export default ({ Component, pageProps, router: { pathname } }) => {
   const isHome = pathname === '/'
   const isAccount = pathname.indexOf('/account') === 0
