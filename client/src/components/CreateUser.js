@@ -12,7 +12,7 @@ import React from 'react'
 
 export default ({ props }) => {
   const { ORCID, email, stepName, grants, code, originUrl } = props
-  const { steps, currentStep, setCurrentStep } = useCreateUser(
+  const { steps, currentStep, setCurrentStep, createUser } = useCreateUser(
     email,
     grants,
     ORCID,
@@ -21,7 +21,7 @@ export default ({ props }) => {
   )
   const router = useRouter()
 
-  if (!grants) {
+  if (!grants && !createUser.grants) {
     router.replace('/')
   }
 
