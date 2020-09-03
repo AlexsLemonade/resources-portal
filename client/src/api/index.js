@@ -129,10 +129,11 @@ export default {
         method: 'POST',
         body: { token }
       }),
-    login: async (authCode, originUrl) => {
+    login: async (orcid, accessToken, refreshToken) => {
       const tokenRequest = await userLogin({
-        origin_url: originUrl,
-        code: authCode
+        orcid,
+        access_token: accessToken,
+        refresh_token: refreshToken
       })
 
       if (!tokenRequest.isOk) {

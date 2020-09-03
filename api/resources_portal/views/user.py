@@ -133,13 +133,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
         api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-        print("api: ", api)
-
         summary = api.read_record_public(
             request.data["orcid"], "record", request.data["access_token"]
         )
-
-        print("summary: ", summary)
 
         email = ""
 

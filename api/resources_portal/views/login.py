@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import viewsets
 
+import orcid
 import requests
 from django_expiring_token.authentication import token_expire_handler
 from django_expiring_token.models import ExpiringToken
@@ -30,43 +31,41 @@ class LoginViewSet(viewsets.ViewSet):
     http_method_names = ["post"]
 
     def create(self, request, *args, **kwargs):
-        if "code" not in request.data:
+        if "orcid" not in request.data:
+            return JsonResponse(
+                {"error": "orcid parameter was not found in the request."}, status=400,
+            )
+        if "access_token" not in request.data:
+            return JsonResponse(
+                {"error": "access_token parameter was not found in the request."}, status=400,
+            )
+        if "refresh_token" not in request.data:
+            return JsonResponse(
+                {"error": "refresh_token parameter was not found in the request."}, status=400,
+            )
+        if not User.objects.filter(orcid=request.data["orcid"]).exists():
             return JsonResponse(
                 {
-                    "error": f"Code parameter was not found in the URL: {request.build_absolute_uri()}"
+                    "error": "A user with the provided ORCID does not exist.",
+                    "USER_DOES_NOT_EXIST": True,
                 },
                 status=400,
             )
-        elif "origin_url" not in request.data:
-            return JsonResponse(
-                {
-                    "error": f"Origin URL parameter was not found in the URL: {request.build_absolute_uri()}"
-                },
-                status=400,
-            )
 
-        authorization_code = request.data["code"]
-        origin_url = request.data["origin_url"]
+        # Use access token to retrieve ORCID from ORCID api to authenticate user
+        api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-        data = {
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
-            "grant_type": "authorization_code",
-            "code": authorization_code,
-            "redirect_uri": remove_code_parameter_from_uri(origin_url),
-        }
+        summary = api.read_record_public(
+            request.data["orcid"], "record", request.data["access_token"]
+        )
 
-        # get user orcid info
-        response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
-        response_json = response.json()
-        if "orcid" not in response_json:
-            return JsonResponse(response_json, status=400)
+        retrieved_orcid = summary["orcid-identifier"]["path"]
 
-        user = User.objects.filter(orcid=response_json["orcid"]).first()
+        user = User.objects.filter(orcid=retrieved_orcid).first()
 
         # Update access and refresh token with newly issued ones
-        user.orcid_access_token = response_json["access_token"]
-        user.orcid_refresh_token = response_json["refresh_token"]
+        user.orcid_access_token = request.data["access_token"]
+        user.orcid_refresh_token = request.data["refresh_token"]
 
         user.save()
 
