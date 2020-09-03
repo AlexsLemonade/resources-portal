@@ -12,6 +12,15 @@ export const CreateUserContextProvider = ({ children }) => {
   const [authCodeUsed, setAuthCodeUsed] = React.useState(false)
   const [error, setError] = React.useState('')
 
+  // Cleanup localstorage without triggering events
+  const cleanup = () => {
+    window.localStorage.removeItem('createUser')
+    window.localStorage.removeItem('orcidInfo')
+    window.localStorage.removeItem('currentStep')
+    window.localStorage.removeItem('steps')
+    window.localStorage.removeItem('needsEmail')
+  }
+
   return (
     <CreateUserContext.Provider
       value={{
@@ -28,7 +37,8 @@ export const CreateUserContextProvider = ({ children }) => {
         authCodeUsed,
         setAuthCodeUsed,
         error,
-        setError
+        setError,
+        cleanup
       }}
     >
       {children}

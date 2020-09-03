@@ -7,6 +7,7 @@ import {
 import { ProgressBar } from 'components/ProgressBar'
 import { Box, Heading } from 'grommet'
 import { useCreateUser } from 'hooks/useCreateUser'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 export default ({ props }) => {
@@ -18,6 +19,11 @@ export default ({ props }) => {
     code,
     originUrl
   )
+  const router = useRouter()
+
+  if (!grants) {
+    router.replace('/')
+  }
 
   const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
 
