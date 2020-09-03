@@ -8,7 +8,7 @@ import { Modal } from './Modal'
 
 export const ORCIDSignInButton = ({
   label,
-  redirectUrl = process.env.CLIENT_HOST
+  redirectUrl = `${process.env.CLIENT_HOST}/account`
 }) => {
   const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 

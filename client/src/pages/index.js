@@ -1,27 +1,11 @@
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
-import { useLocalStorage } from 'hooks/useLocalStorage'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import React from 'react'
-import api from '../api'
 import { HomepageCard } from '../components/HomepageCard'
-import { useUser } from '../hooks/useUser'
 
-export const Home = ({ authenticatedUser, token }) => {
-  useUser(authenticatedUser, token)
+export const Home = () => {
   const heroOverlap = '140px'
   const [showSharing, setShowSharing] = React.useState(true)
-  const [clientRedirectUrl, setClientRedirectUrl] = useLocalStorage(
-    'clientRedirectUrl',
-    ''
-  )
-
-  const router = useRouter()
-
-  if (clientRedirectUrl) {
-    router.replace(clientRedirectUrl)
-    setClientRedirectUrl()
-  }
 
   return (
     <>
@@ -319,31 +303,6 @@ export const Home = ({ authenticatedUser, token }) => {
       </Box>
     </>
   )
-}
-
-Home.getInitialProps = async ({ req, query }) => {
-  // Revisit how to present errors thrown from this function
-  if (!query.code) {
-    return {}
-  }
-
-  const [tokenRequest, userRequest] = await api.user.login(
-    query.code,
-    decodeURI(`http://${req.headers.host}${req.url}`)
-  )
-
-  const initialProps = {}
-
-  if (tokenRequest.isOk) {
-    initialProps.token = tokenRequest.response.token
-    initialProps.redirectUrl = decodeURI(`/`)
-  }
-
-  if (userRequest.isOk) {
-    initialProps.authenticatedUser = userRequest.response
-  }
-
-  return initialProps
 }
 
 export default Home
