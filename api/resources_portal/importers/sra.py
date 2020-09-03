@@ -5,7 +5,7 @@ from resources_portal.importers.utils import get_pubmed_publication_title, reque
 
 ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
 
-ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}&display=xml"
+ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}?display=xml"
 
 
 class UnsupportedDataTypeError(Exception):

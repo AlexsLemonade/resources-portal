@@ -3,7 +3,7 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import Material
-from resources_portal.test.factories import GrantFactory, OrganizationFactory, UserFactory
+from resources_portal.test.factories import OrganizationFactory, UserFactory
 
 
 class ImportSRATestCase(APITestCase):
@@ -18,11 +18,7 @@ class ImportSRATestCase(APITestCase):
         self.test_accession_without_pubmed_id_num_samples = 6
 
         self.org = OrganizationFactory()
-        self.grant = GrantFactory()
         self.user = UserFactory()
-
-        self.user.grants.add(self.grant)
-        self.user.save()
 
         self.org.members.add(self.user)
         self.org.save()
@@ -48,12 +44,11 @@ class ImportSRATestCase(APITestCase):
         material = Material.objects.get(pk=response.json()["id"])
 
         self.assertEqual(material.organization, self.org)
-        self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(
             material.additional_metadata["accession_code"], self.test_accession_with_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["num_samples"],
+            material.additional_metadata["number_samples"],
             self.test_accession_with_pubmed_id_num_samples,
         )
 
@@ -77,12 +72,11 @@ class ImportSRATestCase(APITestCase):
         material = Material.objects.get(pk=response.json()["id"])
 
         self.assertEqual(material.organization, self.org)
-        self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(
             material.additional_metadata["accession_code"], self.test_accession_without_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["num_samples"],
+            material.additional_metadata["number_samples"],
             self.test_accession_without_pubmed_id_num_samples,
         )
 

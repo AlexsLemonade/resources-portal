@@ -23,6 +23,12 @@ class TestOrganizationPostTestCase(APITestCase):
         self.url = reverse("organization-list")
         self.organization = PersonalOrganizationFactory()
 
+    def test_list_succeeds(self):
+        self.client.force_authenticate(user=self.organization.owner)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.organization.owner)
         response = self.client.post(self.url, {})

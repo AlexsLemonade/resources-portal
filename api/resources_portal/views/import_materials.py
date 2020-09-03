@@ -64,9 +64,7 @@ def import_protocol(protocol_doi, user):
     try:
         metadata = protocols_io.gather_all_metadata(protocol_doi)
     except ProtocolNotFoundError:
-        return JsonResponse(
-            {"error": f"The protocol matching DOI {protocol_doi} could not be found"}, status=400,
-        )
+        return {"error": f"The protocol matching DOI {protocol_doi} could not be found"}
 
     additional_metadata = {
         "protocol_name": metadata["protocol_name"],

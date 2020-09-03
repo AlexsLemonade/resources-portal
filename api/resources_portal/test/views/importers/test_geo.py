@@ -18,11 +18,8 @@ class ImportGEOTestCase(APITestCase):
         self.test_accession_without_pubmed_id_num_samples = 3
 
         self.org = OrganizationFactory()
-        self.grant = GrantFactory()
         self.user = UserFactory()
-
-        self.user.grants.add(self.grant)
-        self.user.save()
+        self.grant = GrantFactory(user=self.user)
 
         self.org.members.add(self.user)
         self.org.save()
@@ -43,9 +40,6 @@ class ImportGEOTestCase(APITestCase):
         material_json["organization"] = self.org.id
 
         response = self.client.post(self.create_url, material_json)
-        import pdb
-
-        pdb.set_trace()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         material = Material.objects.get(pk=response.json()["id"])
@@ -55,7 +49,7 @@ class ImportGEOTestCase(APITestCase):
             material.additional_metadata["accession_code"], self.test_accession_with_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["num_samples"],
+            material.additional_metadata["number_samples"],
             self.test_accession_with_pubmed_id_num_samples,
         )
 
@@ -79,12 +73,11 @@ class ImportGEOTestCase(APITestCase):
         material = Material.objects.get(pk=response.json()["id"])
 
         self.assertEqual(material.organization, self.org)
-        self.assertEqual(material.grants.first(), self.grant)
         self.assertEqual(
             material.additional_metadata["accession_code"], self.test_accession_without_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["num_samples"],
+            material.additional_metadata["number_samples"],
             self.test_accession_without_pubmed_id_num_samples,
         )
 

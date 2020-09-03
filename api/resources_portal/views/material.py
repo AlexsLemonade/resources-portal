@@ -76,8 +76,9 @@ class MaterialDetailSerializer(MaterialSerializer):
 
 
 class HasAddResources(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("add_resources", obj.organization)
+    def has_permission(self, request, view):
+        organization = Organization.objects.get(id=request.data["organization"])
+        return request.user.has_perm("add_resources", organization)
 
 
 class HasDeleteResources(BasePermission):

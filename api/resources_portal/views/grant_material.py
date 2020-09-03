@@ -27,7 +27,7 @@ class OwnsGrantAndMaterial(BasePermission):
         # OwnsGrant.
         return (
             request.user == grant.user
-            and request.user == material.organization.owner
+            and request.user in material.organization.members.all()
             and grant in material.organization.grants.all()
         )
 
