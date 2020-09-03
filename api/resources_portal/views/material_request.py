@@ -144,15 +144,25 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 class MaterialRequestViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.action == "list":
-            requests_made_by_user = MaterialRequest.objects.filter(requester=self.request.user)
+            material_requests = MaterialRequest.objects
+
+            # If the route is nested under material it should be filtered by that material.
+            if "material_id" in self.request.parser_context["kwargs"]:
+                material_requests = material_requests.filter(
+                    material__id=self.request.parser_context["kwargs"]["material_id"]
+                )
+
+            requests_made_by_user = material_requests.filter(requester=self.request.user)
             organizations = get_objects_for_user(
                 self.request.user, "view_requests", klass=Organization.objects
             )
-            requests_viewable_by_user = MaterialRequest.objects.filter(
+            requests_viewable_by_user = material_requests.filter(
                 material__organization__in=organizations
             )
 
-            return requests_made_by_user.union(requests_viewable_by_user)
+            requests = requests_made_by_user.union(requests_viewable_by_user)
+
+            return requests
         else:
             return MaterialRequest.objects.all()
 

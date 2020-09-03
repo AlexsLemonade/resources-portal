@@ -9,6 +9,7 @@ from resources_portal.models import MaterialRequest, Notification, OrganizationU
 from resources_portal.test.factories import (
     AddressFactory,
     AttachmentFactory,
+    MaterialFactory,
     MaterialRequestFactory,
     MaterialRequestIssueFactory,
     OrganizationFactory,
@@ -316,4 +317,53 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_delete_request_from_unauthenticated_forbidden(self):
         self.client.force_authenticate(user=None)
         response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class TestNestedMaterialRequestListTestCase(APITestCase):
+    """
+    Tests /materials/id/requests list operations.
+    """
+
+    def setUp(self):
+        self.request = MaterialRequestFactory()
+        self.url = reverse("material-material-requests-list", args=[self.request.material.id])
+
+        self.sharer = self.request.material.contact_user
+        self.organization = self.request.material.organization
+        self.request.material.save()
+
+        # Create second material for same user to make sure nesting filters correctly.
+        material = MaterialFactory(organization=self.organization)
+        MaterialRequestFactory(material=material)
+
+        self.organization.members.add(self.sharer)
+        self.organization.assign_member_perms(self.sharer)
+        self.organization.assign_owner_perms(self.sharer)
+
+        self.material_request_data = model_to_dict(self.request)
+
+        self.user_without_perms = UserFactory()
+
+    def test_get_request_from_sharer_succeeds(self):
+        self.client.force_authenticate(user=self.sharer)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_get_request_from_requester_succeeds(self):
+        self.client.force_authenticate(user=self.request.requester)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_get_request_filters(self):
+        self.client.force_authenticate(user=self.user_without_perms)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 0)
+
+    def test_get_request_from_unauthenticated_fails(self):
+        self.client.force_authenticate(user=None)
+        response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

@@ -116,6 +116,13 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
+urlpatterns.append(
+    path(
+        "v1/materials/<int:material_id>/requests",
+        MaterialRequestViewSet.as_view({"get": "list"}),
+        name="material-material-requests-list",
+    )
+)
 
 urlpatterns.append(
     path(
