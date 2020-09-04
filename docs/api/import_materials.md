@@ -11,14 +11,14 @@ Parameters:
 
 Name                           | Type   | Description
 -------------------------------|--------|---
-import_type                    | string | The type of resource being imported. Options include: ["SRA", "GEO", "PROTOCOLS_IO"].
+import_source                    | string | The source of resource being imported. Options include: ["SRA", "GEO", "PROTOCOLS_IO"].
 accession                      | int    | The accession code for the study representing the material, in the form "SRP123456" for SRA or "GSE123456" for GEO.
 organization_id                | int    | The ID of the organization that this material will be owned by.
 grant_id                       | int    | The ID of the grant that this material will be associated with.
 
 *Note:*
 
-- To import a material from SRA or GEO, set "import_type" to the corresponding value.
+- To import a material from SRA or GEO, set "import_source" to the corresponding value.
 - All parameters are required.
 - **[Authorization Protected](authentication.md)**
 - The user making the request must own the given grant and be a part of the given organization.
@@ -75,14 +75,14 @@ Parameters:
 
 Name                           | Type   | Description
 -------------------------------|--------|---
-import_type                    | string | The type of resource being imported. Options include: ["SRA", "GEO", "PROTOCOLS_IO"].
+import_source                    | string | The source of resource being imported. Options include: ["SRA", "GEO", "PROTOCOLS_IO"].
 protocol_doi                   | int    | The DOI of the protocol in question. This can be taken from a protocol's page on protocols.io, and is in the form "dx.doi.org/10.17504/protocols.io.c4gytv"
 organization_id                | int    | The ID of the organization that this material will be owned by.
 grant_id                       | int    | The ID of the grant that this material will be associated with.
 
 *Note:*
 
-- To import a protocols.io material, ```import_type``` must be set to "PROTOCOLS_IO".
+- To import a protocols.io material, ```import_source``` must be set to "PROTOCOLS_IO".
 - All parameters are required.
 - **[Authorization Protected](authentication.md)**
 - The user making the request must own the given grant and be a part of the given organization.
