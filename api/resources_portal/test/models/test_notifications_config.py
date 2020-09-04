@@ -51,7 +51,7 @@ class TestMaterialListTestCase(APITestCase):
             self.notification.save()
             email_dict = self.notification.get_email_dict()
 
-            # We formtat the html different than the other fields.
+            # We format the html different than the other fields.
             self.assertNotIn("REPLACE_", email_dict.pop("formatted_html"))
 
             for _, formatted_text in email_dict.items():
