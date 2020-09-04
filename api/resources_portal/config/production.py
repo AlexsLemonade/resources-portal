@@ -23,6 +23,8 @@ class Production(Common):
     # AWS S3
     AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")
 
+    GRANTS_TEAM_EMAIL = "grants@alexslemonade.org"
+
     # Only used locally, make sure it is None.
     LOCAL_FILE_DIRECTORY = None
 

@@ -9,7 +9,7 @@ const CreateUser = dynamic(() => import('components/CreateUser'), {
 const CreateAccount = (props) => {
   return (
     <CreateUserContextProvider>
-      <Box width={{ min: '500px', max: '800px' }}>
+      <Box width={{ min: '500px', max: '800px' }} margin={{ bottom: 'xlarge' }}>
         <CreateUser props={props} />
       </Box>
     </CreateUserContextProvider>

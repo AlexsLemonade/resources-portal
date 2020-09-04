@@ -3,7 +3,9 @@ import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useCreateUser } from 'hooks/useCreateUser'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
-import { ORCIDSignInButton } from './modals/CommonModalContent'
+import NextSteps from '../images/join-by-invite-next-steps.svg'
+import { ORCIDSignInButton } from './CreateAccountLoginButton'
+import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
 
 export const CreateAccountStep = () => {
   const { ORCID, getNextStep } = useCreateUser()
@@ -77,42 +79,52 @@ export const EnterEmailStep = () => {
   }
   if (user) {
     return (
-      <>
-        <Box>
-          <Text>
-            The following email was retrieved from your ORCID record:{' '}
-            {user.email}
-          </Text>
+      <Box pad="medium" gap="medium">
+        <Text>
+          The following email was retrieved from your ORCID record: {user.email}
+        </Text>
+        <Box width="200px" alignSelf="center">
           <Button label="Continue" onClick={stepForward} />
         </Box>
-      </>
+      </Box>
     )
   }
 
   return (
-    <>
+    <Box pad="medium" gap="medium" width={{ min: '400px' }}>
       <Box>
         <Text>Enter your email below:</Text>
       </Box>
       <TextInput
+        width="300px"
         placeholder="Enter email"
         onChange={(event) => onChange(event.target.value)}
         value={createUser.email || ''}
         type="email"
       />
-      <Button
-        label="Submit"
-        onChange={onChange}
-        disabled={!validEmail()}
-        onClick={onClick}
-      />
-    </>
+      <Box width="200px" alignSelf="center">
+        <Button
+          label="Submit"
+          onChange={onChange}
+          disabled={!validEmail()}
+          onClick={onClick}
+        />
+      </Box>
+    </Box>
   )
 }
 
 export const VerifyGrantStep = () => {
   const { stepForward, createUser } = useCreateUser()
   const { addAlert } = useAlertsQueue()
+  const [showing, setShowing] = React.useState(false)
+  const [alert, setAlert] = React.useState()
+
+  if (alert) {
+    addAlert(alert.message, alert.type)
+    setAlert()
+  }
+
   return (
     <Box gap="medium">
       <Text weight="bold">Your account has been created!</Text>
@@ -143,7 +155,15 @@ export const VerifyGrantStep = () => {
         alignSelf="end"
         margin={{ top: 'medium' }}
       >
-        <Button label="Report missing/incorrect information" />
+        <Button
+          label="Report missing/incorrect information"
+          onClick={() => setShowing(true)}
+        />
+        <IncorrectGrantModal
+          showing={showing}
+          setShowing={setShowing}
+          setAlert={setAlert}
+        />
         <Button
           label="This information is correct"
           onClick={() => {
@@ -159,8 +179,18 @@ export const VerifyGrantStep = () => {
 
 export const NextStepsStep = () => {
   return (
-    <Box>
-      <Text>TODO Next steps go here.</Text>
+    <Box direction="row" gap="xlarge">
+      <Box direction="column" width="300px" gap="large">
+        <Box width="200px">
+          <Button label="Add a Resource" href="/resources" primary />
+        </Box>
+        <Anchor
+          color="#017FA3"
+          href="/organization"
+          label="Add members of your lab or organization to help you manage resources"
+        />
+      </Box>
+      <NextSteps />
     </Box>
   )
 }

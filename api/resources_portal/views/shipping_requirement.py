@@ -61,6 +61,15 @@ class IsInOrganization(BasePermission):
 
 class ShippingRequirementViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = ShippingRequirement.objects.all().order_by("-created_at")
+    filterset_fields = (
+        "id",
+        "needs_shipping_address",
+        "needs_payment",
+        "sharer_pays_shipping",
+        "accepts_shipping_code",
+        "accepts_reimbursement",
+        "accepts_other_payment_methods",
+    )
 
     def get_serializer_class(self):
         if self.action == "list":

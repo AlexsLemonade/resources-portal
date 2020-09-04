@@ -61,6 +61,10 @@ class IsRequesterOrIsInOrg(BasePermission):
 class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
     # No delete, these just get closed.
     http_method_names = ["get", "list", "post", "put", "patch", "head", "options"]
+    filterset_fields = (
+        "id",
+        "status",
+    )
 
     def get_queryset(self):
         if self.action == "list":

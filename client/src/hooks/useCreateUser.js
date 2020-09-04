@@ -72,7 +72,7 @@ export const useCreateUser = (
     }
 
     // Generate initial steps
-    const stepsArray = ['Create Account']
+    const stepsArray = ['Create an Account']
     if (!createUser.email) {
       stepsArray.push('Enter Email')
     }

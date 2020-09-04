@@ -23,6 +23,12 @@ class TestOrganizationPostTestCase(APITestCase):
         self.url = reverse("organization-list")
         self.organization = PersonalOrganizationFactory()
 
+    def test_list_succeeds(self):
+        self.client.force_authenticate(user=self.organization.owner)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.organization.owner)
         response = self.client.post(self.url, {})
@@ -34,10 +40,16 @@ class TestOrganizationPostTestCase(APITestCase):
         self.client.force_authenticate(user=user)
 
         # members can be empty and the owner should still become a member.
-        organization_data = {"name": "test org", "members": [], "owner": {"id": user.id}}
+        organization_data = {
+            "name": "test org",
+            "description": "My org.",
+            "members": [],
+            "owner": {"id": user.id},
+        }
 
         response = self.client.post(self.url, organization_data, format="json")
         response_json = response.json()
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(str(user.id), response_json["owner"]["id"])

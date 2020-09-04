@@ -6,6 +6,7 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from resources_portal.models import Organization, User
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
+    GrantRelationSerializer,
     MaterialRelationSerializer,
     UserRelationSerializer,
 )
@@ -18,8 +19,10 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "id",
             "owner",
             "name",
+            "description",
             "members",
             "materials",
+            "grants",
             "attachments",
             "created_at",
             "updated_at",
@@ -30,6 +33,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "updated_at",
             "members",
             "materials",
+            "grants",
             "attachments",
         )
 
@@ -38,6 +42,7 @@ class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
     members = UserRelationSerializer(many=True, read_only=True)
     materials = MaterialRelationSerializer(many=True, read_only=True)
+    grants = GrantRelationSerializer(many=True, read_only=True)
     attachments = AttachmentRelationSerializer(many=True, read_only=True)
 
     def create(self, validated_data):

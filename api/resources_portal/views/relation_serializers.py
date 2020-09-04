@@ -55,12 +55,17 @@ class OrganizationRelationSerializer(serializers.ModelSerializer):
             "name",
             "owner",
             "members",
+            "materials",
+            "grants",
             "created_at",
             "updated_at",
         )
 
+    # Organizations are beefier in relations. Deal with it.
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     members = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    grants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
 class MaterialRelationSerializer(serializers.ModelSerializer):
@@ -108,14 +113,19 @@ class AttachmentRelationSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = (
             "id",
-            "created_at",
-            "updated_at",
             "filename",
             "description",
-            "s3_bucket",
-            "s3_key",
+            "download_url",
+            "s3_resource_deleted",
+            "created_at",
+            "updated_at",
             "sequence_map_for",
-            "deleted",
+            "mta_materials",
+            "requests_signed_mta",
+            "requests_irb",
+            "requests_executed_mta",
+            "owned_by_org",
+            "owned_by_user",
         )
         read_only_fields = ("id", "created_at", "updated_at")
 
@@ -146,6 +156,8 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
             "is_active",
             "rejection_reason",
             "status",
+            "payment_method",
+            "payment_method_notes",
             "requester_abstract",
             "assigned_to",
             "executed_mta_attachment",

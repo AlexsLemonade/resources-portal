@@ -34,6 +34,7 @@ from resources_portal.views import (
     UserViewSet,
     email_invitation_view,
     local_file_view,
+    report_issue_view,
 )
 
 router = ExtendedSimpleRouter()
@@ -115,6 +116,13 @@ urlpatterns = [
 urlpatterns.append(
     path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
+urlpatterns.append(
+    path(
+        "v1/materials/<int:material_id>/requests",
+        MaterialRequestViewSet.as_view({"get": "list"}),
+        name="material-material-requests-list",
+    )
+)
 
 urlpatterns.append(
     path(
@@ -125,6 +133,7 @@ urlpatterns.append(
 )
 urlpatterns.append(path("v1/login/", LoginViewSet.as_view({"post": "create"}), name="login"))
 urlpatterns.append(path("v1/email-invitation/", email_invitation_view, name="email-invitation"))
+urlpatterns.append(path("v1/report-issue/", report_issue_view, name="report-issue"))
 
 if settings.LOCAL_FILE_DIRECTORY:
     urlpatterns.append(

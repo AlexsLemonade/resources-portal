@@ -2,14 +2,16 @@ import Icon from 'components/Icon'
 import { Box, Button, Layer } from 'grommet'
 import * as React from 'react'
 
-export const Modal = ({ showing, setShowing, children }) => {
+export const Modal = ({ showing, setShowing, nondismissable, children }) => {
+  const dismissModal = () => {
+    if (!nondismissable) {
+      setShowing(false)
+    }
+  }
   return (
     <Box>
       {showing && (
-        <Layer
-          onEsc={() => setShowing(false)}
-          onClickOutside={() => setShowing(false)}
-        >
+        <Layer onEsc={dismissModal} onClickOutside={dismissModal}>
           <Box
             pad="none"
             gap="none"
@@ -17,13 +19,15 @@ export const Modal = ({ showing, setShowing, children }) => {
             border={[{ color: 'black-tint-95' }]}
             background="white"
           >
-            <Box alignSelf="end">
-              <Button
-                icon={<Icon color="black-tint-30" name="Cross" />}
-                onClick={() => setShowing(false)}
-                alignSelf="start"
-              />
-            </Box>
+            {!nondismissable && (
+              <Box alignSelf="end">
+                <Button
+                  icon={<Icon color="black-tint-30" name="Cross" />}
+                  onClick={dismissModal}
+                  alignSelf="start"
+                />
+              </Box>
+            )}
             <Box fill pad="medium">
               {children}
             </Box>
