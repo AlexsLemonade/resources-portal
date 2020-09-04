@@ -148,7 +148,7 @@ NOTIFICATIONS = {
     },
     "MATERIAL_REQUEST_SHARER_CANCELLED": {
         "subject": "Request for {material_category} cancelled",
-        "body": "{requester_name} rejected a request for {material_category}, {material_name}.",
+        "body": "{requester_name} cancelled a request for {material_category}, {material_name}.",
         "CTA": "View Request",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
@@ -371,7 +371,7 @@ NOTIFICATIONS = {
             "{organization_name} marked your request for {material_category},"
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details."
         ),
-        "CTA": "View Request",
+        "CTA": "View Fulfillment Notes",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} marked your request for {material_category},"
