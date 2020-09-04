@@ -144,6 +144,11 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
+    filterset_fields = (
+        "id",
+        "status",
+    )
+
     def get_queryset(self):
         if self.action == "list":
             requests_made_by_user = MaterialRequest.objects.filter(requester=self.request.user)
