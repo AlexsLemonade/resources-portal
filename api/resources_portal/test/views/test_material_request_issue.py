@@ -197,16 +197,6 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.request.refresh_from_db()
         self.assertEqual(self.request.status, "FULFILLED")
 
-        # Do we need an equivalent notification for this?
-        # self.assertEqual(
-        #     len(
-        #         Notification.objects.filter(
-        #             notification_type="REQUEST_ISSUE_CLOSED", email=self.sharer.email
-        #         )
-        #     ),
-        #     1,
-        # )
-
         self.assertEqual(
             len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
             organization.members.count(),

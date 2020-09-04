@@ -170,7 +170,7 @@ NOTIFICATIONS = {
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} provided the following required items for a request for"
-            " {material_category}, {material_name}:{provided_info_plain}\n\nReview items ({request_url})."
+            " {material_category}, {material_name}:\n{provided_info_plain}\n\nReview items ({request_url})."
         ),
         "required_associations": [
             "associated_user",
@@ -217,6 +217,25 @@ NOTIFICATIONS = {
             "{your_name},\n{you_or_other_name} uploaded the fully executed MTA"
             " for a request for {material_category}, {material_name} from {requester_name}."
             "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+        "send_to_organization": True,
+    },
+    "MATERIAL_REQUEST_SHARER_IN_FULFILLMENT": {
+        "subject": "Request for {material_category} accepted",
+        "body": (
+            "{you_or_other_name_upper} accepted a request for {material_category}, {material_name} from {requester_name}."
+        ),
+        "CTA": "View Request",
+        "CTA_link_field": "associated_material_request",
+        "plain_text_email": (
+            "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
+            "\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",

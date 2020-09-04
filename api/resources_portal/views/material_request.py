@@ -132,7 +132,12 @@ def notify_request_status_change(status, request):
         notify_requester("MATERIAL_REQUEST_REQUESTER_FULFILLED", request)
         notify_sharer("MATERIAL_REQUEST_SHARER_FULFILLED", request)
     elif status == "IN_FULFILLMENT":
-        notify_requester("MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT", request)
+        if request.executed_mta_attachment:
+            notify_requester("MATERIAL_REQUEST_SHARER_EXECUTED_MTA", request)
+            notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", request)
+        else:
+            notify_requester("MATERIAL_REQUEST_SHARER_IN_FULFILLMENT", request)
+            notify_requester("MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT", request)
     elif status == "VERIFIED_FULFILLED":
         notify_sharer("MATERIAL_REQUEST_SHARER_VERIFIED", request)
     else:
