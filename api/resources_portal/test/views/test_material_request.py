@@ -88,6 +88,17 @@ class TestMaterialRequestListTestCase(APITestCase):
         created_request = MaterialRequest.objects.get(id=response.json()["id"])
         self.assertEqual(created_request.address.id, address.id)
 
+    def test_post_request_with_invalid_data_fails(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        OrganizationUserSetting.objects.get_or_create(
+            user=self.sharer, organization=self.request.material.organization
+        )
+
+        self.material_request_data["payment_method"] = "I won't pay!"
+        response = self.client.post(self.url, self.material_request_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_post_request_with_valid_data_fails_if_archived(self):
         self.request.material.is_archived = True
         self.request.material.save()

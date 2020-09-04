@@ -187,6 +187,9 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     material = factory.SubFactory(MaterialFactory)
     requester_abstract = "We need these for science!"
 
+    payment_method = "SHIPPING_CODE"
+    payment_method_notes = "UPS123456"
+
 
 class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):
     class Meta:
