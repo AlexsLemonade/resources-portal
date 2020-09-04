@@ -352,7 +352,7 @@ NOTIFICATIONS = {
             "{organization_name} marked your request for {material_category},"
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details."
         ),
-        "CTA": "View Request",
+        "CTA": "View Fulfillment Notes",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} marked your request for {material_category},"
