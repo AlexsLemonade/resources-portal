@@ -42,6 +42,7 @@ class Organization(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     name = models.TextField(blank=False, null=False, help_text="The name of the organization.")
+    description = models.TextField(blank=False, null=False)
 
     owner = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="owned_organizations"

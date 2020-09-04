@@ -55,12 +55,17 @@ class OrganizationRelationSerializer(serializers.ModelSerializer):
             "name",
             "owner",
             "members",
+            "materials",
+            "grants",
             "created_at",
             "updated_at",
         )
 
+    # Organizations are beefier in relations. Deal with it.
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
     members = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    grants = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    materials = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
 
 class MaterialRelationSerializer(serializers.ModelSerializer):

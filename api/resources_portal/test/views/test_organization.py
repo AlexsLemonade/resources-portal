@@ -40,10 +40,16 @@ class TestOrganizationPostTestCase(APITestCase):
         self.client.force_authenticate(user=user)
 
         # members can be empty and the owner should still become a member.
-        organization_data = {"name": "test org", "members": [], "owner": {"id": user.id}}
+        organization_data = {
+            "name": "test org",
+            "description": "My org.",
+            "members": [],
+            "owner": {"id": user.id},
+        }
 
         response = self.client.post(self.url, organization_data, format="json")
         response_json = response.json()
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(str(user.id), response_json["owner"]["id"])

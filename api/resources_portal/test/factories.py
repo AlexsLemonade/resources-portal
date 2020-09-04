@@ -67,6 +67,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
 
     owner = factory.SubFactory(UserFactory)
     name = factory.Sequence(lambda n: f"test_organization{n}")
+    description = "Test description."
 
     @factory.post_generation
     def make_self_personal_org_of_owner(self, create, extracted, **kwargs):
@@ -92,6 +93,7 @@ class OrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     name = "test_organization"
+    description = "Test description."
     owner = factory.SubFactory(UserFactory)
     membership1 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
 

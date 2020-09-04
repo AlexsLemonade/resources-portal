@@ -74,6 +74,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         organization_data = {
             "name": "Lab",
+            "description": "My lab's organization.",
             "owner": {"id": prof.id},
             "grants": [prof.grants.first().id],
         }
