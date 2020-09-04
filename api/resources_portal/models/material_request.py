@@ -29,6 +29,11 @@ class MaterialRequest(SafeDeleteModel):
         ("INVALID", "INVALID"),
         ("CANCELLED", "CANCELLED"),
     )
+    PAYMENT_METHOD_CHOICES = (
+        ("SHIPPING_CODE", "SHIPPING_CODE"),
+        ("REIMBURSMENT", "REIMBURSMENT"),
+        ("OTHER_PAYMENT_METHODS", "OTHER_PAYMENT_METHODS"),
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -65,6 +70,10 @@ class MaterialRequest(SafeDeleteModel):
     )
 
     status = models.CharField(max_length=32, choices=STATUS_CHOICES, default="OPEN")
+    payment_method = models.CharField(
+        max_length=32, blank=False, null=True, choices=PAYMENT_METHOD_CHOICES
+    )
+    payment_method_notes = models.TextField(blank=False, null=True)
     requester_abstract = models.TextField(blank=True, null=True)
 
     assigned_to = models.ForeignKey(

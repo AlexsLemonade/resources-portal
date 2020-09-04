@@ -155,6 +155,8 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
             "id",
             "is_active",
             "status",
+            "payment_method",
+            "payment_method_notes",
             "requester_abstract",
             "assigned_to",
             "executed_mta_attachment",
