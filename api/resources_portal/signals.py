@@ -56,7 +56,7 @@ def delete_document(sender, **kwargs):
 
 @receiver(m2m_changed, sender="resources_portal.OrganizationUserAssociation")
 def add_member_permissions(sender, instance, action, reverse, model, pk_set, **kwargs):
-    if action == "post_add":
+    if action == "post_add" and type(instance) is Organization:
         for member in instance.members.all():
             instance.assign_member_perms(member)
 
