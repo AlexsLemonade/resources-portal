@@ -3,7 +3,6 @@ from django.http import JsonResponse
 from rest_framework import viewsets
 
 import orcid
-import requests
 from django_expiring_token.authentication import token_expire_handler
 from django_expiring_token.models import ExpiringToken
 

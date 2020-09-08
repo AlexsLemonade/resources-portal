@@ -28,10 +28,12 @@ class TestLoginTestCase(APITestCase):
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
-    def test_login_(self, mock_auth_request, mock_record_request):
+    def test_login(self, mock_auth_request, mock_record_request):
         existing_user = UserFactory(orcid=ORCID_AUTHORIZATION_DICT["orcid"])
 
-        response = self.client.post(self.url, {"code": "MOCKCODE", "origin_url": "mock.origin.com"})
+        response = self.client.post(
+            self.url, {"orcid": self.user.orcid, "access_token": "ABCDE", "refresh_token": "FGHIJK"}
+        )
 
         logged_in_user = User.objects.get(pk=response.json()["user_id"])
 
