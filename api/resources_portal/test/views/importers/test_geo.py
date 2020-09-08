@@ -31,7 +31,7 @@ class ImportGEOTestCase(APITestCase):
 
         response = self.client.post(
             self.url,
-            {"import_source": "GEO", "study_accession": self.test_accession_with_pubmed_id,},
+            {"import_source": "GEO", "accession_code": self.test_accession_with_pubmed_id,},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -58,8 +58,7 @@ class ImportGEOTestCase(APITestCase):
 
         url = reverse("materials-import")
         response = self.client.post(
-            url,
-            {"import_source": "GEO", "study_accession": self.test_accession_without_pubmed_id,},
+            url, {"import_source": "GEO", "accession_code": self.test_accession_without_pubmed_id,},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -87,7 +86,7 @@ class ImportGEOTestCase(APITestCase):
             url,
             {
                 "import_source": "GEO",
-                "study_accession": self.test_accession_with_pubmed_id,
+                "accession_code": self.test_accession_with_pubmed_id,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },

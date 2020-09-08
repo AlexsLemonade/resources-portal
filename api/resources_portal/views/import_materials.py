@@ -98,7 +98,7 @@ class ImportViewSet(viewsets.ViewSet):
 
         if import_source == "SRA" or import_source == "GEO":
             material_json = import_dataset(
-                import_source, request.data["study_accession"], request.user
+                import_source, request.data["accession_code"], request.user
             )
         elif import_source == "PROTOCOLS_IO":
             material_json = import_protocol(request.data["protocol_doi"], request.user)
