@@ -1,4 +1,7 @@
+import datetime
+
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -31,6 +34,17 @@ class NotificationsTestCase(APITestCase):
     def test_get_request_returns_owned_notifications(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_get_request_filters_by_created_at(self):
+        self.client.force_authenticate(user=self.user)
+        two_days_ago = timezone.now() - datetime.timedelta(days=2)
+        yesterday = timezone.now() - datetime.timedelta(days=1)
+        self.owned_notification = NotificationFactory(
+            notified_user=self.user, created_at=two_days_ago
+        )
+        response = self.client.get(self.url + "?created_at__lt=" + str(yesterday))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
