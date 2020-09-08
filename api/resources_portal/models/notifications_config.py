@@ -235,6 +235,7 @@ NOTIFICATIONS = {
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
+            "Please make arrangements to send the {material_category} to {requester_name}."
             "\n\nView request details ({request_url})"
         ),
         "required_associations": [
