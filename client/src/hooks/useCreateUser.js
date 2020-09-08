@@ -1,4 +1,5 @@
 import { CreateUserContext } from 'contexts/CreateUserContext'
+import { useRouter } from 'next/router'
 import React from 'react'
 import { string } from 'yup'
 import api from '../api'
@@ -24,8 +25,16 @@ export const useCreateUser = (
     needsEmail,
     setNeedsEmail,
     authCodeUsed,
-    setAuthCodeUsed
+    setAuthCodeUsed,
+    cleanup
   } = React.useContext(CreateUserContext)
+  const router = useRouter()
+
+  const handleRouteChangeStart = (url) => {
+    if (!url.includes('orcid.org') && !url.includes('create-account')) {
+      cleanup()
+    }
+  }
 
   const save = () => {
     setCreateUser({ ...createUser })
@@ -47,6 +56,16 @@ export const useCreateUser = (
     save()
     needsSave = false
   }
+
+  React.useEffect(() => {
+    router.events.on('routeChangeStart', handleRouteChangeStart)
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method:
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChangeStart)
+    }
+  })
 
   React.useEffect(() => {
     // If we have the auth code, get the ORCID info
