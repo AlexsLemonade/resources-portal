@@ -114,7 +114,7 @@ urlpatterns = [
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns.append(
-    path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
+    path("v1/materials/import/", ImportViewSet.as_view({"post": "create"}), name="materials-import")
 )
 urlpatterns.append(
     path(
