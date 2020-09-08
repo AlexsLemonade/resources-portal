@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
+from resources_portal.notifier import send_notifications
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
@@ -25,6 +26,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "is_active",
+            "rejection_reason",
             "status",
             "payment_method",
             "payment_method_notes",
@@ -96,17 +98,50 @@ def send_material_request_notif(notif_type, request, notified_user):
     notification.save()
 
 
-def send_transfer_update_notif(status, request):
+def notify_requester(notification_type, request):
+    send_notifications(
+        notification_type,
+        request.requester,
+        request.requester,
+        request.material.organization,
+        material=request.material,
+        material_request=request,
+    )
+
+
+def notify_sharer(notification_type, request):
+    send_notifications(
+        notification_type,
+        request.assigned_to,
+        request.assigned_to,
+        request.material.organization,
+        material=request.material,
+        material_request=request,
+    )
+
+
+def notify_request_status_change(status, request):
     if status == "APPROVED":
-        send_material_request_notif("TRANSFER_APPROVED", request, request.requester)
+        notify_requester("MATERIAL_REQUEST_REQUESTER_ACCEPTED", request)
+        notify_sharer("MATERIAL_REQUEST_SHARER_APPROVED", request)
     elif status == "REJECTED":
-        send_material_request_notif("TRANSFER_REJECTED", request, request.requester)
+        notify_requester("MATERIAL_REQUEST_REQUESTER_REJECTED", request)
+        notify_sharer("MATERIAL_REQUEST_SHARER_REJECTED", request)
     elif status == "CANCELLED":
-        send_material_request_notif("TRANSFER_CANCELLED", request, request.assigned_to)
+        notify_requester("MATERIAL_REQUEST_REQUESTER_CANCELLED", request)
+        notify_sharer("MATERIAL_REQUEST_SHARER_CANCELLED", request)
     elif status == "FULFILLED":
-        send_material_request_notif("TRANSFER_FULFILLED", request, request.requester)
+        notify_requester("MATERIAL_REQUEST_REQUESTER_FULFILLED", request)
+        notify_sharer("MATERIAL_REQUEST_SHARER_FULFILLED", request)
+    elif status == "IN_FULFILLMENT":
+        if request.executed_mta_attachment:
+            notify_requester("MATERIAL_REQUEST_SHARER_EXECUTED_MTA", request)
+            notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", request)
+        else:
+            notify_requester("MATERIAL_REQUEST_SHARER_IN_FULFILLMENT", request)
+            notify_requester("MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT", request)
     elif status == "VERIFIED_FULFILLED":
-        send_material_request_notif("TRANSFER_VERIFIED_FULFILLED", request, request.assigned_to)
+        notify_sharer("MATERIAL_REQUEST_SHARER_VERIFIED", request)
     else:
         return
 
@@ -232,14 +267,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         material_request = MaterialRequest(**serializer.validated_data)
         material_request.save()
 
-        notification = Notification(
-            notification_type="TRANSFER_REQUESTED",
-            notified_user=material_request.assigned_to,
-            associated_user=request.user,
-            associated_material=material,
-            associated_organization=material.organization,
-        )
-        notification.save()
+        notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED_NEW", material_request)
+        notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED", material_request)
 
         return Response(data=model_to_dict(material_request), status=201)
 
@@ -276,9 +305,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-                send_material_request_notif(
-                    "SIGNED_MTA_UPLOADED", material_request, material_request.assigned_to
-                )
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 # The only status change the requester can make is to
@@ -291,7 +318,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 if not (cancelling or verifying):
                     return Response(status=403)
 
-                send_transfer_update_notif(serializer.validated_data["status"], material_request)
+                notify_request_status_change(serializer.validated_data["status"], material_request)
 
             # Can't make it read-only because organization members
             # should be able to change it.
@@ -314,9 +341,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-                send_material_request_notif(
-                    "EXECUTED_MTA_UPLOADED", material_request, material_request.requester
-                )
+                notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
 
             if "status" in request.data:
                 if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
@@ -330,7 +355,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                         issue.status = "CLOSED"
                         issue.save()
 
-                send_transfer_update_notif(serializer.validated_data["status"], material_request)
+                notify_request_status_change(serializer.validated_data["status"], material_request)
 
         serializer.save()
         material_request.refresh_from_db()

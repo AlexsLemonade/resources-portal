@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 
 from django.conf import settings
 from rest_framework import status
@@ -13,11 +12,6 @@ from resources_portal.emailer import send_mail
 logger = get_and_configure_logger(__name__)
 
 EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
-EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/resources-portal-email-templated-inlined.html")
-    .read_text()
-    .replace("\n", "")
-)
 
 
 @api_view(["POST"])

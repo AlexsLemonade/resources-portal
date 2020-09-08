@@ -1,51 +1,50 @@
+from pathlib import Path
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-import boto3
-from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.config.logging import get_and_configure_logger
+from resources_portal.emailer import (
+    EMAIL_SOURCE,
+    LOGO_EMBEDDED_IMAGE_CONFIGS,
+    NOTIFICATIONS_URL,
+    PLAIN_TEXT_EMAIL_FOOTER,
+    send_mail,
+)
+from resources_portal.models.grant import Grant
 from resources_portal.models.material import Material
+from resources_portal.models.material_request import MaterialRequest
+from resources_portal.models.material_request_issue import MaterialRequestIssue
+from resources_portal.models.notifications_config import NOTIFICATIONS
 from resources_portal.models.organization import Organization
-from resources_portal.models.organization_user_setting import OrganizationUserSetting
 from resources_portal.models.user import User
 
 logger = get_and_configure_logger(__name__)
 
 
-class Notification(ComputedFieldsModel, SafeDeleteModel):
+EMAIL_HTML_BODY = (
+    Path("resources_portal/email_assets/notification_email_templated_inlined.html")
+    .read_text()
+    .replace("\n", "")
+)
+CTA_HTML = (
+    Path("resources_portal/email_assets/cta_templated_inlined.html").read_text().replace("\n", "")
+)
+
+
+class Notification(SafeDeleteModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
-    NOTIFICATION_TYPES = (
-        ("ADDED_TO_ORG", "ADDED_TO_ORG"),
-        ("ORG_REQUEST_CREATED", "ORG_REQUEST_CREATED"),
-        ("ORG_INVITE_CREATED", "ORG_INVITE_CREATED"),
-        ("ORG_INVITE_ACCEPTED", "ORG_INVITE_ACCEPTED"),
-        ("ORG_REQUEST_ACCEPTED", "ORG_REQUEST_ACCEPTED"),
-        ("ORG_INVITE_REJECTED", "ORG_INVITE_REJECTED"),
-        ("ORG_REQUEST_REJECTED", "ORG_REQUEST_REJECTED"),
-        ("ORG_INVITE_INVALID", "ORG_INVITE_INVALID"),
-        ("ORG_REQUEST_INVALID", "ORG_REQUEST_INVALID"),
-        ("SIGNED_MTA_UPLOADED", "SIGNED_MTA_UPLOADED"),
-        ("EXECUTED_MTA_UPLOADED", "EXECUTED_MTA_UPLOADED"),
-        ("APPROVE_REQUESTS_PERM_GRANTED", "APPROVE_REQUESTS_PERM_GRANTED"),
-        ("TRANSFER_REQUESTED", "TRANSFER_REQUESTED"),
-        ("TRANSFER_APPROVED", "TRANSFER_APPROVED"),
-        ("TRANSFER_REJECTED", "TRANSFER_REJECTED"),
-        ("TRANSFER_CANCELLED", "TRANSFER_CANCELLED"),
-        ("TRANSFER_FULFILLED", "TRANSFER_FULFILLED"),
-        ("TRANSFER_VERIFIED_FULFILLED", "TRANSFER_VERIFIED_FULFILLED"),
-        ("REMOVED_FROM_ORG", "REMOVED_FROM_ORG"),
-        ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
-        ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
-    )
+    NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATIONS.keys())
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -53,7 +52,7 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    notification_type = models.CharField(max_length=32, choices=NOTIFICATION_TYPES)
+    notification_type = models.CharField(max_length=64, choices=NOTIFICATION_TYPES)
     notified_user = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="notifications"
     )
@@ -67,130 +66,145 @@ class Notification(ComputedFieldsModel, SafeDeleteModel):
     associated_organization = models.ForeignKey(
         Organization, blank=False, null=True, on_delete=models.CASCADE
     )
+    associated_grant = models.ForeignKey(Grant, blank=False, null=True, on_delete=models.CASCADE)
     associated_material = models.ForeignKey(
         Material, blank=False, null=True, on_delete=models.CASCADE
+    )
+    associated_material_request = models.ForeignKey(
+        MaterialRequest, blank=False, null=True, on_delete=models.CASCADE
+    )
+    associated_material_request_issue = models.ForeignKey(
+        MaterialRequestIssue, blank=False, null=True, on_delete=models.CASCADE
     )
 
     email = models.EmailField(blank=False, null=True)
 
     delivered = models.BooleanField(default=False)
 
-    @computed(models.TextField(null=False, blank=False))
-    def message(self):
+    def should_be_emailed(self):
+        # Check instance.delivered to allow creating a notification
+        # without triggering an email and to make sure we don't resend
+        # notifications by accidentally saving them.
+        return not self.delivered and (
+            # If they want all notifications they get them.
+            self.notified_user.receive_non_assigned_notifs
+            or (
+                # Otherwise we need to make sure they are the requester or assignee.
+                self.associated_material_request
+                and (
+                    self.notified_user == self.associated_material_request.requester
+                    or self.notified_user == self.associated_material_request.assigned_to
+                )
+            )
+            or (
+                "always_send" in NOTIFICATIONS[self.notification_type]
+                and NOTIFICATIONS[self.notification_type]["always_send"]
+            )
+            or (
+                # Special case for this because it's always sent if
+                # the user is the owner but not otherwise.
+                self.notification_type == "ORGANIZATION_NEW_MEMBER"
+                and self.notified_user == self.associated_organization.owner
+            )
+        )
 
-        # This dict of lambdas is neccessary because not all notifications have a material or organization,
-        # so evaluating them all as a dict results in a NoneType error.
-        alert_messages = {
-            "ADDED_TO_ORG": lambda: f"{self.associated_user.username} has added you to the organization  "
-            f"{self.associated_organization.name}.",
-            "ORG_REQUEST_CREATED": lambda: f"{self.associated_user.username} is requesting to join "
-            f"{self.associated_organization.name}.",
-            "ORG_INVITE_CREATED": lambda: f"{self.associated_user.username} has invited you to join "
-            f"{self.associated_organization.name}.",
-            "ORG_INVITE_ACCEPTED": lambda: f"{self.associated_user.username} has accepted your invitation to join "
-            f"{self.associated_organization.name}.",
-            "ORG_REQUEST_ACCEPTED": lambda: f"{self.associated_user.username} has accepted your request to join "
-            f"{self.associated_organization.name}.",
-            "ORG_INVITE_REJECTED": lambda: f"{self.associated_user.username} has rejected your request to join "
-            f"{self.associated_organization.name}.",
-            "ORG_REQUEST_REJECTED": lambda: f"{self.associated_user.username} has rejected your invitation to join "
-            f"{self.associated_organization.name}.",
-            "ORG_INVITE_INVALID": lambda: f"You no longer have permissions to add members to {self.associated_organization.name}. "
-            f"Your pending invitations have been canceled.",
-            "ORG_REQUEST_INVALID": lambda: f"{self.associated_user.username} no longer has permissions to add members to "
-            f"{self.associated_organization.name}. Please resubmit your request.",
-            "SIGNED_MTA_UPLOADED": lambda: f"{self.associated_user.username} uploaded a signed MTA for "
-            f"{self.associated_material.title}.",
-            "EXECUTED_MTA_UPLOADED": lambda: f"{self.associated_user.username} uploaded an executed MTA for "
-            f"{self.associated_material.title}.",
-            "APPROVE_REQUESTS_PERM_GRANTED": lambda: f"{self.associated_user.username} granted you permission to approve "
-            f"material transfer requests in {self.associated_organization.name}.",
-            "TRANSFER_REQUESTED": lambda: f"{self.associated_user.username} requested transfer of "
-            f'"{self.associated_material.title}".',
-            "TRANSFER_APPROVED": lambda: f"Transfer of {self.associated_material.title} has been approved.",
-            "TRANSFER_REJECTED": lambda: f"Transfer of {self.associated_material.title} has been rejected.",
-            "TRANSFER_CANCELLED": lambda: f"Transfer of {self.associated_material.title} has been cancelled.",
-            "TRANSFER_FULFILLED": lambda: f"Transfer of {self.associated_material.title} has been marked as fulfilled by "
-            f"{self.associated_user.username} from {self.associated_organization.name}.",
-            "TRANSFER_VERIFIED_FULFILLED": lambda: f"Transfer of {self.associated_material.title}"
-            f" from {self.associated_organization.name} has been verified as fulfilled by "
-            f"{self.associated_user.username}.",
-            "REMOVED_FROM_ORG": lambda: f"You have been removed from {self.associated_organization.name}.",
-            "REQUEST_ISSUE_OPENED": lambda: f"{self.associated_user.username} has opened an issue for their request of {self.associated_material.title}.",
-            "REQUEST_ISSUE_CLOSED": lambda: f"An issue opened by {self.associated_user.username} for their request of {self.associated_material.title} has been closed.",
+    def get_email_dict(self):
+        # All the properties which can be used in template strings in the
+        # config. If they don't get set because the association doesn't
+        # exist, then they better not be needed.
+        props = {
+            "notifications_url": NOTIFICATIONS_URL,
+            "your_name": self.notified_user.full_name,
+        }
+        if self.associated_user:
+            props["other_name"] = self.associated_user.full_name
+            if self.associated_user == self.notified_user:
+                props["you_or_other_name"] = "you"
+                props["you_or_other_name_upper"] = "You"
+            else:
+                props["you_or_other_name"] = self.associated_user.full_name
+                props["you_or_other_name_upper"] = self.associated_user.full_name
+            props["you_or_other_name"] = self.associated_user.full_name
+        if self.associated_grant:
+            props["grant_name"] = self.associated_grant.title
+        if self.associated_organization:
+            props["organization_name"] = self.associated_organization.name
+            props["organization_url"] = self.associated_organization.frontend_URL
+            props["organization_owner"] = self.associated_organization.owner.full_name
+        if self.associated_material:
+            props["material_category"] = self.associated_material.category
+            props["material_name"] = self.associated_material.title
+            props["material_url"] = self.associated_material.frontend_URL
+        if self.associated_material_request:
+            props["request_url"] = self.associated_material_request.frontend_URL
+            props["requester_name"] = self.associated_material_request.requester.full_name
+            props["rejection_reason"] = self.associated_material_request.rejection_reason
+            props["required_info_plain"] = self.associated_material_request.required_info_plain_text
+            props["provided_info_plain"] = self.associated_material_request.provided_info_plain_text
+            props["required_info_html"] = self.associated_material_request.required_info_html
+            props["provided_info_html"] = self.associated_material_request.provided_info_html
+        if self.associated_material_request_issue:
+            props["issue_description"] = self.associated_material_request_issue.description
+
+        notification_config = NOTIFICATIONS[self.notification_type]
+
+        body = notification_config["body"].format(**props)
+        formatted_html = EMAIL_HTML_BODY.replace("REPLACE_FULL_NAME", props["your_name"]).replace(
+            "REPLACE_MAIN_TEXT", body
+        )
+        formatted_cta_html = ""
+        if "CTA" in notification_config and "CTA_link_field" in notification_config:
+            cta = notification_config["CTA"].format(**props)
+            cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL
+            formatted_cta_html = CTA_HTML.replace("REPLACE_CTA", cta).replace(
+                "REPLACE_LINK_CTA", cta_link
+            )
+
+        formatted_html = formatted_html.replace("REPLACE_HTML_CTA", formatted_cta_html)
+
+        return {
+            "body": body,
+            "cta": cta,
+            "cta_link": cta_link,
+            "plain_text_email": (
+                notification_config["plain_text_email"].format(**props) + PLAIN_TEXT_EMAIL_FOOTER
+            ),
+            "subject": notification_config["subject"].format(**props),
+            "formatted_html": formatted_html,
         }
 
-        try:
-            return alert_messages[self.notification_type]()
-        except KeyError:
-            raise ValueError(f'"{self.notification_type}" is not a valid notification type')
 
+@receiver(pre_save, sender="resources_portal.Notification")
+def validate_associations(sender, instance=None, created=False, **kwargs):
+    if not instance.notification_type:
+        raise ValidationError("Notifications must have notification_type set.")
 
-# This enumerates the types of notifications so users can silence the types they don't want.
-NOTIFICATION_SETTING_DICT = {
-    "ADDED_TO_ORG": "change_in_request_status_notif",
-    "ORG_REQUEST_CREATED": "request_assigned_notif",
-    "ORG_INVITE_CREATED": "new_request_notif",
-    "ORG_INVITE_ACCEPTED": "change_in_request_status_notif",
-    "ORG_REQUEST_ACCEPTED": "change_in_request_status_notif",
-    "ORG_INVITE_REJECTED": "change_in_request_status_notif",
-    "ORG_REQUEST_REJECTED": "change_in_request_status_notif",
-    "ORG_INVITE_INVALID": "change_in_request_status_notif",
-    "ORG_REQUEST_INVALID": "change_in_request_status_notif",
-    "SIGNED_MTA_UPLOADED": "transfer_updated_notif",
-    "EXECUTED_MTA_UPLOADED": "transfer_updated_notif",
-    "APPROVE_REQUESTS_PERM_GRANTED": "perms_granted_notif",
-    "TRANSFER_REQUESTED": "transfer_requested_notif",
-    "TRANSFER_APPROVED": "transfer_updated_notif",
-    "TRANSFER_REJECTED": "transfer_updated_notif",
-    "TRANSFER_CANCELLED": "transfer_updated_notif",
-    "TRANSFER_FULFILLED": "transfer_updated_notif",
-    "TRANSFER_VERIFIED_FULFILLED": "transfer_updated_notif",
-    "REMOVED_FROM_ORG": "misc_notif",
-    "REQUEST_ISSUE_OPENED": "transfer_updated_notif",
-    "REQUEST_ISSUE_CLOSED": "transfer_updated_notif",
-}
+    for association in NOTIFICATIONS[instance.notification_type]["required_associations"]:
+        if not getattr(instance, association):
+            raise ValidationError(
+                f"Notifications of type {instance.notification_type} must have {association} set."
+            )
 
 
 @receiver(post_save, sender="resources_portal.Notification")
 def send_email_notification(sender, instance=None, created=False, **kwargs):
-    source_template = "Resources Portal Mail Robot <no-reply@{}>"
+    if not (created and instance.should_be_emailed()):
+        return
 
-    # Check instance.delivered to allow creating a notification
-    # without triggering an email.
-    if created and not instance.delivered:
-        # Check if user has settings turned on for this notificiation
-        if instance.notified_user in instance.associated_organization.members.all():
-            user_setting = OrganizationUserSetting.objects.get(
-                user=instance.notified_user, organization=instance.associated_organization
-            )
-            if not getattr(user_setting, NOTIFICATION_SETTING_DICT[instance.notification_type]):
-                return
+    email_dict = instance.get_email_dict()
+    logger.info("Sending an email notification to {email}.")
 
-        instance.email = instance.notified_user.email
-
-        if settings.AWS_SES_DOMAIN:
-            # Create a new SES resource and specify a region.
-            # I need to pass region in as a env var.
-            client = boto3.client("ses", region_name=settings.AWS_REGION)
-
-            # Provide the contents of the email.
-            client.send_email(
-                Destination={"ToAddresses": [instance.email]},
-                Message={
-                    "Body": {"Text": {"Charset": "UTF-8", "Data": instance.message}},
-                    "Subject": {
-                        "Charset": "UTF-8",
-                        "Data": "You have a new notification from the Resources Portal!",
-                    },
-                },
-                Source=source_template.format(settings.AWS_SES_DOMAIN),
-            )
-        else:
-            logger.info(
-                f'In prod the following message will be sent to the following address: "'
-                f'"{instance.message}", "{instance.notified_user.email}".'
-            )
-
-        instance.delivered = True
-        instance.save()
+    if settings.AWS_SES_DOMAIN:
+        send_mail(
+            EMAIL_SOURCE,
+            [instance.notified_email],
+            email_dict["subject"],
+            email_dict["plain_text_email"],
+            email_dict["formatted_html"],
+            LOGO_EMBEDDED_IMAGE_CONFIGS,
+        )
+    else:
+        logger.debug(
+            f'In prod the following message will be sent to "{instance.notified_user.email}": "'
+            f'{email_dict["plain_text_email"]}".'
+        )

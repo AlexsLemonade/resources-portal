@@ -89,9 +89,13 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", email=self.post_doc.email
+                    notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED_NEW"
                 )
             ),
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_RECEIVED")),
             1,
         )
 
@@ -106,11 +110,13 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(
             len(
-                Notification.objects.filter(
-                    notification_type="TRANSFER_APPROVED", email=self.secondary_prof.email
-                )
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
             ),
             1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_APPROVED")),
+            2,
         )
 
         # SecondaryProf uploads the signed MTA
@@ -139,10 +145,10 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="SIGNED_MTA_UPLOADED", email=self.post_doc.email
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_MTA"
                 )
             ),
-            1,
+            2,
         )
 
         # Postdoc uploads the executed MTA and marks the request fulfilled.
@@ -172,15 +178,19 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="EXECUTED_MTA_UPLOADED", email=self.secondary_prof.email
+                    notification_type="MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA",
                 )
             ),
             1,
         )
         self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
+            2,
+        )
+        self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_FULFILLED", email=self.secondary_prof.email
+                    notification_type="MATERIAL_REQUEST_REQUESTER_FULFILLED",
                 )
             ),
             1,
@@ -195,13 +205,14 @@ class TestResourceListedAndRequested(APITestCase):
         )
         self.assertEqual(issue_response.status_code, status.HTTP_201_CREATED)
 
+        # Both the PrimaryProf and the Postdoc are notified.
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_OPENED", email=self.post_doc.email
+                    notification_type="MATERIAL_REQUEST_ISSUE_SHARER_REPORTED"
                 )
             ),
-            1,
+            2,
         )
 
         # Postdoc creates a fulfillment note and resolves the issue.
@@ -225,21 +236,16 @@ class TestResourceListedAndRequested(APITestCase):
         )
         self.assertEqual(issue_response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="REQUEST_ISSUE_CLOSED", email=self.post_doc.email
-                )
-            ),
-            1,
-        )
-
         # This is the second time the request was marked as fulfilled,
-        # so now there should be 2!
+        # so now there should be 2x!
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
+            4,
+        )
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_FULFILLED", email=self.secondary_prof.email
+                    notification_type="MATERIAL_REQUEST_REQUESTER_FULFILLED",
                 )
             ),
             2,
@@ -254,16 +260,12 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="TRANSFER_VERIFIED_FULFILLED", email=self.post_doc.email
-                )
-            ),
-            1,
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_VERIFIED")),
+            2,
         )
 
         # SecondaryProf can view the fulfillment note
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 9)
+        self.assertEqual(len(Notification.objects.all()), 18)

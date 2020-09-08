@@ -58,10 +58,15 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", email=self.sharer.email
+                    notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED_NEW"
                 )
             ),
             1,
+        )
+        # Does not notify the assignee, because they are notified specially.
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_RECEIVED")),
+            self.organization.members.count() - 1,
         )
 
     def test_post_request_with_address_succeeds(self):
@@ -80,10 +85,15 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", email=self.sharer.email
+                    notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED_NEW"
                 )
             ),
             1,
+        )
+        # Does not notify the assignee, because they are notified specially.
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_RECEIVED")),
+            self.organization.members.count() - 1,
         )
 
         created_request = MaterialRequest.objects.get(id=response.json()["id"])

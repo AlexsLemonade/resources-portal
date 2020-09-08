@@ -1428,10 +1428,10 @@ body.outlook p {
                                   <table style="wdith: 100%;">
                                     <tr>
                                       <td>
-                                        <p> <img src="cid:ccrr-logo" align="center" class="float-left"> </p>
+                                        <p> <img src="../ccrr-logo.svg" align="center" class="float-left"> </p>
                                       </td>
                                       <td>
-                                        <p> <img src="cid:alexs-logo" align="center" class="float-right"> </p>
+                                        <p> <img src="../alexs-logo.svg" align="center" class="float-right"> </p>
                                       </td>
                                     </tr>
                                   </table
@@ -1442,7 +1442,7 @@ body.outlook p {
                                       </tr>
                                     </tbody>
                                   </table>
-                                  <p class="text-left"> REPLACE_FULL_NAME, </p>
+                                  <p class="text-left"> {Recipient Name}, </p>
                                   <table class="spacer">
                                     <tbody>
                                       <tr>
@@ -1450,28 +1450,16 @@ body.outlook p {
                                       </tr>
                                     </tbody>
                                   </table>
-                                  <p class="text-left">REPLACE_MAIN_TEXT</p>
-                                  <table class="spacer">
-                                    <tbody>
-                                      <tr>
-                                        <td height="16px" style="font-size:16px;line-height:16px;"><br/></td>
-                                      </tr>
-                                    </tbody>
-                                  </table>
-                                  <table style="width:100%">
-                                    <tr>
-                                      <td align="center" valign="top">
-                                        <table>
-                                          <tr>
-                                            <td align="center" valign="top" style="text-align:-webkit-center">
-                                              <a href="REPLACE_INVITATION_LINK" align="center" class="float-center" style= " background-color:#017FA3; padding: 8px 24px 8px 24px;-webkit-border-radius: 3px; border-radius: 3px;color: #ffffff; display:inline-block;font-weight: lighter;">REPLACE_CTA</a>
-                                            </td>
-                                          </tr>
-                                        </table>
-                                      </td>
-                                      <td class="expander"></td>
-                                    </tr>
-                                  </table>
+                                  <p class="text-left">You accepted request for {resource type}, {resource name} from {Requester}.</p>
+                                  <p class="text-left">Waiting for {Requester} to provide the following information:</p>
+                                  <p class="text-left">
+                                    <ul>
+                                      <li> IRB approval </li>
+                                      <li> Shipping payment information </li>
+                                      <li> Requester signed MTA </li>
+                                    </ul>
+                                  </p>
+                                  REPLACE_HTML_CTA
                                   <hr>
                                   <table class="spacer">
                                     <tbody>
@@ -1483,9 +1471,12 @@ body.outlook p {
                                   <table style="width:100%;">
                                     <tr>
                                       <td>
-                                        <p class="text-center"><small> <a href ="REPLACE_INVITATION_LINK">Terms of Use</a></p>
+                                        <p class="text-center"><small> <a href ="#">Terms of Use</a></p>
                                       </td>
                                     </tr>
+                                    <tr>
+                                      <p class="text-center"><small> You are receiving this email because you subscribed to receive notifications from CCRR portal. <a href ="#">Manage Notifications</a></p>
+                                   </tr>
                                   </table>
                                     <p class="text-center"><small> Alex's Lemonade Stand Foundation <br/> 111 Presidential Blvd, Suite 203, Bala Cynwyd,  PA 19004</small></p>
                                 </th>

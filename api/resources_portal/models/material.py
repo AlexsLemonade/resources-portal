@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import post_save
@@ -93,6 +94,10 @@ class Material(SafeDeleteModel):
 
     def has_pre_print(self):
         return not (self.pre_print_doi == "" and self.pre_print_title == "")
+
+    @property
+    def frontend_URL(self):
+        return f"https://{settings.AWS_SES_DOMAIN}/resources/{self.id}"
 
 
 @receiver(post_save, sender="resources_portal.Material")

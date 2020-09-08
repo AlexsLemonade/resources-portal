@@ -8,13 +8,17 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from resources_portal.config.logging import get_and_configure_logger
-from resources_portal.emailer import send_mail
+from resources_portal.emailer import (
+    EMAIL_SOURCE,
+    LOGO_EMBEDDED_IMAGE_CONFIGS,
+    PLAIN_TEXT_EMAIL_FOOTER,
+    send_mail,
+)
 
 logger = get_and_configure_logger(__name__)
 
-EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/resources-portal-email-templated-inlined.html")
+    Path("resources_portal/email_assets/invitation_email_templated_inlined.html")
     .read_text()
     .replace("\n", "")
 )
@@ -43,22 +47,18 @@ def email_invitation_view(request):
             .replace("REPLACE_CTA", cta)
             .replace("REPLACE_INVITATION_LINK", invitation_link)
         )
+        plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
         subject = f"CCRR: {request.user.full_name} has invited you to create an account"
-        source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
-        embedded_images = [
-            {
-                "content_id": "ccrr-logo",
-                "file_path": "resources_portal/email_assets/ccrr-logo.png",
-                "subtype": "png",
-            },
-            {
-                "content_id": "alexs-logo",
-                "file_path": "resources_portal/email_assets/alexs-logo.png",
-                "subtype": "png",
-            },
-        ]
+
         logger.info("Sending an email invitation to {email}.")
-        send_mail(source, [email], subject, body, formatted_html, embedded_images)
+        send_mail(
+            EMAIL_SOURCE,
+            [email],
+            subject,
+            plain_text_email,
+            formatted_html,
+            LOGO_EMBEDDED_IMAGE_CONFIGS,
+        )
     else:
         logger.info(f"In prod an email would have been sent to {email}:")
         print(body)

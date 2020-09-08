@@ -3,7 +3,6 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import User
-from resources_portal.test.factories import UserFactory
 
 fake = Faker()
 
@@ -21,7 +20,8 @@ class TestUserModelTestCase(APITestCase):
         last_name = "Norris"
 
         for i in range(10):
-            user = UserFactory(first_name=first_name, last_name=last_name)
+            user = User(first_name=first_name, last_name=last_name)
+            user.save()
 
             if i == 0:
                 self.assertEqual(user.username, f"{first_name}{last_name}")
@@ -32,6 +32,7 @@ class TestUserModelTestCase(APITestCase):
         first_name = "Chuck"
         last_name = "Norris"
 
-        user = UserFactory(first_name=first_name, last_name=last_name)
+        user = User(first_name=first_name, last_name=last_name)
+        user.save()
 
         self.assertEqual(user.full_name, f"{first_name} {last_name}")
