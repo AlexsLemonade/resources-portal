@@ -107,15 +107,16 @@ urlpatterns = [
     path("v1/", include(router.urls)),
     path("api-token-auth/", views.obtain_auth_token),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
+    # Must go before /materials/ so it doesn't think "import" is an id.
+    path(
+        "v1/materials/import/", ImportViewSet.as_view({"post": "create"}), name="materials-import"
+    ),
     # the 'api-root' from django rest-frameworks default router
     # http://www.django-rest-framework.org/api-guide/routers/#defaultrouter
     re_path(r"^$", RedirectView.as_view(url=reverse_lazy("api-root"), permanent=False)),
     path("v1/search/", include(search_router.urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns.append(
-    path("v1/materials/import", ImportViewSet.as_view({"post": "create"}), name="materials-import")
-)
 urlpatterns.append(
     path(
         "v1/materials/<int:material_id>/requests",

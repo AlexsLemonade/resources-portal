@@ -85,7 +85,7 @@ class ImportProtocolTestCase(APITestCase):
             self.url,
             {
                 "import_source": "PROTOCOLS_IO",
-                "study_accession": self.test_protocol_doi,
+                "accession_code": self.test_protocol_doi,
                 "organization_id": self.org.id,
                 "grant_id": self.grant.id,
             },
