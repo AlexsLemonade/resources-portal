@@ -14,6 +14,7 @@ from resources_portal.views.login import LoginViewSet
 from resources_portal.views.material import MaterialViewSet
 from resources_portal.views.material_request import MaterialRequestViewSet
 from resources_portal.views.material_request_issue import MaterialRequestIssueViewSet
+from resources_portal.views.notification import NotificationViewSet
 from resources_portal.views.orcid_credentials import ORCIDCredentialsViewSet
 from resources_portal.views.organization import OrganizationViewSet
 from resources_portal.views.organization_grant import OrganizationGrantViewSet

@@ -32,7 +32,7 @@ send_to_organziation to send messages to the rest of user's
 organization but not the user themself.
 
 send_to_associated_user -- If False will exclude the associated
-user from associated_organization.members if send_to_organziation is
+user from organization.members if send_to_organziation is
 True.
 """
 NOTIFICATIONS = {
@@ -40,32 +40,32 @@ NOTIFICATIONS = {
         "subject": "You are assigned to a new request",
         "body": "You have been assigned to a new request for {material_category}, .",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\nYou have been assigned to a new request for {material_category}, "
             " {material_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED": {
         "subject": "{organization_name}: New Request for {material_category}",
         "body": "{organization_name} received a new request received for {material_category} {material_name}.",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n {organization_name} received a new request received for {material_category},"
             " {material_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
         "send_to_primary_user": False,
@@ -74,32 +74,32 @@ NOTIFICATIONS = {
         "subject": "{organization_name}: You are assigned to a request for {material_category}",
         "body": "You have been assigned to a request for {material_category}, {material_name} from {requester_name}.",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\nYou have been assigned to a request for {material_category},"
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_SHARER_ASSIGNMENT": {
         "subject": "{other_name} assigned to request for {material_category}",
         "body": "{other_name} has been assigned to a request for {material_category}, {material_name} from {requester_name}",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{other_name} has been assigned to a request for {material_category},"
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
         "send_to_primary_user": False,
@@ -111,7 +111,7 @@ NOTIFICATIONS = {
             "Waiting for {requester_name} to provide the following information:<br>{required_info_html}"
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
             "\nWaiting for {requester_name} to provide the following information:\n{required_info_plain}:"
@@ -119,9 +119,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -132,7 +132,7 @@ NOTIFICATIONS = {
             " {material_name} for the below reason:<br>{rejection_reason}"
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} rejected a request for {material_category},"
             " {material_name} for the below reason:\n{rejection_reason}"
@@ -140,9 +140,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -150,16 +150,16 @@ NOTIFICATIONS = {
         "subject": "Request for {material_category} cancelled",
         "body": "{requester_name} cancelled a request for {material_category}, {material_name}.",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} cancelled a request for {material_category},"
             " {material_name}\n\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -167,16 +167,16 @@ NOTIFICATIONS = {
         "subject": "Action Required: Received additional information from {requester_name}",
         "body": "{requester_name} provided the following required items for a request for {material_category}, {material_name}:<br>{provided_info_html}",
         "CTA": "Review Items",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} provided the following required items for a request for"
             " {material_category}, {material_name}:\n{provided_info_plain}\n\nReview items ({request_url})."
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -188,7 +188,7 @@ NOTIFICATIONS = {
             "\nPlease sign and upload the fully executed MTA."
         ),
         "CTA": "Upload Fully Executed MTA",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} provided the following additional documents"
             " for a request for {material_category}, {material_name}"
@@ -198,9 +198,9 @@ NOTIFICATIONS = {
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -212,7 +212,7 @@ NOTIFICATIONS = {
             "\nPlease make arrangements to send the {material_category} to {requester_name}."
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} uploaded the fully executed MTA"
             " for a request for {material_category}, {material_name} from {requester_name}."
@@ -220,9 +220,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -232,7 +232,7 @@ NOTIFICATIONS = {
             "{you_or_other_name_upper} accepted a request for {material_category}, {material_name} from {requester_name}."
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
             "Please make arrangements to send the {material_category} to {requester_name}."
@@ -240,9 +240,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -253,7 +253,7 @@ NOTIFICATIONS = {
             " from {requester_name} as Fulfilled."
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{you_or_other_name} marked a request for {material_category},"
             " {material_name} from {requester_name} as Fulfilled."
@@ -261,9 +261,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -271,13 +271,13 @@ NOTIFICATIONS = {
         "subject": "{requester_name} received {material_category}",
         "body": "{requester_name} confirmed receipt of {material_category}, {material_name}.",
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": "{your_name},\n{requester_name} confirmed receipt of {material_category}, {material_name}.",
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
         "send_to_organization": True,
     },
@@ -288,7 +288,7 @@ NOTIFICATIONS = {
             " {material_category}, {material_name}.\n{issue_description}"
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{requester_name} has reported an issue with a fulfilled request for"
             " {material_category}, {material_name}.\n{issue_description}"
@@ -296,10 +296,10 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_material_request_issue",
-            "associated_organization",
+            "material",
+            "material_request",
+            "material_request_issue",
+            "organization",
         ],
         "send_to_organization": True,
         "send_to_associated_user": False,
@@ -311,7 +311,7 @@ NOTIFICATIONS = {
             "on the condition that you provide the following items:<br>{required_info_html}"
         ),
         "CTA": "Provide Additional Items",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} has accepted your request for {material_category}, {material_name} "
             "on the condition that you provide the following items:\n{required_info_plain}"
@@ -320,9 +320,9 @@ NOTIFICATIONS = {
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT": {
@@ -332,7 +332,7 @@ NOTIFICATIONS = {
             " {material_name} and is working to fulfill your request."
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} has accepted your request for {material_category},"
             " {material_name} and is working to fulfill your request."
@@ -340,9 +340,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA": {
@@ -352,7 +352,7 @@ NOTIFICATIONS = {
             " {material_category}, {material_name} and is working to fulfill your request."
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} has uploaded the fully executed MTA for your"
             " request for {material_category}, {material_name} and is working to fulfill your request."
@@ -361,9 +361,9 @@ NOTIFICATIONS = {
         "attachments": ["MATERIAL_EXECUTED_MTA"],
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_REQUESTER_FULFILLED": {
@@ -373,7 +373,7 @@ NOTIFICATIONS = {
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details."
         ),
         "CTA": "View Fulfillment Notes",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} marked your request for {material_category},"
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details. "
@@ -381,9 +381,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_REQUESTER_REJECTED": {
@@ -393,7 +393,7 @@ NOTIFICATIONS = {
             "for the below reason:<br>{rejection_reason}"
         ),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "{your_name},\n{organization_name} rejected your request for"
             " {material_category}, {material_name} for the below reason:\n{rejection_reason}"
@@ -401,25 +401,25 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_REQUEST_REQUESTER_CANCELLED": {
         "subject": "Request for {material_category} cancelled",
         "body": ("You cancelled your request for {material_category}, {material_name}."),
         "CTA": "View Request",
-        "CTA_link_field": "associated_material_request",
+        "CTA_link_field": "material_request",
         "plain_text_email": (
             "You cancelled your request for {material_category}, {material_name}."
             "\n\nView request details. ({request_url})."
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_ADDED": {
@@ -428,16 +428,12 @@ NOTIFICATIONS = {
             "{other_name} added a new {material_category}, {material_name} to {organization_name}."
         ),
         "CTA": "View Resource",
-        "CTA_link_field": "associated_material",
+        "CTA_link_field": "material",
         "plain_text_email": (
             "{your_name},\n{other_name} added a new {material_category}, {material_name} to {organization_name}."
             "\n\nView resource. ({material_url})."
         ),
-        "required_associations": [
-            "associated_user",
-            "associated_material",
-            "associated_organization",
-        ],
+        "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
     },
     "MATERIAL_ARCHIVED": {
@@ -446,16 +442,12 @@ NOTIFICATIONS = {
             "{other_name} archived {material_category}, {material_name} from {organization_name}."
         ),
         "CTA": "View Archived Resource",
-        "CTA_link_field": "associated_material",
+        "CTA_link_field": "material",
         "plain_text_email": (
             "{your_name},\n{other_name} archived {material_category}, {material_name} from {organization_name}."
             "\n\nView archived resource. ({material_url})."
         ),
-        "required_associations": [
-            "associated_user",
-            "associated_material",
-            "associated_organization",
-        ],
+        "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
     },
     "MATERIAL_DELETED": {
@@ -466,28 +458,24 @@ NOTIFICATIONS = {
         # TODO: Remove this CTA and make the button something that is
         # only added if this field is present.
         "CTA": "YOU CAN'T DO ANYTHING ABOUT IT!",
-        "CTA_link_field": "associated_material",
+        "CTA_link_field": "material",
         "plain_text_email": (
             "{your_name},\n{other_name} deleted {material_category},"
             " {material_name} from {organization_name}."
         ),
-        "required_associations": [
-            "associated_user",
-            "associated_material",
-            "associated_organization",
-        ],
+        "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
     },
     "ORGANIZATION_NEW_MEMBER": {
         "subject": "{organization_name}: New member added",
         "body": "{other_name} was added to {organization_name}.",
         "CTA": "View Members",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": (
             "{your_name},\n{other_name} was added to {organization_name}."
             "\n\nView members. ({organization_url})."
         ),
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
         "send_to_primary_user": False,
     },
@@ -498,24 +486,24 @@ NOTIFICATIONS = {
             "\nYou can now add new team members and remove members and resources."
         ),
         "CTA": "Manage Team",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": (
             "{your_name},\n{other_name} was added to {organization_name}."
             "\n\nManage team. ({organization_url})."
         ),
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "always_send": True,
     },
     "ORGANIZATION_NEW_OWNER": {
         "subject": "{organization_name}: New owner",
         "body": "{other_name} is now the owner of {organization_name}.",
         "CTA": "View Team",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": (
             "{your_name},\n{other_name} is now the owner of {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
         "send_to_associated_user": False,
     },
@@ -523,9 +511,9 @@ NOTIFICATIONS = {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
         "CTA": "None?",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
     },
     "ORGANIZATION_NEW_GRANT": {
@@ -535,25 +523,25 @@ NOTIFICATIONS = {
             "\nTeam members can now add resources associated with the grant."
         ),
         "CTA": "View Team Grants",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": (
             "{your_name},{other_name} linked a new grant {grant_name} with {organization_name}. "
             "\nTeam members can now add resources associated with the grant."
             "\n\nView team grants. ({organization_url})."
         ),
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
     },
     "ORGANIZATION_INVITE": {
         "subject": "You have been added to {organization_name}",
         "body": "{organization_owner} has added you to their team, {organization_name}.",
         "CTA": "View Team",
-        "CTA_link_field": "associated_organization",
+        "CTA_link_field": "organization",
         "plain_text_email": (
             "{your_name},{organization_owner} has added you to their team, {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
-        "required_associations": ["associated_user", "associated_organization",],
+        "required_associations": ["associated_user", "organization",],
         "always_send": True,
     },
 }

@@ -47,6 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
             "full_name",
             "email",
             "orcid",
+            "viewed_notifications_at",
             "owned_attachments",
             "material_requests",
             "grants",

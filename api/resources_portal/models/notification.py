@@ -6,6 +6,7 @@ from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -38,7 +39,7 @@ CTA_HTML = (
 )
 
 
-class Notification(SafeDeleteModel):
+class Notification(SafeDeleteModel, ComputedFieldsModel):
     class Meta:
         db_table = "notifications"
         get_latest_by = "created_at"
@@ -57,43 +58,38 @@ class Notification(SafeDeleteModel):
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="notifications"
     )
     associated_user = models.ForeignKey(
-        User,
-        blank=False,
-        null=True,
-        on_delete=models.CASCADE,
-        related_name="associated_notifications",
+        User, blank=False, null=True, on_delete=models.CASCADE, related_name="+",
     )
-    associated_organization = models.ForeignKey(
-        Organization, blank=False, null=True, on_delete=models.CASCADE
-    )
-    associated_grant = models.ForeignKey(Grant, blank=False, null=True, on_delete=models.CASCADE)
-    associated_material = models.ForeignKey(
-        Material, blank=False, null=True, on_delete=models.CASCADE
-    )
-    associated_material_request = models.ForeignKey(
+    organization = models.ForeignKey(Organization, blank=False, null=True, on_delete=models.CASCADE)
+    grant = models.ForeignKey(Grant, blank=False, null=True, on_delete=models.CASCADE)
+    material = models.ForeignKey(Material, blank=False, null=True, on_delete=models.CASCADE)
+    material_request = models.ForeignKey(
         MaterialRequest, blank=False, null=True, on_delete=models.CASCADE
     )
-    associated_material_request_issue = models.ForeignKey(
+    material_request_issue = models.ForeignKey(
         MaterialRequestIssue, blank=False, null=True, on_delete=models.CASCADE
     )
 
     email = models.EmailField(blank=False, null=True)
+    email_delivered_at = models.DateTimeField(blank=False, null=True)
 
-    delivered = models.BooleanField(default=False)
+    @computed(models.BooleanField(blank=False, null=True))
+    def email_delivered(self):
+        return self.email_delivered_at is not None
 
     def should_be_emailed(self):
-        # Check instance.delivered to allow creating a notification
+        # Check instance.email_delivered to allow creating a notification
         # without triggering an email and to make sure we don't resend
         # notifications by accidentally saving them.
-        return not self.delivered and (
+        return not self.email_delivered and (
             # If they want all notifications they get them.
             self.notified_user.receive_non_assigned_notifs
             or (
                 # Otherwise we need to make sure they are the requester or assignee.
-                self.associated_material_request
+                self.material_request
                 and (
-                    self.notified_user == self.associated_material_request.requester
-                    or self.notified_user == self.associated_material_request.assigned_to
+                    self.notified_user == self.material_request.requester
+                    or self.notified_user == self.material_request.assigned_to
                 )
             )
             or (
@@ -104,7 +100,7 @@ class Notification(SafeDeleteModel):
                 # Special case for this because it's always sent if
                 # the user is the owner but not otherwise.
                 self.notification_type == "ORGANIZATION_NEW_MEMBER"
-                and self.notified_user == self.associated_organization.owner
+                and self.notified_user == self.organization.owner
             )
         )
 
@@ -125,26 +121,26 @@ class Notification(SafeDeleteModel):
                 props["you_or_other_name"] = self.associated_user.full_name
                 props["you_or_other_name_upper"] = self.associated_user.full_name
             props["you_or_other_name"] = self.associated_user.full_name
-        if self.associated_grant:
-            props["grant_name"] = self.associated_grant.title
-        if self.associated_organization:
-            props["organization_name"] = self.associated_organization.name
-            props["organization_url"] = self.associated_organization.frontend_URL
-            props["organization_owner"] = self.associated_organization.owner.full_name
-        if self.associated_material:
-            props["material_category"] = self.associated_material.category
-            props["material_name"] = self.associated_material.title
-            props["material_url"] = self.associated_material.frontend_URL
-        if self.associated_material_request:
-            props["request_url"] = self.associated_material_request.frontend_URL
-            props["requester_name"] = self.associated_material_request.requester.full_name
-            props["rejection_reason"] = self.associated_material_request.rejection_reason
-            props["required_info_plain"] = self.associated_material_request.required_info_plain_text
-            props["provided_info_plain"] = self.associated_material_request.provided_info_plain_text
-            props["required_info_html"] = self.associated_material_request.required_info_html
-            props["provided_info_html"] = self.associated_material_request.provided_info_html
-        if self.associated_material_request_issue:
-            props["issue_description"] = self.associated_material_request_issue.description
+        if self.grant:
+            props["grant_name"] = self.grant.title
+        if self.organization:
+            props["organization_name"] = self.organization.name
+            props["organization_url"] = self.organization.frontend_URL
+            props["organization_owner"] = self.organization.owner.full_name
+        if self.material:
+            props["material_category"] = self.material.category
+            props["material_name"] = self.material.title
+            props["material_url"] = self.material.frontend_URL
+        if self.material_request:
+            props["request_url"] = self.material_request.frontend_URL
+            props["requester_name"] = self.material_request.requester.full_name
+            props["rejection_reason"] = self.material_request.rejection_reason
+            props["required_info_plain"] = self.material_request.required_info_plain_text
+            props["provided_info_plain"] = self.material_request.provided_info_plain_text
+            props["required_info_html"] = self.material_request.required_info_html
+            props["provided_info_html"] = self.material_request.provided_info_html
+        if self.material_request_issue:
+            props["issue_description"] = self.material_request_issue.description
 
         notification_config = NOTIFICATIONS[self.notification_type]
 
