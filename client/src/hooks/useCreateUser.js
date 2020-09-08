@@ -30,6 +30,12 @@ export const useCreateUser = (
   } = React.useContext(CreateUserContext)
   const router = useRouter()
 
+  const handleRouteChangeStart = (url) => {
+    if (!url.includes('orcid.org') && !url.includes('create-account')) {
+      cleanup()
+    }
+  }
+
   const save = () => {
     setCreateUser({ ...createUser })
   }
@@ -52,12 +58,12 @@ export const useCreateUser = (
   }
 
   React.useEffect(() => {
-    router.events.on('routeChangeStart', cleanup)
+    router.events.on('routeChangeStart', handleRouteChangeStart)
 
     // If the component is unmounted, unsubscribe
     // from the event with the `off` method:
     return () => {
-      router.events.off('routeChangeStart', cleanup)
+      router.events.off('routeChangeStart', handleRouteChangeStart)
     }
   })
 

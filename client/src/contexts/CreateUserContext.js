@@ -13,14 +13,12 @@ export const CreateUserContextProvider = ({ children }) => {
   const [error, setError] = React.useState('')
 
   // Cleanup localstorage without triggering events
-  const cleanup = (url) => {
-    if (!url.includes('orcid.org') && !url.includes('create-account')) {
-      window.localStorage.removeItem('createUser')
-      window.localStorage.removeItem('orcidInfo')
-      window.localStorage.removeItem('currentStep')
-      window.localStorage.removeItem('steps')
-      window.localStorage.removeItem('needsEmail')
-    }
+  const cleanup = () => {
+    window.localStorage.removeItem('createUser')
+    window.localStorage.removeItem('orcidInfo')
+    window.localStorage.removeItem('currentStep')
+    window.localStorage.removeItem('steps')
+    window.localStorage.removeItem('needsEmail')
   }
 
   return (
