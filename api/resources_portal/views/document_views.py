@@ -395,6 +395,8 @@ class UserDocumentSerializer(serializers.Serializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     published_name = serializers.CharField(read_only=True)
+    full_name = serializers.CharField(read_only=True)
+    email = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
@@ -405,6 +407,8 @@ class UserDocumentSerializer(serializers.Serializer):
             "first_name",
             "last_name",
             "published_name",
+            "full_name",
+            "email",
             "created_at",
             "updated_at",
         )
