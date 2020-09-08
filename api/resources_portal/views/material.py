@@ -32,6 +32,7 @@ class MaterialSerializer(serializers.ModelSerializer):
             "sequence_maps",
             "mta_attachment",
             "needs_mta",
+            "has_publication",
             "needs_irb",
             "needs_abstract",
             "imported",
@@ -48,7 +49,15 @@ class MaterialSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at", "sequence_maps", "requests")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "sequence_maps",
+            "requests",
+            "needs_mta",
+            "has_publication",
+        )
 
     def validate(self, data):
         """Only allow materials with no open requests to be archived.
@@ -76,8 +85,12 @@ class MaterialDetailSerializer(MaterialSerializer):
 
 
 class HasAddResources(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.has_perm("add_resources", obj.organization)
+    def has_permission(self, request, view):
+        if "organization" not in request.data:
+            return False
+
+        organization = Organization.objects.get(id=request.data["organization"])
+        return request.user.has_perm("add_resources", organization)
 
 
 class HasDeleteResources(BasePermission):
@@ -92,6 +105,17 @@ class HasEditResources(BasePermission):
 
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all()
+    filterset_fields = (
+        "id",
+        "category",
+        "pubmed_id",
+        "is_archived",
+        "needs_irb",
+        "needs_abstract",
+        "imported",
+        "import_source",
+        "pre_print_doi",
+    )
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -101,11 +125,11 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == "create":
-            permission_classes = [HasAddResources, IsAuthenticated]
+            permission_classes = [IsAuthenticated, HasAddResources]
         elif self.action == "destroy":
-            permission_classes = [HasDeleteResources, IsAuthenticated]
+            permission_classes = [IsAuthenticated, HasDeleteResources]
         elif self.action == "update" or self.action == "partial_update":
-            permission_classes = [HasEditResources, IsAuthenticated]
+            permission_classes = [IsAuthenticated, HasEditResources]
         else:
             permission_classes = []
 

@@ -7,17 +7,23 @@ import {
 import { ProgressBar } from 'components/ProgressBar'
 import { Box, Heading } from 'grommet'
 import { useCreateUser } from 'hooks/useCreateUser'
+import { useRouter } from 'next/router'
 import React from 'react'
 
 export default ({ props }) => {
   const { ORCID, email, stepName, grants, code, originUrl } = props
-  const { steps, currentStep, setCurrentStep } = useCreateUser(
+  const { steps, currentStep, setCurrentStep, createUser } = useCreateUser(
     email,
     grants,
     ORCID,
     code,
     originUrl
   )
+  const router = useRouter()
+
+  if (!grants && !createUser.grants) {
+    router.replace('/')
+  }
 
   const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
 

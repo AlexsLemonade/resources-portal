@@ -68,11 +68,15 @@ class TransferOfResource(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # Both users are notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ADDED_TO_ORG")),
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
             1
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.
@@ -104,4 +108,4 @@ class TransferOfResource(APITestCase):
         self.assertEqual(material.organization, self.primary_lab)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 1)
+        self.assertEqual(len(Notification.objects.all()), 2)

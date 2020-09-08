@@ -86,11 +86,15 @@ class TestNewMemberJoinsALab(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # PostDoc and PrimaryProf are notified.
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ADDED_TO_ORG")),
-            1
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_MEMBER")),
+            2
             # Once we re-enable invitation acceptances this will need to change back.
             # len(Notification.objects.filter(notification_type="ORG_INVITE_CREATED")), 1
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.
@@ -116,7 +120,10 @@ class TestNewMemberJoinsALab(APITestCase):
 
         self.assertEqual(response.status_code, 204)
 
-        self.assertEqual(len(Notification.objects.filter(notification_type="REMOVED_FROM_ORG")), 1)
+        # PostDoc, PrimaryProf, and NewMember are all notified.
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_MEMBER_LEFT")), 3
+        )
 
         # All materials assigned to PostDoc will be reassigned to the owner when PostDoc leaves the organization.
         for material in self.primary_lab.materials.all():
@@ -155,9 +162,14 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="TRANSFER_REQUESTED", notified_user=new_member
+                    notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED_NEW",
+                    notified_user=new_member,
                 )
             ),
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_RECEIVED")),
             1,
         )
 
@@ -205,9 +217,23 @@ class TestNewMemberJoinsALab(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="EXECUTED_MTA_UPLOADED")), 1
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA"
+                )
+            ),
+            1,
         )
-        self.assertEqual(len(Notification.objects.filter(notification_type="TRANSFER_APPROVED")), 1)
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
+            ),
+            1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_APPROVED")),
+            2,
+        )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 5)
+        self.assertEqual(len(Notification.objects.all()), 12)

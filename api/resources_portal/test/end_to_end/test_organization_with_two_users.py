@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.models import Notification, Organization, OrganizationUserSetting, User
+from resources_portal.models import Notification, Organization, User
 from resources_portal.test.utils import (
     MOCK_EMAIL,
     MOCK_GRANTS,
@@ -74,6 +74,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         organization_data = {
             "name": "Lab",
+            "description": "My lab's organization.",
             "owner": {"id": prof.id},
             "grants": [prof.grants.first().id],
         }
@@ -96,18 +97,20 @@ class TestOrganizationWithTwoUsers(APITestCase):
         response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # Both are notified.
         self.assertEqual(
             len(
                 Notification.objects.filter(
-                    notification_type="ADDED_TO_ORG",
-                    email=post_doc.email
+                    notification_type="ORGANIZATION_NEW_MEMBER"
                     # Once we re-enable invitation acceptances this
                     # will need to change back.
                     # notification_type="ORG_INVITE_CREATED",
-                    # email=post_doc.email
                 )
             ),
             1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
         # We currently allow adding to orgs without acceptance.
@@ -142,26 +145,11 @@ class TestOrganizationWithTwoUsers(APITestCase):
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
 
-        # Temporary, I want to submit another PR to make this endpoint accept a user and an org. It makes more sense
-        prof_settings = OrganizationUserSetting.objects.get(organization=lab, user=prof)
-
-        settings_url = reverse("organization-user-setting-detail", args=[prof_settings.id])
-
-        settings_json = self.client.get(settings_url).json()
-
-        settings_json["new_request_notif"] = False
-        settings_json["change_in_request_status_notif"] = False
-        settings_json["request_approval_determined_notif"] = False
-        settings_json["request_assigned_notif"] = False
-        settings_json["reminder_notif"] = False
-        settings_json["transfer_requested_notif"] = False
-        settings_json["transfer_updated_notif"] = False
-        settings_json["perms_granted_notif"] = False
-        settings_json["misc_notif"] = False
-
-        response = self.client.put(settings_url, settings_json)
+        prof_changes = {"non_assigned_notifications": False, "weekly_digest": False}
+        prof_url = reverse("user-detail", args=[prof.id])
+        response = self.client.patch(prof_url, prof_changes)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 1)
+        self.assertEqual(len(Notification.objects.all()), 2)

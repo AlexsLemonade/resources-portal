@@ -13,7 +13,6 @@ from resources_portal.models import (
     Material,
     MaterialRequest,
     MaterialShareEvent,
-    Notification,
     Organization,
     OrganizationInvitation,
     ShippingRequirement,
@@ -86,10 +85,6 @@ def populate_dev_database():
     # add materials
     materials_json = loads(open("./dev_data/materials.json").read())
     add_class_to_database(materials_json["materials"], Material)
-
-    # add notifications
-    notifications_json = loads(open("./dev_data/notifications.json").read())
-    add_class_to_database(notifications_json["notifications"], Notification)
 
     # add grants
     grants_json = loads(open("./dev_data/grants.json").read())

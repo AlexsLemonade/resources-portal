@@ -13,11 +13,8 @@ class OrganizationUserSettingSerializer(serializers.ModelSerializer):
         model = OrganizationUserSetting
         fields = (
             "id",
-            "new_request_notif",
-            "change_in_request_status_notif",
-            "request_approval_determined_notif",
-            "request_assigned_notif",
-            "reminder_notif",
+            "non_assigned_notifications",
+            "weekly_digest",
             "user",
             "organization",
             "created_at",

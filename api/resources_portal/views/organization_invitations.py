@@ -2,12 +2,12 @@ from rest_framework import serializers, status, viewsets
 from rest_framework.response import Response
 
 from resources_portal.models import (
-    Notification,
     Organization,
     OrganizationInvitation,
     OrganizationUserSetting,
     User,
 )
+from resources_portal.notifier import send_notifications
 
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -44,14 +44,15 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
 
     http_method_names = ["post", "options"]
 
-    def update_organizations(self, new_status, invitation):
+    def update_organizations(self, new_status, invitation, old_member):
         if new_status == "ACCEPTED":
             if invitation.invite_or_request == "INVITE":
                 new_member = invitation.request_receiver
-                associated_user = invitation.requester
+                # associated_user = invitation.requester
             else:
                 new_member = invitation.requester
-                associated_user = invitation.request_receiver
+                # Do we want to send to this user instead of new_member?
+                # associated_user = invitation.request_receiver
 
             invitation.organization.members.add(new_member)
             invitation.organization.assign_member_perms(new_member)
@@ -63,15 +64,10 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         # for now they're always being added.
         # notification_type = f"ORG_{invitation.invite_or_request}_{new_status}"
 
-        notification_type = "ADDED_TO_ORG"
-
-        notification = Notification(
-            notification_type=notification_type,
-            notified_user=new_member,
-            associated_user=associated_user,
-            associated_organization=invitation.organization,
+        send_notifications(
+            "ORGANIZATION_NEW_MEMBER", new_member, new_member, invitation.organization
         )
-        notification.save()
+        send_notifications("ORGANIZATION_INVITE", new_member, old_member, invitation.organization)
 
     def create(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
@@ -116,7 +112,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         # questionable
         invitation = OrganizationInvitation.objects.get(id=response.data["id"])
 
-        self.update_organizations(request.data["status"], invitation)
+        self.update_organizations(request.data["status"], invitation, request.user)
 
         return response
 

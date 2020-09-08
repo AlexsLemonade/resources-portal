@@ -51,6 +51,10 @@ class OwnsGrant(BasePermission):
 
 class GrantViewSet(viewsets.ModelViewSet):
     queryset = Grant.objects.all()
+    filterset_fields = (
+        "id",
+        "funder_id",
+    )
 
     # Don't allow delete.
     http_method_names = ["post", "put", "get", "head", "options"]

@@ -1,3 +1,4 @@
+import re
 import xml.etree.ElementTree as ET
 from typing import Dict
 
@@ -5,7 +6,7 @@ from resources_portal.importers.utils import get_pubmed_publication_title, reque
 
 ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
 
-ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}&display=xml"
+ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}?display=xml"
 
 
 class UnsupportedDataTypeError(Exception):
@@ -86,8 +87,8 @@ def _gather_sample_metadata(metadata: Dict) -> None:
     metadata["organism_names"] = list(organism_names)
 
 
-def _gather_study_metadata(study_accession: str) -> None:
-    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(study_accession)
+def _gather_study_metadata(accession_code: str) -> None:
+    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(accession_code)
     response = requests_retry_session().get(formatted_metadata_URL)
     study_xml = ET.fromstring(response.text)
 
@@ -100,7 +101,7 @@ def _gather_study_metadata(study_accession: str) -> None:
 
     metadata = {}
 
-    metadata["study_accession"] = study_accession
+    metadata["accession_code"] = accession_code
 
     study = study_xml[0]
     for child in study:
@@ -122,10 +123,12 @@ def _gather_study_metadata(study_accession: str) -> None:
 
 
 def _gather_experiment_metadata(metadata: Dict) -> None:
-    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(metadata["experiment_accession"])
+    # We only need one accession.
+    first_accession = re.match(r"SRX\d+", metadata["experiment_accession"]).group()
+
+    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(first_accession)
     response = requests_retry_session().get(formatted_metadata_URL)
     experiment_xml = ET.fromstring(response.text)
-
     experiment = experiment_xml[0]
     for child in experiment:
         if child.tag == "DESIGN":
@@ -145,8 +148,8 @@ def _gather_pubmed_metadata(metadata: Dict):
         metadata["publication_title"] = pubmed_title
 
 
-def gather_all_metadata(study_accession):
-    metadata = _gather_study_metadata(study_accession)
+def gather_all_metadata(accession_code):
+    metadata = _gather_study_metadata(accession_code)
 
     if metadata != {}:
         _gather_experiment_metadata(metadata)

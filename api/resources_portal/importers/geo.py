@@ -17,8 +17,12 @@ def gather_all_metadata(experiment_accession_code):
         silent=True,
     )
 
+    # Sometimes title or pubmed_id is a list for some reason.
+    title = (
+        gse.metadata["title"][0] if type(gse.metadata["title"]) is list else gse.metadata["title"]
+    )
     metadata = {
-        "title": gse.metadata["title"],
+        "title": title,
         "description": "".join(gse.metadata["summary"]),
         "platform": gse.metadata["platform_id"],
         "technology": gse.metadata["type"],
@@ -26,7 +30,12 @@ def gather_all_metadata(experiment_accession_code):
     }
 
     if "pubmed_id" in gse.metadata:
-        metadata["pubmed_id"] = gse.metadata["pubmed_id"]
+        if type(gse.metadata["pubmed_id"]) is list:
+            pubmed_id = gse.metadata["pubmed_id"][0]
+        else:
+            pubmed_id = gse.metadata["pubmed_id"]
+
+        metadata["pubmed_id"] = pubmed_id
         metadata["publication_title"] = get_pubmed_publication_title(metadata["pubmed_id"])
 
     organisms = set()

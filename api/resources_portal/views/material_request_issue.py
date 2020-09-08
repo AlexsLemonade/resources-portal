@@ -5,12 +5,8 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import (
-    MaterialRequest,
-    MaterialRequestIssue,
-    Notification,
-    Organization,
-)
+from resources_portal.models import MaterialRequest, MaterialRequestIssue, Organization
+from resources_portal.notifier import send_notifications
 from resources_portal.views.relation_serializers import MaterialRequestRelationSerializer
 
 MATERIAL_ARCHIVED_ERROR = "Cannot open issues for requests whose materials have been archived."
@@ -65,6 +61,10 @@ class IsRequesterOrIsInOrg(BasePermission):
 class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
     # No delete, these just get closed.
     http_method_names = ["get", "list", "post", "put", "patch", "head", "options"]
+    filterset_fields = (
+        "id",
+        "status",
+    )
 
     def get_queryset(self):
         if self.action == "list":
@@ -125,14 +125,15 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         material_request.status = "IN_FULFILLMENT"
         material_request.save()
 
-        notification = Notification(
-            notification_type="REQUEST_ISSUE_OPENED",
-            notified_user=material_request.assigned_to,
-            associated_user=request.user,
-            associated_material=material,
-            associated_organization=material.organization,
+        send_notifications(
+            "MATERIAL_REQUEST_ISSUE_SHARER_REPORTED",
+            material_request.assigned_to,
+            request.user,
+            material.organization,
+            material=material,
+            material_request=material_request,
+            material_request_issue=material_request_issue,
         )
-        notification.save()
 
         return Response(data=model_to_dict(material_request_issue), status=201)
 
@@ -153,29 +154,29 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         if request.data["status"] == "CLOSED":
             material_request.refresh_from_db()
 
-            notification = Notification(
-                notification_type="REQUEST_ISSUE_CLOSED",
-                notified_user=material_request.assigned_to,
-                associated_user=material_request.requester,
-                associated_material=material_request.material,
-                associated_organization=material_request.material.organization,
-            )
-            notification.save()
-
             if not material_request.has_issues:
                 material_request.status = "FULFILLED"
                 material_request.save()
 
-                # Don't notify the requester that they closed their own issue.
-                if request.user != material_request.requester:
-                    notification = Notification(
-                        notification_type="TRANSFER_FULFILLED",
-                        notified_user=material_request.requester,
-                        associated_user=request.user,
-                        associated_material=material_request.material,
-                        associated_organization=material_request.material.organization,
-                    )
-                    notification.save()
+                send_notifications(
+                    "MATERIAL_REQUEST_SHARER_FULFILLED",
+                    material_request.assigned_to,
+                    request.user,
+                    material_request.material.organization,
+                    material=material_request.material,
+                    material_request=material_request,
+                    material_request_issue=material_request_issue,
+                )
+
+                send_notifications(
+                    "MATERIAL_REQUEST_REQUESTER_FULFILLED",
+                    material_request.requester,
+                    request.user,
+                    material_request.material.organization,
+                    material=material_request.material,
+                    material_request=material_request,
+                    material_request_issue=material_request_issue,
+                )
 
         material_request_issue.refresh_from_db()
 

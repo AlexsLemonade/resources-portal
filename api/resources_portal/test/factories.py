@@ -26,6 +26,8 @@ class UserFactory(factory.django.DjangoModelFactory):
     is_active = True
     is_superuser = False
     is_staff = False
+    receive_non_assigned_notifs = False
+    receive_weekly_digest = True
     # This can get recursive, so if someone needs it they can
     # construct it and pass it in.
     personal_organization = None
@@ -67,6 +69,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
 
     owner = factory.SubFactory(UserFactory)
     name = factory.Sequence(lambda n: f"test_organization{n}")
+    description = "Test description."
 
     @factory.post_generation
     def make_self_personal_org_of_owner(self, create, extracted, **kwargs):
@@ -92,6 +95,7 @@ class OrganizationFactory(factory.django.DjangoModelFactory):
         model = "resources_portal.Organization"
 
     name = "test_organization"
+    description = "Test description."
     owner = factory.SubFactory(UserFactory)
     membership1 = factory.RelatedFactory(OrganizationUserAssociationFactory, "organization")
 
@@ -182,8 +186,12 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     irb_attachment = factory.SubFactory(AttachmentFactory)
     requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
 
+    rejection_reason = "I won't have my science used for Evil!"
     material = factory.SubFactory(MaterialFactory)
     requester_abstract = "We need these for science!"
+
+    payment_method = "SHIPPING_CODE"
+    payment_method_notes = "UPS123456"
 
 
 class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):

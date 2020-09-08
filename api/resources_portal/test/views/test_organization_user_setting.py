@@ -48,15 +48,13 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         settings_json = self.client.get(self.url).json()
 
-        settings_json["new_request_notif"] = False
-        settings_json["change_in_request_status_notif"] = False
+        settings_json["weekly_digest"] = False
 
         response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         settings = OrganizationUserSetting.objects.get(pk=self.settings.id)
-        self.assertEqual(settings.new_request_notif, False)
-        self.assertEqual(settings.change_in_request_status_notif, False)
+        self.assertEqual(settings.weekly_digest, False)
 
     def test_put_request_from_different_user_fails(self):
         self.client.force_authenticate(user=self.user)
@@ -64,8 +62,7 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
 
         self.client.force_authenticate(user=self.different_user)
 
-        settings_json["new_request_notif"] = False
-        settings_json["change_in_request_status_notif"] = False
+        settings_json["weekly_digest"] = False
 
         response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -76,8 +73,7 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
 
         self.client.force_authenticate(user=None)
 
-        settings_json["new_request_notif"] = False
-        settings_json["change_in_request_status_notif"] = False
+        settings_json["weekly_digest"] = False
 
         response = self.client.put(self.url, settings_json)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

@@ -1,14 +1,12 @@
-from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from resources_portal.importers import geo, protocols_io, sra
 from resources_portal.importers.protocols_io import ProtocolNotFoundError
-from resources_portal.models import Grant, Material, Organization
 
 
-def import_dataset(import_source, accession_code, organization, grant, user):
+def import_dataset(import_source, accession_code, user):
     """This function returns a Response object containing the json
     representation of the newly-created material object made using
     metadata from the import_source's API.
@@ -33,14 +31,13 @@ def import_dataset(import_source, accession_code, organization, grant, user):
         }
 
         material_json = {
-            "organization": organization,
             "category": "DATASET",
             "imported": True,
             "import_source": import_source,
             "title": metadata["title"],
             "organisms": metadata["organism_names"],
             "url": metadata["url"],
-            "contact_user": user,
+            "contact_user": str(user.id),
             "additional_metadata": additional_metadata,
         }
 
@@ -49,26 +46,15 @@ def import_dataset(import_source, accession_code, organization, grant, user):
             material_json["pubmed_id"] = metadata["pubmed_id"]
             material_json["publication_title"] = metadata["publication_title"]
 
-        material = Material(**material_json)
-        material.save()
-
-        material.grants.set([grant])
+        return material_json
 
     except KeyError as error:
-        return JsonResponse(
-            {
-                "error": f"Unable to import SRA. The following attribute was not found: {str(error)}."
-            },
-            status=400,
-        )
-
-    material_json = model_to_dict(material)
-    material_json["grants"] = [material_json["grants"][0].id]
-
-    return JsonResponse(material_json, status=201)
+        return {
+            "error": f"Unable to import SRA. The following attribute was not found: {str(error)}."
+        }
 
 
-def import_protocol(protocol_doi, organization, grant, user):
+def import_protocol(protocol_doi, user):
     """
     This function returns a Response object containing
     the json representation of the newly-created material object
@@ -78,9 +64,7 @@ def import_protocol(protocol_doi, organization, grant, user):
     try:
         metadata = protocols_io.gather_all_metadata(protocol_doi)
     except ProtocolNotFoundError:
-        return JsonResponse(
-            {"error": f"The protocol matching DOI {protocol_doi} could not be found"}, status=400,
-        )
+        return {"error": f"The protocol matching DOI {protocol_doi} could not be found"}
 
     additional_metadata = {
         "protocol_name": metadata["protocol_name"],
@@ -90,24 +74,16 @@ def import_protocol(protocol_doi, organization, grant, user):
     }
 
     material_json = {
-        "organization": organization,
         "category": "PROTOCOL",
         "imported": True,
         "import_source": "PROTOCOLS_IO",
         "title": metadata["protocol_name"],
         "url": metadata["url"],
-        "contact_user": user,
+        "contact_user": str(user.id),
         "additional_metadata": additional_metadata,
     }
 
-    material = Material(**material_json)
-    material.save()
-    material.grants.set([grant])
-
-    material_json = model_to_dict(material)
-    material_json["grants"] = [material_json["grants"][0].id]
-
-    return JsonResponse(material_json, status=201)
+    return material_json
 
 
 class ImportViewSet(viewsets.ViewSet):
@@ -118,27 +94,24 @@ class ImportViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        organization = Organization.objects.get(pk=request.data["organization_id"])
-        grant = Grant.objects.get(pk=request.data["grant_id"])
+        import_source = request.data["import_source"]
 
-        if grant not in request.user.grants.all():
-            return JsonResponse({"error": f"The user does not own grant id {grant.id}"}, status=403)
-
-        if request.user not in organization.members.all():
-            return JsonResponse(
-                {"error": f"The user is not a member of organization id {organization.id}"},
-                status=403,
+        if import_source == "SRA" or import_source == "GEO":
+            material_json = import_dataset(
+                import_source, request.data["accession_code"], request.user
             )
-
-        import_type = request.data["import_type"]
-
-        if import_type == "SRA" or import_type == "GEO":
-            return import_dataset(
-                import_type, request.data["study_accession"], organization, grant, request.user
-            )
-        elif import_type == "PROTOCOLS_IO":
-            return import_protocol(request.data["protocol_doi"], organization, grant, request.user)
+        elif import_source == "PROTOCOLS_IO":
+            material_json = import_protocol(request.data["protocol_doi"], request.user)
         else:
             return JsonResponse(
-                {"error": f'Invalid value for parameter "import_type": {import_type}.'}, status=400
+                {"error": f'Invalid value for parameter "import_source": {import_source}.'},
+                status=400,
             )
+
+        if "error" in material_json:
+            return JsonResponse(
+                {"error": f'Invalid value for parameter "import_source": {import_source}.'},
+                status=400,
+            )
+        else:
+            return JsonResponse(material_json, status=200)

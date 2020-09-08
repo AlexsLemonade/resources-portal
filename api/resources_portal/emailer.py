@@ -7,6 +7,38 @@ from django.conf import settings
 
 import boto3
 
+EMAIL_SOURCE = (
+    f"Resources Portal Mail Robot <no-reply@{settings.AWS_SES_DOMAIN}>"
+    if settings.AWS_SES_DOMAIN
+    else "Resources Portal Mail Robot"
+)
+EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
+LOGO_EMBEDDED_IMAGE_CONFIGS = [
+    {
+        "content_id": "ccrr-logo",
+        "file_path": "resources_portal/email_assets/ccrr-logo.png",
+        "subtype": "png",
+    },
+    {
+        "content_id": "alexs-logo",
+        "file_path": "resources_portal/email_assets/alexs-logo.png",
+        "subtype": "png",
+    },
+]
+NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/settings"
+# The blank line in this footer is intentional:
+PLAIN_TEXT_EMAIL_FOOTER = """
+
+The CCRR Team
+-----
+You are receiving this email because you subscribed to receive notifications from CCRR portal.
+Manage Notifications ({notifications_url})
+Alex's Lemonade Stand Foundation
+111 Presidential Blvd, Suite 203, Bala Cynwyd,  PA 19004
+""".format(
+    notifications_url=NOTIFICATIONS_URL
+)
+
 
 def create_multipart_message(
     sender: str,
@@ -59,20 +91,16 @@ def create_multipart_message(
 
 
 def send_mail(
-    sender: str,
-    recipients: list,
-    title: str,
-    text: str = None,
-    html: str = None,
-    attachments: list = None,
+    recipients: list, title: str, text: str = None, html: str = None, attachments: list = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
-    msg = create_multipart_message(sender, recipients, title, text, html, attachments)
+    source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
+    msg = create_multipart_message(source, recipients, title, text, html, attachments)
     ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
     return ses_client.send_raw_email(
-        Source=sender, Destinations=recipients, RawMessage={"Data": msg.as_string()}
+        Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
     )

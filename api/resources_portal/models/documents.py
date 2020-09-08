@@ -158,6 +158,9 @@ class UserDocument(Document):
     published_name = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
+    full_name = fields.TextField(
+        fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
+    )
     email = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
