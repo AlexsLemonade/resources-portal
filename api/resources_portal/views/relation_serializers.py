@@ -53,6 +53,7 @@ class OrganizationRelationSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "name",
+            "description",
             "owner",
             "members",
             "materials",
