@@ -12,7 +12,6 @@ EMAIL_SOURCE = (
     if settings.AWS_SES_DOMAIN
     else "Resources Portal Mail Robot"
 )
-EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
 LOGO_EMBEDDED_IMAGE_CONFIGS = [
     {
         "content_id": "ccrr-logo",
@@ -98,9 +97,8 @@ def send_mail(
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
-    source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
-    msg = create_multipart_message(source, recipients, title, text, html, attachments)
+    msg = create_multipart_message(EMAIL_SOURCE, recipients, title, text, html, attachments)
     ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
     return ses_client.send_raw_email(
-        Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
+        Source=EMAIL_SOURCE, Destinations=recipients, RawMessage={"Data": msg.as_string()}
     )
