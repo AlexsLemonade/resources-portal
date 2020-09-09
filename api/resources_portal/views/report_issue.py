@@ -7,12 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from resources_portal.config.logging import get_and_configure_logger
-from resources_portal.emailer import send_mail
+from resources_portal.emailer import EMAIL_SOURCE, send_mail
 from resources_portal.models import MaterialRequest, Notification
 
 logger = get_and_configure_logger(__name__)
-
-EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
 
 
 def get_grants_text(request):
@@ -84,9 +82,10 @@ def report_issue_view(request):
         email_text = get_general_issue_report_email(request, message)
 
     if settings.AWS_SES_DOMAIN:
-        source = EMAIL_SOURCE_TEMPLATE.format(settings.AWS_SES_DOMAIN)
         logger.info("Sending an email invitation to {settings.GRANTS_TEAM_EMAIL}.")
-        send_mail(source, [settings.GRANTS_TEAM_EMAIL], email_text["subject"], email_text["body"])
+        send_mail(
+            EMAIL_SOURCE, [settings.GRANTS_TEAM_EMAIL], email_text["subject"], email_text["body"]
+        )
     else:
         logger.info(f"In prod an email would have been sent to {settings.GRANTS_TEAM_EMAIL}:")
         print(email_text["body"])
