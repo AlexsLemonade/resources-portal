@@ -148,7 +148,6 @@ export default {
       return [tokenRequest, userRequest]
     },
     create: async (orcid, accessToken, refreshToken, email, grants) => {
-      console.log(orcid, accessToken, refreshToken, email, grants)
       const tokenRequest = await userCreate({
         email,
         grants,
@@ -156,8 +155,6 @@ export default {
         access_token: accessToken,
         refresh_token: refreshToken
       })
-
-      console.log(tokenRequest)
 
       if (!tokenRequest.isOk) {
         return [tokenRequest]

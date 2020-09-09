@@ -48,18 +48,23 @@ Account.getInitialProps = async ({ req, query }) => {
     return { noCode: true }
   }
 
-  const response = await api.user.getORCID(
+  const orcidRequest = await api.user.getORCID(
     query.code,
     decodeURI(`http://${req.headers.host}${req.url}`)
   )
+  if (orcidRequest.isOk) {
+    const {
+      orcid,
+      access_token: accessToken,
+      refresh_token: refreshToken
+    } = orcidRequest.response
 
-  const initialProps = {}
-
-  initialProps.orcid = response.response.orcid
-  initialProps.accessToken = response.response.access_token
-  initialProps.refreshToken = response.response.refresh_token
-
-  return initialProps
+    return {
+      orcid,
+      accessToken,
+      refreshToken
+    }
+  }
 }
 
 export default Account
