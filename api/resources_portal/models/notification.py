@@ -77,6 +77,7 @@ class Notification(SafeDeleteModel):
         MaterialRequestIssue, blank=False, null=True, on_delete=models.CASCADE
     )
 
+    message = models.TextField(blank=False, null=True)
     email = models.EmailField(blank=False, null=True)
 
     delivered = models.BooleanField(default=False)
@@ -115,6 +116,7 @@ class Notification(SafeDeleteModel):
         props = {
             "notifications_url": NOTIFICATIONS_URL,
             "your_name": self.notified_user.full_name,
+            "message": self.message,
         }
         if self.associated_user:
             props["other_name"] = self.associated_user.full_name
@@ -153,6 +155,8 @@ class Notification(SafeDeleteModel):
             "REPLACE_MAIN_TEXT", body
         )
         formatted_cta_html = ""
+        cta = None
+        cta_link = None
         if "CTA" in notification_config and "CTA_link_field" in notification_config:
             cta = notification_config["CTA"].format(**props)
             cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL

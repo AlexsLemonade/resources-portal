@@ -408,12 +408,33 @@ NOTIFICATIONS = {
     },
     "MATERIAL_REQUEST_REQUESTER_CANCELLED": {
         "subject": "Request for {material_category} cancelled",
-        "body": ("You cancelled your request for {material_category}, {material_name}."),
+        "body": "You cancelled your request for {material_category}, {material_name}.",
         "CTA": "View Request",
         "CTA_link_field": "associated_material_request",
         "plain_text_email": (
             "You cancelled your request for {material_category}, {material_name}."
             "\n\nView request details. ({request_url})."
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_ESCALATED": {
+        "subject": "Request for {material_category} escalated",
+        "body": (
+            "Request for {material_category}, {material_name} has been"
+            " escalated to the grants team.<br>"
+            "ALSF Grants team is looking into this and will be in touch with you soon.<br>"
+            "Below is the message they received from you for your records.<br><br>{message}"
+        ),
+        "plain_text_email": (
+            "{your_name},\n Request for {material_category}, {material_name} has been escalated"
+            " to the grants team.\n"
+            "ALSF Grants team is looking into this and will be in touch with you soon.\n"
+            "Below is the message they received from you for your records.\n\n{message}"
         ),
         "required_associations": [
             "associated_user",
