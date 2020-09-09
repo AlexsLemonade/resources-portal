@@ -109,11 +109,11 @@ export const userGetORCID = (authCode, originUrl) => {
   return credentialResponse
 }
 
-export const userSubmitGrantComplaint = async (message, authorization) => {
+export const createIssue = async (requestBody, authorization) => {
   const credentialResponse = request(`${getAPIURL('report-issue/')}`, {
     authorization,
     method: 'POST',
-    body: JSON.stringify({ message })
+    body: JSON.stringify(requestBody)
   })
   return credentialResponse
 }
@@ -170,8 +170,7 @@ export default {
 
       return [tokenRequest, userRequest]
     },
-    getORCID: userGetORCID,
-    submitGrantComplaint: userSubmitGrantComplaint
+    getORCID: userGetORCID
   },
   teams: {
     get: (organizationId, authorization) =>
@@ -215,5 +214,8 @@ export default {
         method: 'DELETE'
       })
     }
+  },
+  issue: {
+    create: createIssue
   }
 }

@@ -15,7 +15,7 @@ export const IncorrectGrantModalContent = ({ setShowing }) => {
   const onClick = async () => {
     setShowing(false)
     if (message) {
-      const response = await api.user.submitGrantComplaint(message, token)
+      const response = await api.issue.create({ message }, token)
       if (response.isOk) {
         addAlert(
           'Your message was sent to the ALSF Grants Team. They will be in touch with you shortly.',
