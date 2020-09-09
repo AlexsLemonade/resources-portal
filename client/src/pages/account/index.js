@@ -65,6 +65,7 @@ Account.getInitialProps = async ({ req, query }) => {
       refreshToken
     }
   }
+  return {}
 }
 
 export default Account
