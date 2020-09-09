@@ -109,10 +109,13 @@ export const userGetORCID = (authCode, originUrl) => {
   return credentialResponse
 }
 
-export const userSubmitGrantComplaint = async (message) => {
-  // TODO: hook this up the the relevant API endpoint
-  console.log('This message will be sent to the grants team: ', message)
-  return {}
+export const userSubmitGrantComplaint = async (message, authorization) => {
+  const credentialResponse = request(`${getAPIURL('report-issue/')}`, {
+    authorization,
+    method: 'POST',
+    body: JSON.stringify({ message })
+  })
+  return credentialResponse
 }
 
 export default {

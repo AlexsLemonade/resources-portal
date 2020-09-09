@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -18,6 +19,8 @@ EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
 @permission_classes([IsAuthenticated])
 def report_issue_view(request):
     json_data = json.loads(request.body)
+
+    print(json_data)
 
     try:
         message = json_data["message"]
@@ -48,4 +51,4 @@ def report_issue_view(request):
         logger.info(f"In prod an email would have been sent to {settings.GRANTS_TEAM_EMAIL}:")
         print(body)
 
-    return Response(status=status.HTTP_201_CREATED)
+    return JsonResponse({}, status=status.HTTP_201_CREATED)

@@ -1,17 +1,20 @@
 import api from 'api'
 import { Box, Button, Heading, Text, TextArea } from 'grommet'
+import { useUser } from 'hooks/useUser'
 import * as React from 'react'
 import { Modal } from '../Modal'
 
 export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
   const [message, setMessage] = React.useState('')
+  const { token } = useUser()
   const onChange = (newMessage) => {
     setMessage(newMessage)
   }
   const onClick = async () => {
     setShowing(false)
     if (message) {
-      const response = await api.user.submitGrantComplaint(message)
+      const response = await api.user.submitGrantComplaint(message, token)
+      console.log(response)
       if (response.isOk) {
         setAlert({
           message:
