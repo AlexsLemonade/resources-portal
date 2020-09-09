@@ -77,6 +77,7 @@ class Notification(SafeDeleteModel):
         MaterialRequestIssue, blank=False, null=True, on_delete=models.CASCADE
     )
 
+    message = models.TextField(blank=False, null=True)
     email = models.EmailField(blank=False, null=True)
 
     delivered = models.BooleanField(default=False)
@@ -115,6 +116,7 @@ class Notification(SafeDeleteModel):
         props = {
             "notifications_url": NOTIFICATIONS_URL,
             "your_name": self.notified_user.full_name,
+            "message": self.message,
         }
         if self.associated_user:
             props["other_name"] = self.associated_user.full_name
@@ -153,6 +155,8 @@ class Notification(SafeDeleteModel):
             "REPLACE_MAIN_TEXT", body
         )
         formatted_cta_html = ""
+        cta = ""
+        cta_link = ""
         if "CTA" in notification_config and "CTA_link_field" in notification_config:
             cta = notification_config["CTA"].format(**props)
             cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL
@@ -191,13 +195,16 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
     if not (created and instance.should_be_emailed()):
         return
 
+    if not instance.email:
+        instance.email = instance.notified_user.email
+
+    logger.info(f"Sending an email notification to {instance.email}.")
     email_dict = instance.get_email_dict()
-    logger.info("Sending an email notification to {email}.")
 
     if settings.AWS_SES_DOMAIN:
         send_mail(
             EMAIL_SOURCE,
-            [instance.notified_email],
+            [instance.email],
             email_dict["subject"],
             email_dict["plain_text_email"],
             email_dict["formatted_html"],
@@ -208,3 +215,6 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
             f'In prod the following message will be sent to "{instance.notified_user.email}": "'
             f'{email_dict["plain_text_email"]}".'
         )
+
+    instance.delivered = True
+    instance.save()
