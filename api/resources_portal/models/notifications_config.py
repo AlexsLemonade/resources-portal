@@ -408,7 +408,7 @@ NOTIFICATIONS = {
     },
     "MATERIAL_REQUEST_REQUESTER_CANCELLED": {
         "subject": "Request for {material_category} cancelled",
-        "body": ("You cancelled your request for {material_category}, {material_name}."),
+        "body": "You cancelled your request for {material_category}, {material_name}.",
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
@@ -420,6 +420,27 @@ NOTIFICATIONS = {
             "material",
             "material_request",
             "organization",
+        ],
+    },
+    "MATERIAL_REQUEST_REQUESTER_ESCALATED": {
+        "subject": "Request for {material_category} escalated",
+        "body": (
+            "Request for {material_category}, {material_name} has been"
+            " escalated to the grants team.<br>"
+            "ALSF Grants team is looking into this and will be in touch with you soon.<br>"
+            "Below is the message they received from you for your records.<br><br>{message}"
+        ),
+        "plain_text_email": (
+            "{your_name},\n Request for {material_category}, {material_name} has been escalated"
+            " to the grants team.\n"
+            "ALSF Grants team is looking into this and will be in touch with you soon.\n"
+            "Below is the message they received from you for your records.\n\n{message}"
+        ),
+        "required_associations": [
+            "associated_user",
+            "associated_material",
+            "associated_material_request",
+            "associated_organization",
         ],
     },
     "MATERIAL_ADDED": {
@@ -510,8 +531,6 @@ NOTIFICATIONS = {
     "ORGANIZATION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
-        "CTA": "None?",
-        "CTA_link_field": "organization",
         "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
@@ -543,5 +562,19 @@ NOTIFICATIONS = {
         ),
         "required_associations": ["associated_user", "organization",],
         "always_send": True,
+    },
+    "REPORT_TO_GRANTS_TEAM": {
+        "subject": "Issue reported to Grants team",
+        "body": (
+            "Your issue has been reported to the ALSF Grants Team.<br>"
+            "They are looking into this and will be in touch with you soon.<br>"
+            "Below is the message they received from you for your records.<br><br>{message}"
+        ),
+        "plain_text_email": (
+            "{your_name},\n Your issue has been reported to the ALSF Grants Team.\n"
+            "They are looking into this and will be in touch with you soon.\n"
+            "Below is the message they received from you for your records.\n\n{message}"
+        ),
+        "required_associations": ["associated_user"],
     },
 }
