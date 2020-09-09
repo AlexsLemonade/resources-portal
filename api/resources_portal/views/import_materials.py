@@ -30,11 +30,24 @@ def import_dataset(import_source, accession_code, user):
             "number_samples": metadata["number_samples"],
         }
 
+        if type(additional_metadata["technology"]) == list:
+            additional_metadata["technology"] = ", ".join(additional_metadata["technology"])
+
+        if type(additional_metadata["platform"]) == list:
+            additional_metadata["platform"] = ", ".join(additional_metadata["platform"])
+
+        human_readable_organisms = []
+        for organism_name in metadata["organism_names"]:
+            capitalized_parts = [part.capitalize() for part in organism_name.split("_")]
+
+            human_readable_organisms.append(" ".join(capitalized_parts))
+
         material_json = {
             "category": "DATASET",
             "imported": True,
             "import_source": import_source,
             "title": metadata["title"],
+            "human_readable_organisms": human_readable_organisms,
             "organisms": metadata["organism_names"],
             "url": metadata["url"],
             "contact_user": str(user.id),
