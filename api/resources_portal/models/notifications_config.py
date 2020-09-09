@@ -543,8 +543,6 @@ NOTIFICATIONS = {
     "ORGANIZATION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
-        "CTA": "None?",
-        "CTA_link_field": "associated_organization",
         "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
         "required_associations": ["associated_user", "associated_organization",],
         "send_to_organization": True,

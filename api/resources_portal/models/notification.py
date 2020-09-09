@@ -155,8 +155,8 @@ class Notification(SafeDeleteModel):
             "REPLACE_MAIN_TEXT", body
         )
         formatted_cta_html = ""
-        cta = None
-        cta_link = None
+        cta = ""
+        cta_link = ""
         if "CTA" in notification_config and "CTA_link_field" in notification_config:
             cta = notification_config["CTA"].format(**props)
             cta_link = getattr(self, notification_config["CTA_link_field"]).frontend_URL
