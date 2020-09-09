@@ -20,8 +20,6 @@ EMAIL_SOURCE_TEMPLATE = "Resources Portal Mail Robot <no-reply@{}>"
 def report_issue_view(request):
     json_data = json.loads(request.body)
 
-    print(json_data)
-
     try:
         message = json_data["message"]
     except KeyError:
