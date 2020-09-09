@@ -62,6 +62,7 @@ def report_issue_view(request):
 
     notification = Notification(
         notification_type="MATERIAL_REQUEST_REQUESTER_ESCALATED",
+        message=message,
         notified_user=request.user,
         associated_user=request.user,
         associated_organization=request.user.personal_organization,
