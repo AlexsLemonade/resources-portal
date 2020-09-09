@@ -49,6 +49,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             "id",
+            "issues",
             "fulfillment_notes",
             "created_at",
             "updated_at",
