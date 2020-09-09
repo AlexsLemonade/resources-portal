@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from django.utils import timezone
+
 
 def pretty_date(time=False):
     """
@@ -9,7 +11,7 @@ def pretty_date(time=False):
 
     Taken from: https://stackoverflow.com/a/1551394/6095378
     """
-    now = datetime.now()
+    now = timezone.now()
     if type(time) is int:
         diff = now - datetime.fromtimestamp(time)
     elif isinstance(time, datetime):
