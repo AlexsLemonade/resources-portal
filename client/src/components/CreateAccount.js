@@ -118,12 +118,6 @@ export const VerifyGrantStep = () => {
   const { stepForward, createUser } = useCreateUser()
   const { addAlert } = useAlertsQueue()
   const [showing, setShowing] = React.useState(false)
-  const [alert, setAlert] = React.useState()
-
-  if (alert) {
-    addAlert(alert.message, alert.type)
-    setAlert()
-  }
 
   return (
     <Box gap="medium">
@@ -159,11 +153,7 @@ export const VerifyGrantStep = () => {
           label="Report missing/incorrect information"
           onClick={() => setShowing(true)}
         />
-        <IncorrectGrantModal
-          showing={showing}
-          setShowing={setShowing}
-          setAlert={setAlert}
-        />
+        <IncorrectGrantModal showing={showing} setShowing={setShowing} />
         <Button
           label="This information is correct"
           onClick={() => {

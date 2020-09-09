@@ -1,12 +1,14 @@
 import api from 'api'
 import { Box, Button, Heading, Text, TextArea } from 'grommet'
+import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useUser } from 'hooks/useUser'
 import * as React from 'react'
 import { Modal } from '../Modal'
 
-export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
+export const IncorrectGrantModalContent = ({ setShowing }) => {
   const [message, setMessage] = React.useState('')
   const { token } = useUser()
+  const { addAlert } = useAlertsQueue()
   const onChange = (newMessage) => {
     setMessage(newMessage)
   }
@@ -14,18 +16,13 @@ export const IncorrectGrantModalContent = ({ setShowing, setAlert }) => {
     setShowing(false)
     if (message) {
       const response = await api.user.submitGrantComplaint(message, token)
-      console.log(response)
       if (response.isOk) {
-        setAlert({
-          message:
-            'Your message was sent to the ALSF Grants Team. They will be in touch with you shortly.',
-          type: 'success'
-        })
+        addAlert(
+          'Your message was sent to the ALSF Grants Team. They will be in touch with you shortly.',
+          'success'
+        )
       } else {
-        setAlert({
-          message: 'There was an error submitting the issue.',
-          type: 'error'
-        })
+        addAlert('There was an error submitting the issue.', 'error')
       }
     }
   }
