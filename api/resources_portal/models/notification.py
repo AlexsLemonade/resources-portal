@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from django.conf import settings
+from django.contrib.humanize import naturaltime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -76,6 +77,10 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
     @computed(models.BooleanField(blank=False, null=True))
     def email_delivered(self):
         return self.email_delivered_at is not None
+
+    @property
+    def human_readable_date(self):
+        return naturaltime(self.created_at)
 
     def should_be_emailed(self):
         # Check instance.email_delivered to allow creating a notification

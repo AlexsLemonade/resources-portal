@@ -25,6 +25,7 @@ class NotificationSerializer(serializers.ModelSerializer):
             "grant",
             "material_request",
             "material_request_issue",
+            "human_readable_date",
             "email",
             "email_delivered",
             "email_delivered_at",
