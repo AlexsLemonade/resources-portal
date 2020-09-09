@@ -114,7 +114,6 @@ class Notification(SafeDeleteModel):
         # exist, then they better not be needed.
         props = {
             "notifications_url": NOTIFICATIONS_URL,
-            "your_name": self.notified_user.full_name,
         }
         if self.associated_user:
             props["other_name"] = self.associated_user.full_name
@@ -167,8 +166,11 @@ class Notification(SafeDeleteModel):
             "cta": cta,
             "cta_link": cta_link,
             "plain_text_email": (
-                notification_config["plain_text_email"].format(**props) + PLAIN_TEXT_EMAIL_FOOTER
+                f"{self.notified_user.full_name},\n"
+                + notification_config["plain_text_email"].format(**props)
+                + PLAIN_TEXT_EMAIL_FOOTER
             ),
+            "plain_text_email_body": (notification_config["plain_text_email"].format(**props)),
             "subject": notification_config["subject"].format(**props),
             "formatted_html": formatted_html,
         }
