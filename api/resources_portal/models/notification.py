@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from django.conf import settings
-from django.contrib.humanize import naturaltime
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -26,6 +25,7 @@ from resources_portal.models.material_request_issue import MaterialRequestIssue
 from resources_portal.models.notifications_config import NOTIFICATIONS
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
+from resources_portal.utils import pretty_date
 
 logger = get_and_configure_logger(__name__)
 
@@ -80,7 +80,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
 
     @property
     def human_readable_date(self):
-        return naturaltime(self.created_at)
+        return pretty_date(self.created_at)
 
     def should_be_emailed(self):
         # Check instance.email_delivered to allow creating a notification
