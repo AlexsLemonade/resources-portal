@@ -1,4 +1,5 @@
 import datetime
+from urllib.parse import quote_plus
 
 from django.urls import reverse
 from django.utils import timezone
@@ -41,10 +42,13 @@ class NotificationsTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         two_days_ago = timezone.now() - datetime.timedelta(days=2)
         yesterday = timezone.now() - datetime.timedelta(days=1)
-        self.owned_notification = NotificationFactory(
-            notified_user=self.user, created_at=two_days_ago
-        )
-        response = self.client.get(self.url + "?created_at__lt=" + str(yesterday))
+
+        self.owned_notification = NotificationFactory(notified_user=self.user)
+        self.owned_notification.created_at = two_days_ago
+        self.owned_notification.save()
+
+        yesterday_str = quote_plus(yesterday.isoformat("T", "seconds"))
+        response = self.client.get(self.url + "?created_at__lt=" + yesterday_str)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 

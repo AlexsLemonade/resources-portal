@@ -55,5 +55,13 @@ class NotificationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsUserOrAdmin]
     serializer_class = NotificationSerializer
 
+    filterset_fields = {
+        "id": ["exact"],
+        "notification_type": ["exact"],
+        "organization__id": ["exact"],
+        "email_delivered": ["exact"],
+        "created_at": ["exact", "lt", "gt", "lte", "gte"],
+    }
+
     def get_queryset(self):
         return Notification.objects.filter(notified_user=self.request.user).order_by("-created_at")
