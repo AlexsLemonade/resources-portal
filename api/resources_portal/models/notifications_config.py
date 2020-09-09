@@ -577,4 +577,18 @@ NOTIFICATIONS = {
         "required_associations": ["associated_user", "associated_organization",],
         "always_send": True,
     },
+    "REPORT_TO_GRANTS_TEAM": {
+        "subject": "Issue reported to Grants team",
+        "body": (
+            "Your issue has been reported to the ALSF Grants Team.<br>"
+            "They are looking into this and will be in touch with you soon.<br>"
+            "Below is the message they received from you for your records.<br><br>{message}"
+        ),
+        "plain_text_email": (
+            "{your_name},\n Your issue has been reported to the ALSF Grants Team.\n"
+            "They are looking into this and will be in touch with you soon.\n"
+            "Below is the message they received from you for your records.\n\n{message}"
+        ),
+        "required_associations": ["associated_user"],
+    },
 }

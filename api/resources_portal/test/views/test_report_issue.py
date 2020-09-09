@@ -33,7 +33,7 @@ class ReportIssueTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_post(self):
+    def test_post_request_issue(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
             self.url,
@@ -46,6 +46,19 @@ class ReportIssueTestCase(APITestCase):
         self.assertEqual(
             Notification.objects.filter(
                 notified_user=self.user, notification_type="MATERIAL_REQUEST_REQUESTER_ESCALATED"
+            ).count(),
+            1,
+        )
+
+    def test_post_general_issue(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url, {"message": "How do I even?"}, format="json",)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(Notification.objects.all().count(), 1)
+        self.assertEqual(
+            Notification.objects.filter(
+                notified_user=self.user, notification_type="REPORT_TO_GRANTS_TEAM"
             ).count(),
             1,
         )
