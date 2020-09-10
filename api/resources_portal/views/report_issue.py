@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.http import JsonResponse
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -101,4 +102,4 @@ def report_issue_view(request):
     )
     notification.save()
 
-    return Response(status=status.HTTP_201_CREATED)
+    return JsonResponse({}, status=status.HTTP_201_CREATED)
