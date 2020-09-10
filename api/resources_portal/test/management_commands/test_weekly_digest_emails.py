@@ -7,13 +7,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.management.commands.send_weekly_digest_emails import send_weekly_digests
-from resources_portal.models import Grant, User
-from resources_portal.test.factories import (
-    GrantFactory,
-    NotificationFactory,
-    PersonalOrganizationFactory,
-    UserFactory,
-)
+from resources_portal.test.factories import NotificationFactory, UserFactory
 
 fake = Faker()
 
