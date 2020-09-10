@@ -41,7 +41,7 @@ class User(AbstractUser, ComputedFieldsModel):
     email = models.EmailField("email", blank=False, null=False)
     receive_non_assigned_notifs = models.BooleanField(default=False)
     receive_weekly_digest = models.BooleanField(default=True)
-    weekly_last_sent = models.DateTimeField(blank=False, null=True)
+    weekly_digest_last_sent = models.DateTimeField(blank=False, null=True)
 
     organizations = models.ManyToManyField("Organization", through="OrganizationUserAssociation")
     personal_organization = models.ForeignKey(

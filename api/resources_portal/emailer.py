@@ -7,6 +7,10 @@ from django.conf import settings
 
 import boto3
 
+from resources_portal.config.logging import get_and_configure_logger
+
+logger = get_and_configure_logger(__name__)
+
 EMAIL_SOURCE = (
     f"Resources Portal Mail Robot <no-reply@{settings.AWS_SES_DOMAIN}>"
     if settings.AWS_SES_DOMAIN
@@ -90,15 +94,23 @@ def create_multipart_message(
 
 
 def send_mail(
-    recipients: list, title: str, text: str = None, html: str = None, attachments: list = None,
+    source: str,
+    recipients: list,
+    title: str,
+    text: str = None,
+    html: str = None,
+    attachments: list = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
-    msg = create_multipart_message(EMAIL_SOURCE, recipients, title, text, html, attachments)
-    ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
-    return ses_client.send_raw_email(
-        Source=EMAIL_SOURCE, Destinations=recipients, RawMessage={"Data": msg.as_string()}
-    )
+    if settings.AWS_SES_DOMAIN:
+        msg = create_multipart_message(source, recipients, title, text, html, attachments)
+        ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
+        return ses_client.send_raw_email(
+            Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
+        )
+    else:
+        logger.debug(f'In prod the following message will be sent to "{recipients}": \n {text}')

@@ -431,7 +431,7 @@ NOTIFICATIONS = {
             "Below is the message they received from you for your records.<br><br>{message}"
         ),
         "plain_text_email": (
-            "{your_name},\n Request for {material_category}, {material_name} has been escalated"
+            "Request for {material_category}, {material_name} has been escalated"
             " to the grants team.\n"
             "ALSF Grants team is looking into this and will be in touch with you soon.\n"
             "Below is the message they received from you for your records.\n\n{message}"
@@ -530,7 +530,7 @@ NOTIFICATIONS = {
     "ORGANIZATION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
-        "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
+        "plain_text_email": "{other_name} left {organization_name}",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
     },
@@ -570,7 +570,7 @@ NOTIFICATIONS = {
             "Below is the message they received from you for your records.<br><br>{message}"
         ),
         "plain_text_email": (
-            "{your_name},\n Your issue has been reported to the ALSF Grants Team.\n"
+            "Your issue has been reported to the ALSF Grants Team.\n"
             "They are looking into this and will be in touch with you soon.\n"
             "Below is the message they received from you for your records.\n\n{message}"
         ),
