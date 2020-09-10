@@ -10,7 +10,8 @@ Call format:
 client_id=APP-123456789
 &response_type=code
 &scope=/authenticate
-&redirect_uri=https://resources.alexslemonade.org/ ```
+&redirect_uri=https://resources.alexslemonade.org/
+ ```
 
 This code has only one purpose- to be exchanged for the user's ORCID, access token, and refresh token. It is very short-lived (a minute or two), and can only be used once. Once we have this code, we submit it along with the redirect_uri to the /orcid-credentials endpoint, which performs the exchange. Note the the redirect_uri submitted must match the redirect_uri in the first call.
 
