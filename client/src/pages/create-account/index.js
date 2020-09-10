@@ -16,17 +16,22 @@ const CreateAccount = (props) => {
   )
 }
 
-CreateAccount.getInitialProps = async ({ req, query }) => {
-  let queryJSON = {}
+const zipGrants = (grantTitles, grantFunderId) => {
+  return grantTitles.map((title, index) => {
+    return { title, funder_id: grantFunderId[index] }
+  })
+}
 
-  if (query.json) {
-    queryJSON = JSON.parse(query.json)
+CreateAccount.getInitialProps = async ({ req, query }) => {
+  let grants
+  if (query.grant_title && query.grant_funder_id) {
+    grants = zipGrants(query.grant_title, query.grant_funder_id)
   }
 
   return {
     ORCID: query.ORCID,
     email: query.email,
-    grants: queryJSON.grant_info,
+    grants,
     code: query.code,
     originUrl: decodeURI(`http://${req.headers.host}${req.url}`),
     stepName: query.stepName
