@@ -3,7 +3,7 @@
 The primary method to sign in to the Resources Portal is through ORCID's OAUTH functionality. Within this flow, users will use two tokens to authenticate with ORCID.
 
 ## 1. Authentication Code
-The first call made in the OAUTH flow is to ORCID's authentication endpoint. This call redirects the user to ORCID's sign-in page. The user will enter their credentials and grant "Trusted-party" access to ALSF. ORCID will then redirect back to the Resources Portal website with an authentication code.
+The first call made in the OAUTH flow is to ORCID's authentication endpoint. This call redirects the user to ORCID's sign-in page. The user will enter their credentials and grant "Trusted Party" access to ALSF. ORCID will then redirect back to the Resources Portal website with an authentication code.
 
 Call format:
 ``` https://orcid.org/oauth/authorize?
@@ -28,6 +28,7 @@ As part of our account creation, we attempt to access the user's email from thei
 1. Public
 2. Trusted Parties
 3. Private
+
 If the user's email is set to Public or Trusted Parties, we can access it. If it's Private, we cannot.
 
 ## Sandbox vs Production
