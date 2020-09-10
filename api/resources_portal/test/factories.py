@@ -248,9 +248,7 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 class GrantFactory(LeafGrantFactory):
     user = factory.SubFactory(UserFactory)
     organization1 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
-    # organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
-    # material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):
