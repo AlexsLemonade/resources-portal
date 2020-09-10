@@ -15,6 +15,7 @@ from resources_portal.models import (
     Grant,
     Material,
     MaterialRequest,
+    MaterialRequestIssue,
     MaterialShareEvent,
     Organization,
     OrganizationInvitation,
@@ -175,6 +176,25 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
             "updated_at",
             "assigned_to",
             "requester",
+        )
+
+
+class MaterialRequestIssueRelationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaterialRequestIssue
+        fields = (
+            "id",
+            "description",
+            "status",
+            "material_request",
+            "created_at",
+            "updated_at",
+        )
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "material_request",
         )
 
 

@@ -96,9 +96,9 @@ def report_issue_view(request):
         message=message,
         notified_user=request.user,
         associated_user=request.user,
-        associated_organization=request.user.personal_organization,
-        associated_material=material,
-        associated_material_request=material_request,
+        organization=request.user.personal_organization,
+        material=material,
+        material_request=material_request,
     )
     notification.save()
 

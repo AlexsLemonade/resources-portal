@@ -91,7 +91,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         #         notification_type="ORG_INVITE_CREATED",
         #         notified_user=request.user,
         #         associated_user=request_receiver,
-        #         associated_organization=organization,
+        #         organization=organization,
         #     )
         #     notification.save()
         # else:
@@ -99,7 +99,7 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
         #         notification_type="ORG_REQUEST_CREATED",
         #         notified_user=request_receiver,
         #         associated_user=request.user,
-        #         associated_organization=organization,
+        #         organization=organization,
         #     )
         #     notification.save()
 
