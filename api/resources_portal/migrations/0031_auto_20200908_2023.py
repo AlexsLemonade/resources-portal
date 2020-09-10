@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("resources_portal", "0029_auto_20200904_1954"),
+        ("resources_portal", "0030_auto_20200909_1608"),
     ]
 
     operations = [
