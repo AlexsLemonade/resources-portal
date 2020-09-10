@@ -12,6 +12,7 @@ from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
     MaterialRelationSerializer,
+    MaterialRequestIssueRelationSerializer,
     UserRelationSerializer,
 )
 
@@ -33,6 +34,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "requester_abstract",
             "assigned_to",
             "has_issues",
+            "issues",
             "requires_action_sharer",
             "requires_action_requester",
             "executed_mta_attachment",
@@ -47,6 +49,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             "id",
+            "issues",
             "fulfillment_notes",
             "created_at",
             "updated_at",
@@ -58,6 +61,7 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     requester = UserRelationSerializer()
     material = MaterialRelationSerializer()
+    issues = MaterialRequestIssueRelationSerializer(many=True, read_only=True)
     fulfillment_notes = FulfillmentNoteRelationSerializer(many=True, read_only=True)
     address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
     executed_mta_attachment = AttachmentRelationSerializer()
@@ -92,8 +96,8 @@ def send_material_request_notif(notif_type, request, notified_user):
         notification_type=notif_type,
         notified_user=notified_user,
         associated_user=request.assigned_to,
-        associated_material=request.material,
-        associated_organization=request.material.organization,
+        material=request.material,
+        organization=request.material.organization,
     )
     notification.save()
 
@@ -202,11 +206,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 material__organization__in=organizations
             )
 
-            requests = requests_made_by_user.union(requests_viewable_by_user)
-
-            return requests
+            queryset = requests_made_by_user.union(requests_viewable_by_user)
         else:
-            return MaterialRequest.objects.all()
+            queryset = MaterialRequest.objects.all()
+
+        return queryset.order_by("-created_at")
 
     def get_serializer_class(self):
         if self.action == "list":

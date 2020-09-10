@@ -33,7 +33,7 @@ class OrganizationMembersTestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
         url = reverse("users-organizations-detail", args=[self.user.id, self.organization.id])
         response = self.client.get(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_get_request_returns_organizations(self):
         self.client.force_authenticate(user=self.user)
@@ -55,7 +55,7 @@ class OrganizationMembersTestCase(APITestCase):
         url = reverse("users-organizations-list", args=[self.user.id])
         response = self.client.post(url, data=organization_json)
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_delete_self_from_org(self):
         self.client.force_authenticate(user=self.user)
@@ -63,7 +63,7 @@ class OrganizationMembersTestCase(APITestCase):
             "users-organizations-detail", args=[self.user.id, self.member_organization.id]
         )
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
         self.organization.refresh_from_db()
         self.assertNotIn(self.user, self.member_organization.members.all())
@@ -78,7 +78,7 @@ class OrganizationMembersTestCase(APITestCase):
 
         url = reverse("users-organizations-detail", args=[self.member.id, self.organization.id])
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertNotIn(self.member, self.organization.members.all())
 
     def test_delete_fails_for_non_owner(self):
@@ -92,7 +92,7 @@ class OrganizationMembersTestCase(APITestCase):
             "users-organizations-detail", args=[new_member.id, self.member_organization.id]
         )
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertIn(self.user, self.organization.members.all())
 
     def test_delete_owner_fails(self):
@@ -100,7 +100,7 @@ class OrganizationMembersTestCase(APITestCase):
 
         url = reverse("users-organizations-detail", args=[self.user.id, self.organization.id])
         response = self.client.delete(url)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(self.user, self.organization.members.all())
 
     def test_cannot_put_a_relationship(self):
@@ -108,4 +108,4 @@ class OrganizationMembersTestCase(APITestCase):
         new_org = OrganizationFactory()
         url = reverse("users-organizations-detail", args=[self.user.id, new_org.id])
         response = self.client.put(url)
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

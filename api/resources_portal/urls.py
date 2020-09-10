@@ -20,6 +20,7 @@ from resources_portal.views import (
     MaterialRequestIssueViewSet,
     MaterialRequestViewSet,
     MaterialViewSet,
+    NotificationViewSet,
     ORCIDCredentialsViewSet,
     OrganizationDocumentView,
     OrganizationGrantViewSet,
@@ -46,9 +47,12 @@ router.register(r"users", UserViewSet, basename="user").register(
     parents_query_lookups=["user"],
 )
 router.register(r"users", UserViewSet, basename="user").register(
+    r"notifications", NotificationViewSet, basename="notifications", parents_query_lookups=["user"],
+)
+router.register(r"users", UserViewSet, basename="user").register(
     r"addresses", AddressViewSet, basename="users-addresses", parents_query_lookups=["user"],
 )
-router.register(r"materials", MaterialViewSet, basename="material")
+
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
     r"members",
     OrganizationMemberViewSet,
@@ -67,23 +71,29 @@ router.register(r"organizations", OrganizationViewSet, basename="organization").
     basename="organizations-grants",
     parents_query_lookups=["organizations"],
 )
+
 router.register(r"invitations", OrganizationInvitationViewSet, basename="invitation")
+
 router.register(r"grants", GrantViewSet, basename="grant").register(
     r"materials",
     GrantMaterialViewSet,
     basename="grants-material",
     parents_query_lookups=["grants"],
 )
+
 router.register(r"attachments", AttachmentViewSet, basename="attachment")
+
 router.register(
     r"organization-user-settings",
     OrganizationUserSettingViewSet,
     basename="organization-user-setting",
 )
+
 router.register(
     r"shipping-requirements", ShippingRequirementViewSet, basename="shipping-requirement"
 )
 
+router.register(r"materials", MaterialViewSet, basename="material")
 router.register(r"material-requests", MaterialRequestViewSet, basename="material-request").register(
     r"issues",
     MaterialRequestIssueViewSet,

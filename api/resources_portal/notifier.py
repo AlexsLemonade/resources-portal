@@ -51,9 +51,9 @@ def send_notifications(
             notification_type=notification_type,
             notified_user=recipient,
             associated_user=associated_user,
-            associated_organization=organization,
-            associated_material=material,
-            associated_material_request=material_request,
-            associated_material_request_issue=material_request_issue,
+            organization=organization,
+            material=material,
+            material_request=material_request,
+            material_request_issue=material_request_issue,
         )
         notification.save()

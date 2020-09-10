@@ -242,3 +242,17 @@ class GrantFactory(LeafGrantFactory):
     organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
     material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
+
+
+class NotificationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = "resources_portal.Notification"
+
+    notification_type = "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW"
+    notified_user = factory.SubFactory(UserFactory)
+    associated_user = factory.SubFactory(UserFactory)
+    organization = factory.SubFactory(OrganizationFactory)
+    grant = factory.SubFactory(GrantFactory)
+    material = factory.SubFactory(MaterialFactory)
+    material_request = factory.SubFactory(MaterialRequestFactory)
+    material_request_issue = factory.SubFactory(MaterialRequestIssueFactory)

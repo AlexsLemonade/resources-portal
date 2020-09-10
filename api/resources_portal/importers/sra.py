@@ -42,14 +42,6 @@ def _gather_library_metadata(metadata: Dict, library: ET.Element) -> None:
         else:
             metadata[child.tag.lower()] = child.text
 
-    # SRA contains several types of data. We only want RNA-Seq for now.
-    if metadata["library_strategy"] != "RNA-Seq":
-        raise UnsupportedDataTypeError("library_strategy not RNA-Seq.")
-    if metadata["library_source"] not in ["TRANSCRIPTOMIC", "OTHER"]:
-        raise UnsupportedDataTypeError(
-            "library_source: " + metadata["library_source"] + " not TRANSCRIPTOMIC or OTHER."
-        )
-
 
 def _parse_study_link(run_link: ET.ElementTree) -> (str, str):
     key = ""

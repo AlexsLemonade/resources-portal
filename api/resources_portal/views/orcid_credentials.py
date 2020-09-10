@@ -52,7 +52,12 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
 
         # get user orcid info
         response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
-        response_json = response.json()
+
+        try:
+            response_json = response.json()
+        except (requests.HTTPError) as error:
+            return JsonResponse({"error": error}, status=500,)
+
         if "orcid" not in response_json:
             return JsonResponse(response_json, status=400)
 

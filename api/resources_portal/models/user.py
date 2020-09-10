@@ -36,6 +36,7 @@ class User(AbstractUser, ComputedFieldsModel):
     orcid = models.TextField(unique=True, null=True)
     orcid_refresh_token = models.TextField()
     orcid_access_token = models.TextField()
+    viewed_notifications_at = models.DateTimeField(blank=False, null=True)
     deleted = models.BooleanField(default=False, null=False)
     email = models.EmailField("email", blank=False, null=False)
     receive_non_assigned_notifs = models.BooleanField(default=False)
