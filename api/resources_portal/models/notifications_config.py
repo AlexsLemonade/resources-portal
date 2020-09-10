@@ -438,9 +438,9 @@ NOTIFICATIONS = {
         ),
         "required_associations": [
             "associated_user",
-            "associated_material",
-            "associated_material_request",
-            "associated_organization",
+            "material",
+            "material_request",
+            "organization",
         ],
     },
     "MATERIAL_ADDED": {
