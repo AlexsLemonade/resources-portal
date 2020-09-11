@@ -1,9 +1,6 @@
 name: Deploy the staging stack for the API
 
-on:
-  push:
-    branches:
-      - dev
+on: push
 
 jobs:
   deploy:

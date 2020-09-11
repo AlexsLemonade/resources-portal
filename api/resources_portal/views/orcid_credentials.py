@@ -59,7 +59,7 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
             return JsonResponse({"error": error}, status=500,)
 
         if "orcid" not in response_json:
-            return JsonResponse(response_json, status=400)
+            return JsonResponse({"response": response_json, "redirect_url": origin_url}, status=400)
 
         return JsonResponse(
             {
