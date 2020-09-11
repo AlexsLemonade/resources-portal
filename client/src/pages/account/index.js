@@ -5,7 +5,13 @@ import { useSignIn } from 'hooks/useSignIn'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
+export const Account = ({
+  noCode,
+  orcid,
+  accessToken,
+  refreshToken,
+  error
+}) => {
   const router = useRouter()
   const {
     needsEmail,
@@ -15,6 +21,8 @@ export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
     setNeedsEmail,
     setError
   } = useSignIn()
+
+  console.log(error)
 
   // If the user navigates to /account manually, redirect them to /account/basic-information
   if (noCode && !needsEmail) {
@@ -43,9 +51,9 @@ export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
 }
 
 Account.getInitialProps = async ({ req, query }) => {
+  console.log(query)
   // Revisit how to present errors thrown from this function
   if (!query.code) {
-    console.log('noCode')
     return { noCode: true }
   }
 
@@ -66,7 +74,7 @@ Account.getInitialProps = async ({ req, query }) => {
       refreshToken
     }
   }
-  return {}
+  return { error: orcidRequest }
 }
 
 export default Account
