@@ -12,12 +12,6 @@ export const ORCIDSignInButton = ({
 }) => {
   const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 
-  console.log(
-    process.env.IS_DEVELOPMENT,
-    process.env.IS_STAGING,
-    process.env.IS_PRODUCTION
-  )
-
   let orcidPrefix = ''
   if (process.env.IS_DEVELOPMENT || process.env.IS_STAGING) {
     orcidPrefix = 'https://sandbox.orcid.org/'
