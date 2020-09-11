@@ -132,11 +132,14 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"error": "A user with the provided ORCID already exists."}, status=400,
             )
 
-        api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
+        try:
+            api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-        summary = api.read_record_public(
-            request.data["orcid"], "record", request.data["access_token"]
-        )
+            summary = api.read_record_public(
+                request.data["orcid"], "record", request.data["access_token"]
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
         email = ""
 
