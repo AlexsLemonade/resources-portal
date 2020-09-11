@@ -50,12 +50,11 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
             "redirect_uri": remove_code_parameter_from_uri(origin_url),
         }
 
-        # get user orcid info
-        response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
-
         try:
+            # get user orcid info
+            response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
             response_json = response.json()
-        except (requests.HTTPError) as error:
+        except Exception as error:
             return JsonResponse({"error": error}, status=500,)
 
         if "orcid" not in response_json:
