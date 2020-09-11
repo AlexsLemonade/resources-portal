@@ -13,7 +13,7 @@ export const ORCIDSignInButton = ({
   const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
 
   let orcidPrefix = ''
-  if (process.env.IS_DEVELOPMENT) {
+  if (process.env.IS_DEVELOPMENT || process.env.IS_STAGING) {
     orcidPrefix = 'https://sandbox.orcid.org/'
   } else {
     orcidPrefix = 'https://orcid.org/'
