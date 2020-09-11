@@ -7,7 +7,7 @@ module.exports = (phase) => {
   const apiHost =
     process.env.API_HOST || process.env.IS_PRODUCTION
       ? 'https://api.resources.alexslemonade.org'
-      : 'https://staging.api.resources.alexslemonade.org'
+      : 'https://api.staging.resources.alexslemonade.org'
 
   const clientHost =
     process.env.CLIENT_HOST || process.env.IS_PRODUCTION
