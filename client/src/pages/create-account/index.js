@@ -42,7 +42,7 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
     email: query.email,
     grants,
     code: query.code,
-    originUrl: decodeURI(`http://${req.headers.host}${req.url}`),
+    originUrl: decodeURI(`https://${req.headers.host}${req.url}`),
     stepName: query.stepName
   }
 }
