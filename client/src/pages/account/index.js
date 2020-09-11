@@ -45,6 +45,7 @@ export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
 Account.getInitialProps = async ({ req, query }) => {
   // Revisit how to present errors thrown from this function
   if (!query.code) {
+    console.log('noCode')
     return { noCode: true }
   }
 
