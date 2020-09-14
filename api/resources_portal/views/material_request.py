@@ -91,6 +91,71 @@ class CanApproveRequestsOrIsRequester(BasePermission):
         )
 
 
+class IsModifyingPermittedFields(BasePermission):
+    """Certain changes cannot be made by either party at various times."""
+
+    def has_object_permission(self, request, view, obj):
+        # First, check status since it's the most complicated:
+        if "status" in request.data and request.data["status"] != getattr(obj, "status"):
+            if request.user == obj.requester:
+                if request.data["status"] != "CANCELLED" or (
+                    request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED"
+                ):
+                    return False
+            else:
+                # The sharer can pretty much do anything but cancel or verify a request.
+                if request.data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                    return False
+
+        if request.user == obj.requester:
+            forbidden_fields = [
+                "is_active",
+                "assigned_to",
+                "rejection_reason",
+                "has_issues",
+                "issues",
+                "requires_action_sharer",
+                "requires_action_requester",
+                "executed_mta_attachment",
+                "material",
+                "requester",
+                "requester_signed_mta_attachment",
+                "fulfillment_notes",
+                "created_at",
+                "updated_at",
+            ]
+
+            # If the request is apporoved, the requester can't change
+            # these any longer.  If they really need to, they'll need to
+            # cancel and resubmit so the sharer can reevaluate whether or
+            # not to approve the request.
+            if obj.status != "OPEN":
+                forbidden_fields += ["requester_abstract", "irb_attachment"]
+        else:
+            # The sharer can modify most of the fields the requester
+            # can't. This way the requester cannot modify details of
+            # the request post-approval, but the sharer can update
+            # those fields for the requester if necessary.
+            forbidden_fields = [
+                "is_active",
+                "payment_method",
+                "payment_method_notes",
+                "has_issues",
+                "issues",
+                "requires_action_sharer",
+                "requires_action_requester",
+                "material",
+                "created_at",
+                "updated_at",
+            ]
+
+        for field in forbidden_fields:
+            if field in request.data and request.data[field] != getattr(obj, field):
+                return False
+
+        return True
+
+
 def send_material_request_notif(notif_type, request, notified_user):
     notification = Notification(
         notification_type=notif_type,
@@ -222,7 +287,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
         elif self.action == "update" or self.action == "partial-update":
-            permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
+            permission_classes = [
+                IsAuthenticated,
+                CanApproveRequestsOrIsRequester,
+                IsModifyingPermittedFields,
+            ]
         elif self.action == "destroy":
             permission_classes = [IsAuthenticated, IsAdminUser]
         else:
