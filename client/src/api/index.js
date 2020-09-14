@@ -151,6 +151,15 @@ export default {
       return [tokenRequest, userRequest]
     },
     create: async (orcid, accessToken, refreshToken, email, grants) => {
+      console.print(
+        JSON.stringify({
+          email,
+          grants,
+          orcid,
+          access_token: accessToken,
+          refresh_token: refreshToken
+        })
+      )
       const tokenRequest = await userCreate({
         email,
         grants,
