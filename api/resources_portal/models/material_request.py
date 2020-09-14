@@ -117,10 +117,11 @@ class MaterialRequest(SafeDeleteModel):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
     def needs_shipping_info(self):
-        if self.shipping_requirement:
-            if self.shipping_requirement.needs_shipping_address and not self.address:
+        shipping_requirement = self.material.shipping_requirement
+        if shipping_requirement:
+            if shipping_requirement.needs_shipping_address and not self.address:
                 return True
-            elif self.shipping_requirement.needs_payment and not self.payment_method:
+            elif shipping_requirement.needs_payment and not self.payment_method:
                 return True
 
         return False

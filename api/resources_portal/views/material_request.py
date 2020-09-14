@@ -1,3 +1,6 @@
+import uuid
+
+from django.db import models
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
@@ -150,8 +153,15 @@ class IsModifyingPermittedFields(BasePermission):
             ]
 
         for field in forbidden_fields:
-            if field in request.data and request.data[field] != getattr(obj, field):
-                return False
+            if field in request.data:
+                attribute = getattr(obj, field)
+                if isinstance(attribute, models.Model):
+                    # UUID's can't just be treated as strings for some reason...
+                    pk = str(attribute.id) if isinstance(attribute.id, uuid.UUID) else attribute.id
+                    if request.data[field] != pk:
+                        return False
+                elif request.data[field] != attribute:
+                    return False
 
         return True
 
