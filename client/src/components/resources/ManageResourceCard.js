@@ -6,9 +6,9 @@ import { ResourceCard } from './ResourceCard'
 export const ManageResourceCard = ({ resource }) => {
   // How do we get pending requests
   // What do we link to when there are pending requests
-  const editLink = `/account/manage-resources/${resource.id}`
+  const editLink = `/resources/${resource.id}/edit`
   const teamLink = `/account/teams/${resource.organization.id}`
-  const viewLink = `/resources/${resource.id}`
+  const manageLink = `/account/manage-resources/${resource.id}`
 
   // modal for deleting a resource?
 
@@ -19,8 +19,8 @@ export const ManageResourceCard = ({ resource }) => {
           <Link href={editLink}>
             <Anchor label="Edit" href={editLink} />
           </Link>
-          <Link href={viewLink}>
-            <Anchor label="View Resource" href={viewLink} />
+          <Link href={manageLink}>
+            <Anchor label="Manage Resource" href={manageLink} />
           </Link>
           <Anchor label="Delete" />
         </Box>

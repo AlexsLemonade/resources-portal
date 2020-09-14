@@ -6,7 +6,22 @@ import pdx from './pdx'
 import plasmid from './plasmid'
 import protocol from './protocol'
 
-export default {
+export const formDefaults = [
+  {
+    contact_user: ['contact_user']
+  },
+  {
+    publication_information: [
+      'pubmed_id',
+      'publication_title',
+      'pre_print_doi',
+      'pre_print_title',
+      'citation'
+    ]
+  }
+]
+
+const configs = {
   CELL_LINE: cellLine,
   DATASET: dataset,
   MODEL_ORGANISM: modelOrganism,
@@ -15,3 +30,5 @@ export default {
   PLASMID: plasmid,
   PROTOCOL: protocol
 }
+
+export default configs
