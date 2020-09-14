@@ -11,8 +11,8 @@ from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import User
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
+from resources_portal.views.address import SavedAddressSerializer
 from resources_portal.views.relation_serializers import (
-    AddressRelationSerializer,
     AttachmentRelationSerializer,
     GrantRelationSerializer,
     MaterialRequestRelationSerializer,
@@ -26,6 +26,16 @@ CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
 OAUTH_URL = settings.OAUTH_URL
 IS_OAUTH_SANDBOX = "sandbox" in OAUTH_URL
+
+
+PRIVATE_FIELDS = [
+    "addresses",
+    "material_requests",
+    "invitations",
+    "assignments",
+    "viewed_notifications_at",
+    "owned_attachments",
+]
 
 
 def remove_code_parameter_from_uri(url):
@@ -89,7 +99,17 @@ class UserSerializer(serializers.ModelSerializer):
     grants = GrantRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
     invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
-    addresses = AddressRelationSerializer(many=True, read_only=True)
+    addresses = SavedAddressSerializer(many=True, read_only=True)
+
+    def to_representation(self, request_data):
+        # get the original representation
+        user_data = super(UserSerializer, self).to_representation(request_data)
+        if str(self.context["request"].user.id) != user_data["id"]:
+            for field in PRIVATE_FIELDS:
+                if field in user_data:
+                    user_data.pop(field)
+
+        return user_data
 
 
 class IsUserOrAdmin(BasePermission):
