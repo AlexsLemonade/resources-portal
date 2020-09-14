@@ -1,6 +1,7 @@
 import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useCreateUser } from 'hooks/useCreateUser'
+import Link from 'next/link'
 import * as React from 'react'
 import GrantIcon from '../images/grant.svg'
 import NextSteps from '../images/join-by-invite-next-steps.svg'
@@ -171,14 +172,18 @@ export const NextStepsStep = () => {
   return (
     <Box direction="row" gap="xlarge">
       <Box direction="column" width="300px" gap="large">
-        <Box width="200px">
-          <Button label="Add a Resource" href="/resources" primary />
-        </Box>
-        <Anchor
-          color="#017FA3"
-          href="/organization"
-          label="Add members of your lab or organization to help you manage resources"
-        />
+        <Link href="/resources">
+          <Box width="200px">
+            <Button label="Add a Resource" href="#" primary />
+          </Box>
+        </Link>
+        <Link href="/organization">
+          <Anchor
+            color="#017FA3"
+            href="#"
+            label="Add members of your lab or organization to help you manage resources"
+          />
+        </Link>
       </Box>
       <NextSteps />
     </Box>

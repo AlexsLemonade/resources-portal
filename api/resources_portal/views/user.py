@@ -132,11 +132,14 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"error": "A user with the provided ORCID already exists."}, status=400,
             )
 
-        api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
+        try:
+            api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-        summary = api.read_record_public(
-            request.data["orcid"], "record", request.data["access_token"]
-        )
+            summary = api.read_record_public(
+                request.data["orcid"], "record", request.data["access_token"]
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
         email = ""
 
@@ -160,14 +163,17 @@ class UserViewSet(viewsets.ModelViewSet):
         first_name = summary["person"]["name"]["given-names"]["value"]
         last_name = summary["person"]["name"]["family-name"]["value"]
 
-        user = User.objects.create(
-            orcid=summary["orcid-identifier"]["path"],
-            orcid_access_token=request.data["access_token"],
-            orcid_refresh_token=request.data["refresh_token"],
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-        )
+        try:
+            user = User.objects.create(
+                orcid=summary["orcid-identifier"]["path"],
+                orcid_access_token=request.data["access_token"],
+                orcid_refresh_token=request.data["refresh_token"],
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
         org = Organization.objects.create(owner=user)
         user.personal_organization = org

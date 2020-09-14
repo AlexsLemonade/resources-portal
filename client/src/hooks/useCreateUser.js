@@ -136,7 +136,7 @@ export const useCreateUser = (
       accessToken,
       refreshToken,
       loginEmail,
-      JSON.stringify(loginGrants)
+      loginGrants
     )
 
     if (tokenRequest.status === 401) {
