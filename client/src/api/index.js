@@ -56,7 +56,7 @@ const request = async (
 ) => {
   const config = { headers, ...options }
 
-  // add authroization token to headers
+  // add authorization token to headers
   if (authorization) {
     config.headers.Authorization = `Token ${authorization}`
   }
