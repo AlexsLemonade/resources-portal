@@ -9,7 +9,6 @@ will use PrimaryKeyRelatedFields.
 from rest_framework import serializers
 
 from resources_portal.models import (
-    Address,
     Attachment,
     FulfillmentNote,
     Grant,
