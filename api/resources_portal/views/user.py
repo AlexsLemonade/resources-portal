@@ -163,14 +163,17 @@ class UserViewSet(viewsets.ModelViewSet):
         first_name = summary["person"]["name"]["given-names"]["value"]
         last_name = summary["person"]["name"]["family-name"]["value"]
 
-        user = User.objects.create(
-            orcid=summary["orcid-identifier"]["path"],
-            orcid_access_token=request.data["access_token"],
-            orcid_refresh_token=request.data["refresh_token"],
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-        )
+        try:
+            user = User.objects.create(
+                orcid=summary["orcid-identifier"]["path"],
+                orcid_access_token=request.data["access_token"],
+                orcid_refresh_token=request.data["refresh_token"],
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
         org = Organization.objects.create(owner=user)
         user.personal_organization = org
