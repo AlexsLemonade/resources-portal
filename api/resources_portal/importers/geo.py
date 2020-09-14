@@ -26,7 +26,7 @@ def gather_all_metadata(experiment_accession_code):
         "description": "".join(gse.metadata["summary"]),
         "platform": gse.metadata["platform_id"],
         "technology": gse.metadata["type"],
-        "number_samples": len(gse.metadata["sample_id"]),
+        "number_of_samples": len(gse.metadata["sample_id"]),
     }
 
     if "pubmed_id" in gse.metadata:
