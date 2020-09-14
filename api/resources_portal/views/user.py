@@ -169,7 +169,7 @@ class UserViewSet(viewsets.ModelViewSet):
             email=email,
         )
 
-        org = Organization.objects.create(owner=user)
+        org = Organization.objects.create(owner=user, name="My Resources")
         user.personal_organization = org
 
         if "grant_info" in request.data:

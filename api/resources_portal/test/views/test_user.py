@@ -70,6 +70,8 @@ class TestUserPostTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(user.personal_organization.name, "My Resources")
+
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_post_with_invalid_grants_returns_error(self, mock_auth_request, mock_record_request):
