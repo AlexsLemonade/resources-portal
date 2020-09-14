@@ -6,12 +6,14 @@ export const useUser = (defaultUser, defaultToken) => {
   const { user, setUser, token, setToken } = React.useContext(
     ResourcesPortalContext
   )
+
   React.useEffect(() => {
     if (defaultUser && defaultToken) {
       setUser(defaultUser)
       setToken(defaultToken)
     }
   })
+
   const isLoggedIn = Boolean(user && token)
   const refreshUserData = async () => {
     const {
@@ -21,7 +23,7 @@ export const useUser = (defaultUser, defaultToken) => {
       setToken(refreshToken)
     }
 
-    const { response: refreshUser, isOk: userIsOk } = await api.user.getInfo(
+    const { response: refreshUser, isOk: userIsOk } = await api.user.get(
       userId,
       token
     )
@@ -29,10 +31,22 @@ export const useUser = (defaultUser, defaultToken) => {
       setUser(refreshUser)
     }
   }
+
+  const refreshUser = async () => {
+    const { response: freshUser, isOk: userIsOk } = await api.user.get(
+      user.id,
+      token
+    )
+    if (userIsOk) {
+      setUser(freshUser)
+    }
+  }
+
   const logOut = () => {
     setUser()
     setToken()
   }
+
   return {
     user,
     setUser,
@@ -40,6 +54,7 @@ export const useUser = (defaultUser, defaultToken) => {
     token,
     isLoggedIn,
     refreshUserData,
+    refreshUser,
     logOut
   }
 }
