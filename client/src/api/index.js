@@ -151,7 +151,7 @@ export default {
       return [tokenRequest, userRequest]
     },
     create: async (orcid, accessToken, refreshToken, email, grants) => {
-      console.print(
+      console.log(
         JSON.stringify({
           email,
           grants,
