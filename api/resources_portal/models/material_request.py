@@ -43,7 +43,7 @@ class MaterialRequest(SafeDeleteModel):
         Material, blank=False, null=False, on_delete=models.CASCADE, related_name="requests"
     )
 
-    address = models.ForeignKey(
+    address = models.OneToOneField(
         Address, blank=False, null=True, on_delete=models.SET_NULL, related_name="requests"
     )
 
@@ -106,7 +106,7 @@ class MaterialRequest(SafeDeleteModel):
             self.material.mta_attachment is not None
             and self.requester_signed_mta_attachment is None
         )
-        return missing_irb or missing_mta
+        return missing_irb or missing_mta or self.needs_shipping_info()
 
     @property
     def has_issues(self):
@@ -116,46 +116,60 @@ class MaterialRequest(SafeDeleteModel):
     def frontend_URL(self):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
+    def needs_shipping_info(self):
+        if self.shipping_requirement:
+            if self.shipping_requirement.needs_shipping_address and not self.address:
+                return True
+            elif self.shipping_requirement.needs_payment and not self.payment_method:
+                return True
+
+        return False
+
     @property
     def required_info_plain_text(self):
-        # TODO: figure out shipping information.
         required_info = ""
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
             required_info += "- Signed MTA\n"
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "- IRB Approval\n"
 
+        if self.needs_shipping_info():
+            required_info += "- Shipping Information\n"
+
         return required_info
 
     @property
     def provided_info_plain_text(self):
-        # TODO: figure out shipping information.
         provided_info = ""
         if self.requester_signed_mta_attachment:
             provided_info += "- Signed MTA\n"
         if not self.irb_attachment:
             provided_info += "- IRB Approval\n"
+        if self.address or self.payment_method:
+            provided_info += "- Shipping Information\n"
 
     @property
     def required_info_html(self):
-        # TODO: figure out shipping information.
         required_info = "<list>"
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
             required_info += "<ul>Signed MTA</ul>"
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "<ul>IRB Approval</ul>"
+        if self.needs_shipping_info():
+            required_info += "<ul>Shipping Information</ul>"
 
         required_info += "</list>"
         return required_info
 
     @property
     def provided_info_html(self):
-        # TODO: figure out shipping information.
         provided_info = "<list>"
         if self.requester_signed_mta_attachment:
             provided_info += "<ul>Signed MTA</ul>"
         if not self.irb_attachment:
             provided_info += "<ul>IRB Approval</ul>"
+        if self.address or self.payment_method:
+            provided_info += "<ul>Shipping Information</ul>"
 
         provided_info += "</list>"
         return provided_info
