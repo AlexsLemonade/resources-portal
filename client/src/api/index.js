@@ -189,8 +189,8 @@ export default {
         body: JSON.stringify(updates)
       }),
     addresses: {
-      get: (userId, addressIs, authorization) =>
-        request(getAPIURL(`users/${userId}/addresses/`), {
+      get: (userId, addressId, authorization) =>
+        request(getAPIURL(`users/${userId}/addresses/${addressId}/`), {
           authorization
         }),
       create: (userId, address, authorization) =>
@@ -202,7 +202,7 @@ export default {
       update: (userId, addressId, changes, authorization) =>
         request(getAPIURL(`users/${userId}/addresses/${addressId}/`), {
           authorization,
-          method: 'PUT',
+          method: 'PATCH',
           body: JSON.stringify(changes)
         })
     }
@@ -357,9 +357,9 @@ export default {
         body: JSON.stringify(materialRequest)
       }),
     update: (materialRequestId, materialRequest, authorization) =>
-      request(getAPIURL(`material-requests/${materialRequestId}`), {
+      request(getAPIURL(`material-requests/${materialRequestId}/`), {
         authorization,
-        method: 'POST',
+        method: 'PATCH',
         body: JSON.stringify(materialRequest)
       }),
     list: (authorization) =>
