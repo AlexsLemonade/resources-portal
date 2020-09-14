@@ -39,7 +39,6 @@ class MaterialSerializer(serializers.ModelSerializer):
             "shipping_requirement",
             "import_source",
             "grants",
-            "organisms",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",
