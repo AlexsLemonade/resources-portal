@@ -101,9 +101,9 @@ class IsModifyingPermittedFields(BasePermission):
         # First, check status since it's the most complicated:
         if "status" in request.data and request.data["status"] != getattr(obj, "status"):
             if request.user == obj.requester:
-                if request.data["status"] != "CANCELLED" or (
-                    request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED"
-                ):
+                if request.data["status"] not in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                    return False
+                elif request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED":
                     return False
             else:
                 # The sharer can pretty much do anything but cancel or verify a request.
