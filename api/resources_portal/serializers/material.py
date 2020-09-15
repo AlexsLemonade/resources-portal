@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from resources_portal.models import Material
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers.relation_serializers import (
     AttachmentRelationSerializer,
     OrganizationRelationSerializer,
     ShippingRequirementRelationSerializer,
