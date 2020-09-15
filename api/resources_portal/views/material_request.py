@@ -122,7 +122,6 @@ class IsModifyingPermittedFields(BasePermission):
                 "executed_mta_attachment",
                 "material",
                 "requester",
-                "requester_signed_mta_attachment",
                 "fulfillment_notes",
                 "created_at",
                 "updated_at",
@@ -133,7 +132,7 @@ class IsModifyingPermittedFields(BasePermission):
             # cancel and resubmit so the sharer can reevaluate whether or
             # not to approve the request.
             if obj.status != "OPEN":
-                forbidden_fields += ["requester_abstract", "irb_attachment"]
+                forbidden_fields += ["requester_abstract"]
         else:
             # The sharer can modify most of the fields the requester
             # can't. This way the requester cannot modify details of
