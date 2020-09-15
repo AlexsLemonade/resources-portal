@@ -6,8 +6,8 @@ from faker import Faker
 
 from resources_portal.models import OrganizationUserSetting
 from resources_portal.test.factories import (
+    OrganizationFactory,
     OrganizationUserSettingFactory,
-    PersonalOrganizationFactory,
     UserFactory,
 )
 
@@ -21,11 +21,9 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
 
     def setUp(self):
         self.user = UserFactory()
-        self.user.personal_organization = PersonalOrganizationFactory(owner=self.user)
-        self.settings = OrganizationUserSettingFactory(
-            user=self.user, organization=self.user.personal_organization
-        )
-        self.organization = self.settings.organization
+        self.organization = OrganizationFactory(owner=self.user)
+        self.organization.members.add(self.user)
+        self.settings = self.user.organization_settings.get(organization=self.organization)
         self.url = reverse("organization-user-setting-detail", args=[self.settings.id])
         self.different_user = UserFactory()
 
@@ -87,8 +85,9 @@ class TestSingleOrganizationUserSettingTestCase(APITestCase):
             "request_receiver": self.different_user.id,
             "organization": self.organization.id,
         }
-        self.client.post(reverse("invitation-list"), invitation_json, format="json")
+        response = self.client.post(reverse("invitation-list"), invitation_json, format="json")
 
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(
             OrganizationUserSetting.objects.filter(
                 user=self.different_user, organization=self.organization
