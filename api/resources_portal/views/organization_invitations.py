@@ -41,9 +41,14 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
 
 class IsMemberAndOrganizationIsntPersonal(BasePermission):
     def has_permission(self, request, view):
+        if "organization" not in request.data:
+            return False
+
         organization = Organization.objects.get(pk=request.data["organization"])
 
-        return not organization.is_personal_organization and request.user in organization.members
+        return (
+            not organization.is_personal_organization and request.user in organization.members.all()
+        )
 
 
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
