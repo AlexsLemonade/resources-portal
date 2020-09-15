@@ -13,6 +13,15 @@ const DownArrow = (props) => (
 )
 
 const theme = {
+  icon: {
+    size: {
+      xsmall: '8px',
+      small: '12px',
+      medium: '24px',
+      large: '64px',
+      xlarge: '96px'
+    }
+  },
   anchor: {
     fontWeight: 400,
     extend: (props) => applyWhen(props.bold, 'font-weight: 600')
@@ -27,30 +36,23 @@ const theme = {
       down: DownArrow
     },
     control: {
+      border: {
+        radius: '4px'
+      },
       extend: (props) =>
         applyAll(
+          `
+            border-radius: 4px;
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+          `,
           applyWhen(
-            props.open && !props.plain,
+            props.open,
             `background-color: ${normalizeColor('black-tint-80', props.theme)};`
           ),
           applyWhen(
-            props.plain,
+            !props.disabled,
             `
-            background-color: ${normalizeColor('black-tint-95', props.theme)};
-            `
-          ),
-          applyWhen(
-            !props.disabled && !props.plain,
-            `
-            &:hover {
-              background-color: ${normalizeColor('black-tint-80', props.theme)};
-            }
-
-            input {
-              border-top-right-radius: 0;
-              border-bottom-right-radius: 0;
-              background-color:  ${normalizeColor('white', props.theme)};
-            }
+            background-color: ${normalizeColor('white', props.theme)};
             `
           ),
           applyWhen(
@@ -86,8 +88,7 @@ const theme = {
           horizontal: '24px',
           vertical: '7px' // 8px - 1px for border
         }
-      },
-      large: {}
+      }
     },
     disabled: {
       opacity: 1
@@ -320,11 +321,15 @@ const theme = {
         }
       }
     },
+    margin: {
+      vertical: 'small'
+    },
     extend: (props) =>
       applyWhen(
         !props.reverse,
         `
         align-items: start;
+        margin: 0 8px;
         div:first-child {
           margin-top: 4px;
         }
@@ -391,6 +396,7 @@ const theme = {
     border: {
       color: 'black-tint-60',
       error: {
+        size: '12px',
         color: {
           dark: 'white',
           light: 'status-critical'
@@ -413,7 +419,7 @@ const theme = {
     error: {
       color: 'status-critical',
       margin: {
-        horizontal: 'small',
+        horizontal: 'none',
         vertical: 'xsmall'
       }
     },
@@ -451,6 +457,9 @@ const theme = {
         font-size: 12px;
         line-height: 18px;
       }
+      button, input, textarea {
+        border: none;
+      }
     `,
         applyWhen(
           props.checkbox,
@@ -462,6 +471,14 @@ const theme = {
           }
         }
       `
+        ),
+        applyWhen(
+          props.isDrop,
+          `
+        > div {
+          border: none;
+        }
+          `
         )
       )
   },
@@ -890,7 +907,15 @@ const theme = {
   scale: 1,
   spacing: 16,
   text: {
-    extend: (props) => applyWhen(props.italic, 'font-style: italic'),
+    extend: (props) =>
+      applyAll(
+        applyWhen(props.italic, 'font-style: italic'),
+        applyWhen(
+          props.serif,
+          `
+      font-family: 'Arvo'`
+        )
+      ),
     large: {
       height: '32px',
       maxWidth: '235px',
