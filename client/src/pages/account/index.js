@@ -13,11 +13,12 @@ export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
     setOrcidInfo,
     setEmail,
     setNeedsEmail,
-    setError
+    setError,
+    user
   } = useSignIn()
 
   // If the user navigates to /account manually, redirect them to /account/basic-information
-  if (noCode && !needsEmail) {
+  if (noCode && !needsEmail && user) {
     router.replace('/account/basic-information')
   }
 
