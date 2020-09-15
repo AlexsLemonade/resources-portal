@@ -41,7 +41,7 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
 
 class IsMemberAndOrganizationIsntPersonal(BasePermission):
     def has_permission(self, request, view):
-        organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organization"])
+        organization = Organization.objects.get(pk=request.data["organization"])
 
         return not organization.is_personal_organization and request.user in organization.members
 
