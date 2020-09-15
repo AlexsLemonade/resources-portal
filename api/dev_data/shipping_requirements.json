@@ -15,6 +15,102 @@
           "accepts_reimbursement": false,
           "accepts_other_payment_methods": false,
           "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
+      },
+      {
+          "needs_shipping_address": true,
+          "needs_payment": false,
+          "accepts_shipping_code": false,
+          "accepts_reimbursement": false,
+          "accepts_other_payment_methods": false,
+          "restrictions": "None. Free yourself!"
       }
   ]
 }
