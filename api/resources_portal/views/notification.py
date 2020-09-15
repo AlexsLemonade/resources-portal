@@ -4,7 +4,7 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Notification, User
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     GrantRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     MaterialRequestRelationSerializer,

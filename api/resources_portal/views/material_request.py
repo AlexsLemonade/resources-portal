@@ -11,13 +11,13 @@ from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
-from resources_portal.serializers.material import MaterialDetailSerializer
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     UserRelationSerializer,
 )
+from resources_portal.serializers.material import MaterialDetailSerializer
 
 SHARER_MODIFIABLE_FIELDS = {"status", "executed_mta_attachment"}
 

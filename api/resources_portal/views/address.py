@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Address, User
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.serializers import UserRelationSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):

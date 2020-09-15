@@ -11,14 +11,14 @@ from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import User
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
-from resources_portal.views.address import SavedAddressSerializer
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     AttachmentRelationSerializer,
     GrantRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
 )
+from resources_portal.views.address import SavedAddressSerializer
 
 logger = get_and_configure_logger(__name__)
 
