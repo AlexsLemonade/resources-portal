@@ -32,7 +32,7 @@ export const AccountLayout = ({ children }) => {
     {
       text: 'Notifications',
       href: '/account/notifications',
-      notifications: 4
+      notifications: 0
     }
   ]
 
