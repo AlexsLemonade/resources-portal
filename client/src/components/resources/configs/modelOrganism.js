@@ -2,12 +2,12 @@ export const searchResult = ['description']
 
 export const details = [
   {
-    basic_infromation: [
+    basic_information: [
       'title',
-      'organism',
+      'organisms',
       'description',
       'genetic_background',
-      'zygostity',
+      'zygosity',
       'number_of_available_models',
       'construct_details',
       'additional_info'
@@ -15,23 +15,57 @@ export const details = [
   }
 ]
 
-export const form = [
+export const listForm = [
   {
-    basic_infromation: [
+    basic_information: [
       'title',
-      'organism',
+      'organisms',
       'description',
       'genetic_background',
-      'zygostity',
+      'zygosity',
       'number_of_available_models',
       'construct_details',
       'additional_info'
     ]
   }
 ]
+
+export const importForm = (importSource) => {
+  if (importSource === 'ZIRC') {
+    return [
+      {
+        basic_information: [
+          'title',
+          'organisms',
+          'description',
+          'genetic_background',
+          'zygosity',
+          'number_of_available_models',
+          'construct_details',
+          'additional_info'
+        ]
+      }
+    ]
+  }
+  return [
+    {
+      basic_information: [
+        'title',
+        'organisms',
+        'description',
+        'genetic_background',
+        'zygosity',
+        'number_of_available_models',
+        'construct_details',
+        'additional_info'
+      ]
+    }
+  ]
+}
 
 export default {
   searchResult,
   details,
-  form
+  listForm,
+  importForm
 }

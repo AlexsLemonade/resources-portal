@@ -4,7 +4,7 @@ export const details = [
   {
     basic_information: [
       'cell_line_name',
-      'organism',
+      'organisms',
       'tissue',
       'disease',
       'number_of_availible_cell_lines',
@@ -29,11 +29,11 @@ export const details = [
   }
 ]
 
-export const form = [
+export const listForm = [
   {
     basic_information: [
       'cell_line_name',
-      'organism',
+      'organisms',
       'tissue',
       'disease',
       'number_of_availible_cell_lines',
@@ -55,11 +55,30 @@ export const form = [
   },
   {
     quality: ['str_profile', 'passage_number', 'description']
+  }
+]
+
+export const importForm = () => [
+  {
+    basic_information: [
+      'url',
+      'cell_line_name',
+      'organisms',
+      'tissue',
+      'disease',
+      'number_of_availible_cell_lines',
+      'age',
+      'sex',
+      'ethnicity',
+      'additional_info'
+    ]
   }
 ]
 
 export default {
   searchResult,
   details,
-  form
+  listForm,
+  importForm,
+  titleAttribute: 'cell_line_name'
 }
