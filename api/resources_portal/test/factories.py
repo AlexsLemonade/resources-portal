@@ -67,6 +67,7 @@ class PersonalOrganizationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Organization"
 
+    is_personal_organization = True
     owner = factory.SubFactory(UserFactory)
     name = factory.Sequence(lambda n: f"test_organization{n}")
     description = "Test description."
