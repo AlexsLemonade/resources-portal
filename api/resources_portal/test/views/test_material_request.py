@@ -134,6 +134,8 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
+        self.assertIn("organization", response.json()["results"][0]["material"])
+
     def test_get_request_from_requester_succeeds(self):
         self.client.force_authenticate(user=self.request.requester)
         response = self.client.get(self.url)

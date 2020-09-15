@@ -11,10 +11,10 @@ from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
+from resources_portal.serializers.material import MaterialDetailSerializer
 from resources_portal.views.relation_serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
-    MaterialRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     UserRelationSerializer,
 )
@@ -63,7 +63,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     requester = UserRelationSerializer()
-    material = MaterialRelationSerializer()
+    material = MaterialDetailSerializer()
     issues = MaterialRequestIssueRelationSerializer(many=True, read_only=True)
     fulfillment_notes = FulfillmentNoteRelationSerializer(many=True, read_only=True)
     address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
@@ -257,10 +257,7 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    filterset_fields = (
-        "id",
-        "status",
-    )
+    filterset_fields = ("id", "status", "requester__id", "assigned_to__id")
 
     def get_queryset(self):
         if self.action == "list":
@@ -287,7 +284,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return queryset.order_by("-created_at")
 
     def get_serializer_class(self):
-        if self.action == "list":
+        if self.action in ["create", "update", "partial-update"]:
             return MaterialRequestSerializer
 
         return MaterialRequestDetailSerializer
@@ -333,7 +330,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return requirements_list
 
     def create(self, request, *args, **kwargs):
-        serializer = MaterialRequestSerializer(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         material = serializer.validated_data["material"]
@@ -360,7 +357,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         if material_request.status in ["REJECTED", "CANCELLED", "VERIFIED_FULFILLED"]:
             return Response(status=403)
 
-        serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
+        serializer = self.get_serializer_class()(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         if request.user == material_request.requester:
