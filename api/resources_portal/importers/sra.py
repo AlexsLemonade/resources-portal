@@ -147,7 +147,7 @@ def gather_all_metadata(accession_code):
         _gather_experiment_metadata(metadata)
         _gather_sample_metadata(metadata)
 
-        metadata["number_samples"] = _get_number_of_samples(metadata["run_accession"])
+        metadata["number_of_samples"] = _get_number_of_samples(metadata["run_accession"])
 
         if "pubmed_id" in metadata.keys():
             _gather_pubmed_metadata(metadata)
