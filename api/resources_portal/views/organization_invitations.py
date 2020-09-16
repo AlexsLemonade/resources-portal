@@ -1,4 +1,5 @@
 from rest_framework import serializers, status, viewsets
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
 
 from resources_portal.models import (
@@ -38,9 +39,22 @@ class OrganizationInvitationSerializer(serializers.ModelSerializer):
         )
 
 
+class IsMemberAndOrganizationIsntPersonal(BasePermission):
+    def has_permission(self, request, view):
+        if "organization" not in request.data:
+            return False
+
+        organization = Organization.objects.get(pk=request.data["organization"])
+
+        return (
+            not organization.is_personal_organization and request.user in organization.members.all()
+        )
+
+
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     queryset = OrganizationInvitation.objects.all()
     serializer_class = OrganizationInvitationSerializer
+    permission_classes = [IsAuthenticated, IsMemberAndOrganizationIsntPersonal]
 
     http_method_names = ["post", "options"]
 
@@ -168,4 +182,4 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     #             status=status.HTTP_403_FORBIDDEN,
     #         )
 
-    #     return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kwargs)
+    #     return super(OrganizationInvitationViewSet, self).destroy(request, *args, **kWargs)

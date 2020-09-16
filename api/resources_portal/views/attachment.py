@@ -12,7 +12,7 @@ import boto3
 from botocore.client import Config
 
 from resources_portal.models import Attachment
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     MaterialRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationRelationSerializer,

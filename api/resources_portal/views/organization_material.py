@@ -4,7 +4,7 @@ from rest_framework.exceptions import MethodNotAllowed
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.serializers import MaterialRelationSerializer
 
 
 class OrganizationMaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

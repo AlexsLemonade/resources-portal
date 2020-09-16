@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Grant, GrantMaterialAssociation, Material
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.serializers import MaterialRelationSerializer
 
 
 class OwnsGrant(BasePermission):

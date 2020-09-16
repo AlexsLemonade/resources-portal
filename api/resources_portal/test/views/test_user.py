@@ -7,7 +7,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import User
-from resources_portal.test.factories import UserFactory
+from resources_portal.test.factories import AddressFactory, UserFactory
 from resources_portal.test.utils import (
     MOCK_EMAIL,
     MOCK_GRANTS,
@@ -15,6 +15,7 @@ from resources_portal.test.utils import (
     generate_mock_orcid_authorization_response,
     generate_mock_orcid_record_response,
 )
+from resources_portal.views.user import PRIVATE_FIELDS
 
 fake = Faker()
 
@@ -70,6 +71,8 @@ class TestUserPostTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+        self.assertEqual(user.personal_organization.name, "My Resources")
+
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_post_with_invalid_grants_returns_error(self, mock_auth_request, mock_record_request):
@@ -109,6 +112,26 @@ class TestUserDetailTestCase(APITestCase):
         self.client.force_authenticate(user=self.second_user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_json = response.json()
+        for field in PRIVATE_FIELDS:
+            self.assertNotIn(field, response_json)
+
+    def test_get_self_returns_private_fields(self):
+        self.client.force_authenticate(user=self.user)
+
+        # Test that addresses are filtered.
+        self.user.addresses.add(AddressFactory())
+        self.user.addresses.add(AddressFactory(saved_for_reuse=False))
+
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response_json = response.json()
+        for field in PRIVATE_FIELDS:
+            self.assertIn(field, response_json)
+
+        self.assertEqual(len(response_json["addresses"]), 2)
 
     def test_get_request_from_unauthenticated_user_forbidden(self):
         self.client.force_authenticate(user=None)

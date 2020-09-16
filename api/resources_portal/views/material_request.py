@@ -1,3 +1,6 @@
+import uuid
+
+from django.db import models
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
@@ -8,13 +11,13 @@ from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
-    MaterialRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     UserRelationSerializer,
 )
+from resources_portal.serializers.material import MaterialDetailSerializer
 
 SHARER_MODIFIABLE_FIELDS = {"status", "executed_mta_attachment"}
 
@@ -60,7 +63,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
 class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     assigned_to = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
     requester = UserRelationSerializer()
-    material = MaterialRelationSerializer()
+    material = MaterialDetailSerializer()
     issues = MaterialRequestIssueRelationSerializer(many=True, read_only=True)
     fulfillment_notes = FulfillmentNoteRelationSerializer(many=True, read_only=True)
     address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
@@ -89,6 +92,77 @@ class CanApproveRequestsOrIsRequester(BasePermission):
             or request.user == obj.requester
             or request.user == obj.assigned_to
         )
+
+
+class IsModifyingPermittedFields(BasePermission):
+    """Certain changes cannot be made by either party at various times."""
+
+    def has_object_permission(self, request, view, obj):
+        # First, check status since it's the most complicated:
+        if "status" in request.data and request.data["status"] != getattr(obj, "status"):
+            if request.user == obj.requester:
+                if request.data["status"] not in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                    return False
+                elif request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED":
+                    return False
+            else:
+                # The sharer can pretty much do anything but cancel or verify a request.
+                if request.data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                    return False
+
+        if request.user == obj.requester:
+            forbidden_fields = [
+                "is_active",
+                "assigned_to",
+                "rejection_reason",
+                "has_issues",
+                "issues",
+                "requires_action_sharer",
+                "requires_action_requester",
+                "executed_mta_attachment",
+                "material",
+                "requester",
+                "fulfillment_notes",
+                "created_at",
+                "updated_at",
+            ]
+
+            # If the request is apporoved, the requester can't change
+            # these any longer.  If they really need to, they'll need to
+            # cancel and resubmit so the sharer can reevaluate whether or
+            # not to approve the request.
+            if obj.status != "OPEN":
+                forbidden_fields += ["requester_abstract"]
+        else:
+            # The sharer can modify most of the fields the requester
+            # can't. This way the requester cannot modify details of
+            # the request post-approval, but the sharer can update
+            # those fields for the requester if necessary.
+            forbidden_fields = [
+                "is_active",
+                "payment_method",
+                "payment_method_notes",
+                "has_issues",
+                "issues",
+                "requires_action_sharer",
+                "requires_action_requester",
+                "material",
+                "created_at",
+                "updated_at",
+            ]
+
+        for field in forbidden_fields:
+            if field in request.data:
+                attribute = getattr(obj, field)
+                if isinstance(attribute, models.Model):
+                    # UUID's can't just be treated as strings for some reason...
+                    pk = str(attribute.id) if isinstance(attribute.id, uuid.UUID) else attribute.id
+                    if request.data[field] != pk:
+                        return False
+                elif request.data[field] != attribute:
+                    return False
+
+        return True
 
 
 def send_material_request_notif(notif_type, request, notified_user):
@@ -183,10 +257,7 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    filterset_fields = (
-        "id",
-        "status",
-    )
+    filterset_fields = ("id", "status", "requester__id", "assigned_to__id")
 
     def get_queryset(self):
         if self.action == "list":
@@ -213,7 +284,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return queryset.order_by("-created_at")
 
     def get_serializer_class(self):
-        if self.action == "list":
+        if self.action in ["create", "update", "partial-update"]:
             return MaterialRequestSerializer
 
         return MaterialRequestDetailSerializer
@@ -222,7 +293,11 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
         elif self.action == "update" or self.action == "partial-update":
-            permission_classes = [IsAuthenticated, CanApproveRequestsOrIsRequester]
+            permission_classes = [
+                IsAuthenticated,
+                CanApproveRequestsOrIsRequester,
+                IsModifyingPermittedFields,
+            ]
         elif self.action == "destroy":
             permission_classes = [IsAuthenticated, IsAdminUser]
         else:
@@ -255,7 +330,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return requirements_list
 
     def create(self, request, *args, **kwargs):
-        serializer = MaterialRequestSerializer(data=request.data)
+        serializer = self.get_serializer_class()(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         material = serializer.validated_data["material"]
@@ -282,7 +357,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         if material_request.status in ["REJECTED", "CANCELLED", "VERIFIED_FULFILLED"]:
             return Response(status=403)
 
-        serializer = MaterialRequestSerializer(material_request, data=request.data, partial=True)
+        serializer = self.get_serializer_class()(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
         if request.user == material_request.requester:

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
@@ -7,81 +7,8 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material, Organization
+from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
 from resources_portal.views.material_request import MaterialRequestSerializer
-from resources_portal.views.relation_serializers import (
-    AttachmentRelationSerializer,
-    ShippingRequirementRelationSerializer,
-    UserRelationSerializer,
-)
-
-
-class MaterialSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Material
-        fields = (
-            "id",
-            "category",
-            "title",
-            "url",
-            "organisms",
-            "organization",
-            "pubmed_id",
-            "is_archived",
-            "additional_metadata",
-            "contact_user",
-            "sequence_maps",
-            "mta_attachment",
-            "needs_mta",
-            "has_publication",
-            "needs_irb",
-            "needs_abstract",
-            "imported",
-            "shipping_requirement",
-            "import_source",
-            "grants",
-            "organisms",
-            "publication_title",
-            "pre_print_doi",
-            "pre_print_title",
-            "citation",
-            "additional_info",
-            "embargo_date",
-            "created_at",
-            "updated_at",
-        )
-        read_only_fields = (
-            "id",
-            "created_at",
-            "updated_at",
-            "sequence_maps",
-            "requests",
-            "needs_mta",
-            "has_publication",
-        )
-
-    def validate(self, data):
-        """Only allow materials with no open requests to be archived.
-        """
-        # If they aren't setting is_archived=True on an existing
-        # material then they're fine.
-        if "id" not in data or "is_archived" not in data or not data["is_archived"]:
-            return data
-
-        material = Material.objects.get(data["id"])
-        for request in material.requests:
-            if request.status not in ["REJECTED", "INVALID", "CANCELLED", "FULFILLED"]:
-                raise serializers.ValidationError(
-                    "All requests for the material must be closed first."
-                )
-
-        return data
-
-
-class MaterialDetailSerializer(MaterialSerializer):
-    contact_user = UserRelationSerializer()
-    mta_attachment = AttachmentRelationSerializer()
-    shipping_requirement = ShippingRequirementRelationSerializer()
-    sequence_maps = AttachmentRelationSerializer(many=True)
 
 
 class HasAddResources(BasePermission):

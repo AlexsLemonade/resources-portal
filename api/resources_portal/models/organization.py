@@ -45,6 +45,7 @@ class Organization(SafeDeleteModel):
     name = models.TextField(blank=False, null=False, help_text="The name of the organization.")
     description = models.TextField(blank=False, null=False)
 
+    is_personal_organization = models.BooleanField(default=False, null=False)
     owner = models.ForeignKey(
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="owned_organizations"
     )
