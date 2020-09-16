@@ -60,7 +60,7 @@ def send_user_weekly_digest(user):
     notifications = user.notifications.filter(created_at__gte=start_time)
 
     if notifications.count() < 1:
-        print(f"No notifications for user: {user.full_name} this week!")
+        logger.info(f"No notifications for user: {user.full_name} this week!")
         return
 
     intro_line = (
