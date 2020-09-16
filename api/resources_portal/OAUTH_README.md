@@ -51,17 +51,17 @@ The only differences between Sandbox and Prod are seperate databases and the fac
 
 We have two established sandbox accounts which can be used for testing.
 
-Account 1:
-|----------|-----------------------------|
-| Email:   | rportaltest@mailinator.com  |
-| Password | PASSWORD1                   |
+| Account 1:|                             |
+|---------- |-----------------------------|
+| Email:    | rportaltest2@mailinator.com |
+| Password  | PASSWORD1                   |
 
 This account has its email preferences set to "Trusted Parties".
 
-Account 2:
-|----------|-----------------------------|
-| Email:   | rportaltest2@mailinator.com |
-| Password | PASSWORD1                   |
+| Account 2:|                             |
+|---------- |-----------------------------|
+| Email:    | rportaltest2@mailinator.com |
+| Password  | PASSWORD1                   |
 
 
 This account has its email preferences set to "Private".
