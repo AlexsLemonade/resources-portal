@@ -109,12 +109,19 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
   )
 }
 
-export const CreateAccountLoginButton = ({ title, showSignIn }) => {
+export const CreateAccountLoginButton = ({
+  title,
+  showSignIn,
+  plainButton
+}) => {
   const [showing, setShowing] = React.useState(false)
 
   return (
     <>
-      <LoginButton onClick={() => setShowing(true)} />
+      {!plainButton && <LoginButton onClick={() => setShowing(true)} />}
+      {plainButton && (
+        <Button primary onClick={() => setShowing(true)} label={title} />
+      )}
       <Modal showing={showing} setShowing={setShowing}>
         <CreateOrLogin title={title} showSignIn={showSignIn} />
       </Modal>
