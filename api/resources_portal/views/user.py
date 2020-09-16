@@ -200,8 +200,6 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         user.personal_organization = org
 
-        print("*******************************************", request.data)
-
         if "grants" in request.data:
             grant_json = request.data["grants"]
 
