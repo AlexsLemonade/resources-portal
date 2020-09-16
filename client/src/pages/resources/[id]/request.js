@@ -5,6 +5,7 @@ import Error from 'pages/404'
 import dynamic from 'next/dynamic'
 import api from 'api'
 import { getReadable } from 'helpers/readableNames'
+import { GatedLoginModal } from 'components/modals/GatedLoginModal'
 
 const RequestResourceForm = dynamic(
   () => import('components/resources/RequestResourceForm'),
@@ -26,7 +27,12 @@ const ResourcesRequest = ({ resource }) => {
           </Link>{' '}
           - {getReadable(resource.category)}
         </Heading>
-        <RequestResourceForm resource={resource} />
+        <GatedLoginModal
+          renderChildren={false}
+          title="Sign in to request resource"
+        >
+          <RequestResourceForm resource={resource} />
+        </GatedLoginModal>
       </Box>
     </Box>
   )
