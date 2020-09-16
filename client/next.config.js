@@ -2,18 +2,19 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const path = require('path')
 
 module.exports = (phase) => {
-  console.log(process.env)
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
   const isProduction = process.env.STAGE === 'production'
   const apiHost =
-    process.env.API_HOST || isProduction
+    process.env.API_HOST ||
+    (isProduction
       ? 'https://api.resources.alexslemonade.org'
-      : 'https://api.staging.resources.alexslemonade.org'
+      : 'https://api.staging.resources.alexslemonade.org')
 
   const clientHost =
-    process.env.CLIENT_HOST || isProduction
+    process.env.CLIENT_HOST ||
+    (isProduction
       ? 'https://resources.alexslemonade.org'
-      : 'https://staging.resources.alexslemonade.org'
+      : 'https://staging.resources.alexslemonade.org')
 
   const env = {
     API_VERSION: 'v1',
