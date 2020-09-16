@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from resources_portal import utils
+from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.emailer import (
     EMAIL_SOURCE,
     LOGO_EMBEDDED_IMAGE_CONFIGS,
@@ -12,6 +13,8 @@ from resources_portal.emailer import (
     send_mail,
 )
 from resources_portal.models import User
+
+logger = get_and_configure_logger(__name__)
 
 EMAIL_HTML_TEMPLATE = (
     Path("resources_portal/email_assets/weekly_email_template_inlined.html")
