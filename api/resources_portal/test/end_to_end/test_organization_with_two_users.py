@@ -38,7 +38,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         self.user_data = {
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
     @patch("orcid.PublicAPI", side_effect=generate_random_mock_orcid_record_response)
