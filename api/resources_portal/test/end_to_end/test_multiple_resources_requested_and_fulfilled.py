@@ -64,7 +64,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         self.user_data = {
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
         Notification.objects.all().delete()
