@@ -2,6 +2,7 @@
   "version": 2,
   "public": true,
   "alias": ["staging.resources.alexslemonade.org"],
+  "name" : "resources-portal",
   "github": {
     "autoAlias": false,
     "silent": true
