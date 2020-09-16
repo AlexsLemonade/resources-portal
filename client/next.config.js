@@ -2,6 +2,7 @@ const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const path = require('path')
 
 module.exports = (phase) => {
+  console.log(process.env)
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
   const isProduction = process.env.STAGE === 'production'
   const apiHost =
