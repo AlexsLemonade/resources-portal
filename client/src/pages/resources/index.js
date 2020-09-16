@@ -141,23 +141,25 @@ export default function ListResource() {
           )}
         </Box>
       </Box>
-      <Box
-        width="medium"
-        margin={{ top: 'xlarge' }}
-        pad="medium"
-        round="xsmall"
-        border
-        alignSelf="center"
-        elevation="small"
-      >
-        <Text>
-          Repository for your resource doesn’t exist? Can’t list your resource
-          in a repository yet?{' '}
-          <Link href="/resources/list">
-            <Anchor label="List with us" />
-          </Link>
-        </Text>
-      </Box>
+      {isLoggedIn && (
+        <Box
+          width="medium"
+          margin={{ top: 'xlarge' }}
+          pad="medium"
+          round="xsmall"
+          border
+          alignSelf="center"
+          elevation="small"
+        >
+          <Text>
+            Repository for your resource doesn’t exist? Can’t list your resource
+            in a repository yet?{' '}
+            <Link href="/resources/list">
+              <Anchor label="List with us" />
+            </Link>
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }
