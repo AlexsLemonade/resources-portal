@@ -324,6 +324,75 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_patch_can_reject(self):
+        self.client.force_authenticate(user=self.sharer)
+
+        material_request_data = {"status": "REJECTED"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_REJECTED")),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_REJECTED")
+            ),
+            1,
+        )
+
+    def test_patch_can_cancel(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        material_request_data = {"status": "CANCELLED"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_CANCELLED")),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_CANCELLED"
+                )
+            ),
+            1,
+        )
+
+    def test_patch_can_move_to_in_fulfillment(self):
+        # Remove the executed MTA so we can test the IN_FULFILLMENT notifications.
+        self.request.executed_mta_attachment = None
+        self.request.save()
+
+        self.client.force_authenticate(user=self.sharer)
+
+        material_request_data = {"status": "IN_FULFILLMENT"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_IN_FULFILLMENT"
+                )
+            ),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT"
+                )
+            ),
+            1,
+        )
+
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
 
