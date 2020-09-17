@@ -49,9 +49,13 @@ const ManageResources = () => {
             key={resource.id}
             margin={{ vertical: 'medium' }}
             elevation="medium"
-            pad="medium"
+            pad={{ vertical: 'medium', horizontal: 'large' }}
           >
-            <ManageResourceCard resource={resource} />
+            <ManageResourceCard
+              resource={resource}
+              options={['edit', 'manage']}
+              moreOptions={['view', 'archive', 'delete']}
+            />
           </Box>
         ))}
     </DrillDownNav>
