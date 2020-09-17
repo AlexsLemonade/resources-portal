@@ -23,7 +23,7 @@ export const useNotifications = () => {
 
   const getUnreadNotifications = () => {
     if (!user || !notifications) {
-      return {}
+      return false
     }
 
     if (!user.viewed_notifications_at) {

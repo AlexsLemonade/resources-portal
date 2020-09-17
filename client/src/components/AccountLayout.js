@@ -6,37 +6,85 @@ import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
 
+const notificationsDict = {
+  basicInfo: [''],
+  manageResources: ['MATERIAL_ADDED', 'MATERIAL_ARCHIVED', 'MATERIAL_DELETED'],
+  requests: [
+    'MATERIAL_REQUEST_SHARER_ASSIGNED_NEW',
+    'MATERIAL_REQUEST_SHARER_RECEIVED',
+    'MATERIAL_REQUEST_SHARER_ASSIGNED',
+    'MATERIAL_REQUEST_SHARER_ASSIGNMENT',
+    'MATERIAL_REQUEST_SHARER_APPROVED',
+    'MATERIAL_REQUEST_SHARER_REJECTED',
+    'MATERIAL_REQUEST_SHARER_CANCELLED',
+    'MATERIAL_REQUEST_SHARER_RECEIVED_MTA',
+    'MATERIAL_REQUEST_SHARER_RECEIVED_INFO',
+    'MATERIAL_REQUEST_SHARER_EXECUTED_MTA',
+    'MATERIAL_REQUEST_SHARER_IN_FULFILLMENT',
+    'MATERIAL_REQUEST_SHARER_FULFILLED',
+    'MATERIAL_REQUEST_SHARER_VERIFIED',
+    'MATERIAL_REQUEST_ISSUE_SHARER_REPORTED',
+    'MATERIAL_REQUEST_REQUESTER_ACCEPTED',
+    'MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT',
+    'MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA',
+    'MATERIAL_REQUEST_REQUESTER_FULFILLED',
+    'MATERIAL_REQUEST_REQUESTER_REJECTED',
+    'MATERIAL_REQUEST_REQUESTER_ESCALATED'
+  ],
+  teams: [
+    'ORGANIZATION_NEW_MEMBER',
+    'ORGANIZATION_BECAME_OWNER',
+    'ORGANIZATION_NEW_OWNER',
+    'ORGANIZATION_MEMBER_LEFT',
+    'ORGANIZATION_NEW_GRANT',
+    'ORGANIZATION_INVITE'
+  ]
+}
+
+const getNotificationsForType = (notifications, type) => {
+  if (!notifications) {
+    return {}
+  }
+  const notifsForType = notifications.filter((notification) => {
+    return notificationsDict[type].includes(notification.notification_type)
+  })
+
+  return notifsForType
+}
+
 export const AccountLayout = ({ children }) => {
   const isClient = useIsClient()
   const { getUnreadNotifications } = useNotifications()
   const router = useRouter()
 
-  const unreadNotifs = getUnreadNotifications()
+  let unreadNotifs = []
+  unreadNotifs = getUnreadNotifications()
   const links = [
     {
       text: 'Basic Information',
       href: '/account/basic-information',
-      notifications: 0
+      notifications: getNotificationsForType(unreadNotifs, 'basicInfo').length
     },
     {
       text: 'Manage Resources',
       href: '/account/manage-resources',
-      notifications: 0
+      notifications: getNotificationsForType(unreadNotifs, 'manageResources')
+        .length
     },
     {
       text: 'Requests',
       href: '/account/requests',
-      notifications: 0
+      notifications: getNotificationsForType(unreadNotifs, 'requests').length
     },
     {
       text: 'Teams',
       href: '/account/teams',
-      notifications: 0
+      notifications: getNotificationsForType(unreadNotifs, 'teams').length
     },
     {
       text: 'Notifications',
       href: '/account/notifications',
-      notifications: unreadNotifs ? unreadNotifs.length : 0
+      notifications: unreadNotifs.length
     }
   ]
 
