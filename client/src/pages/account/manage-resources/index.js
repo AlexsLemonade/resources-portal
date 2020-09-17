@@ -14,13 +14,13 @@ const ManageResources = () => {
 
   React.useEffect(() => {
     const asyncResourceFetch = async () => {
-      const requests = user.organizations.map(({ id: teamId }) =>
+      const resourceRequestPromises = user.organizations.map(({ id: teamId }) =>
         api.teams.resources.get(teamId, token)
       )
 
-      await Promise.all(requests)
+      const resourceRequests = await Promise.all(resourceRequestPromises)
 
-      const fetchedResources = requests.map((request) => {
+      const fetchedResources = resourceRequests.map((request) => {
         if (request.isOk) return request.response.results
         return []
       })
