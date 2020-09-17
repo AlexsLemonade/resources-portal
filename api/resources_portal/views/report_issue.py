@@ -82,14 +82,8 @@ def report_issue_view(request):
     else:
         email_text = get_general_issue_report_email(request, message)
 
-    if settings.AWS_SES_DOMAIN:
-        logger.info("Sending an email invitation to {settings.GRANTS_TEAM_EMAIL}.")
-        send_mail(
-            EMAIL_SOURCE, [settings.GRANTS_TEAM_EMAIL], email_text["subject"], email_text["body"]
-        )
-    else:
-        logger.info(f"In prod an email would have been sent to {settings.GRANTS_TEAM_EMAIL}:")
-        print(email_text["body"])
+    logger.info("Sending an email invitation to {settings.GRANTS_TEAM_EMAIL}.")
+    send_mail(EMAIL_SOURCE, [settings.GRANTS_TEAM_EMAIL], email_text["subject"], email_text["body"])
 
     notification = Notification(
         notification_type=notification_type,

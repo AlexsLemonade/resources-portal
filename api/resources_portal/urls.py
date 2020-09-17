@@ -33,6 +33,7 @@ from resources_portal.views import (
     UserDocumentView,
     UserOrganizationViewSet,
     UserViewSet,
+    attachment_copy_view,
     email_invitation_view,
     local_file_view,
     report_issue_view,
@@ -134,6 +135,10 @@ urlpatterns.append(
         name="material-material-requests-list",
     )
 )
+urlpatterns.append(
+    path("v1/attachments/<int:attachment_id>/copy", attachment_copy_view, name="attachment-copy",)
+)
+
 
 urlpatterns.append(
     path(

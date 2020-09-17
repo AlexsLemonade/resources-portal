@@ -39,28 +39,24 @@ def email_invitation_view(request):
         f" them manage sharing resources. Please let them know once you create an account"
         f" so they can add you to the relevant teams."
     )
-    if settings.AWS_SES_DOMAIN:
-        cta = "Create an account"
-        invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
-        formatted_html = (
-            EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
-            .replace("REPLACE_CTA", cta)
-            .replace("REPLACE_INVITATION_LINK", invitation_link)
-        )
-        plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
-        subject = f"CCRR: {request.user.full_name} has invited you to create an account"
+    cta = "Create an account"
+    invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
+    formatted_html = (
+        EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
+        .replace("REPLACE_CTA", cta)
+        .replace("REPLACE_INVITATION_LINK", invitation_link)
+    )
+    plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
+    subject = f"CCRR: {request.user.full_name} has invited you to create an account"
 
-        logger.info("Sending an email invitation to {email}.")
-        send_mail(
-            EMAIL_SOURCE,
-            [email],
-            subject,
-            plain_text_email,
-            formatted_html,
-            LOGO_EMBEDDED_IMAGE_CONFIGS,
-        )
-    else:
-        logger.info(f"In prod an email would have been sent to {email}:")
-        print(body)
+    logger.info("Sending an email invitation to {email}.")
+    send_mail(
+        EMAIL_SOURCE,
+        [email],
+        subject,
+        plain_text_email,
+        formatted_html,
+        LOGO_EMBEDDED_IMAGE_CONFIGS,
+    )
 
     return Response(status=status.HTTP_201_CREATED)

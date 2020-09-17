@@ -1,3 +1,6 @@
+import os
+import shutil
+
 from django.forms.models import model_to_dict
 from django.urls import reverse
 from rest_framework import status
@@ -217,3 +220,58 @@ class TestSingleAttachmentTestCase(APITestCase):
         response = self.client.delete(self.url)
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class TestCopyAttachment(APITestCase):
+    """
+    Tests /attachment-copy operation.
+    """
+
+    def setUp(self):
+        clean_test_file_uploads()
+        self.attachment = AttachmentFactory()
+        self.attachment_json = model_to_dict(self.attachment)
+        self.attachment_json.pop("sequence_map_for")
+        self.attachment_json.pop("owned_by_org")
+
+        shutil.rmtree(self.attachment.local_file_dir, ignore_errors=True)
+        os.mkdir(self.attachment.local_file_dir)
+        shutil.copyfile("dev_data/nerd_sniping.png", self.attachment.local_file_path)
+
+        self.url = reverse("attachment-copy", args=[self.attachment.id])
+
+        self.organization = self.attachment.owned_by_org
+
+        self.user = self.attachment.owned_by_user
+
+        self.user_in_org = UserFactory()
+        self.organization.members.add(self.user_in_org)
+        self.organization.save()
+
+        self.user_not_in_org = UserFactory()
+
+        self.admin = UserFactory()
+        self.admin.is_staff = True
+        self.admin.save()
+
+    def test_post_request_from_owning_user_succeeds(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        new_attachment = Attachment.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(
+            os.path.getsize(new_attachment.local_file_path),
+            os.path.getsize(self.attachment.local_file_path),
+        )
+
+    def test_post_request_from_org_member_succeeds(self):
+        self.client.force_authenticate(user=self.user_in_org)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_post_request_from_non_owner_fails(self):
+        self.client.force_authenticate(user=self.user_not_in_org)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

@@ -53,7 +53,7 @@ class TestUserPostTestCase(APITestCase):
             "access_token": "12345",
             "refresh_token": "56789",
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
@@ -76,7 +76,7 @@ class TestUserPostTestCase(APITestCase):
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
     def test_post_with_invalid_grants_returns_error(self, mock_auth_request, mock_record_request):
-        self.user_data["grant_info"][0].pop("funder_id")
+        self.user_data["grants"][0].pop("funder_id")
 
         response = self.client.post(self.url, self.user_data)
 

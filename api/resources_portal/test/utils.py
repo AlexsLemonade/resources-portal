@@ -65,14 +65,14 @@ def generate_random_mock_orcid_record_response(*args, **kwargs):
     return MockORCIDRecordResponse(summary_dict)
 
 
-def get_mock_auth_data(grant_info):
+def get_mock_auth_data(grants):
     """
     Takes a list of grant info, in the form [{"title": "Title 1", "funder_id": "12345"}...]
     """
     data = {"code": MOCK_AUTHORIZATION_CODE, "email": MOCK_EMAIL, "origin_url": MOCK_ORIGIN_URL}
 
-    if grant_info:
-        data["grant_info"] = grant_info
+    if grants:
+        data["grants"] = grants
 
     return data
 

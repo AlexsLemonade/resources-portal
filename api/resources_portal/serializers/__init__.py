@@ -4,6 +4,7 @@ dependency."""
 
 from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
 from resources_portal.serializers.relation_serializers import (
+    AddressRelationSerializer,
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
     GrantRelationSerializer,

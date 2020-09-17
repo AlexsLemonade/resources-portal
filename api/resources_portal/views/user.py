@@ -200,8 +200,8 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         user.personal_organization = org
 
-        if "grant_info" in request.data:
-            grant_json = request.data["grant_info"]
+        if "grants" in request.data:
+            grant_json = request.data["grants"]
 
             for grant_info in grant_json:
                 if "title" not in grant_info:

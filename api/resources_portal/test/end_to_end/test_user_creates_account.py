@@ -29,7 +29,7 @@ class TestUserCreatesAccount(APITestCase):
     def test_create_account_and_list_resource(self, mock_auth_request, mock_record_request):
         user_data = {
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
         # Create user with ORCID

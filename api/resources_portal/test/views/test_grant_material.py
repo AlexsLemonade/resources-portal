@@ -32,7 +32,7 @@ class GrantMaterialsTestCase(APITestCase):
         url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(response.json()["count"], 1)
 
     def test_get_fails_if_not_owner(self):
         user = UserFactory()
