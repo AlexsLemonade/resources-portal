@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Organization
+from resources_portal.models import Notification, Organization
 from resources_portal.test.factories import (
     OrganizationFactory,
     PersonalOrganizationFactory,
@@ -128,6 +128,14 @@ class TestSingleOrganizationTestCase(APITestCase):
 
         # But adding members requires a request to the nested route:
         self.assertNotIn(new_member, self.organization.members.all())
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_BECAME_OWNER")), 1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_OWNER")),
+            self.organization.members.count() - 1,
+        )
 
     def test_put_owner_fails_if_not_member(self):
         """The new owner must belong to the organization already."""

@@ -22,6 +22,9 @@ def send_notifications(
     notification_config = NOTIFICATIONS[notification_type]
     recipients = set()
 
+    # If send_to_associated_user = False, and the primary user is the
+    # associated user, then they shouldn't be notified.
+    block_primary_user = False
     if (
         "send_to_organization" in notification_config
         and notification_config["send_to_organization"]
@@ -33,12 +36,17 @@ def send_notifications(
             and not notification_config["send_to_associated_user"]
             and associated_user
         ):
-            members.exclude(id=associated_user.id)
+            members = members.exclude(id=associated_user.id)
+
+            if associated_user == primary_user:
+                block_primary_user = True
 
         recipients = recipients | set(members.all())
 
     # Default to sending to primary user.
-    if (
+    if block_primary_user:
+        recipients = recipients - set([primary_user])
+    elif (
         "send_to_primary_user" not in notification_config
         or notification_config["send_to_primary_user"]
     ):

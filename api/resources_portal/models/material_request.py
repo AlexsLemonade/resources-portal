@@ -1,5 +1,8 @@
+import datetime
+
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
@@ -9,6 +12,7 @@ from resources_portal.models.address import Address
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
+from resources_portal.utils import pretty_date
 
 
 class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
@@ -116,6 +120,14 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     @property
     def has_issues(self):
         return self.issues.filter(status="OPEN").count() > 0
+
+    @property
+    def human_readable_created_at(self):
+        return pretty_date(self.created_at)
+
+    @property
+    def is_one_month_old(self):
+        return self.created_at < (timezone.now() - datetime.timedelta(days=30))
 
     @property
     def frontend_URL(self):

@@ -39,6 +39,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "assigned_to",
             "has_issues",
             "issues",
+            "is_one_month_old",
             "is_missing_requester_documents",
             "requires_action_sharer",
             "requires_action_requester",
@@ -49,6 +50,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "requester_signed_mta_attachment",
             "fulfillment_notes",
             "address",
+            "human_readable_created_at",
             "created_at",
             "updated_at",
         )
