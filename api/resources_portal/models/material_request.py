@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -10,7 +11,7 @@ from resources_portal.models.material import Material
 from resources_portal.models.user import User
 
 
-class MaterialRequest(SafeDeleteModel):
+class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
@@ -82,9 +83,9 @@ class MaterialRequest(SafeDeleteModel):
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    @property
+    @computed(models.BooleanField(blank=False, null=True))
     def is_active(self):
-        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT"]
+        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT", "FULFILLED"]
 
     @property
     def requires_action_sharer(self):
