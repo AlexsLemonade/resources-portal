@@ -26,7 +26,6 @@ class OrganizationGrantTestCase(APITestCase):
 
         grant_orgs = self.grant.organizations.all()
         self.organization1 = grant_orgs[0]
-        self.organization2 = grant_orgs[1]
         self.org_1_member = UserFactory()
         self.organization1.members.add(self.org_1_member)
         self.organization1.grants.add(self.grant2)
@@ -56,8 +55,8 @@ class OrganizationGrantTestCase(APITestCase):
         self.assertEqual(response.json()["count"], 2)
 
     def test_get_fails_if_not_member_or_owner(self):
-        self.client.force_authenticate(user=self.organization1.owner)
-        url = reverse("organizations-grants-list", args=[self.organization2.id])
+        self.client.force_authenticate(user=UserFactory())
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
@@ -109,7 +108,7 @@ class OrganizationGrantTestCase(APITestCase):
         grant_json = self.client.get(grant_url).json()
 
         # then sign in as owner to diff org
-        self.client.force_authenticate(user=self.organization2.owner)
+        self.client.force_authenticate(user=UserFactory())
         url = reverse("organizations-grants-list", args=[self.organization1.id])
 
         response = self.client.post(url, data=grant_json)
@@ -147,17 +146,11 @@ class OrganizationGrantTestCase(APITestCase):
         # Add grant2 materials to organization1, so they can be transferred out.
         materials = grant.materials.all()
         material1 = materials[0]
-        material2 = materials[1]
         material1.organization = self.organization1
         material1.mta_attachment = AttachmentFactory(
             owned_by_user=user, owned_by_org=material1.organization
         )
         material1.save()
-        material2.organization = self.organization1
-        material2.mta_attachment = AttachmentFactory(
-            owned_by_user=user, owned_by_org=material2.organization
-        )
-        material2.save()
 
         # Create a personal organization for grant2.user (factory
         # doesn't create by default.)
@@ -179,7 +172,7 @@ class OrganizationGrantTestCase(APITestCase):
             self.assertEqual(user.personal_organization, material.mta_attachment.owned_by_org)
 
     def test_delete_fails_if_not_grant_owner(self):
-        self.client.force_authenticate(user=self.organization2.owner)
+        self.client.force_authenticate(user=UserFactory())
         grant = GrantFactory()
         self.organization1.grants.add(grant)
         self.organization1.save()
@@ -189,7 +182,7 @@ class OrganizationGrantTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_delete_fails_if_not_organization_owner(self):
-        self.client.force_authenticate(user=self.organization2.owner)
+        self.client.force_authenticate(user=UserFactory())
 
         url = reverse("organizations-grants-detail", args=[self.organization1.id, self.grant.id])
         response = self.client.delete(url)
