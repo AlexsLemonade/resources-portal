@@ -1,10 +1,13 @@
 import React from 'react'
 import api from '../api'
 import { useUser } from './useUser'
+import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useNotifications = () => {
   const { user, token } = useUser()
-  const [notifications, setNotifications] = React.useState()
+  const { notifications, setNotifications } = React.useContext(
+    ResourcesPortalContext
+  )
 
   React.useEffect(() => {
     const fetchNotifications = async () => {
@@ -19,7 +22,7 @@ export const useNotifications = () => {
     }
 
     if (user && !notifications) fetchNotifications()
-  }, [])
+  })
 
   const getUnreadNotifications = () => {
     if (!user || !notifications) {

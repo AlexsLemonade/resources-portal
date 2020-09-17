@@ -1,8 +1,6 @@
 import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
 import Link from 'next/link'
-import { useUser } from 'hooks/useUser'
-import api from '../api'
 
 const readableTimeAgo = (time) => {
   const oneDay = 24 * 60 * 60 * 1000
@@ -74,25 +72,7 @@ export const createNotificationLinks = (notification) => {
 }
 
 export const Notification = ({ notification }) => {
-  const { refreshUserData, user, token } = useUser()
-  const [updatedNotifs, setUpdatedNotifs] = React.useState(false)
-
   const notificationText = createNotificationLinks(notification)
-
-  React.useEffect(() => {
-    if (!updatedNotifs) {
-      const updateNotifsViewed = async () => {
-        const today = new Date()
-        const response = await api.user
-          .update(user.id, { viewed_notifications_at: today }, token)
-          .then(refreshUserData)
-
-        return response
-      }
-      updateNotifsViewed()
-      setUpdatedNotifs(true)
-    }
-  })
 
   return (
     <Box round="medium" elevation="1" fill="horizontal" pad="medium">
