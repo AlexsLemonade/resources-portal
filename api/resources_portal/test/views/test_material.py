@@ -136,6 +136,7 @@ class TestSingleMaterialTestCase(APITestCase):
         material_json["url"] = new_url
         material_json["contact_user"] = material_json["contact_user"]["id"]
         material_json["is_archived"] = True
+        material_json["organization"] = material_json["organization"]["id"]
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

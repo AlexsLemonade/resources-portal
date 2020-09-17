@@ -1,15 +1,13 @@
 import React from 'react'
-import { Box, Heading, Anchor, Text, Button, Tabs, Tab } from 'grommet'
+import { Box, Heading, Text, Button, Tabs, Tab } from 'grommet'
 import Link from 'next/link'
-import api from '../../../api'
-// import { ResourceDetails } from '../../../components/resources/ResourceDetails'
-import DetailsTable from '../../../components/DetailsTable'
-import Organism from '../../../images/organism.svg'
-import ResourceType from '../../../images/resource-type.svg'
-
-const ResourceDetails = () => {
-  return <>IMPLEMENT THIS</>
-}
+import api from 'api'
+import { ResourceDetails } from 'components/resources/ResourceDetails'
+import { PublicationInformation } from 'components/resources/PublicationInformation'
+import { ContactSubmitter } from 'components/resources/ContactSubmitter'
+import { RequestRequirements } from 'components/resources/RequestRequirements'
+import { RelatedResources } from 'components/resources/RelatedResources'
+import { ResourceCard } from 'components/resources/ResourceCard'
 
 const ResourceDetailsPage = ({ resource }) => {
   if (!resource)
@@ -18,45 +16,24 @@ const ResourceDetailsPage = ({ resource }) => {
         This resource is not currently available. Please try again soon.
       </Text>
     )
-
   return (
     <>
       <Box
         direction="row"
         justify="between"
         align="center"
-        margin={{ bottom: 'large' }}
+        margin={{ bottom: 'xlarge' }}
       >
-        <Box pad="large">
-          <Heading level="5" margin={{ top: '0', bottom: 'large' }}>
-            <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
-              <Anchor label={resource.title} />
-            </Link>
-          </Heading>
-
-          <Box direction="row">
-            <ResourceType />
-            <Text margin={{ left: 'small', right: 'xlarge' }}>
-              {resource.category}
-            </Text>
-
-            <Organism />
-            <Text margin={{ left: 'small' }}>
-              {resource.additional_metadata.organism}
-            </Text>
-          </Box>
-        </Box>
-        <div>
+        <ResourceCard resource={resource} size="large">
           <Link
             href="/resources/[id]/request"
             as={`/resources/${resource.id}/request`}
           >
             <Button label="Request" primary />
           </Link>
-        </div>
+        </ResourceCard>
       </Box>
-
-      <div>
+      <Box>
         <Tabs>
           <Tab title="Resource Details">
             <TabHeading title="Resource Details" />
@@ -64,21 +41,19 @@ const ResourceDetailsPage = ({ resource }) => {
           </Tab>
           <Tab title="Publication Information">
             <TabHeading title="Publication Information" />
-
             <PublicationInformation resource={resource} />
           </Tab>
           <Tab title="Contact Submitter">
-            <Box alvign="center" pad="large" gap="large">
-              TODO: Contact Submitter
-            </Box>
+            <TabHeading title="Contact Submitter" />
+            <ContactSubmitter resource={resource} />
           </Tab>
           <Tab title="Request Requirements">
-            <Box alvign="center" pad="large" gap="large">
-              TODO: Request Requirements
-            </Box>
+            <TabHeading title="Request Requirements" />
+            <RequestRequirements resource={resource} />
           </Tab>
         </Tabs>
-      </div>
+      </Box>
+      <RelatedResources resource={resource} />
     </>
   )
 }
@@ -87,41 +62,17 @@ export default ResourceDetailsPage
 
 const TabHeading = ({ title }) => (
   <Box
-    border={[{ size: 'xsmall', side: 'bottom', color: 'turteal-tint-80' }]}
+    border={[{ size: 'small', side: 'bottom', color: 'turteal-tint-80' }]}
     margin={{ bottom: 'large' }}
   >
-    <Heading level="5" margin={{ bottom: 'medium' }}>
+    <Heading level="5" margin={{ bottom: 'small' }}>
       {title}
     </Heading>
   </Box>
 )
 
-const PublicationInformation = ({ resource }) => (
-  <DetailsTable
-    data={[
-      {
-        label: 'PubMed ID',
-        value: resource.pubmedid
-      },
-      {
-        label: 'Publication Title',
-        value: resource.publication_title
-      },
-      {
-        label: 'Pre-print DOI',
-        value: resource.pre_print_doi
-      },
-      {
-        label: 'Pre-print Title',
-        value: resource.pre_print_title
-      },
-      { label: 'Citation', value: resource.additional_metadata.citation }
-    ]}
-  />
-)
-
 ResourceDetailsPage.getInitialProps = async ({ query }) => {
-  const apiResponse = await api.resources.find(query.id)
+  const apiResponse = await api.resources.get(query.id)
   return {
     resource: apiResponse.isOk ? apiResponse.response : false
   }

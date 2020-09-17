@@ -27,7 +27,7 @@ def import_dataset(import_source, accession_code, user):
             "description": metadata["description"],
             "platform": metadata["platform"],
             "technology": metadata["technology"],
-            "number_samples": metadata["number_samples"],
+            "number_of_samples": metadata["number_of_samples"],
         }
 
         if type(additional_metadata["technology"]) == list:

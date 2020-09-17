@@ -10,7 +10,7 @@ export const details = [
   }
 ]
 
-export const form = [
+export const listForm = [
   {
     basic_information: [
       'protocol_name',
@@ -21,8 +21,22 @@ export const form = [
   }
 ]
 
+export const importForm = () => [
+  {
+    basic_information: [
+      'protocol_name',
+      'description',
+      'abstract',
+      'additional_info',
+      'url'
+    ]
+  }
+]
+
 export default {
   searchResult,
   details,
-  form
+  listForm,
+  importForm,
+  titleAttribute: 'protocol_name'
 }

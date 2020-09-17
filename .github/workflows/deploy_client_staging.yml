@@ -14,8 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install now
-        run: yarn global add now@19.2.0
+      - name: Install vercel
+        run: yarn global add vercel@19.2.0
 
       - name: Deploy to Staging
-        run: cd client && $(yarn global bin)/now  --confirm --prod --token $ZEIT_TOKEN --local-config now.staging.json --scope ccdl
+        run: cd client && $(yarn global bin)/vercel --confirm --prod --token $ZEIT_TOKEN --local-config vercel.staging.json --scope ccdl

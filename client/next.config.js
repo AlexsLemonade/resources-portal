@@ -5,10 +5,16 @@ module.exports = (phase) => {
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
   const isProduction = process.env.STAGE === 'production'
   const apiHost =
-    process.env.API_HOST || 'https://api.resources.alexslemonade.org'
+    process.env.API_HOST ||
+    (isProduction
+      ? 'https://api.resources.alexslemonade.org'
+      : 'https://api.staging.resources.alexslemonade.org')
 
   const clientHost =
-    process.env.CLIENT_HOST || 'https://resources.alexslemonade.org'
+    process.env.CLIENT_HOST ||
+    (isProduction
+      ? 'https://resources.alexslemonade.org'
+      : 'https://staging.resources.alexslemonade.org')
 
   const env = {
     API_VERSION: 'v1',
@@ -17,7 +23,10 @@ module.exports = (phase) => {
     IS_PRODUCTION: !isDevelopment && isProduction,
     API_HOST: isDevelopment ? 'http://localhost:8000' : apiHost,
     CLIENT_HOST: isDevelopment ? 'http://localhost:7000' : clientHost,
-    ORCID_CLIENT_ID: 'APP-2AHZAK2XCFGHRJFM'
+    ORCID_CLIENT_ID: 'APP-2AHZAK2XCFGHRJFM',
+    ORCID_URL: isProduction
+      ? 'https://orcid.org/'
+      : 'https://sandbox.orcid.org/'
   }
 
   return {

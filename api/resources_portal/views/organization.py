@@ -4,7 +4,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     AttachmentRelationSerializer,
     GrantRelationSerializer,
     MaterialRelationSerializer,

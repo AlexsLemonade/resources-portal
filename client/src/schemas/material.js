@@ -57,21 +57,21 @@ const materialCategories = {
     growth_strain: string()
   }),
   PROTOCOL: object({
-    description: string(),
+    description: string().required(),
     abstract: string(),
     protocol_name: string()
   }),
   DATASET: object({
     accession_code: string(),
-    description: string(),
-    number_samples: string(),
+    description: string().required(),
+    number_of_samples: string(),
     technology: string(),
     platform: string()
   }),
   MODEL_ORGANISM: object({
     description: string(),
     genetic_background: string(),
-    zygostity: string(),
+    zygosity: string(),
     number_of_available_models: string(),
     construct_details: string()
   }),
@@ -117,41 +117,55 @@ const materialCategories = {
     treatment_response: string(),
     tumor_omics: string(),
     matastases_in_strain: string(),
-    lag_tim: string(),
-    number_availible_models: string(),
+    lag_time: string(),
+    number_of_availible_models: string(),
     pdx_model_availability: string(),
     governance_restriction: string()
   }),
   OTHER: object({
-    description: string()
+    description: string().required()
   })
 }
 
-export const material = object({
+const customErrorMessages = {
+  contact_user: 'You must select a Contact User for the resource.'
+}
+
+export default object({
   category: string().oneOf(categories),
   url: string().url(),
   pubmed_id: string().max(32),
-  additional_metadata: object().when('category', (category, schema) =>
+  additional_metadata: object().when('category', (category) => {
     // this takes the current empty object validation and
     // extends it with the material category specific rules
-    schema.shape(materialCategories[category])
-  ),
+    return materialCategories[category]
+  }),
   //  mta_attachment: string
-  title: string(),
+  title: string().when('category', (category) => {
+    if (['DATASET', 'OTHER', 'MODEL_ORGANISM'].includes(category))
+      return string().required()
+    return string()
+  }),
   needs_irb: boolean(),
   needs_abstract: boolean(),
   imported: boolean(),
   // shipping_requirements: object()
   import_source: string().oneOf(importSources),
-  // contact_user: object(),
+  contact_user: string().uuid().required(customErrorMessages.contact_user),
   // organization: object(),
   // grants: array(),
-  organism: array(),
+  /* eslint-disable-next-line react/forbid-prop-types */
+  organisms: array().when('category', (category) => {
+    if (['PLASMID', 'MODEL_ORGANISM', 'CELL_LINE'].includes(category))
+      return array().compact().min(1)
+    return array()
+  }),
   publication_title: string(),
   pre_print_doi: string(),
   pre_print_title: string(),
   citation: string(),
   additional_info: string(),
   embargo_date: string() // confirm what django expects
-  // sequence_maps: object() // not available on API yet
+  /* eslint-disable-next-line react/forbid-prop-types */
+  // sequence_maps: array() // figure out what to set here
 })

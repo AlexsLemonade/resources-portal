@@ -1,17 +1,37 @@
 import React from 'react'
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-  Text
+  Text,
+  Image
 } from 'grommet'
 import styled from 'styled-components'
+import { host } from 'api'
 
 let DetailsTable = ({ data, className }) => {
-  const handleArray = (value) =>
-    Array.isArray(value) ? value.join(', ') : value
+  const datumValue = (value) => {
+    if (Array.isArray(value)) {
+      if (value.length === 0) return 'Not Specified'
+      if (Object.keys(value[0]).includes('filename')) {
+        return (
+          <Box>
+            {value.map((attachment) => (
+              <Box key={attachment.filename} width="100px" height="120px">
+                <Image fit="cover" src={`${host}${attachment.download_url}`} />
+                <Text truncate>{attachment.filename}</Text>
+              </Box>
+            ))}
+          </Box>
+        )
+      }
+      return value.join(', ')
+    }
+    return value
+  }
 
   return (
     <Table className={className}>
@@ -28,8 +48,8 @@ let DetailsTable = ({ data, className }) => {
               <Text weight="bold">{datum.label}</Text>
             </TableCell>
             <TableCell pad="medium" align="left">
-              <Text italic={!datum.value}>
-                {datum.value ? handleArray(datum.value) : 'Not specified'}
+              <Text italic={!datum.value || datum.value.length === 0}>
+                {datum.value ? datumValue(datum.value) : 'Not specified'}
               </Text>
             </TableCell>
           </TableRow>

@@ -10,7 +10,7 @@ export const details = [
       'plasmid_name',
       'plasmid_type',
       'purpose',
-      'organism',
+      'organisms',
       'number_of_available_samples',
       'bio_safety_level'
     ]
@@ -36,13 +36,13 @@ export const details = [
   }
 ]
 
-export const form = [
+export const listForm = [
   {
     basic_information: [
       'plasmid_name',
       'plasmid_type',
       'purpose',
-      'organism',
+      'organisms',
       'number_of_available_samples',
       'bio_safety_level'
     ]
@@ -63,6 +63,20 @@ export const form = [
       'copy_number',
       'growth_temp_celsius',
       'growth_strain',
+      'additional_info'
+    ]
+  }
+]
+
+export const importForm = () => [
+  {
+    basic_information: [
+      'url',
+      'plasmid_name',
+      'organisms',
+      'description',
+      'gene_insert_name',
+      'relevant_mutations',
       'additional_info'
     ]
   }
@@ -71,5 +85,7 @@ export const form = [
 export default {
   searchResult,
   details,
-  form
+  listForm,
+  importForm,
+  titleAttribute: 'plasmid_name'
 }

@@ -1,8 +1,8 @@
 import React from 'react'
-import { getReadable } from '../../helpers/readableNames'
-import { getResourceValue } from '../../helpers/getResourceValue'
-import { HeaderRow } from '../HeaderRow'
-import DetailsTable from '../DetailsTable'
+import { getReadable } from 'helpers/readableNames'
+import { getResourceData } from 'helpers/getResourceData'
+import { HeaderRow } from 'components/HeaderRow'
+import DetailsTable from 'components/DetailsTable'
 import configs from './configs'
 
 export const ResourceDetails = ({ resource }) => {
@@ -11,13 +11,11 @@ export const ResourceDetails = ({ resource }) => {
     <>
       {details.map((detail) => (
         <React.Fragment key={Object.keys(detail)[0]}>
-          <HeaderRow label={Object.keys(detail)[0]} />
+          <HeaderRow label={getReadable(Object.keys(detail)[0])} />
           <DetailsTable
-            data={Object.values(detail)[0].map((attribute) => ({
-              label: getReadable(attribute),
-              // this needs to be a function to allow for custom attributes
-              value: getResourceValue(resource, attribute)
-            }))}
+            data={Object.values(detail)[0].map((attribute) =>
+              getResourceData(resource, attribute)
+            )}
           />
         </React.Fragment>
       ))}

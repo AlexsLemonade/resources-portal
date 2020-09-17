@@ -134,6 +134,8 @@ class TestMaterialRequestListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
+        self.assertIn("organization", response.json()["results"][0]["material"])
+
     def test_get_request_from_requester_succeeds(self):
         self.client.force_authenticate(user=self.request.requester)
         response = self.client.get(self.url)
@@ -241,18 +243,15 @@ class TestSingleMaterialRequestTestCase(APITestCase):
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
-        irb_attachment = AttachmentFactory(owned_by_user=self.request.requester)
+        address = AddressFactory(user=self.request.requester)
 
-        self.material_request_data["irb_attachment"] = irb_attachment.id
-        self.material_request_data["requester_signed_mta_attachment"] = AttachmentFactory(
-            owned_by_user=self.request.requester
-        ).id
+        self.material_request_data["address"] = address.id
 
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
-        self.assertEqual(material_request.irb_attachment, irb_attachment)
+        self.assertEqual(material_request.address, address)
 
     def test_put_request_from_requester_verifies_request(self):
         # Make the request fulfilled, so it can be verified.

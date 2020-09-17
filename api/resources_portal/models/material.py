@@ -63,7 +63,7 @@ class Material(SafeDeleteModel):
     needs_irb = models.BooleanField(default=False, null=True)
     needs_abstract = models.BooleanField(default=False, null=True)
     imported = models.BooleanField(default=False, null=False)
-    shipping_requirement = models.ForeignKey(
+    shipping_requirement = models.OneToOneField(
         ShippingRequirement, blank=False, null=True, on_delete=models.deletion.SET_NULL
     )
 

@@ -2,7 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 import { Box, Anchor, Button, Heading, Text } from 'grommet'
 import { getReadable } from '../../helpers/readableNames'
-import { getResourceValue } from '../../helpers/getResourceValue'
+import { getResourceData } from '../../helpers/getResourceData'
 import { getPubmedUrl } from '../../helpers/getPubmedUrl'
 import { getDOIUrl } from '../../helpers/getDOIUrl'
 import ResourceTypeIcon from '../../images/resource-type.svg'
@@ -97,8 +97,7 @@ export const SearchResult = ({
         {searchResult.map((attribute) => (
           <SearchResultDetail
             key={attribute}
-            title={getReadable(attribute)}
-            label={getResourceValue(resource, attribute)}
+            data={getResourceData(resource, attribute)}
           />
         ))}
       </Box>
@@ -109,8 +108,7 @@ export const SearchResult = ({
 }
 
 export const SearchResultDetail = ({
-  title,
-  label,
+  data = {},
   italic,
   children,
   margin = { top: 'small', bottom: 'medium' },
@@ -120,9 +118,9 @@ export const SearchResultDetail = ({
     Array.isArray(value) ? value.join(', ') : value
   return (
     <Box>
-      <Text weight="bold">{title}</Text>
+      <Text weight="bold">{data.label}</Text>
       <Box margin={margin} direction={direction}>
-        {label && <Text italic={italic}>{handleArray(label)}</Text>}
+        {data.value && <Text italic={italic}>{handleArray(data.value)}</Text>}
         {children}
       </Box>
     </Box>
@@ -193,7 +191,7 @@ export const RequestRequirements = ({ resource }) => {
   if (resource.needs_abstract) requirements.push('Abstract')
   if (resource.needs_irb) requirements.push('IRB')
   if (Object.keys(resource.mta_attachment).length) requirements.push(MTA)
-  if (Object.keys(resource.shipping_requirements).length)
+  if (Object.keys(resource.shipping_requirement).length)
     requirements.push('Shipping Information')
 
   // NOTE: mta_s3_url will be an attachment in the near future

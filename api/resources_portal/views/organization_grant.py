@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Grant, GrantOrganizationAssociation, Organization
-from resources_portal.views.relation_serializers import GrantRelationSerializer
+from resources_portal.serializers import GrantRelationSerializer
 
 
 class IsMemberOfOrganization(BasePermission):

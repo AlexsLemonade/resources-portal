@@ -20,14 +20,17 @@ class OrganizationInvitationListTestCase(APITestCase):
     def setUp(self):
         self.url = reverse("invitation-list")
         self.invitation = OrganizationInvitationFactory()
+        self.invitation.organization.members.add(self.invitation.requester)
+
         self.invitation_data = model_to_dict(self.invitation)
         self.client.force_authenticate(user=self.invitation.request_receiver)
 
     def test_post_request_with_no_data_fails(self):
         response = self.client.post(self.url, {})
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_post_request_with_valid_data_succeeds(self):
+        self.client.force_authenticate(user=self.invitation.requester)
         response = self.client.post(self.url, self.invitation_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 

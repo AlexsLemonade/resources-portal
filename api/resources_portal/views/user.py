@@ -11,14 +11,14 @@ from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.models import User
 from resources_portal.models.grant import Grant
 from resources_portal.models.organization import Organization
-from resources_portal.views.relation_serializers import (
-    AddressRelationSerializer,
+from resources_portal.serializers import (
     AttachmentRelationSerializer,
     GrantRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
 )
+from resources_portal.views.address import SavedAddressSerializer
 
 logger = get_and_configure_logger(__name__)
 
@@ -26,6 +26,16 @@ CLIENT_ID = settings.CLIENT_ID
 CLIENT_SECRET = settings.CLIENT_SECRET
 OAUTH_URL = settings.OAUTH_URL
 IS_OAUTH_SANDBOX = "sandbox" in OAUTH_URL
+
+
+PRIVATE_FIELDS = [
+    "addresses",
+    "material_requests",
+    "invitations",
+    "assignments",
+    "viewed_notifications_at",
+    "owned_attachments",
+]
 
 
 def remove_code_parameter_from_uri(url):
@@ -89,7 +99,17 @@ class UserSerializer(serializers.ModelSerializer):
     grants = GrantRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
     invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
-    addresses = AddressRelationSerializer(many=True, read_only=True)
+    addresses = SavedAddressSerializer(many=True, read_only=True)
+
+    def to_representation(self, request_data):
+        # get the original representation
+        user_data = super(UserSerializer, self).to_representation(request_data)
+        if str(self.context["request"].user.id) != user_data["id"]:
+            for field in PRIVATE_FIELDS:
+                if field in user_data:
+                    user_data.pop(field)
+
+        return user_data
 
 
 class IsUserOrAdmin(BasePermission):
@@ -132,11 +152,14 @@ class UserViewSet(viewsets.ModelViewSet):
                 {"error": "A user with the provided ORCID already exists."}, status=400,
             )
 
-        api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
+        try:
+            api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-        summary = api.read_record_public(
-            request.data["orcid"], "record", request.data["access_token"]
-        )
+            summary = api.read_record_public(
+                request.data["orcid"], "record", request.data["access_token"]
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
         email = ""
 
@@ -160,20 +183,25 @@ class UserViewSet(viewsets.ModelViewSet):
         first_name = summary["person"]["name"]["given-names"]["value"]
         last_name = summary["person"]["name"]["family-name"]["value"]
 
-        user = User.objects.create(
-            orcid=summary["orcid-identifier"]["path"],
-            orcid_access_token=request.data["access_token"],
-            orcid_refresh_token=request.data["refresh_token"],
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-        )
+        try:
+            user = User.objects.create(
+                orcid=summary["orcid-identifier"]["path"],
+                orcid_access_token=request.data["access_token"],
+                orcid_refresh_token=request.data["refresh_token"],
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+            )
+        except Exception as error:
+            return JsonResponse({"error": error}, status=500,)
 
-        org = Organization.objects.create(owner=user)
+        org = Organization.objects.create(
+            owner=user, name="My Resources", is_personal_organization=True
+        )
         user.personal_organization = org
 
-        if "grant_info" in request.data:
-            grant_json = request.data["grant_info"]
+        if "grants" in request.data:
+            grant_json = request.data["grants"]
 
             for grant_info in grant_json:
                 if "title" not in grant_info:
