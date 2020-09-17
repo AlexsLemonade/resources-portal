@@ -29,7 +29,7 @@ const getLink = (linkType, label, notification) => {
       </Link>
     )
   }
-  if (linkType === 'organization') {
+  if (linkType === 'organization_name') {
     const href = `/account/teams/${notification.organization.id}`
     return (
       <Link href={href} key={3}>
@@ -77,8 +77,8 @@ export const Notification = ({ notification }) => {
   return (
     <Box round="medium" elevation="1" fill="horizontal" pad="medium">
       <Box direction="row" border={{ side: 'bottom' }} alignContent="between">
-        <Text>{notificationText}</Text>
-        <Text color="black-tint-40" wordBreak="keep-all">
+        <Text wordBreak="keep-all">{notificationText}</Text>
+        <Text textAlign="end" color="black-tint-40" wordBreak="keep-all">
           {readableTimeAgo(notification.created_at)}
         </Text>
       </Box>

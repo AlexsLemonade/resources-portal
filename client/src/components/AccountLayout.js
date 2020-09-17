@@ -2,51 +2,17 @@ import React from 'react'
 import { Box, Heading, Main } from 'grommet'
 import { useRouter } from 'next/router'
 import { useNotifications } from 'hooks/useNotifications'
+import { NOTIFICATION_TYPES } from 'helpers/notificationTypes'
 import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
-
-const notificationsDict = {
-  basicInfo: [''],
-  manageResources: ['MATERIAL_ADDED', 'MATERIAL_ARCHIVED', 'MATERIAL_DELETED'],
-  requests: [
-    'MATERIAL_REQUEST_SHARER_ASSIGNED_NEW',
-    'MATERIAL_REQUEST_SHARER_RECEIVED',
-    'MATERIAL_REQUEST_SHARER_ASSIGNED',
-    'MATERIAL_REQUEST_SHARER_ASSIGNMENT',
-    'MATERIAL_REQUEST_SHARER_APPROVED',
-    'MATERIAL_REQUEST_SHARER_REJECTED',
-    'MATERIAL_REQUEST_SHARER_CANCELLED',
-    'MATERIAL_REQUEST_SHARER_RECEIVED_MTA',
-    'MATERIAL_REQUEST_SHARER_RECEIVED_INFO',
-    'MATERIAL_REQUEST_SHARER_EXECUTED_MTA',
-    'MATERIAL_REQUEST_SHARER_IN_FULFILLMENT',
-    'MATERIAL_REQUEST_SHARER_FULFILLED',
-    'MATERIAL_REQUEST_SHARER_VERIFIED',
-    'MATERIAL_REQUEST_ISSUE_SHARER_REPORTED',
-    'MATERIAL_REQUEST_REQUESTER_ACCEPTED',
-    'MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT',
-    'MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA',
-    'MATERIAL_REQUEST_REQUESTER_FULFILLED',
-    'MATERIAL_REQUEST_REQUESTER_REJECTED',
-    'MATERIAL_REQUEST_REQUESTER_ESCALATED'
-  ],
-  teams: [
-    'ORGANIZATION_NEW_MEMBER',
-    'ORGANIZATION_BECAME_OWNER',
-    'ORGANIZATION_NEW_OWNER',
-    'ORGANIZATION_MEMBER_LEFT',
-    'ORGANIZATION_NEW_GRANT',
-    'ORGANIZATION_INVITE'
-  ]
-}
 
 const getNotificationsForType = (notifications, type) => {
   if (!notifications) {
     return {}
   }
   const notifsForType = notifications.filter((notification) => {
-    return notificationsDict[type].includes(notification.notification_type)
+    return NOTIFICATION_TYPES[type].includes(notification.notification_type)
   })
 
   return notifsForType
