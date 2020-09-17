@@ -380,14 +380,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
                 added_IRB = True
 
-            if (
-                field_changed("address")
-                or field_changed("payment_method")
-                or field_changed("payment_method_notes")
-                or added_IRB
-            ):
-                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
-            elif field_changed("requester_signed_mta_attachment"):
+            if field_changed("requester_signed_mta_attachment"):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["requester_signed_mta_attachment"],
@@ -395,6 +388,13 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
+            elif (
+                field_changed("address")
+                or field_changed("payment_method")
+                or field_changed("payment_method_notes")
+                or added_IRB
+            ):
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
 
             if field_changed("status"):
                 # The only status change the requester can make is to
