@@ -94,7 +94,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
             self.material.mta_attachment is not None
             and self.requester_signed_mta_attachment is None
         )
-        return missing_irb or missing_mta or self.needs_shipping_info()
+        return missing_irb or missing_mta or self.needs_shipping_info
 
     @property
     def requires_action_sharer(self):
@@ -121,6 +121,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     def frontend_URL(self):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
+    @property
     def needs_shipping_info(self):
         shipping_requirement = self.material.shipping_requirement
         if shipping_requirement:
@@ -139,7 +140,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "- IRB Approval\n"
 
-        if self.needs_shipping_info():
+        if self.needs_shipping_info:
             required_info += "- Shipping Information\n"
 
         return required_info
@@ -161,7 +162,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
             required_info += "<ul>Signed MTA</ul>"
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "<ul>IRB Approval</ul>"
-        if self.needs_shipping_info():
+        if self.needs_shipping_info:
             required_info += "<ul>Shipping Information</ul>"
 
         required_info += "</list>"

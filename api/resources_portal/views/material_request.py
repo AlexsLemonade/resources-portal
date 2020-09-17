@@ -39,6 +39,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "assigned_to",
             "has_issues",
             "issues",
+            "is_missing_requester_documents",
             "requires_action_sharer",
             "requires_action_requester",
             "executed_mta_attachment",
