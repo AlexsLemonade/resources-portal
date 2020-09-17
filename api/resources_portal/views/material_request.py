@@ -115,16 +115,11 @@ class IsModifyingPermittedFields(BasePermission):
                 "is_active",
                 "assigned_to",
                 "rejection_reason",
-                "has_issues",
-                "issues",
                 "requires_action_sharer",
                 "requires_action_requester",
                 "executed_mta_attachment",
                 "material",
                 "requester",
-                "fulfillment_notes",
-                "created_at",
-                "updated_at",
             ]
 
             # If the request is apporoved, the requester can't change
@@ -143,12 +138,9 @@ class IsModifyingPermittedFields(BasePermission):
                 "payment_method",
                 "payment_method_notes",
                 "has_issues",
-                "issues",
                 "requires_action_sharer",
                 "requires_action_requester",
                 "material",
-                "created_at",
-                "updated_at",
             ]
 
         for field in forbidden_fields:
@@ -156,8 +148,15 @@ class IsModifyingPermittedFields(BasePermission):
                 attribute = getattr(obj, field)
                 if isinstance(attribute, models.Model):
                     # UUID's can't just be treated as strings for some reason...
-                    pk = str(attribute.id) if isinstance(attribute.id, uuid.UUID) else attribute.id
-                    if request.data[field] != pk:
+                    database_pk = (
+                        str(attribute.id) if isinstance(attribute.id, uuid.UUID) else attribute.id
+                    )
+                    if isinstance(request.data[field], dict):
+                        request_pk = request.data[field]["id"]
+                    else:
+                        request_pk = request.data[field]
+
+                    if request_pk != database_pk:
                         return False
                 elif request.data[field] != attribute:
                     return False
@@ -360,33 +359,45 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer_class()(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
+        def field_changed(field_name):
+            return field_name in request.data and serializer.validated_data[field_name] != getattr(
+                material_request, field_name
+            )
+
         if request.user == material_request.requester:
-            if (
-                "irb_attachment" in request.data
-                and serializer.validated_data["irb_attachment"] != material_request.irb_attachment
-            ):
+            # Can't make it read-only because organization members
+            # should be able to change it.
+            if field_changed("assigned_to"):
+                return Response(status=403)
+
+            added_IRB = False
+            if field_changed("irb_attachment"):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["irb_attachment"],
                     "irb_attachment",
                     request.user,
                 )
+                added_IRB = True
 
-            if (
-                "requester_signed_mta_attachment" in request.data
-                and serializer.validated_data["requester_signed_mta_attachment"]
-                != material_request.requester_signed_mta_attachment
-            ):
+            if field_changed("requester_signed_mta_attachment"):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["requester_signed_mta_attachment"],
                     "requester_signed_mta_attachment",
                     request.user,
                 )
-
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
 
-            if "status" in request.data and request.data["status"] != material_request.status:
+            if (
+                field_changed("address")
+                or field_changed("payment_method")
+                or field_changed("payment_method_notes")
+                or added_IRB
+            ):
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
+
+            if field_changed("status"):
                 # The only status change the requester can make is to
                 # cancel or verify the request.
                 cancelling = serializer.validated_data["status"] == "CANCELLED"
@@ -399,20 +410,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
                 notify_request_status_change(serializer.validated_data["status"], material_request)
 
-            # Can't make it read-only because organization members
-            # should be able to change it.
-            if (
-                "assigned_to" in request.data
-                and serializer.validated_data["assigned_to"] != material_request.assigned_to
-            ):
-                return Response(status=403)
-
         else:
-            if (
-                "executed_mta_attachment" in request.data
-                and serializer.validated_data["executed_mta_attachment"]
-                != material_request.executed_mta_attachment
-            ):
+            if field_changed("executed_mta_attachment"):
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["executed_mta_attachment"],

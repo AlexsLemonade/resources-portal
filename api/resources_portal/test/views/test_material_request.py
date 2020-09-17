@@ -156,16 +156,15 @@ class TestMaterialRequestListTestCase(APITestCase):
 
 class TestSingleMaterialRequestTestCase(APITestCase):
     def setUp(self):
-        self.request = MaterialRequestFactory()
+        self.organization = OrganizationFactory()
+        self.sharer = self.organization.owner
+        self.material = MaterialFactory(organization=self.organization, contact_user=self.sharer)
+        self.request = MaterialRequestFactory(material=self.material, assigned_to=self.sharer)
         self.url = reverse("material-request-detail", args=[self.request.id])
         self.material_request_data = model_to_dict(self.request)
 
         self.request2 = MaterialRequestFactory()
 
-        self.sharer = self.request.material.contact_user
-        self.organization = OrganizationFactory()
-        self.organization.materials.add(self.request.material)
-        self.organization.members.add(self.sharer)
         self.organization.assign_member_perms(self.sharer)
         self.organization.assign_owner_perms(self.sharer)
 
@@ -240,18 +239,26 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.status, "APPROVED")
 
-    def test_put_request_from_requester_updates_a_material_request(self):
+    def test_patch_address_triggers_info_notif(self):
         self.client.force_authenticate(user=self.request.requester)
 
         address = AddressFactory(user=self.request.requester)
+        material_request_data = {"address": address.id}
 
-        self.material_request_data["address"] = address.id
-
-        response = self.client.put(self.url, self.material_request_data)
+        response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.address, address)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
+                )
+            ),
+            self.organization.members.count(),
+        )
 
     def test_put_request_from_requester_verifies_request(self):
         # Make the request fulfilled, so it can be verified.
