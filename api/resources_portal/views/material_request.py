@@ -383,7 +383,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 added_IRB = True
 
             added_address = False
-            if "address" in request.data:
+            if "address" in request.data and request.data["address"]:
                 address_object = Address.objects.get(pk=request.data["address"]["id"])
                 if address_object != material_request.address:
                     serializer.validated_data.pop("address")
