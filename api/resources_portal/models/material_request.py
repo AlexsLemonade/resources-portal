@@ -88,6 +88,15 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
         return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT", "FULFILLED"]
 
     @property
+    def is_missing_requester_documents(self):
+        missing_irb = self.material.needs_irb and self.irb_attachment is None
+        missing_mta = (
+            self.material.mta_attachment is not None
+            and self.requester_signed_mta_attachment is None
+        )
+        return missing_irb or missing_mta or self.needs_shipping_info()
+
+    @property
     def requires_action_sharer(self):
         if not self.is_active:
             return False
@@ -102,12 +111,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
         if self.status != "APPROVED":
             return False
 
-        missing_irb = self.material.needs_irb and self.irb_attachment is None
-        missing_mta = (
-            self.material.mta_attachment is not None
-            and self.requester_signed_mta_attachment is None
-        )
-        return missing_irb or missing_mta or self.needs_shipping_info()
+        return self.is_missing_requester_documents
 
     @property
     def has_issues(self):
