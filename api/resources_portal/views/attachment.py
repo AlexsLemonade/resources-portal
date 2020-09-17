@@ -1,9 +1,11 @@
 import os
+import shutil
 
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
-from rest_framework import serializers, viewsets
+from rest_framework import serializers, status, viewsets
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
@@ -102,14 +104,14 @@ class AttachmentViewSet(viewsets.ModelViewSet):
         if settings.AWS_S3_BUCKET_NAME:
             # Upload the file to S3, then update the database object.
             bucket_name = settings.AWS_S3_BUCKET_NAME
-            aws_key = f"attachment_{attachment_id}/{response.data['filename']}"
+            s3_key = f"attachment_{attachment_id}/{response.data['filename']}"
 
             s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
-            s3_client.upload_fileobj(uploaded_file, bucket_name, aws_key)
+            s3_client.upload_fileobj(uploaded_file, bucket_name, s3_key)
 
             created_attachment = Attachment.objects.get(id=attachment_id)
             created_attachment.s3_bucket = bucket_name
-            created_attachment.s3_key = aws_key
+            created_attachment.s3_key = s3_key
             created_attachment.save()
 
             created_attachment.refresh_from_db()
@@ -136,5 +138,63 @@ def local_file_view(request, file_path):
 
     response = HttpResponse(file_data, content_type="application/octet-stream")
     response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+    return response
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def attachment_copy_view(request, attachment_id):
+    old_attachment = Attachment.objects.get(pk=attachment_id)
+
+    # First, make sure they own the attachment
+    if not (
+        request.user == old_attachment.owned_by_user
+        or (
+            old_attachment.owned_by_org
+            and request.user in old_attachment.owned_by_org.members.all()
+        )
+    ):
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    if old_attachment.s3_resource_deleted:
+        return Response(
+            status=status.HTTP_400_BAD_REQUEST,
+            message="You cannot copy an attachment which has been deleted.",
+        )
+
+    # Copy most of the fields.
+    new_attachment = Attachment.objects.create(
+        filename=old_attachment.filename,
+        description=old_attachment.description,
+        attachment_type=old_attachment.attachment_type,
+        owned_by_user=old_attachment.owned_by_user,
+        owned_by_org=old_attachment.owned_by_org,
+        sequence_map_for=old_attachment.sequence_map_for,
+    )
+
+    response = Response(status=status.HTTP_201_CREATED)
+    response.data = AttachmentDetailSerializer(new_attachment).data
+
+    if settings.AWS_S3_BUCKET_NAME:
+        # Upload the file to S3, then update the database object.
+        new_key = f"attachment_{new_attachment.id}/{old_attachment.filename}"
+
+        s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
+        s3_client.Object(old_attachment.s3_bucket, new_key).copy_from(
+            CopySource=f"{old_attachment.s3_bucket}/{old_attachment.s3_key}"
+        )
+
+        new_attachment.s3_bucket = old_attachment.s3_bucket
+        new_attachment.s3_key = new_key
+        new_attachment.save()
+
+        new_attachment.refresh_from_db()
+
+        response.data["download_url"] = new_attachment.download_url
+        response.data["updated_at"] = new_attachment.updated_at
+    else:
+        os.mkdir(new_attachment.local_file_dir)
+        shutil.copyfile(old_attachment.local_file_path, new_attachment.local_file_path)
 
     return response

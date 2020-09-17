@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -64,6 +66,14 @@ class Attachment(SafeDeleteModel):
     )
 
     s3_resource_deleted = models.BooleanField(default=False)
+
+    @property
+    def local_file_dir(self):
+        return os.path.join(settings.LOCAL_FILE_DIRECTORY, f"attachment_{self.id}")
+
+    @property
+    def local_file_path(self):
+        return os.path.join(self.local_file_dir, self.filename)
 
     @property
     def download_url(self):
