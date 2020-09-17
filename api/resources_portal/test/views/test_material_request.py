@@ -243,7 +243,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.client.force_authenticate(user=self.request.requester)
 
         address = AddressFactory(user=self.request.requester)
-        material_request_data = {"address": address.id}
+        material_request_data = {"address": {"id": address.id}}
 
         response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -305,6 +305,17 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         updated_request = MaterialRequest.objects.get(id=self.request.id)
         self.assertEqual(updated_request.assigned_to, self.other_member)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED")),
+            1,
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNMENT")
+            ),
+            self.organization.members.count() - 1,
+        )
 
     def test_put_request_from_requester_does_not_update_assigned_to(self):
         self.client.force_authenticate(user=self.request.requester)

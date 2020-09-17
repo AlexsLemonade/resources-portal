@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import MaterialRequest, Notification, Organization, User
+from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
     AddressRelationSerializer,
@@ -382,6 +382,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
                 added_IRB = True
 
+            added_address = False
+            if "address" in request.data:
+                address_object = Address.objects.get(pk=request.data["address"]["id"])
+                if address_object != material_request.address:
+                    serializer.validated_data.pop("address")
+                    material_request.address = address_object
+                    material_request.save()
+                    added_address = True
+
             if field_changed("requester_signed_mta_attachment"):
                 add_attachment_to_material_request(
                     material_request,
@@ -391,10 +400,10 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
             elif (
-                field_changed("address")
-                or field_changed("payment_method")
+                field_changed("payment_method")
                 or field_changed("payment_method_notes")
                 or added_IRB
+                or added_address
             ):
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
 
@@ -421,6 +430,10 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
                 notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
+
+            if field_changed("assigned_to"):
+                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED", material_request)
+                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNMENT", material_request)
 
             if "status" in request.data:
                 if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:

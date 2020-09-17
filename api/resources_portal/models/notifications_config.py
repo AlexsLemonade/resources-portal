@@ -59,7 +59,8 @@ NOTIFICATIONS = {
         "CTA_link_field": "material_request",
         "plain_text_email": (
             " {organization_name} received a new request received for {material_category},"
-            " {material_name}.\n\nView request details ({request_url})"
+            " {material_name}.It has been assigned to {assigned_to}.\n"
+            "\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
