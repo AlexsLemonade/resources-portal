@@ -1,4 +1,5 @@
 from resources_portal.models import (
+    Grant,
     Material,
     MaterialRequest,
     MaterialRequestIssue,
@@ -18,6 +19,7 @@ def send_notifications(
     material: Material = None,
     material_request: MaterialRequest = None,
     material_request_issue: MaterialRequestIssue = None,
+    grant: Grant = None,
 ):
     notification_config = NOTIFICATIONS[notification_type]
     recipients = set()
@@ -63,5 +65,6 @@ def send_notifications(
             material=material,
             material_request=material_request,
             material_request_issue=material_request_issue,
+            grant=grant,
         )
         notification.save()

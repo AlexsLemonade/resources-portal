@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Grant, GrantOrganizationAssociation, Organization
+from resources_portal.notifier import send_notifications
 from resources_portal.serializers import GrantRelationSerializer
 
 
@@ -73,6 +74,10 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         grant = Grant.objects.get(pk=request.data["id"])
 
         GrantOrganizationAssociation.objects.get_or_create(grant=grant, organization=organization)
+
+        send_notifications(
+            "ORGANIZATION_NEW_GRANT", request.user, request.user, organization, grant=grant
+        )
 
         return Response(status=201)
 

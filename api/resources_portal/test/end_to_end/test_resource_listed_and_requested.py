@@ -74,6 +74,8 @@ class TestResourceListedAndRequested(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        self.assertEqual(len(Notification.objects.filter(notification_type="MATERIAL_ADDED")), 2)
+
         # SecondaryProf requests that resource
         self.client.force_authenticate(user=self.secondary_prof)
 
@@ -276,4 +278,4 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 20)
+        self.assertEqual(len(Notification.objects.all()), 22)
