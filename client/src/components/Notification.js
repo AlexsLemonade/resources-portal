@@ -43,6 +43,8 @@ const getLink = (linkType, label, notification) => {
   return <></>
 }
 
+// This interprets the links present in the notification text.
+// These links are in the form [link_type](link_text).
 export const createNotificationLinks = (notification) => {
   const re = /\[.*?\]\(.*?\)/g
   const paren = /\(.*?\)/g

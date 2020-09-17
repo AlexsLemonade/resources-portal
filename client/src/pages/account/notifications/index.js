@@ -2,13 +2,11 @@ import React from 'react'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
 import { Loader } from 'components/Loader'
-import { useUser } from 'hooks/useUser'
 import { Notification } from 'components/Notification'
 import { useNotifications } from 'hooks/useNotifications'
 
 const Notifications = () => {
-  const { user, token } = useUser()
-  const { notifications, getUnreadNotifications } = useNotifications()
+  const { notifications } = useNotifications()
 
   if (!notifications) return <Loader />
 
