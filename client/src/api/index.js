@@ -205,6 +205,12 @@ export default {
           method: 'PATCH',
           body: JSON.stringify(changes)
         })
+    },
+    notifications: {
+      list: (userId, authorization) =>
+        request(getAPIURL(`users/${userId}/notifications`), {
+          authorization
+        })
     }
   },
   teams: {

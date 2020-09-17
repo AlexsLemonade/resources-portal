@@ -1,9 +1,17 @@
 import React from 'react'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
+import { Loader } from 'components/Loader'
+import { useUser } from 'hooks/useUser'
+import { Notification } from 'components/Notification'
+import { useNotifications } from 'hooks/useNotifications'
 
 const Notifications = () => {
-  const notifications = []
+  const { user, token } = useUser()
+  const { notifications, getUnreadNotifications } = useNotifications()
+
+  if (!notifications) return <Loader />
+
   return (
     <DrillDownNav
       title="Notifications"
@@ -13,6 +21,12 @@ const Notifications = () => {
       {notifications.length === 0 && (
         <AccountEmptyPage paragraphs={['You have no notifications']} />
       )}
+      {notifications.length !== 0 &&
+        notifications.map((notification) => {
+          return (
+            <Notification notification={notification} key={notification.id} />
+          )
+        })}
     </DrillDownNav>
   )
 }

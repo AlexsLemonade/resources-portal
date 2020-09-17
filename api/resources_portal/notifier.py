@@ -6,7 +6,7 @@ from resources_portal.models import (
     Organization,
     User,
 )
-from resources_portal.models.notifications_config import NOTIFICATIONS
+from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
 
 
 def send_notifications(
@@ -19,7 +19,7 @@ def send_notifications(
     material_request: MaterialRequest = None,
     material_request_issue: MaterialRequestIssue = None,
 ):
-    notification_config = NOTIFICATIONS[notification_type]
+    notification_config = EMAIL_NOTIFICATIONS[notification_type]
     recipients = set()
 
     if (
