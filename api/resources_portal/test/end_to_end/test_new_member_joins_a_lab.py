@@ -226,6 +226,14 @@ class TestNewMemberJoinsALab(APITestCase):
         )
         self.assertEqual(
             len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_EXECUTED_MTA"
+                )
+            ),
+            2,
+        )
+        self.assertEqual(
+            len(
                 Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_ACCEPTED")
             ),
             1,
@@ -236,4 +244,4 @@ class TestNewMemberJoinsALab(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 12)
+        self.assertEqual(len(Notification.objects.all()), 14)

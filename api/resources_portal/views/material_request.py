@@ -430,6 +430,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
 
                 notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
+                notify_sharer("MATERIAL_REQUEST_SHARER_EXECUTED_MTA", material_request)
 
             if field_changed("assigned_to"):
                 notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED", material_request)

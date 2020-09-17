@@ -184,6 +184,14 @@ class TestResourceListedAndRequested(APITestCase):
             1,
         )
         self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_EXECUTED_MTA",
+                )
+            ),
+            2,
+        )
+        self.assertEqual(
             len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
             2,
         )
@@ -268,4 +276,4 @@ class TestResourceListedAndRequested(APITestCase):
         self.assertTrue("text" in response.json()["fulfillment_notes"][0])
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 18)
+        self.assertEqual(len(Notification.objects.all()), 20)
