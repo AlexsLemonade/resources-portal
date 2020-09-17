@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material, Organization
+from resources_portal.notifier import send_notifications
 from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
 from resources_portal.views.material_request import MaterialRequestSerializer
 
@@ -88,7 +89,19 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return super(MaterialViewSet, self).create(request, *args, **kwargs)
+        response = super(MaterialViewSet, self).create(request, *args, **kwargs)
+
+        if "id" in response.data:
+            material = Material.objects.get(pk=response.data["id"])
+            send_notifications(
+                "MATERIAL_ADDED",
+                request.user,
+                request.user,
+                material.organization,
+                material=material,
+            )
+
+        return response
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
@@ -107,4 +120,37 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             if not request.user.has_perm("add_resources", new_organization):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return super(MaterialViewSet, self).update(request, *args, **kwargs)
+        response = super(MaterialViewSet, self).update(request, *args, **kwargs)
+
+        if not material.is_archived and request.data.get("is_archived", False):
+            material = self.get_object()
+            send_notifications(
+                "MATERIAL_ARCHIVED",
+                request.user,
+                request.user,
+                material.organization,
+                material=material,
+            )
+
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        material = self.get_object()
+
+        if material.requests.count() > 0:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"message": "You cannot delete a material that has requests."},
+            )
+
+        response = super(MaterialViewSet, self).destroy(request, *args, **kwargs)
+
+        send_notifications(
+            "MATERIAL_DELETED",
+            request.user,
+            request.user,
+            material.organization,
+            material=material,
+        )
+
+        return response
