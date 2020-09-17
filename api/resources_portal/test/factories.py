@@ -183,16 +183,25 @@ class MaterialRequestFactory(factory.django.DjangoModelFactory):
     assigned_to = factory.SubFactory(UserFactory)
     requester = factory.SubFactory(UserFactory)
 
-    executed_mta_attachment = factory.SubFactory(AttachmentFactory)
-    irb_attachment = factory.SubFactory(AttachmentFactory)
-    requester_signed_mta_attachment = factory.SubFactory(AttachmentFactory)
-
     rejection_reason = "I won't have my science used for Evil!"
     material = factory.SubFactory(MaterialFactory)
     requester_abstract = "We need these for science!"
 
     payment_method = "SHIPPING_CODE"
     payment_method_notes = "UPS123456"
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        self.executed_mta_attachment = AttachmentFactory(
+            owned_by_org=self.material.organization, owned_by_user=self.material.organization.owner
+        )
+        self.irb_attachment = AttachmentFactory(
+            owned_by_org=self.material.organization, owned_by_user=self.requester
+        )
+        self.requester_signed_mta_attachment = AttachmentFactory(
+            owned_by_org=self.material.organization, owned_by_user=self.requester
+        )
+        self.save()
 
 
 class MaterialRequestIssueFactory(factory.django.DjangoModelFactory):
@@ -240,20 +249,32 @@ class GrantMaterialAssociationFactory(factory.django.DjangoModelFactory):
 class GrantFactory(LeafGrantFactory):
     user = factory.SubFactory(UserFactory)
     organization1 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
-    organization2 = factory.RelatedFactory(GrantOrganizationAssociationFactory, "grant")
     material1 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
-    material2 = factory.RelatedFactory(GrantMaterialAssociationFactory, "grant")
 
 
 class NotificationFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = "resources_portal.Notification"
 
-    notification_type = "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW"
+    notification_type = "REPORT_TO_GRANTS_TEAM"
     notified_user = factory.SubFactory(UserFactory)
     associated_user = factory.SubFactory(UserFactory)
-    organization = factory.SubFactory(OrganizationFactory)
-    grant = factory.SubFactory(GrantFactory)
-    material = factory.SubFactory(MaterialFactory)
-    material_request = factory.SubFactory(MaterialRequestFactory)
-    material_request_issue = factory.SubFactory(MaterialRequestIssueFactory)
+    grant = factory.SubFactory(LeafGrantFactory)
+
+    @post_generation
+    def post(self, create, extracted, **kwargs):
+        self.grant.user = self.notified_user
+        self.grant.save()
+
+        self.organization = OrganizationFactory(owner=self.notified_user)
+        self.material = MaterialFactory(
+            organization=self.organization, contact_user=self.notified_user
+        )
+        self.material_request = MaterialRequestFactory(
+            material=self.material, assigned_to=self.notified_user, requester=self.associated_user
+        )
+        self.material_request_issue = MaterialRequestIssueFactory(
+            material_request=self.material_request
+        )
+
+        self.save()

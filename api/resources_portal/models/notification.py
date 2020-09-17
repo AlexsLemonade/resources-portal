@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -124,7 +123,6 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         """
         props = {
             "notifications_url": NOTIFICATIONS_URL,
-            "your_name": self.notified_user.full_name,
             "message": self.message,
         }
         if self.associated_user:
@@ -165,9 +163,9 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         notification_config = EMAIL_NOTIFICATIONS[self.notification_type]
 
         body = notification_config["body"].format(**props)
-        formatted_html = EMAIL_HTML_BODY.replace("REPLACE_FULL_NAME", props["your_name"]).replace(
-            "REPLACE_MAIN_TEXT", body
-        )
+        formatted_html = EMAIL_HTML_BODY.replace(
+            "REPLACE_FULL_NAME", self.notified_user.full_name
+        ).replace("REPLACE_MAIN_TEXT", body)
         formatted_cta_html = ""
         cta = ""
         cta_link = ""
@@ -185,8 +183,11 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
             "cta": cta,
             "cta_link": cta_link,
             "plain_text_email": (
-                notification_config["plain_text_email"].format(**props) + PLAIN_TEXT_EMAIL_FOOTER
+                f"{self.notified_user.full_name},\n"
+                + notification_config["plain_text_email"].format(**props)
+                + PLAIN_TEXT_EMAIL_FOOTER
             ),
+            "plain_text_email_body": (notification_config["plain_text_email"].format(**props)),
             "subject": notification_config["subject"].format(**props),
             "formatted_html": formatted_html,
         }
@@ -215,20 +216,14 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
     logger.info(f"Sending an email notification to {instance.email}.")
     email_dict = instance.get_email_dict()
 
-    if settings.AWS_SES_DOMAIN:
-        send_mail(
-            EMAIL_SOURCE,
-            [instance.email],
-            email_dict["subject"],
-            email_dict["plain_text_email"],
-            email_dict["formatted_html"],
-            LOGO_EMBEDDED_IMAGE_CONFIGS,
-        )
-    else:
-        logger.debug(
-            f'In prod the following message will be sent to "{instance.notified_user.email}": "'
-            f'{email_dict["plain_text_email"]}".'
-        )
+    send_mail(
+        EMAIL_SOURCE,
+        [instance.email],
+        email_dict["subject"],
+        email_dict["plain_text_email"],
+        email_dict["formatted_html"],
+        LOGO_EMBEDDED_IMAGE_CONFIGS,
+    )
 
     instance.delivered = True
     instance.save()

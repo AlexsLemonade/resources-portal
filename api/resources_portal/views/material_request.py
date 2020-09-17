@@ -9,9 +9,10 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
+from resources_portal.models import MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
+    AddressRelationSerializer,
     AttachmentRelationSerializer,
     FulfillmentNoteRelationSerializer,
     MaterialRequestIssueRelationSerializer,
@@ -38,6 +39,7 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
             "assigned_to",
             "has_issues",
             "issues",
+            "is_missing_requester_documents",
             "requires_action_sharer",
             "requires_action_requester",
             "executed_mta_attachment",
@@ -66,7 +68,7 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     material = MaterialDetailSerializer()
     issues = MaterialRequestIssueRelationSerializer(many=True, read_only=True)
     fulfillment_notes = FulfillmentNoteRelationSerializer(many=True, read_only=True)
-    address = serializers.PrimaryKeyRelatedField(queryset=Address.objects.all())
+    address = AddressRelationSerializer()
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
@@ -257,7 +259,7 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    filterset_fields = ("id", "status", "requester__id", "assigned_to__id")
+    filterset_fields = ("id", "status", "requester__id", "assigned_to__id", "is_active")
 
     def get_queryset(self):
         if self.action == "list":

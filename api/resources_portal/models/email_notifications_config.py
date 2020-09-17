@@ -42,7 +42,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\nYou have been assigned to a new request for {material_category}, "
+            "You have been assigned to a new request for {material_category}, "
             " {material_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -58,7 +58,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n {organization_name} received a new request received for {material_category},"
+            " {organization_name} received a new request received for {material_category},"
             " {material_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -76,7 +76,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\nYou have been assigned to a request for {material_category},"
+            "You have been assigned to a request for {material_category},"
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -92,7 +92,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{other_name} has been assigned to a request for {material_category},"
+            "{other_name} has been assigned to a request for {material_category},"
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -113,7 +113,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
+            "{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
             "\nWaiting for {requester_name} to provide the following information:\n{required_info_plain}:"
             "\n\nView request details ({request_url})"
         ),
@@ -134,7 +134,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{you_or_other_name} rejected a request for {material_category},"
+            "{you_or_other_name} rejected a request for {material_category},"
             " {material_name} for the below reason:\n{rejection_reason}"
             "\n\nView request details ({request_url})"
         ),
@@ -152,7 +152,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{requester_name} cancelled a request for {material_category},"
+            "{requester_name} cancelled a request for {material_category},"
             " {material_name}\n\nView request details ({request_url})"
         ),
         "required_associations": [
@@ -169,7 +169,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "Review Items",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{requester_name} provided the following required items for a request for"
+            "{requester_name} provided the following required items for a request for"
             " {material_category}, {material_name}:\n{provided_info_plain}\n\nReview items ({request_url})."
         ),
         "required_associations": [
@@ -190,7 +190,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "Upload Fully Executed MTA",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{requester_name} provided the following additional documents"
+            "{requester_name} provided the following additional documents"
             " for a request for {material_category}, {material_name}"
             "\n- MTA signed by {requester_name} \nPlease sign and upload the requester signed MTA."
             "\n\nUpload fully executed MTA. ({request_url})."
@@ -214,7 +214,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{you_or_other_name} uploaded the fully executed MTA"
+            "{you_or_other_name} uploaded the fully executed MTA"
             " for a request for {material_category}, {material_name} from {requester_name}."
             "\n\nView request details. ({request_url})."
         ),
@@ -234,7 +234,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
+            "{you_or_other_name} accepted a request for {material_category}, {material_name} from {requester_name}."
             "Please make arrangements to send the {material_category} to {requester_name}."
             "\n\nView request details ({request_url})"
         ),
@@ -255,7 +255,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{you_or_other_name} marked a request for {material_category},"
+            "{you_or_other_name} marked a request for {material_category},"
             " {material_name} from {requester_name} as Fulfilled."
             "\n\nView request details. ({request_url})."
         ),
@@ -272,7 +272,7 @@ EMAIL_NOTIFICATIONS = {
         "body": "{requester_name} confirmed receipt of {material_category}, {material_name}.",
         "CTA": "View Request",
         "CTA_link_field": "material_request",
-        "plain_text_email": "{your_name},\n{requester_name} confirmed receipt of {material_category}, {material_name}.",
+        "plain_text_email": "{requester_name} confirmed receipt of {material_category}, {material_name}.",
         "required_associations": [
             "associated_user",
             "material",
@@ -290,7 +290,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{requester_name} has reported an issue with a fulfilled request for"
+            "{requester_name} has reported an issue with a fulfilled request for"
             " {material_category}, {material_name}.\n{issue_description}"
             "\n\nView request details. ({request_url})."
         ),
@@ -313,7 +313,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "Provide Additional Items",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{organization_name} has accepted your request for {material_category}, {material_name} "
+            "{organization_name} has accepted your request for {material_category}, {material_name} "
             "on the condition that you provide the following items:\n{required_info_plain}"
             "\n\nProvide Additional Items. ({request_url})."
         ),
@@ -334,7 +334,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{organization_name} has accepted your request for {material_category},"
+            "{organization_name} has accepted your request for {material_category},"
             " {material_name} and is working to fulfill your request."
             "\n\nView request details. ({request_url})."
         ),
@@ -354,7 +354,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{organization_name} has uploaded the fully executed MTA for your"
+            "{organization_name} has uploaded the fully executed MTA for your"
             " request for {material_category}, {material_name} and is working to fulfill your request."
             "\n\nView request details. ({request_url})."
         ),
@@ -375,7 +375,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Fulfillment Notes",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{organization_name} marked your request for {material_category},"
+            "{organization_name} marked your request for {material_category},"
             " {material_name} as fulfilled.\nPlease view fulfilment notes for details. "
             "\n\nView fulfillment notes. ({request_url})."
         ),
@@ -395,7 +395,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": (
-            "{your_name},\n{organization_name} rejected your request for"
+            "{organization_name} rejected your request for"
             " {material_category}, {material_name} for the below reason:\n{rejection_reason}"
             "\n\nView request details. ({request_url})."
         ),
@@ -431,7 +431,7 @@ EMAIL_NOTIFICATIONS = {
             "Below is the message they received from you for your records.<br><br>{message}"
         ),
         "plain_text_email": (
-            "{your_name},\n Request for {material_category}, {material_name} has been escalated"
+            "Request for {material_category}, {material_name} has been escalated"
             " to the grants team.\n"
             "ALSF Grants team is looking into this and will be in touch with you soon.\n"
             "Below is the message they received from you for your records.\n\n{message}"
@@ -451,7 +451,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Resource",
         "CTA_link_field": "material",
         "plain_text_email": (
-            "{your_name},\n{other_name} added a new {material_category}, {material_name} to {organization_name}."
+            "{other_name} added a new {material_category}, {material_name} to {organization_name}."
             "\n\nView resource. ({material_url})."
         ),
         "required_associations": ["associated_user", "material", "organization",],
@@ -465,7 +465,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Archived Resource",
         "CTA_link_field": "material",
         "plain_text_email": (
-            "{your_name},\n{other_name} archived {material_category}, {material_name} from {organization_name}."
+            "{other_name} archived {material_category}, {material_name} from {organization_name}."
             "\n\nView archived resource. ({material_url})."
         ),
         "required_associations": ["associated_user", "material", "organization",],
@@ -481,8 +481,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "YOU CAN'T DO ANYTHING ABOUT IT!",
         "CTA_link_field": "material",
         "plain_text_email": (
-            "{your_name},\n{other_name} deleted {material_category},"
-            " {material_name} from {organization_name}."
+            "{other_name} deleted {material_category}," " {material_name} from {organization_name}."
         ),
         "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
@@ -493,7 +492,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Members",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{your_name},\n{other_name} was added to {organization_name}."
+            "{other_name} was added to {organization_name}."
             "\n\nView members. ({organization_url})."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -509,7 +508,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "Manage Team",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{your_name},\n{other_name} was added to {organization_name}."
+            "{other_name} was added to {organization_name}."
             "\n\nManage team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -521,7 +520,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Team",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{your_name},\n{other_name} is now the owner of {organization_name}."
+            "{other_name} is now the owner of {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -531,7 +530,7 @@ EMAIL_NOTIFICATIONS = {
     "ORGANIZATION_MEMBER_LEFT": {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
-        "plain_text_email": "{your_name},\n{other_name} left {organization_name}",
+        "plain_text_email": "{other_name} left {organization_name}",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
     },
@@ -544,7 +543,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Team Grants",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{your_name},{other_name} linked a new grant {grant_name} with {organization_name}. "
+            "{other_name} linked a new grant {grant_name} with {organization_name}. "
             "\nTeam members can now add resources associated with the grant."
             "\n\nView team grants. ({organization_url})."
         ),
@@ -557,7 +556,7 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "View Team",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{your_name},{organization_owner} has added you to their team, {organization_name}."
+            "{organization_owner} has added you to their team, {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -571,7 +570,7 @@ EMAIL_NOTIFICATIONS = {
             "Below is the message they received from you for your records.<br><br>{message}"
         ),
         "plain_text_email": (
-            "{your_name},\n Your issue has been reported to the ALSF Grants Team.\n"
+            "Your issue has been reported to the ALSF Grants Team.\n"
             "They are looking into this and will be in touch with you soon.\n"
             "Below is the message they received from you for your records.\n\n{message}"
         ),
