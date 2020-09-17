@@ -160,6 +160,15 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         self.assertEqual(Attachment.objects.get(pk=irb_1_id).owned_by_org, self.primary_lab)
         self.assertEqual(Attachment.objects.get(pk=irb_2_id).owned_by_org, self.primary_lab)
 
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
+                )
+            ),
+            4,
+        )
+
         # Postdoc approves the requests
         self.client.force_authenticate(user=self.post_doc)
 
@@ -295,4 +304,4 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 22)
+        self.assertEqual(len(Notification.objects.all()), 26)
