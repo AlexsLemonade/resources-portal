@@ -35,7 +35,9 @@ const Requests = () => {
           (r) => r.requester.id !== user.id && r.is_active
         )
         setReceived(newReceived)
-        const newSent = newRequests.filter((r) => r.requester.id === user.id && r.is_active)
+        const newSent = newRequests.filter(
+          (r) => r.requester.id === user.id && r.is_active
+        )
         setSent(newSent)
       }
     }
