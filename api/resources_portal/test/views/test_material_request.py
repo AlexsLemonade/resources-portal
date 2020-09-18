@@ -156,16 +156,15 @@ class TestMaterialRequestListTestCase(APITestCase):
 
 class TestSingleMaterialRequestTestCase(APITestCase):
     def setUp(self):
-        self.request = MaterialRequestFactory()
+        self.organization = OrganizationFactory()
+        self.sharer = self.organization.owner
+        self.material = MaterialFactory(organization=self.organization, contact_user=self.sharer)
+        self.request = MaterialRequestFactory(material=self.material, assigned_to=self.sharer)
         self.url = reverse("material-request-detail", args=[self.request.id])
         self.material_request_data = model_to_dict(self.request)
 
         self.request2 = MaterialRequestFactory()
 
-        self.sharer = self.request.material.contact_user
-        self.organization = OrganizationFactory()
-        self.organization.materials.add(self.request.material)
-        self.organization.members.add(self.sharer)
         self.organization.assign_member_perms(self.sharer)
         self.organization.assign_owner_perms(self.sharer)
 
@@ -257,18 +256,26 @@ class TestSingleMaterialRequestTestCase(APITestCase):
             material_request.irb_attachment.owned_by_org, self.request.material.organization
         )
 
-    def test_put_request_from_requester_updates_a_material_request(self):
+    def test_patch_address_triggers_info_notif(self):
         self.client.force_authenticate(user=self.request.requester)
 
         address = AddressFactory(user=self.request.requester)
+        material_request_data = {"address": address.id}
 
-        self.material_request_data["address"] = address.id
-
-        response = self.client.put(self.url, self.material_request_data)
+        response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.address, address)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
+                )
+            ),
+            self.organization.members.count(),
+        )
 
     def test_put_request_from_requester_verifies_request(self):
         # Make the request fulfilled, so it can be verified.
@@ -316,12 +323,92 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         updated_request = MaterialRequest.objects.get(id=self.request.id)
         self.assertEqual(updated_request.assigned_to, self.other_member)
 
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED")),
+            1,
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNMENT")
+            ),
+            self.organization.members.count() - 1,
+        )
+
     def test_put_request_from_requester_does_not_update_assigned_to(self):
         self.client.force_authenticate(user=self.request.requester)
         self.material_request_data["assigned_to"] = self.other_member.id
 
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_patch_can_reject(self):
+        self.client.force_authenticate(user=self.sharer)
+
+        material_request_data = {"status": "REJECTED"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_REJECTED")),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(notification_type="MATERIAL_REQUEST_REQUESTER_REJECTED")
+            ),
+            1,
+        )
+
+    def test_patch_can_cancel(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        material_request_data = {"status": "CANCELLED"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_CANCELLED")),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_CANCELLED"
+                )
+            ),
+            1,
+        )
+
+    def test_patch_can_move_to_in_fulfillment(self):
+        # Remove the executed MTA so we can test the IN_FULFILLMENT notifications.
+        self.request.executed_mta_attachment = None
+        self.request.save()
+
+        self.client.force_authenticate(user=self.sharer)
+
+        material_request_data = {"status": "IN_FULFILLMENT"}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_IN_FULFILLMENT"
+                )
+            ),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT"
+                )
+            ),
+            1,
+        )
 
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
