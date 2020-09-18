@@ -92,7 +92,9 @@ class Attachment(SafeDeleteModel):
                 ExpiresIn=(60 * 60 * 24),  # 1 day in seconds.
             )
         elif settings.LOCAL_FILE_DIRECTORY:
-            return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
+            return settings.DEV_HOST + reverse(
+                "uploaded-file", args=[f"attachment_{self.id}/{self.filename}"]
+            )
         else:
             return None
 

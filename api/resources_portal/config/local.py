@@ -41,3 +41,6 @@ class Local(Common):
     OAUTH_URL = "https://sandbox.orcid.org/oauth/token"
 
     CSRF_TRUSTED_ORIGINS = ["localhost", "127.0.0.1"]
+
+    # This is only needed locally because everything else will use S3.
+    DEV_HOST = os.getenv("DEV_HOST")

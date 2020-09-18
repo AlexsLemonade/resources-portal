@@ -16,6 +16,8 @@ services:
       dockerfile: Dockerfile.local
       args:
         PORT: '${API_PORT}'
+    environment:
+      DEV_HOST: 'http://localhost:${API_PORT}'
     command: >
       bash -c 'python wait_for_postgres.py &&
                python3 wait_for_elasticsearch.py &&
