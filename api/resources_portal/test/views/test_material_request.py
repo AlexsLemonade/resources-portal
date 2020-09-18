@@ -240,6 +240,23 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.status, "APPROVED")
 
+    def test_put_request_from_requester_adds_attachment(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        irb_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
+        )
+        self.material_request_data["irb_attachment"] = irb_attachment.id
+
+        response = self.client.put(self.url, self.material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_request = MaterialRequest.objects.get(pk=self.request.id)
+        self.assertEqual(material_request.irb_attachment, irb_attachment)
+        self.assertEqual(
+            material_request.irb_attachment.owned_by_org, self.request.material.organization
+        )
+
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
