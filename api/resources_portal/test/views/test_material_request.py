@@ -230,9 +230,9 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         sharer_org.save()
 
         self.material_request_data["status"] = "APPROVED"
-        self.material_request_data["executed_mta_attachment"] = AttachmentFactory(
-            owned_by_org=sharer_org
-        ).id
+        self.material_request_data["executed_mta_attachment"] = {
+            "id": AttachmentFactory(owned_by_org=sharer_org).id
+        }
 
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -246,9 +246,9 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         irb_attachment = AttachmentFactory(
             owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
         )
-        self.material_request_data["irb_attachment"] = irb_attachment.id
+        material_request_data = {"irb_attachment": {"id": irb_attachment.id}}
 
-        response = self.client.put(self.url, self.material_request_data)
+        response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         material_request = MaterialRequest.objects.get(pk=self.request.id)
@@ -302,7 +302,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
 
         irb_attachment = AttachmentFactory()
 
-        self.material_request_data["irb_attachment"] = irb_attachment.id
+        self.material_request_data["irb_attachment"] = {"id": irb_attachment.id}
 
         response = self.client.put(self.url, self.material_request_data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
