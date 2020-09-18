@@ -174,13 +174,13 @@ export const NextStepsStep = () => {
       <Box direction="column" width="300px" gap="large">
         <Link href="/resources">
           <Box width="200px">
-            <Button label="Add a Resource" href="#" primary />
+            <Button as="a" label="Add a Resource" href="/resources" primary />
           </Box>
         </Link>
-        <Link href="/organization">
+        <Link href="/account/teams">
           <Anchor
             color="#017FA3"
-            href="#"
+            href="/account/teams"
             label="Add members of your lab or organization to help you manage resources"
           />
         </Link>
