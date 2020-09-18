@@ -55,6 +55,8 @@ class TransferOfResource(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        self.assertEqual(len(Notification.objects.filter(notification_type="MATERIAL_ADDED")), 1)
+
         # The Postdoc is invited to PrimaryLab
         self.client.force_authenticate(user=self.primary_prof)
 
@@ -108,4 +110,4 @@ class TransferOfResource(APITestCase):
         self.assertEqual(material.organization, self.primary_lab)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 2)
+        self.assertEqual(len(Notification.objects.all()), 3)

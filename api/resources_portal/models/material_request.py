@@ -1,6 +1,10 @@
+import datetime
+
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
+from computedfields.models import ComputedFieldsModel, computed
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
@@ -8,9 +12,10 @@ from resources_portal.models.address import Address
 from resources_portal.models.attachment import Attachment
 from resources_portal.models.material import Material
 from resources_portal.models.user import User
+from resources_portal.utils import pretty_date
 
 
-class MaterialRequest(SafeDeleteModel):
+class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     class Meta:
         db_table = "material_requests"
         get_latest_by = "created_at"
@@ -43,7 +48,7 @@ class MaterialRequest(SafeDeleteModel):
         Material, blank=False, null=False, on_delete=models.CASCADE, related_name="requests"
     )
 
-    address = models.ForeignKey(
+    address = models.OneToOneField(
         Address, blank=False, null=True, on_delete=models.SET_NULL, related_name="requests"
     )
 
@@ -82,9 +87,18 @@ class MaterialRequest(SafeDeleteModel):
         User, blank=False, null=True, on_delete=models.CASCADE, related_name="assignments"
     )
 
-    @property
+    @computed(models.BooleanField(blank=False, null=True))
     def is_active(self):
-        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT"]
+        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT", "FULFILLED"]
+
+    @property
+    def is_missing_requester_documents(self):
+        missing_irb = self.material.needs_irb and self.irb_attachment is None
+        missing_mta = (
+            self.material.mta_attachment is not None
+            and self.requester_signed_mta_attachment is None
+        )
+        return missing_irb or missing_mta or self.needs_shipping_info
 
     @property
     def requires_action_sharer(self):
@@ -101,61 +115,80 @@ class MaterialRequest(SafeDeleteModel):
         if self.status != "APPROVED":
             return False
 
-        missing_irb = self.material.needs_irb and self.irb_attachment is None
-        missing_mta = (
-            self.material.mta_attachment is not None
-            and self.requester_signed_mta_attachment is None
-        )
-        return missing_irb or missing_mta
+        return self.is_missing_requester_documents
 
     @property
     def has_issues(self):
         return self.issues.filter(status="OPEN").count() > 0
 
     @property
+    def human_readable_created_at(self):
+        return pretty_date(self.created_at)
+
+    @property
+    def is_one_month_old(self):
+        return self.created_at < (timezone.now() - datetime.timedelta(days=30))
+
+    @property
     def frontend_URL(self):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
     @property
+    def needs_shipping_info(self):
+        shipping_requirement = self.material.shipping_requirement
+        if shipping_requirement:
+            if shipping_requirement.needs_shipping_address and not self.address:
+                return True
+            elif shipping_requirement.needs_payment and not self.payment_method:
+                return True
+
+        return False
+
+    @property
     def required_info_plain_text(self):
-        # TODO: figure out shipping information.
         required_info = ""
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
             required_info += "- Signed MTA\n"
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "- IRB Approval\n"
 
+        if self.needs_shipping_info:
+            required_info += "- Shipping Information\n"
+
         return required_info
 
     @property
     def provided_info_plain_text(self):
-        # TODO: figure out shipping information.
         provided_info = ""
         if self.requester_signed_mta_attachment:
             provided_info += "- Signed MTA\n"
         if not self.irb_attachment:
             provided_info += "- IRB Approval\n"
+        if self.address or self.payment_method:
+            provided_info += "- Shipping Information\n"
 
     @property
     def required_info_html(self):
-        # TODO: figure out shipping information.
         required_info = "<list>"
         if self.material.mta_attachment and not self.requester_signed_mta_attachment:
             required_info += "<ul>Signed MTA</ul>"
         if self.material.needs_irb and not self.irb_attachment:
             required_info += "<ul>IRB Approval</ul>"
+        if self.needs_shipping_info:
+            required_info += "<ul>Shipping Information</ul>"
 
         required_info += "</list>"
         return required_info
 
     @property
     def provided_info_html(self):
-        # TODO: figure out shipping information.
         provided_info = "<list>"
         if self.requester_signed_mta_attachment:
             provided_info += "<ul>Signed MTA</ul>"
         if not self.irb_attachment:
             provided_info += "<ul>IRB Approval</ul>"
+        if self.address or self.payment_method:
+            provided_info += "<ul>Shipping Information</ul>"
 
         provided_info += "</list>"
         return provided_info

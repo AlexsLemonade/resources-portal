@@ -3,7 +3,7 @@ import { Anchor, Box, Text } from 'grommet'
 import Icon from 'components/Icon'
 import { List, ListItem } from '../List'
 
-const ReviewRequestRequirement = ({ title, children, oneSection = false }) => {
+const ReviewRequestRequirement = ({ title, children }) => {
   return (
     <Box direction="row" gap="medium" margin={{ bottom: 'medium' }}>
       <Box width="280px">

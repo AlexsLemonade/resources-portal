@@ -1,3 +1,5 @@
+import os
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -66,6 +68,14 @@ class Attachment(SafeDeleteModel):
     s3_resource_deleted = models.BooleanField(default=False)
 
     @property
+    def local_file_dir(self):
+        return os.path.join(settings.LOCAL_FILE_DIRECTORY, f"attachment_{self.id}")
+
+    @property
+    def local_file_path(self):
+        return os.path.join(self.local_file_dir, self.filename)
+
+    @property
     def download_url(self):
         """A temporary URL from which the file can be downloaded.
         """
@@ -82,7 +92,9 @@ class Attachment(SafeDeleteModel):
                 ExpiresIn=(60 * 60 * 24),  # 1 day in seconds.
             )
         elif settings.LOCAL_FILE_DIRECTORY:
-            return reverse("uploaded-file", args=[f"attachment_{self.id}/{self.filename}"])
+            return settings.DEV_HOST + reverse(
+                "uploaded-file", args=[f"attachment_{self.id}/{self.filename}"]
+            )
         else:
             return None
 

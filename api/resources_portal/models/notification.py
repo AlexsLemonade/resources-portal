@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import post_save, pre_save
@@ -18,11 +17,12 @@ from resources_portal.emailer import (
     PLAIN_TEXT_EMAIL_FOOTER,
     send_mail,
 )
+from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
+from resources_portal.models.frontend_notifications_config import FRONTEND_NOTIFICATIONS
 from resources_portal.models.grant import Grant
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.material_request_issue import MaterialRequestIssue
-from resources_portal.models.notifications_config import NOTIFICATIONS
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 from resources_portal.utils import pretty_date
@@ -46,7 +46,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
-    NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATIONS.keys())
+    NOTIFICATION_TYPES = tuple((key, key) for key in EMAIL_NOTIFICATIONS.keys())
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -75,6 +75,11 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
     email = models.EmailField(blank=False, null=True)
     email_delivered_at = models.DateTimeField(blank=False, null=True)
 
+    @computed(models.TextField(blank=False, null=True))
+    def text_body(self):
+        props = self.get_formatting_props()
+        return FRONTEND_NOTIFICATIONS[self.notification_type]["body"].format(**props)
+
     @computed(models.BooleanField(blank=False, null=True))
     def email_delivered(self):
         return self.email_delivered_at is not None
@@ -99,8 +104,8 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
                 )
             )
             or (
-                "always_send" in NOTIFICATIONS[self.notification_type]
-                and NOTIFICATIONS[self.notification_type]["always_send"]
+                "always_send" in EMAIL_NOTIFICATIONS[self.notification_type]
+                and EMAIL_NOTIFICATIONS[self.notification_type]["always_send"]
             )
             or (
                 # Special case for this because it's always sent if
@@ -110,13 +115,14 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
             )
         )
 
-    def get_email_dict(self):
-        # All the properties which can be used in template strings in the
-        # config. If they don't get set because the association doesn't
-        # exist, then they better not be needed.
+    def get_formatting_props(self):
+        """
+        All the properties which can be used in template strings in the
+        config. If they don't get set because the association doesn't
+        exist, then they better not be needed.
+        """
         props = {
             "notifications_url": NOTIFICATIONS_URL,
-            "your_name": self.notified_user.full_name,
             "message": self.message,
         }
         if self.associated_user:
@@ -141,6 +147,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         if self.material_request:
             props["request_url"] = self.material_request.frontend_URL
             props["requester_name"] = self.material_request.requester.full_name
+            props["assigned_to"] = self.material_request.assigned_to.full_name
             props["rejection_reason"] = self.material_request.rejection_reason
             props["required_info_plain"] = self.material_request.required_info_plain_text
             props["provided_info_plain"] = self.material_request.provided_info_plain_text
@@ -149,12 +156,17 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         if self.material_request_issue:
             props["issue_description"] = self.material_request_issue.description
 
-        notification_config = NOTIFICATIONS[self.notification_type]
+        return props
+
+    def get_email_dict(self):
+        props = self.get_formatting_props()
+
+        notification_config = EMAIL_NOTIFICATIONS[self.notification_type]
 
         body = notification_config["body"].format(**props)
-        formatted_html = EMAIL_HTML_BODY.replace("REPLACE_FULL_NAME", props["your_name"]).replace(
-            "REPLACE_MAIN_TEXT", body
-        )
+        formatted_html = EMAIL_HTML_BODY.replace(
+            "REPLACE_FULL_NAME", self.notified_user.full_name
+        ).replace("REPLACE_MAIN_TEXT", body)
         formatted_cta_html = ""
         cta = ""
         cta_link = ""
@@ -172,8 +184,11 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
             "cta": cta,
             "cta_link": cta_link,
             "plain_text_email": (
-                notification_config["plain_text_email"].format(**props) + PLAIN_TEXT_EMAIL_FOOTER
+                f"{self.notified_user.full_name},\n"
+                + notification_config["plain_text_email"].format(**props)
+                + PLAIN_TEXT_EMAIL_FOOTER
             ),
+            "plain_text_email_body": (notification_config["plain_text_email"].format(**props)),
             "subject": notification_config["subject"].format(**props),
             "formatted_html": formatted_html,
         }
@@ -184,7 +199,7 @@ def validate_associations(sender, instance=None, created=False, **kwargs):
     if not instance.notification_type:
         raise ValidationError("Notifications must have notification_type set.")
 
-    for association in NOTIFICATIONS[instance.notification_type]["required_associations"]:
+    for association in EMAIL_NOTIFICATIONS[instance.notification_type]["required_associations"]:
         if not getattr(instance, association):
             raise ValidationError(
                 f"Notifications of type {instance.notification_type} must have {association} set."
@@ -202,20 +217,14 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
     logger.info(f"Sending an email notification to {instance.email}.")
     email_dict = instance.get_email_dict()
 
-    if settings.AWS_SES_DOMAIN:
-        send_mail(
-            EMAIL_SOURCE,
-            [instance.email],
-            email_dict["subject"],
-            email_dict["plain_text_email"],
-            email_dict["formatted_html"],
-            LOGO_EMBEDDED_IMAGE_CONFIGS,
-        )
-    else:
-        logger.debug(
-            f'In prod the following message will be sent to "{instance.notified_user.email}": "'
-            f'{email_dict["plain_text_email"]}".'
-        )
+    send_mail(
+        EMAIL_SOURCE,
+        [instance.email],
+        email_dict["subject"],
+        email_dict["plain_text_email"],
+        email_dict["formatted_html"],
+        LOGO_EMBEDDED_IMAGE_CONFIGS,
+    )
 
     instance.delivered = True
     instance.save()

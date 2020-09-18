@@ -36,7 +36,6 @@ The production stack has not yet been configured.
 
 For instructions on how to deploy a development stack see the [infrastructure README](infrastructure/README.md).
 
-
 ## Testing
 
 To populate the dev database with some realistic data, please run:
@@ -52,3 +51,12 @@ rportal recreate-schema
 ```
 
 See the [README for the test data](api/dev_data/test_data_readme.md) for a description of the test dataset.
+
+## Account Creation
+
+Users can create accounts by signing in through ORCID using the button in the website's header.
+Accounts with associated grants can also be created by passing URL parameters to the /create-account endpoint, as documented in the [account creation README](client/ACCOUNT_CREATION_README.md).
+
+## ORCID OAUTH
+
+Resources Portal uses ORCID OAUTH to create accounts and sign in users. You can find documentation for it in the [OAUTH README](api/resources-portal/OAUTH_README.md).

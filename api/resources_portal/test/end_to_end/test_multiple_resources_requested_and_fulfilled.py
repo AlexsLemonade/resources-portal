@@ -64,7 +64,7 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         self.user_data = {
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
         Notification.objects.all().delete()
@@ -159,6 +159,15 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         # Assert that ownership of attachments to the material-requests is shared by the requester and the requested org
         self.assertEqual(Attachment.objects.get(pk=irb_1_id).owned_by_org, self.primary_lab)
         self.assertEqual(Attachment.objects.get(pk=irb_2_id).owned_by_org, self.primary_lab)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
+                )
+            ),
+            4,
+        )
 
         # Postdoc approves the requests
         self.client.force_authenticate(user=self.post_doc)
@@ -265,6 +274,14 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             ),
             2,
         )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_EXECUTED_MTA"
+                )
+            ),
+            4,
+        )
 
         self.assertEqual(Attachment.objects.get(pk=mta_1_id).owned_by_user, requester)
         self.assertEqual(Attachment.objects.get(pk=mta_2_id).owned_by_user, requester)
@@ -295,4 +312,4 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 22)
+        self.assertEqual(len(Notification.objects.all()), 30)

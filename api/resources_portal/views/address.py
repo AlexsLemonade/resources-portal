@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Address, User
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.serializers import UserRelationSerializer
 
 
 class AddressSerializer(serializers.ModelSerializer):
@@ -29,6 +29,14 @@ class AddressSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("id", "created_at", "updated_at", "user")
+
+
+class SavedAddressSerializer(AddressSerializer):
+    def to_representation(self, data):
+        if data.saved_for_reuse:
+            return super(AddressSerializer, self).to_representation(data)
+        else:
+            return None
 
 
 class AddressDetailSerializer(AddressSerializer):

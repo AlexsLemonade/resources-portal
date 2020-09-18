@@ -4,8 +4,9 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Notification, User
-from resources_portal.views.relation_serializers import (
+from resources_portal.serializers import (
     GrantRelationSerializer,
+    MaterialRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     MaterialRequestRelationSerializer,
     OrganizationRelationSerializer,
@@ -22,7 +23,10 @@ class NotificationSerializer(serializers.ModelSerializer):
             "notified_user",
             "associated_user",
             "organization",
+            "message",
+            "text_body",
             "grant",
+            "material",
             "material_request",
             "material_request_issue",
             "human_readable_date",
@@ -37,6 +41,7 @@ class NotificationSerializer(serializers.ModelSerializer):
     associated_user = UserRelationSerializer(read_only=True)
     organization = OrganizationRelationSerializer(read_only=True)
     grant = GrantRelationSerializer(read_only=True)
+    material = MaterialRelationSerializer(read_only=True)
     material_request = MaterialRequestRelationSerializer(read_only=True)
     material_request_issue = MaterialRequestIssueRelationSerializer(read_only=True)
 

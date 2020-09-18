@@ -5,8 +5,6 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Organization, ShippingRequirement
 
-# from resources_portal.views.relation_serializers import OrganizationRelationSerializer
-
 
 class ShippingRequirementSerializer(serializers.ModelSerializer):
     class Meta:

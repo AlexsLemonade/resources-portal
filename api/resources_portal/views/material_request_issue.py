@@ -7,7 +7,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from resources_portal.models import MaterialRequest, MaterialRequestIssue, Organization
 from resources_portal.notifier import send_notifications
-from resources_portal.views.relation_serializers import MaterialRequestRelationSerializer
+from resources_portal.serializers import MaterialRequestRelationSerializer
 
 MATERIAL_ARCHIVED_ERROR = "Cannot open issues for requests whose materials have been archived."
 REQUEST_UNFULFILLED_ERROR = "Cannot open issues for requests which haven't been fulfilled."
@@ -96,7 +96,7 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
             self.action == "list"
             or self.action == "retrieve"
             or self.action == "update"
-            or self.action == "partial-update"
+            or self.action == "partial_update"
         ):
             permission_classes = [IsAuthenticated, IsRequesterOrIsInOrg]
         else:

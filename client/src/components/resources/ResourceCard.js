@@ -9,6 +9,32 @@ const BoldAnchor = styled(Anchor)`
   font-weight: bold;
 `
 
+export const ResourceTypeOrganisms = ({
+  direction = 'row',
+  size = 'medium',
+  resource
+}) => {
+  return (
+    <Box direction={direction} gap={size}>
+      <Box direction="row" gap="small">
+        <Icon color="plain" name="ResourceType" />
+        <Text>{getReadable(resource.category)}</Text>
+      </Box>
+      {resource.organisms && resource.organisms.length > 0 && (
+        <Box direction="row" gap="small">
+          <Icon color="plain" name="Organism" />
+          {resource.organisms.map((organism, i, { length }) => (
+            <Text key={organism}>
+              {organism}
+              {i < length - 1 && ', '}
+            </Text>
+          ))}
+        </Box>
+      )}
+    </Box>
+  )
+}
+
 export const ResourceCard = ({
   size = 'medium',
   resource,
@@ -31,23 +57,11 @@ export const ResourceCard = ({
           </BoldAnchor>
         </Link>
         <Box>
-          <Box direction={direction} gap={size}>
-            <Box direction="row" gap="small">
-              <Icon color="plain" name="ResourceType" />
-              <Text>{getReadable(resource.category)}</Text>
-            </Box>
-            {resource.organisms && resource.organisms.length > 0 && (
-              <Box direction="row" gap="small">
-                <Icon color="plain" name="Organism" />
-                {resource.organisms.map((organism, i, { length }) => (
-                  <Text key={organism}>
-                    {organism}
-                    {i < length - 1 && ', '}
-                  </Text>
-                ))}
-              </Box>
-            )}
-          </Box>
+          <ResourceTypeOrganisms
+            resource={resource}
+            size={size}
+            direction={direction}
+          />
         </Box>
       </Box>
       <Box>{children}</Box>

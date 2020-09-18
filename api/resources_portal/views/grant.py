@@ -3,10 +3,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Grant, User
-from resources_portal.views.relation_serializers import (
-    MaterialRelationSerializer,
-    OrganizationRelationSerializer,
-)
+from resources_portal.serializers import MaterialRelationSerializer, OrganizationRelationSerializer
 
 BAD_DISASSOCIATION_ERROR = "You may not disassociate your last grant from your user."
 

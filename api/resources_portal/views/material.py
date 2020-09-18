@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import serializers, status, viewsets
+from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from rest_framework.response import Response
@@ -7,81 +7,9 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material, Organization
+from resources_portal.notifier import send_notifications
+from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
 from resources_portal.views.material_request import MaterialRequestSerializer
-from resources_portal.views.relation_serializers import (
-    AttachmentRelationSerializer,
-    ShippingRequirementRelationSerializer,
-    UserRelationSerializer,
-)
-
-
-class MaterialSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Material
-        fields = (
-            "id",
-            "category",
-            "title",
-            "url",
-            "organisms",
-            "organization",
-            "pubmed_id",
-            "is_archived",
-            "additional_metadata",
-            "contact_user",
-            "sequence_maps",
-            "mta_attachment",
-            "needs_mta",
-            "has_publication",
-            "needs_irb",
-            "needs_abstract",
-            "imported",
-            "shipping_requirement",
-            "import_source",
-            "grants",
-            "organisms",
-            "publication_title",
-            "pre_print_doi",
-            "pre_print_title",
-            "citation",
-            "additional_info",
-            "embargo_date",
-            "created_at",
-            "updated_at",
-        )
-        read_only_fields = (
-            "id",
-            "created_at",
-            "updated_at",
-            "sequence_maps",
-            "requests",
-            "needs_mta",
-            "has_publication",
-        )
-
-    def validate(self, data):
-        """Only allow materials with no open requests to be archived.
-        """
-        # If they aren't setting is_archived=True on an existing
-        # material then they're fine.
-        if "id" not in data or "is_archived" not in data or not data["is_archived"]:
-            return data
-
-        material = Material.objects.get(data["id"])
-        for request in material.requests:
-            if request.status not in ["REJECTED", "INVALID", "CANCELLED", "FULFILLED"]:
-                raise serializers.ValidationError(
-                    "All requests for the material must be closed first."
-                )
-
-        return data
-
-
-class MaterialDetailSerializer(MaterialSerializer):
-    contact_user = UserRelationSerializer()
-    mta_attachment = AttachmentRelationSerializer()
-    shipping_requirement = ShippingRequirementRelationSerializer()
-    sequence_maps = AttachmentRelationSerializer(many=True)
 
 
 class HasAddResources(BasePermission):
@@ -161,7 +89,19 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return super(MaterialViewSet, self).create(request, *args, **kwargs)
+        response = super(MaterialViewSet, self).create(request, *args, **kwargs)
+
+        if "id" in response.data:
+            material = Material.objects.get(pk=response.data["id"])
+            send_notifications(
+                "MATERIAL_ADDED",
+                request.user,
+                request.user,
+                material.organization,
+                material=material,
+            )
+
+        return response
 
     def update(self, request, *args, **kwargs):
         material = self.get_object()
@@ -180,4 +120,37 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             if not request.user.has_perm("add_resources", new_organization):
                 return Response(status=status.HTTP_403_FORBIDDEN)
 
-        return super(MaterialViewSet, self).update(request, *args, **kwargs)
+        response = super(MaterialViewSet, self).update(request, *args, **kwargs)
+
+        if not material.is_archived and request.data.get("is_archived", False):
+            material = self.get_object()
+            send_notifications(
+                "MATERIAL_ARCHIVED",
+                request.user,
+                request.user,
+                material.organization,
+                material=material,
+            )
+
+        return response
+
+    def destroy(self, request, *args, **kwargs):
+        material = self.get_object()
+
+        if material.requests.count() > 0:
+            return Response(
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"message": "You cannot delete a material that has requests."},
+            )
+
+        response = super(MaterialViewSet, self).destroy(request, *args, **kwargs)
+
+        send_notifications(
+            "MATERIAL_DELETED",
+            request.user,
+            request.user,
+            material.organization,
+            material=material,
+        )
+
+        return response

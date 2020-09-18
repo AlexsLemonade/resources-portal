@@ -18,8 +18,14 @@ export const ResourceContextProvider = ({
   const [grantOptions, setGrantOptions] = React.useState([])
   const [contactUserOptions, setContactUserOptions] = React.useState([])
   const [errors, setErrors] = React.useState([])
-  const { user, token } = useUser()
+  const { user, token, refreshUser } = useUser()
   const fetchRef = React.useRef(false)
+  const refreshRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!refreshRef.curent) refreshUser()
+    refreshRef.current = true
+  }, [])
 
   // this is a propagating fetch so context needs to own it
   const didSetOrganization = async (teamId) => {

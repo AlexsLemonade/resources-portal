@@ -38,7 +38,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
 
         self.user_data = {
             "email": MOCK_EMAIL,
-            "grant_info": MOCK_GRANTS,
+            "grants": MOCK_GRANTS,
         }
 
     @patch("orcid.PublicAPI", side_effect=generate_random_mock_orcid_record_response)
@@ -142,6 +142,8 @@ class TestOrganizationWithTwoUsers(APITestCase):
         response = self.client.post(reverse("material-list"), self.material_json, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        self.assertEqual(len(Notification.objects.filter(notification_type="MATERIAL_ADDED")), 2)
+
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
 
@@ -152,4 +154,4 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 2)
+        self.assertEqual(len(Notification.objects.all()), 4)

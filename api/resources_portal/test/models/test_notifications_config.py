@@ -3,7 +3,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models.notifications_config import NOTIFICATIONS
+from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
 from resources_portal.test.factories import NotificationFactory
 
 fake = Faker()
@@ -18,7 +18,7 @@ class NotificationEmailFormattingTestCase(APITestCase):
         self.notification = NotificationFactory()
 
     def test_all_notification_type_formatting(self):
-        for notification_type in NOTIFICATIONS.keys():
+        for notification_type in EMAIL_NOTIFICATIONS.keys():
             self.notification.notification_type = notification_type
             self.notification.email_delivered = False
             self.notification.save()

@@ -7,7 +7,7 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Organization, OrganizationUserAssociation, User
 from resources_portal.notifier import send_notifications
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.serializers import UserRelationSerializer
 
 
 class BelongsToOrganization(BasePermission):

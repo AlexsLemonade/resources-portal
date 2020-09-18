@@ -3,12 +3,18 @@ import { Anchor, Box, Button, Paragraph, Text, TextInput } from 'grommet'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { HeaderRow } from 'components/HeaderRow'
 import { useUser } from 'hooks/useUser'
+import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import Icon from 'components/Icon'
 
 const BasicInformation = () => {
-  const { user } = useUser()
+  const { user, refreshUser, updateEmail } = useUser()
   const [newEmail, setNewEmail] = React.useState(user.email)
   const [showEmailForm, setShowEmailForm] = React.useState(false)
+  const { addAlert } = useAlertsQueue()
+
+  React.useEffect(() => {
+    refreshUser()
+  }, [])
 
   return (
     <DrillDownNav title="Basic Information">
@@ -46,10 +52,10 @@ const BasicInformation = () => {
               />
               <Button
                 label="Save"
-                onClick={() => {
-                  // do api stuff here
-                  setNewEmail(newEmail)
-                  setShowEmailForm(false)
+                onClick={async () => {
+                  const saved = await updateEmail(newEmail)
+                  if (saved) setShowEmailForm(false)
+                  if (!saved) addAlert('Unable to set email.', 'error')
                 }}
               />
             </Box>

@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Material
+from resources_portal.models import Material, Notification
 from resources_portal.test.factories import (
     MaterialFactory,
     MaterialRequestFactory,
@@ -47,6 +47,10 @@ class TestMaterialListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(self.material.category, response.json()["category"])
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_ADDED")),
+            self.organization.members.count(),
+        )
 
     def test_post_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
@@ -136,9 +140,15 @@ class TestSingleMaterialTestCase(APITestCase):
         material_json["url"] = new_url
         material_json["contact_user"] = material_json["contact_user"]["id"]
         material_json["is_archived"] = True
+        material_json["organization"] = material_json["organization"]["id"]
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_ARCHIVED")),
+            self.organization.members.count(),
+        )
 
         material = Material.objects.get(pk=self.material.id)
         self.assertEqual(material.url, new_url)
@@ -213,6 +223,17 @@ class TestSingleMaterialTestCase(APITestCase):
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Material.objects.filter(id=material_id).count(), 0)
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_DELETED")),
+            self.organization.members.count(),
+        )
+
+    def test_delete_material_with_request_fails(self):
+        MaterialRequestFactory(material=self.material)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_delete_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
