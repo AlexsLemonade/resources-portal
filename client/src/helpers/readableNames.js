@@ -135,7 +135,18 @@ export const readableNames = {
   gene_insert: 'Gene Insert',
   growth_in_bacteria: 'Growth In Bacteria',
   culture: 'Culture',
-  quality: 'Quality'
+  quality: 'Quality',
+  OPEN: 'Open',
+  AWAITING_ADDITIONAL_DOCUMENTS: 'Awaiting Additional Documents',
+  AWAITING_MTA: 'Awaiting MTA',
+  IN_FULFILLMENT: 'In Fullfilment',
+  IN_FULFILLMENT_ISSUE_REPORTED: 'In Fullfilment (Issue Reported)',
+  FULFILLED: 'Fulfilled',
+  VERIFIED_FULFILLED: 'Fulfilled (Verified)',
+  CLOSED: 'Closed',
+  REJECTED: 'Rejected',
+  INVALID: 'Invalid',
+  CANCELLED: 'Cancelled'
 }
 
 export const getReadable = (token) => {

@@ -6,8 +6,10 @@ import { abbreviateNumbers } from '../helpers/formatNumbers'
 export const Pill = ({
   background = 'black-tint-80',
   color = 'black-tint-30',
+  textColor,
   label = ''
 }) => {
+  const textColorOrColor = textColor || color
   return (
     <Box
       background={background}
@@ -29,7 +31,7 @@ export const Pill = ({
         margin={{ right: '4px' }}
       />
       <Paragraph
-        color={color}
+        color={textColorOrColor}
         size="medium"
         responsive={false}
         alignSelf="center"

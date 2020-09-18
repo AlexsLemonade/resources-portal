@@ -637,7 +637,9 @@ const theme = {
         dark: '#999999',
         light: '#666666'
       },
-      focus: 'brand'
+      focus: 'brand',
+      'border-black': '#CACACA',
+      'border-brand': '#BAEFFE'
     },
     control: {
       border: {

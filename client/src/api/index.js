@@ -126,11 +126,16 @@ export default {
       }),
     requests: {
       filter: (id, query = {}, authorization) =>
-        request(getAPIURL(`materials/${id}/requests/`, query), {
+        request(getAPIURL(`materials/${id}/requests`, query), {
           authorization,
           method: 'GET'
         })
-    }
+    },
+    delete: (id, authorization) =>
+      request(getAPIURL(`materials/${id}/`), {
+        authorization,
+        method: 'DELETE'
+      })
   },
   user: {
     get: userGetInfo,
@@ -356,17 +361,21 @@ export default {
       body: JSON.stringify({ email })
     }),
   requests: {
+    get: (materialRequestId, authorization) =>
+      request(getAPIURL(`material-requests/${materialRequestId}/`), {
+        authorization
+      }),
     create: (materialRequest, authorization) =>
       request(getAPIURL('material-requests/'), {
         authorization,
         method: 'POST',
         body: JSON.stringify(materialRequest)
       }),
-    update: (materialRequestId, materialRequest, authorization) =>
+    update: (materialRequestId, changes, authorization) =>
       request(getAPIURL(`material-requests/${materialRequestId}/`), {
         authorization,
         method: 'PATCH',
-        body: JSON.stringify(materialRequest)
+        body: JSON.stringify(changes)
       }),
     list: (authorization) =>
       request(getAPIURL('material-requests/'), {
@@ -375,6 +384,19 @@ export default {
     filter: (filter, authorization) =>
       request(getAPIURL('material-requests/', filter), {
         authorization
-      })
+      }),
+    notes: {
+      add: (materialRequestId, text, authorization) =>
+        request(
+          getAPIURL(
+            `material-requests/${materialRequestId}/fulfillment-notes/`
+          ),
+          {
+            authorization,
+            method: 'POST',
+            body: JSON.stringify({ text, material_request: materialRequestId })
+          }
+        )
+    }
   }
 }
