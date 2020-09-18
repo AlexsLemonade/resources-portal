@@ -23,6 +23,10 @@ const zipGrants = (grantTitles, grantFunderId) => {
 }
 
 CreateAccount.getInitialProps = async ({ req, query }) => {
+  if (!req) {
+    return {}
+  }
+
   // Process grants. If there are multiple grants provided, zip the arrays of titles and funder ids.
   // If not, create an object from the title and funder id.
   let grants
@@ -33,7 +37,7 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
     ) {
       grants = zipGrants(query.grant_title, query.grant_funder_id)
     } else {
-      grants = { title: query.grant_title, funder_id: query.grant_funder_id }
+      grants = [{ title: query.grant_title, funder_id: query.grant_funder_id }]
     }
   }
 
