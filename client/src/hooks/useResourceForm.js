@@ -321,7 +321,7 @@ export default () => {
     )
     if (importRequest.isOk) {
       const { response } = importRequest
-      setResource({ ...resource, ...response })
+      setResource({ ...resource, ...response, imported: true })
     }
     setFetched(importRequest.isOk)
     return importRequest.isOk
