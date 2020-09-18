@@ -90,7 +90,7 @@ FRONTEND_NOTIFICATIONS = {
     "MATERIAL_REQUEST_REQUESTER_REJECTED": {
         "body": (
             "[organization_name]() rejected your request for [material_name]() "
-            "for the below reason:<br>{rejection_reason}"
+            "for the below reason:\n{rejection_reason}"
         )
     },
     "MATERIAL_REQUEST_REQUESTER_CANCELLED": {
@@ -99,8 +99,8 @@ FRONTEND_NOTIFICATIONS = {
     "MATERIAL_REQUEST_REQUESTER_ESCALATED": {
         "body": (
             "Request for {material_category}, [material_name]() has been"
-            " escalated to the grants team.<br>"
-            "ALSF Grants team is looking into this and will be in touch with you soon.<br>"
+            " escalated to the grants team.\n"
+            "ALSF Grants team is looking into this and will be in touch with you soon.\n"
             "Below is the message they received from you for your records.\n{message}"
         )
     },
@@ -133,9 +133,9 @@ FRONTEND_NOTIFICATIONS = {
     },
     "REPORT_TO_GRANTS_TEAM": {
         "body": (
-            "Your issue has been reported to the ALSF Grants Team.<br>"
-            "They are looking into this and will be in touch with you soon.<br>"
-            "Below is the message they received from you for your records.<br><br>{message}"
+            "Your issue has been reported to the ALSF Grants Team.\n"
+            "They are looking into this and will be in touch with you soon.\n"
+            "Below is the message they received from you for your records.\n\n{message}"
         ),
     },
 }

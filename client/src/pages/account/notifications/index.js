@@ -16,9 +16,18 @@ const Notifications = () => {
     if (!didUpdateNotifs) {
       setdidUpdateNotifs(true)
       const updateNotifsViewed = async () => {
-        const today = new Date()
+        const notificationDates = notifications.map((notification) => {
+          return notification.created_at
+        })
+        const lastNotificationDate = new Date(
+          Math.max.apply(null, notificationDates)
+        )
         const response = await api.user
-          .update(user.id, { viewed_notifications_at: today }, token)
+          .update(
+            user.id,
+            { viewed_notifications_at: lastNotificationDate },
+            token
+          )
           .then(refreshUserData)
 
         return response

@@ -2,21 +2,9 @@ import React from 'react'
 import { Box, Heading, Main } from 'grommet'
 import { useRouter } from 'next/router'
 import { useNotifications } from 'hooks/useNotifications'
-import { NOTIFICATION_TYPES } from 'helpers/notificationTypes'
 import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
-
-const getNotificationsForType = (notifications, type) => {
-  if (!notifications) {
-    return {}
-  }
-  const notifsForType = notifications.filter((notification) => {
-    return NOTIFICATION_TYPES[type].includes(notification.notification_type)
-  })
-
-  return notifsForType
-}
 
 export const AccountLayout = ({ children }) => {
   const isClient = useIsClient()
@@ -29,23 +17,22 @@ export const AccountLayout = ({ children }) => {
     {
       text: 'Basic Information',
       href: '/account/basic-information',
-      notifications: getNotificationsForType(unreadNotifs, 'basicInfo').length
+      notifications: 0
     },
     {
       text: 'Manage Resources',
       href: '/account/manage-resources',
-      notifications: getNotificationsForType(unreadNotifs, 'manageResources')
-        .length
+      notifications: 0
     },
     {
       text: 'Requests',
       href: '/account/requests',
-      notifications: getNotificationsForType(unreadNotifs, 'requests').length
+      notifications: 0
     },
     {
       text: 'Teams',
       href: '/account/teams',
-      notifications: getNotificationsForType(unreadNotifs, 'teams').length
+      notifications: 0
     },
     {
       text: 'Notifications',

@@ -208,7 +208,7 @@ export default {
     },
     notifications: {
       list: (userId, authorization) =>
-        request(getAPIURL(`users/${userId}/notifications`), {
+        request(getAPIURL(`users/${userId}/notifications/`), {
           authorization
         })
     }

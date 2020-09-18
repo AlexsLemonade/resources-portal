@@ -25,7 +25,7 @@ const getLink = (linkType, label, notification) => {
     const href = `/resources/${notification.material.id}`
     return (
       <Link href={href} key={2}>
-        <Anchor href="#" label={label || notification.material.title} />
+        <Anchor href={href} label={label || notification.material.title} />
       </Link>
     )
   }
