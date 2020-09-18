@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import Attachment, MaterialRequest, Notification, Organization, User
+from resources_portal.models import MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
     AddressRelationSerializer,
@@ -286,7 +286,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return queryset.order_by("-created_at")
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial-update"]:
+        if self.action in ["create", "update", "partial_update"]:
             return MaterialRequestSerializer
 
         return MaterialRequestDetailSerializer
@@ -294,7 +294,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
-        elif self.action == "update" or self.action == "partial-update":
+        elif self.action == "update" or self.action == "partial_update":
             permission_classes = [
                 IsAuthenticated,
                 CanApproveRequestsOrIsRequester,
@@ -363,35 +363,30 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         if request.user == material_request.requester:
-            if "irb_attachment" in request.data:
-                irb_attachment = Attachment.objects.get(pk=request.data["irb_attachment"]["id"])
-                if "irb_attachment" in serializer.validated_data:
-                    serializer.validated_data.pop("irb_attachment")
-
-                if irb_attachment != material_request.irb_attachment:
-                    add_attachment_to_material_request(
-                        material_request, irb_attachment, "irb_attachment", request.user,
-                    )
-
-            if "requester_signed_mta_attachment" in request.data:
-                requester_signed_mta_attachment = Attachment.objects.get(
-                    pk=request.data["requester_signed_mta_attachment"]["id"]
+            if (
+                "irb_attachment" in request.data
+                and serializer.validated_data["irb_attachment"] != material_request.irb_attachment
+            ):
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["irb_attachment"],
+                    "irb_attachment",
+                    request.user,
                 )
-                if "requester_signed_mta_attachment" in serializer.validated_data:
-                    serializer.validated_data.pop("requester_signed_mta_attachment")
 
-                if (
-                    requester_signed_mta_attachment
-                    != material_request.requester_signed_mta_attachment
-                ):
-                    add_attachment_to_material_request(
-                        material_request,
-                        requester_signed_mta_attachment,
-                        "requester_signed_mta_attachment",
-                        request.user,
-                    )
+            if (
+                "requester_signed_mta_attachment" in request.data
+                and serializer.validated_data["requester_signed_mta_attachment"]
+                != material_request.requester_signed_mta_attachment
+            ):
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["requester_signed_mta_attachment"],
+                    "requester_signed_mta_attachment",
+                    request.user,
+                )
 
-                    notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
 
             if "status" in request.data and request.data["status"] != material_request.status:
                 # The only status change the requester can make is to
@@ -415,20 +410,17 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 return Response(status=403)
 
         else:
-            if "executed_mta_attachment" in request.data:
-                executed_mta_attachment = Attachment.objects.get(
-                    pk=request.data["executed_mta_attachment"]["id"]
+            if (
+                "executed_mta_attachment" in request.data
+                and serializer.validated_data["executed_mta_attachment"]
+                != material_request.executed_mta_attachment
+            ):
+                add_attachment_to_material_request(
+                    material_request,
+                    serializer.validated_data["executed_mta_attachment"],
+                    "executed_mta_attachment",
+                    request.user,
                 )
-                if "executed_mta_attachment" in serializer.validated_data:
-                    serializer.validated_data.pop("executed_mta_attachment")
-
-                if executed_mta_attachment != material_request.executed_mta_attachment:
-                    add_attachment_to_material_request(
-                        material_request,
-                        executed_mta_attachment,
-                        "executed_mta_attachment",
-                        request.user,
-                    )
 
                 notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
 

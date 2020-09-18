@@ -240,7 +240,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.status, "APPROVED")
 
-    def test_put_request_from_requester_adds_attachment(self):
+    def test_patch_request_from_requester_adds_attachment(self):
         self.client.force_authenticate(user=self.request.requester)
 
         irb_attachment = AttachmentFactory(
