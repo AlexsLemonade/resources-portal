@@ -17,11 +17,12 @@ from resources_portal.emailer import (
     PLAIN_TEXT_EMAIL_FOOTER,
     send_mail,
 )
+from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
+from resources_portal.models.frontend_notifications_config import FRONTEND_NOTIFICATIONS
 from resources_portal.models.grant import Grant
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.material_request_issue import MaterialRequestIssue
-from resources_portal.models.notifications_config import NOTIFICATIONS
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 from resources_portal.utils import pretty_date
@@ -45,7 +46,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
-    NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATIONS.keys())
+    NOTIFICATION_TYPES = tuple((key, key) for key in EMAIL_NOTIFICATIONS.keys())
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -74,6 +75,11 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
     email = models.EmailField(blank=False, null=True)
     email_delivered_at = models.DateTimeField(blank=False, null=True)
 
+    @computed(models.TextField(blank=False, null=True))
+    def text_body(self):
+        props = self.get_formatting_props()
+        return FRONTEND_NOTIFICATIONS[self.notification_type]["body"].format(**props)
+
     @computed(models.BooleanField(blank=False, null=True))
     def email_delivered(self):
         return self.email_delivered_at is not None
@@ -98,8 +104,8 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
                 )
             )
             or (
-                "always_send" in NOTIFICATIONS[self.notification_type]
-                and NOTIFICATIONS[self.notification_type]["always_send"]
+                "always_send" in EMAIL_NOTIFICATIONS[self.notification_type]
+                and EMAIL_NOTIFICATIONS[self.notification_type]["always_send"]
             )
             or (
                 # Special case for this because it's always sent if
@@ -109,10 +115,12 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
             )
         )
 
-    def get_email_dict(self):
-        # All the properties which can be used in template strings in the
-        # config. If they don't get set because the association doesn't
-        # exist, then they better not be needed.
+    def get_formatting_props(self):
+        """
+        All the properties which can be used in template strings in the
+        config. If they don't get set because the association doesn't
+        exist, then they better not be needed.
+        """
         props = {
             "notifications_url": NOTIFICATIONS_URL,
             "message": self.message,
@@ -148,7 +156,12 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         if self.material_request_issue:
             props["issue_description"] = self.material_request_issue.description
 
-        notification_config = NOTIFICATIONS[self.notification_type]
+        return props
+
+    def get_email_dict(self):
+        props = self.get_formatting_props()
+
+        notification_config = EMAIL_NOTIFICATIONS[self.notification_type]
 
         body = notification_config["body"].format(**props)
         formatted_html = EMAIL_HTML_BODY.replace(
@@ -186,7 +199,7 @@ def validate_associations(sender, instance=None, created=False, **kwargs):
     if not instance.notification_type:
         raise ValidationError("Notifications must have notification_type set.")
 
-    for association in NOTIFICATIONS[instance.notification_type]["required_associations"]:
+    for association in EMAIL_NOTIFICATIONS[instance.notification_type]["required_associations"]:
         if not getattr(instance, association):
             raise ValidationError(
                 f"Notifications of type {instance.notification_type} must have {association} set."

@@ -35,7 +35,7 @@ send_to_associated_user -- If False will exclude the associated
 user from organization.members if send_to_organziation is
 True.
 """
-NOTIFICATIONS = {
+EMAIL_NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW": {
         "subject": "You are assigned to a new request",
         "body": "You have been assigned to a new request for {material_category}, .",

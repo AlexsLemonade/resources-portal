@@ -1,13 +1,18 @@
 import React from 'react'
 import { Box, Heading, Main } from 'grommet'
 import { useRouter } from 'next/router'
+import { useNotifications } from 'hooks/useNotifications'
 import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
 
 export const AccountLayout = ({ children }) => {
   const isClient = useIsClient()
+  const { getUnreadNotifications } = useNotifications()
   const router = useRouter()
+
+  let unreadNotifs = []
+  unreadNotifs = getUnreadNotifications()
   const links = [
     {
       text: 'Basic Information',
@@ -32,7 +37,7 @@ export const AccountLayout = ({ children }) => {
     {
       text: 'Notifications',
       href: '/account/notifications',
-      notifications: 0
+      notifications: unreadNotifs.length
     }
   ]
 
