@@ -17,7 +17,7 @@ const Notifications = () => {
       setdidUpdateNotifs(true)
       const updateNotifsViewed = async () => {
         const notificationDates = notifications.map((notification) => {
-          return notification.created_at
+          return new Date(notification.created_at)
         })
         const lastNotificationDate = new Date(
           Math.max.apply(null, notificationDates)
