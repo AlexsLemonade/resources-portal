@@ -195,9 +195,8 @@ class UserViewSet(viewsets.ModelViewSet):
         except Exception as error:
             return JsonResponse({"error": error}, status=500,)
 
-        org = Organization.objects.create(
-            owner=user, name="My Resources", is_personal_organization=True
-        )
+        org = Organization(owner=user, name="My Resources", is_personal_organization=True)
+        org.save()
         user.personal_organization = org
 
         if "grants" in request.data:
