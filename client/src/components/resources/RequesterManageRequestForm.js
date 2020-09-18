@@ -183,7 +183,7 @@ export default ({ request: defaultRequest }) => {
           <>
             <Box pad={{ bottom: 'large' }}>
               <Text>
-                You're request has been accepted on the conditional that you
+                Your request has been accepted on the condition that you
                 provide the following materials
               </Text>
               {request.material.needs_irb && <Text>IRB</Text>}
