@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Grant
+from resources_portal.models import Grant, Notification
 from resources_portal.test.factories import (
     AttachmentFactory,
     GrantFactory,
@@ -81,6 +81,11 @@ class OrganizationGrantTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertIn(grant, self.organization1.grants.all())
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_GRANT")),
+            self.organization1.members.count(),
+        )
 
     def test_post_fails_if_not_grant_owner(self):
         grant = GrantFactory()
