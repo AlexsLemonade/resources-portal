@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import Address, MaterialRequest, Notification, Organization, User
+from resources_portal.models import MaterialRequest, Notification, Organization, User
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
     AddressRelationSerializer,
@@ -287,7 +287,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         return queryset.order_by("-created_at")
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial-update"]:
+        if self.action in ["create", "update", "partial_update"]:
             return MaterialRequestSerializer
 
         return MaterialRequestDetailSerializer
@@ -295,7 +295,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "retrieve":
             permission_classes = [IsAuthenticated, CanViewRequestsOrIsRequester]
-        elif self.action == "update" or self.action == "partial-update":
+        elif self.action == "update" or self.action == "partial_update":
             permission_classes = [
                 IsAuthenticated,
                 CanApproveRequestsOrIsRequester,
@@ -384,15 +384,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 )
                 added_IRB = True
 
-            added_address = False
-            if "address" in request.data and request.data["address"]:
-                address_object = Address.objects.get(pk=request.data["address"]["id"])
-                if address_object != material_request.address:
-                    serializer.validated_data.pop("address")
-                    material_request.address = address_object
-                    material_request.save()
-                    added_address = True
-
             if field_changed("requester_signed_mta_attachment"):
                 add_attachment_to_material_request(
                     material_request,
@@ -404,8 +395,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             elif (
                 field_changed("payment_method")
                 or field_changed("payment_method_notes")
+                or field_changed("address")
                 or added_IRB
-                or added_address
             ):
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
 

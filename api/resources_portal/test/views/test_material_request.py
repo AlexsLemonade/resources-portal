@@ -239,11 +239,28 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         material_request = MaterialRequest.objects.get(pk=self.request.id)
         self.assertEqual(material_request.status, "APPROVED")
 
+    def test_patch_request_from_requester_adds_attachment(self):
+        self.client.force_authenticate(user=self.request.requester)
+
+        irb_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
+        )
+        material_request_data = {"irb_attachment": irb_attachment.id}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_request = MaterialRequest.objects.get(pk=self.request.id)
+        self.assertEqual(material_request.irb_attachment, irb_attachment)
+        self.assertEqual(
+            material_request.irb_attachment.owned_by_org, self.request.material.organization
+        )
+
     def test_patch_address_triggers_info_notif(self):
         self.client.force_authenticate(user=self.request.requester)
 
         address = AddressFactory(user=self.request.requester)
-        material_request_data = {"address": {"id": address.id}}
+        material_request_data = {"address": address.id}
 
         response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
