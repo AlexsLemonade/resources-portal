@@ -96,7 +96,7 @@ export default ({ request: defaultRequest }) => {
   const showActionPill = showSharerWaiting || showRequesterAction
   const pillLabel = showSharerWaiting
     ? 'Waiting on Requester'
-    : 'Reuires Action'
+    : 'Requires Action'
   const fallbackDate = new Date(request.created_at).toDateString()
   const resourceLink = `/resources/${request.material.id}`
 
