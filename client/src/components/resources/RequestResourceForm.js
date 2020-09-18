@@ -58,9 +58,9 @@ export default ({ resource }) => {
           <Box margin={{ bottom: 'medium' }}>
             <FormField label="Abstract">
               <TextArea
-                value={getAttribute('abstract')}
+                value={getAttribute('requester_abstract')}
                 onChange={({ target: { value } }) => {
-                  setAttribute('abstract', value)
+                  setAttribute('requester_abstract', value)
                 }}
               />
             </FormField>
