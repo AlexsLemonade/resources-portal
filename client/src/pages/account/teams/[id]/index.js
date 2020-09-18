@@ -44,9 +44,23 @@ const TeamDetail = ({ teamId }) => {
             {resources.length > 0 && (
               <>
                 <HeaderRow label={`Resources (${resources.length})`} />
-                {resources.map((resource) => (
-                  <ManageResourceCard key={resource.id} resource={resource} />
-                ))}
+                <Box margin={{ top: 'medium' }}>
+                  {resources.map((resource) => (
+                    <Box
+                      key={resource.id}
+                      margin={{ vertical: 'medium' }}
+                      elevation="medium"
+                      pad={{ vertical: 'medium', horizontal: 'large' }}
+                    >
+                      <ManageResourceCard
+                        resource={resource}
+                        options={['edit', 'manage']}
+                        moreOptions={['view', 'archive', 'delete']}
+                        margin={{ bottom: 'large' }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
               </>
             )}
           </Box>
