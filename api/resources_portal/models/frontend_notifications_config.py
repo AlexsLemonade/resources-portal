@@ -14,7 +14,7 @@ FRONTEND_NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_APPROVED": {
         "body": (
             "{you_or_other_name_upper} accepted a [request](request) for [material_name]() from {requester_name}."
-            "Waiting for {requester_name} to provide the following information: {required_info_plain_text}"
+            "Waiting for {requester_name} to provide the following information: {required_info_plain}"
         ),
     },
     "MATERIAL_REQUEST_SHARER_REJECTED": {
@@ -27,7 +27,7 @@ FRONTEND_NOTIFICATIONS = {
         "body": "{requester_name} cancelled a request for [material_name]().",
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED_INFO": {
-        "body": "{requester_name} provided the following required items for a request for [material_name](): {provided_info_plain_text}",
+        "body": "{requester_name} provided the following required items for a request for [material_name](): {provided_info_plain}",
     },
     "MATERIAL_REQUEST_SHARER_RECEIVED_MTA": {
         "body": (
@@ -66,7 +66,7 @@ FRONTEND_NOTIFICATIONS = {
     "MATERIAL_REQUEST_REQUESTER_ACCEPTED": {
         "body": (
             "[organization_name]() has accepted your request for [material_name]() "
-            "on the condition that you provide the following items: {required_info_plain_text}"
+            "on the condition that you provide the following items: {required_info_plain}"
         )
     },
     "MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT": {
