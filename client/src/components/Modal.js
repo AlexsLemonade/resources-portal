@@ -1,8 +1,14 @@
 import Icon from 'components/Icon'
-import { Box, Button, Layer } from 'grommet'
+import { Box, Button, Layer, Text } from 'grommet'
 import * as React from 'react'
 
-export const Modal = ({ showing, setShowing, nondismissable, children }) => {
+export const Modal = ({
+  showing,
+  setShowing,
+  nondismissable,
+  children,
+  title
+}) => {
   const dismissModal = () => {
     if (!nondismissable) {
       setShowing(false)
@@ -26,6 +32,16 @@ export const Modal = ({ showing, setShowing, nondismissable, children }) => {
                   onClick={dismissModal}
                   alignSelf="start"
                 />
+              </Box>
+            )}
+            {title && (
+              <Box width="full" pad={{ horizontal: 'medium' }}>
+                <Box
+                  width="full"
+                  border={{ side: 'bottom', color: 'border-black' }}
+                >
+                  <Text>{title}</Text>
+                </Box>
               </Box>
             )}
             <Box fill pad="medium">
