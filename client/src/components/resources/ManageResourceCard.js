@@ -96,7 +96,7 @@ export const ManageOptions = ({
                         if (archiveRequest.isOk) {
                           onChange()
                         } else {
-                          addAlert('Unable to archive request', 'error')
+                          addAlert('Unable to archive resource', 'error')
                         }
                       }}
                     />
