@@ -40,6 +40,11 @@ class TestAttachmentListTestCase(APITestCase):
 
     def test_list_request_from_non_admin_fails(self):
         self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_post_request_from_authenticated_succeeds(self):
+        self.client.force_authenticate(user=self.user)
 
         with open("dev_data/nerd_sniping.png", "rb") as fp:
             data = {**self.attachment_data, "file": fp}
@@ -53,13 +58,12 @@ class TestAttachmentListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.content), 157844)
 
-    def test_post_request_from_authenticated_succeeds(self):
+    def test_post_request_without_org_succeeds(self):
         self.client.force_authenticate(user=self.user)
 
         with open("dev_data/nerd_sniping.png", "rb") as fp:
-            data = {**self.attachment_data, "file": fp}
-            data.pop("sequence_map_for")
-            response = self.client.post(self.url, data, format="multipart")
+            attachment_data = {"file": fp, "owned_by_user": self.user.id}
+            response = self.client.post(self.url, attachment_data, format="multipart")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
