@@ -50,7 +50,7 @@ Account.getInitialProps = async ({ req, query }) => {
 
   const orcidRequest = await api.user.getORCID(
     query.code,
-    decodeURI(`${process.env.CLIENT_HOST}${req.url}`)
+    decodeURI(`${process.env.CLIENT_HOST}${req ? req.url : ''}`)
   )
   if (orcidRequest.isOk) {
     const {

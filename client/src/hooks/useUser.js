@@ -16,15 +16,8 @@ export const useUser = (defaultUser, defaultToken) => {
 
   const isLoggedIn = Boolean(user && token)
   const refreshUserData = async () => {
-    const {
-      response: { token: refreshToken, userId, isOk: tokenIsOk }
-    } = await api.user.refreshToken(token)
-    if (tokenIsOk) {
-      setToken(refreshToken)
-    }
-
     const { response: refreshUser, isOk: userIsOk } = await api.user.get(
-      userId,
+      user.id,
       token
     )
     if (userIsOk) {
