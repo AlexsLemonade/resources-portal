@@ -59,7 +59,8 @@ EMAIL_NOTIFICATIONS = {
         "CTA_link_field": "material_request",
         "plain_text_email": (
             " {organization_name} received a new request received for {material_category},"
-            " {material_name}.\n\nView request details ({request_url})"
+            " {material_name}.It has been assigned to {assigned_to}.\n"
+            "\nView request details ({request_url})"
         ),
         "required_associations": [
             "associated_user",
@@ -184,15 +185,15 @@ EMAIL_NOTIFICATIONS = {
         "subject": "Action Required: Request for {material_category}",
         "body": (
             "{requester_name} provided the following additional documents for a request for"
-            " {material_category}{material_name}\n - MTA signed by {requester_name}"
-            "\nPlease sign and upload the fully executed MTA."
+            " {material_category}{material_name}<br>{provided_info_html}"
+            "<br>Please sign and upload the fully executed MTA."
         ),
         "CTA": "Upload Fully Executed MTA",
         "CTA_link_field": "material_request",
         "plain_text_email": (
             "{requester_name} provided the following additional documents"
             " for a request for {material_category}, {material_name}"
-            "\n- MTA signed by {requester_name} \nPlease sign and upload the requester signed MTA."
+            "\n{provided_info_plain}\nPlease sign and upload the fully executed MTA."
             "\n\nUpload fully executed MTA. ({request_url})."
         ),
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],

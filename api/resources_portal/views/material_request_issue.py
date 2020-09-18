@@ -96,7 +96,7 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
             self.action == "list"
             or self.action == "retrieve"
             or self.action == "update"
-            or self.action == "partial-update"
+            or self.action == "partial_update"
         ):
             permission_classes = [IsAuthenticated, IsRequesterOrIsInOrg]
         else:

@@ -4,6 +4,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
+from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
     AttachmentRelationSerializer,
     GrantRelationSerializer,
@@ -120,5 +121,12 @@ class OrganizationViewSet(viewsets.ModelViewSet):
         if is_owner_changing:
             organization.remove_owner_perms(organization.owner)
             organization.assign_owner_perms(new_owner)
+
+            send_notifications(
+                "ORGANIZATION_BECAME_OWNER", request.user, new_owner, organization,
+            )
+            send_notifications(
+                "ORGANIZATION_NEW_OWNER", request.user, new_owner, organization,
+            )
 
         return super(OrganizationViewSet, self).update(request, *args, **kwargs)
