@@ -183,8 +183,8 @@ export default ({ request: defaultRequest }) => {
           <>
             <Box pad={{ bottom: 'large' }}>
               <Text>
-                Your request has been accepted on the condition that you
-                provide the following materials
+                Your request has been accepted on the condition that you provide
+                the following materials
               </Text>
               {request.material.needs_irb && <Text>IRB</Text>}
               {request.material.needs_mta && (
