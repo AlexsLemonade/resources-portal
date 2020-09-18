@@ -9,23 +9,25 @@ import api from 'api'
 import EmptyManageResources from '../../../images/empty-manage-resources.svg'
 
 const ManageResources = () => {
-  const {
-    user: { personal_organization: personalOrganization },
-    token
-  } = useUser()
+  const { user, token } = useUser()
   const [resources, setResources] = React.useState(false)
 
   React.useEffect(() => {
     const asyncResourceFetch = async () => {
-      const userResourcesRequest = await api.teams.resources.get(
-        personalOrganization.id,
-        token
+      const resourceRequestPromises = user.organizations.map(({ id: teamId }) =>
+        api.teams.resources.get(teamId, token)
       )
-      const {
-        response: { results }
-      } = userResourcesRequest
-      setResources(results)
+
+      const resourceRequests = await Promise.all(resourceRequestPromises)
+
+      const fetchedResources = resourceRequests.map((request) => {
+        if (request.isOk) return request.response.results
+        return []
+      })
+
+      setResources([].concat(...fetchedResources))
     }
+
     if (!resources) asyncResourceFetch()
   })
 
@@ -43,10 +45,17 @@ const ManageResources = () => {
       )}
       {resources &&
         resources.map((resource) => (
-          <Box key={resource.id} margin={{ vertical: 'medium' }}>
-            <Box elevation="small" pad="medium">
-              <ManageResourceCard resource={resource} />
-            </Box>
+          <Box
+            key={resource.id}
+            margin={{ vertical: 'medium' }}
+            elevation="medium"
+            pad={{ vertical: 'medium', horizontal: 'large' }}
+          >
+            <ManageResourceCard
+              resource={resource}
+              options={['edit', 'manage']}
+              moreOptions={['view', 'archive', 'delete']}
+            />
           </Box>
         ))}
     </DrillDownNav>

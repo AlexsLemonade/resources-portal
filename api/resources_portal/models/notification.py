@@ -139,6 +139,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         if self.material_request:
             props["request_url"] = self.material_request.frontend_URL
             props["requester_name"] = self.material_request.requester.full_name
+            props["assigned_to"] = self.material_request.assigned_to.full_name
             props["rejection_reason"] = self.material_request.rejection_reason
             props["required_info_plain"] = self.material_request.required_info_plain_text
             props["provided_info_plain"] = self.material_request.provided_info_plain_text
