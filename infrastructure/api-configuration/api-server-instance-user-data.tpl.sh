@@ -103,7 +103,7 @@ chmod +x ./start_api_with_migrations.sh
 crontab -l > tempcron
 # TODO: Stop logging this once it definitely is working!
 # https://github.com/AlexsLemonade/resources-portal/issues/422
-echo -e "SHELL=/bin/bash\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n*/5 * * * * docker exec dr_api python3 manage.py update_es_index >> /var/log/api_cron.log 2>&1" >> tempcron
+echo -e "SHELL=/bin/bash\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n*/5 * * * * docker exec resources_portal_api python3 manage.py update_es_index >> /var/log/api_cron.log 2>&1" >> tempcron
 # install new cron file
 crontab tempcron
 rm tempcron
