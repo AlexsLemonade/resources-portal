@@ -1,9 +1,6 @@
 name: deploy-client-staging
 
-on:
-  push:
-    branches:
-      - dev
+on: push
 
 jobs:
   deploy-client-staging:
