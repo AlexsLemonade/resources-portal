@@ -1,3 +1,10 @@
+"""This is a configuration dict for all the different types of frontend notifications.
+
+It works similarly to
+resources_portal.models.email_notifications_config.EMAIL_NOTIFICATIONS. See
+the docstring in that file for how it works.
+"""
+
 FRONTEND_NOTIFICATIONS = {
     "MATERIAL_REQUEST_SHARER_ASSIGNED_NEW": {
         "body": "You have been assigned to a new [request](request) for [material_name]().",
