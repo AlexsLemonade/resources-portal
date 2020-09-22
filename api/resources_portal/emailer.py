@@ -62,7 +62,7 @@ def create_multipart_message(
     :param title: The title of the email.
     :param text: The text version of the email body (optional).
     :param html: The html version of the email body (optional).
-    :param attachments: List of files to attach in the email.
+    :param embedded_images: List of images to embed in the email's HTML.
     :return: A `MIMEMultipart` to be used to send the email.
     """
     multipart_content_subtype = "alternative" if text and html else "mixed"
@@ -99,7 +99,7 @@ def send_mail(
     title: str,
     text: str = None,
     html: str = None,
-    attachments: list = None,
+    embedded_images: list = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
@@ -107,7 +107,7 @@ def send_mail(
     The sender needs to be a verified email in SES.
     """
     if settings.AWS_SES_DOMAIN:
-        msg = create_multipart_message(source, recipients, title, text, html, attachments)
+        msg = create_multipart_message(source, recipients, title, text, html, embedded_images)
         ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
         return ses_client.send_raw_email(
             Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
