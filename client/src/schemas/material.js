@@ -150,7 +150,10 @@ export default object({
   needs_abstract: boolean(),
   imported: boolean(),
   // shipping_requirements: object()
-  import_source: string().oneOf(importSources),
+  import_source: string().when('imported', (imported) => {
+    if (imported) return string().oneOf(importSources)
+    return string().nullable()
+  }),
   contact_user: string().uuid().required(customErrorMessages.contact_user),
   // organization: object(),
   // grants: array(),
@@ -158,14 +161,14 @@ export default object({
   organisms: array().when('category', (category) => {
     if (['PLASMID', 'MODEL_ORGANISM', 'CELL_LINE'].includes(category))
       return array().compact().min(1)
-    return array()
+    return array().nullable()
   }),
-  publication_title: string(),
-  pre_print_doi: string(),
-  pre_print_title: string(),
-  citation: string(),
-  additional_info: string(),
-  embargo_date: string() // confirm what django expects
+  publication_title: string().nullable(),
+  pre_print_doi: string().nullable(),
+  pre_print_title: string().nullable(),
+  citation: string().nullable(),
+  additional_info: string().nullable(),
+  embargo_date: string().nullable() // confirm what django expects
   /* eslint-disable-next-line react/forbid-prop-types */
   // sequence_maps: array() // figure out what to set here
 })
