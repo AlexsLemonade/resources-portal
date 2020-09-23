@@ -9,20 +9,17 @@ export const useNotifications = () => {
     ResourcesPortalContext
   )
 
-  React.useEffect(() => {
-    const fetchNotifications = async () => {
-      const notificationRequest = await api.user.notifications.list(
-        user.id,
-        token
-      )
-      if (notificationRequest.isOk && notificationRequest.response) {
-        const retrievedNotifications = notificationRequest.response.results
-        setNotifications(retrievedNotifications)
-      }
+  const fetchNotifications = async () => {
+    // this should fetch after the date saved in the user object
+    const notificationRequest = await api.user.notifications.list(
+      user.id,
+      token
+    )
+    if (notificationRequest.isOk && notificationRequest.response) {
+      const retrievedNotifications = notificationRequest.response.results
+      setNotifications(retrievedNotifications)
     }
-
-    if (user && !notifications) fetchNotifications()
-  })
+  }
 
   const getUnreadNotifications = () => {
     if (!user || !notifications) {
@@ -42,8 +39,17 @@ export const useNotifications = () => {
     return unreadNotifications
   }
 
+  const getLastNotificationDate = () => {
+    const notificationDates = notifications.map((notification) => {
+      return new Date(notification.created_at)
+    })
+    return new Date(Math.max.apply(null, notificationDates))
+  }
+
   return {
+    fetchNotifications,
     notifications,
-    getUnreadNotifications
+    getUnreadNotifications,
+    getLastNotificationDate
   }
 }
