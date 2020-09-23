@@ -6,10 +6,24 @@ import { useUser } from 'hooks/useUser'
 export const ResourceContext = React.createContext({})
 
 export const ResourceContextProvider = ({
+  editResource = {},
   localStorageName = 'edit-resource',
   children
 }) => {
-  const [resource, setResource] = useLocalStorage(localStorageName, {})
+  // replace the objects with their ids
+  const cleanedEditResource = (savedResource) => {
+    if (!savedResource.id) return savedResource
+
+    const cleanedResource = { ...savedResource }
+    cleanedResource.organization = savedResource.organization.id
+    cleanedResource.contact_user = savedResource.contact_user.id
+    return cleanedResource
+  }
+
+  const [resource, setResource] = useLocalStorage(
+    localStorageName,
+    cleanedEditResource(editResource)
+  )
   const [fetched, setFetched] = useLocalStorage(
     `${localStorageName}-fetched`,
     false
