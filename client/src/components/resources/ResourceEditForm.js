@@ -8,25 +8,28 @@ import ResourceEditImportedForm from 'components/resources/ResourceEditImportedF
 
 export default () => {
   const router = useRouter()
-  const { resource, validate, save } = useResourceForm()
+  const { resource, validate, save, clearResourceContext } = useResourceForm()
   const [showRequirements, setShowRequirements] = React.useState(false)
   const { imported } = resource
   const showNext = !imported && !showRequirements
   const showSave = imported || showRequirements
+  const showFormBox = imported || (!imported && !showRequirements)
 
   return (
     <Box width="xxlarge" align="center">
-      <Box
-        animation="slideUp"
-        elevation="small"
-        width="large"
-        round="xsmall"
-        background="white"
-        pad="large"
-      >
-        {!imported && !showRequirements && <ResourceDetailsForm />}
-        {imported && <ResourceEditImportedForm />}
-      </Box>
+      {showFormBox && (
+        <Box
+          animation="slideUp"
+          elevation="small"
+          width="large"
+          round="xsmall"
+          background="white"
+          pad="large"
+        >
+          {!imported && !showRequirements && <ResourceDetailsForm />}
+          {imported && <ResourceEditImportedForm />}
+        </Box>
+      )}
       {showRequirements && <RequestRequirementsForm />}
       <Box
         width="large"
@@ -46,6 +49,7 @@ export default () => {
             onClick={() => {
               validate(async () => {
                 if (await save()) {
+                  clearResourceContext()
                   router.push(`/resources/${resource.id}`)
                 }
               })
