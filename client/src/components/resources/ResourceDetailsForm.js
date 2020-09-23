@@ -14,7 +14,8 @@ export default () => {
     getAttribute,
     setAttribute,
     contactUserOptions,
-    attributeHasError
+    attributeHasError,
+    edit = false
   } = useResourceForm()
   if (!form) return <></>
   return (
@@ -24,7 +25,7 @@ export default () => {
         margin={{ bottom: 'medium' }}
       >
         <Heading level={5} weight="normal" margin="none">
-          Resource Details
+          {edit && 'Edit '}Resource Details
         </Heading>
       </Box>
       {form.map((formGroup, index) => (
