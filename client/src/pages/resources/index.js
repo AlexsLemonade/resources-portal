@@ -1,9 +1,13 @@
 import React from 'react'
 import { Box, Heading, Button, Anchor, Text } from 'grommet'
 import Link from 'next/link'
+import { useUser } from 'hooks/useUser'
+import { CreateAccountLoginButton } from 'components/CreateAccountLoginButton'
 import ListResources from '../../images/list-resources.svg'
 
 export default function ListResource() {
+  const { isLoggedIn } = useUser()
+
   return (
     <Box width="xlarge" alignSelf="center" margin={{ bottom: 'xlarge' }}>
       <Box margin={{ bottom: 'large' }} direction="row" justify="between">
@@ -104,38 +108,58 @@ export default function ListResource() {
           </Box>
         </Box>
         <Box justify="center" pad={{ left: 'xxlarge' }}>
-          <Box align="center" pad={{ bottom: 'xlarge' }}>
-            <Text
-              size="large"
-              textAlign="center"
-              weight="normal"
-              margin={{ bottom: 'medium' }}
-            >
-              Already listed your resource in a repository?
-            </Text>
-            <Link href="/resources/import">
-              <Button label="Import" primary />
-            </Link>
-          </Box>
+          {isLoggedIn && (
+            <Box align="center" pad={{ bottom: 'xlarge' }}>
+              <Text
+                size="large"
+                textAlign="center"
+                weight="normal"
+                margin={{ bottom: 'medium' }}
+              >
+                Already listed your resource in a repository?
+              </Text>
+              <Link href="/resources/import">
+                <Button label="Import" primary />
+              </Link>
+            </Box>
+          )}
+          {!isLoggedIn && (
+            <Box align="center" pad="large" elevation="medium" width="330px">
+              <Text
+                size="medium"
+                textAlign="center"
+                weight="bold"
+                margin={{ bottom: 'medium' }}
+              >
+                Sign in / Create Account to List or Import Resources
+              </Text>
+              <CreateAccountLoginButton
+                title="Sign in/ Create Account"
+                plainButton
+              />
+            </Box>
+          )}
         </Box>
       </Box>
-      <Box
-        width="medium"
-        margin={{ top: 'xlarge' }}
-        pad="medium"
-        round="xsmall"
-        border
-        alignSelf="center"
-        elevation="small"
-      >
-        <Text>
-          Repository for your resource doesn’t exist? Can’t list your resource
-          in a repository yet?{' '}
-          <Link href="/resources/list">
-            <Anchor label="List with us" />
-          </Link>
-        </Text>
-      </Box>
+      {isLoggedIn && (
+        <Box
+          width="medium"
+          margin={{ top: 'xlarge' }}
+          pad="medium"
+          round="xsmall"
+          border
+          alignSelf="center"
+          elevation="small"
+        >
+          <Text>
+            Repository for your resource doesn’t exist? Can’t list your resource
+            in a repository yet?{' '}
+            <Link href="/resources/list">
+              <Anchor label="List with us" />
+            </Link>
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }

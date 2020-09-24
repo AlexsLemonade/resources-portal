@@ -5,6 +5,8 @@ import Error from 'pages/404'
 import dynamic from 'next/dynamic'
 import api from 'api'
 import { getReadable } from 'helpers/readableNames'
+import { useUser } from 'hooks/useUser'
+import { useRouter } from 'next/router'
 
 const RequestResourceForm = dynamic(
   () => import('components/resources/RequestResourceForm'),
@@ -12,6 +14,16 @@ const RequestResourceForm = dynamic(
 )
 
 const ResourcesRequest = ({ resource }) => {
+  const { isLoggedIn } = useUser()
+  const router = useRouter()
+
+  if (!isLoggedIn) {
+    React.useEffect(() => {
+      router.replace(router.asPath.split('/request')[0])
+    })
+    return <></>
+  }
+
   // you cannot request this resource
   // it might be deleted
   if (!resource) return <Error statusCode="404" />
