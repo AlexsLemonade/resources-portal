@@ -19,12 +19,7 @@ export const ORCIDSignInButton = ({
   )}`
 
   return (
-    <Box
-      alignSelf="center"
-      pad="medium"
-      margin={{ top: 'small' }}
-      width="320px"
-    >
+    <Box alignSelf="center" pad="medium" margin={{ top: 'small' }}>
       <Button
         label={label}
         href={orcidUrl}
@@ -42,7 +37,7 @@ export const ORCIDSignInButton = ({
 
 export const CreateOrLogin = ({ title, showSignIn = true }) => {
   return (
-    <Box width="800px" gap="medium">
+    <Box width="700px" gap="medium">
       <Box
         fill="horizontal"
         border={[{ size: 'small', side: 'bottom', color: 'black-tint-95' }]}
@@ -56,7 +51,7 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
         {showSignIn && (
           <Box
             align="center"
-            width={{ min: '400px' }}
+            width={{ min: '300px' }}
             border={[{ size: 'small', side: 'right', color: 'black-tint-95' }]}
           >
             <Text weight="bold">Sign in with your ORCID iD</Text>
@@ -114,12 +109,19 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
   )
 }
 
-export const CreateAccountLoginButton = ({ title, showSignIn }) => {
+export const CreateAccountLoginButton = ({
+  title,
+  showSignIn,
+  plainButton
+}) => {
   const [showing, setShowing] = React.useState(false)
 
   return (
     <>
-      <LoginButton onClick={() => setShowing(true)} />
+      {!plainButton && <LoginButton onClick={() => setShowing(true)} />}
+      {plainButton && (
+        <Button primary onClick={() => setShowing(true)} label={title} />
+      )}
       <Modal showing={showing} setShowing={setShowing}>
         <CreateOrLogin title={title} showSignIn={showSignIn} />
       </Modal>
