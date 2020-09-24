@@ -10,7 +10,6 @@ export const useNotifications = () => {
   )
 
   const fetchNotifications = async () => {
-    // this should fetch after the date saved in the user object
     const notificationRequest = await api.user.notifications.list(
       user.id,
       token
@@ -24,7 +23,7 @@ export const useNotifications = () => {
   }
 
   const fetchNewNotifications = async () => {
-    // this should fetch after the date saved in the user object
+    // fetchs after the date saved in the user object
     const notificationRequest = await api.user.notifications.filter(
       user.id,
       { created_at__gt: user.viewed_notifications_at },
@@ -40,6 +39,7 @@ export const useNotifications = () => {
   }
 
   const getUnreadNotifications = (notifications) => {
+    // this takes the list of all notifications and determines which have not been seen yet
     if (!user || !notifications) {
       return false
     }
