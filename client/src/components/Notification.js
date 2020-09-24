@@ -1,6 +1,7 @@
 import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
 import Link from 'next/link'
+import { useUser } from 'hooks/useUser'
 
 const readableTimeAgo = (time) => {
   const oneDay = 24 * 60 * 60 * 1000
@@ -10,6 +11,14 @@ const readableTimeAgo = (time) => {
   if (yearsAgo > 0) return `${yearsAgo} years ago`
   const daysAgo = Math.round(Math.abs((date - today) / oneDay))
   return daysAgo > 0 ? `${daysAgo} days ago` : 'today'
+}
+
+const notificationViewerIsResourceRequester = (notification, user) => {
+  if (!notification.material_request) {
+    return false
+  }
+
+  return notification.material_request.requester === user.id
 }
 
 const getLink = (linkType, label, notification) => {
@@ -73,6 +82,13 @@ export const createNotificationLinks = (notification) => {
 
 export const Notification = ({ notification }) => {
   const notificationText = createNotificationLinks(notification)
+  const { user } = useUser()
+  const showOrganizationLink = !notificationViewerIsResourceRequester(
+    notification,
+    user
+  )
+
+  console.log(notification)
 
   return (
     <Box round="medium" elevation="1" fill="horizontal" pad="medium">
@@ -83,21 +99,23 @@ export const Notification = ({ notification }) => {
         </Text>
       </Box>
       <Box direction="row">
-        {notification.organization && (
+        {notification.organization && showOrganizationLink && (
           <Link href={`/account/teams/${notification.organization.id}`}>
             <Anchor href="/account" label={notification.organization.name} />
           </Link>
         )}
-        {notification.organization && notification.material && (
-          <Box
-            round
-            width="7px"
-            height="7px"
-            background="brand"
-            alignSelf="center"
-            margin="small"
-          />
-        )}
+        {notification.organization &&
+          notification.material &&
+          showOrganizationLink && (
+            <Box
+              round
+              width="7px"
+              height="7px"
+              background="brand"
+              alignSelf="center"
+              margin="small"
+            />
+          )}
         {notification.material && (
           <>
             <Link href="/account">
