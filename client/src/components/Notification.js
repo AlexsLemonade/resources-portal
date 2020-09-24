@@ -89,8 +89,6 @@ export const Notification = ({ notification }) => {
     user
   )
 
-  console.log(notification)
-
   return (
     <Box round="medium" elevation="1" fill="horizontal" pad="medium">
       <Box direction="row" border={{ side: 'bottom' }} alignContent="between">
@@ -119,8 +117,11 @@ export const Notification = ({ notification }) => {
           )}
         {notification.material && (
           <>
-            <Link href="/account">
-              <Anchor href="/account" label={notification.material.title} />
+            <Link href={`/resources/${notification.material.id}`}>
+              <Anchor
+                href={`/resources/${notification.material.id}`}
+                label={notification.material.title}
+              />
             </Link>
           </>
         )}
