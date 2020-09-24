@@ -8,11 +8,9 @@ import Header from './Header'
 
 export const AccountLayout = ({ children }) => {
   const isClient = useIsClient()
-  const { getUnreadNotifications } = useNotifications()
+  const { notificationCount } = useNotifications()
   const router = useRouter()
 
-  let unreadNotifs = []
-  unreadNotifs = getUnreadNotifications()
   const links = [
     {
       text: 'Basic Information',
@@ -37,7 +35,7 @@ export const AccountLayout = ({ children }) => {
     {
       text: 'Notifications',
       href: '/account/notifications',
-      notifications: unreadNotifs.length
+      notifications: notificationCount
     }
   ]
 

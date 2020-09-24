@@ -82,21 +82,24 @@ export const Notification = ({ notification }) => {
           {readableTimeAgo(notification.created_at)}
         </Text>
       </Box>
-      <Box direction="row" gap="small">
+      <Box direction="row">
         {notification.organization && (
           <Link href={`/account/teams/${notification.organization.id}`}>
             <Anchor href="/account" label={notification.organization.name} />
           </Link>
         )}
+        {notification.organization && notification.material && (
+          <Box
+            round
+            width="7px"
+            height="7px"
+            background="brand"
+            alignSelf="center"
+            margin="small"
+          />
+        )}
         {notification.material && (
           <>
-            <Box
-              round
-              width="7px"
-              height="7px"
-              background="brand"
-              alignSelf="center"
-            />
             <Link href="/account">
               <Anchor href="/account" label={notification.material.title} />
             </Link>

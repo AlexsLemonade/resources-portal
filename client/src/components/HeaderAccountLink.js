@@ -7,9 +7,21 @@ import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
-  const { getUnreadNotifications } = useNotifications()
+  const [notificationsFetched, setNotificationsFetched] = React.useState(false)
+  const {
+    notificationCount,
+    fetchNotifications,
+    getUnreadNotifications
+  } = useNotifications()
 
-  const unreadNotifications = getUnreadNotifications()
+  React.useEffect(() => {
+    if (!notificationsFetched) {
+      fetchNotifications().then((notifications) => {
+        setNotificationsFetched(true)
+        getUnreadNotifications(notifications)
+      })
+    }
+  })
 
   if (!isLoggedIn) {
     return (
@@ -22,7 +34,7 @@ export const HeaderAccountLink = () => {
       <Link href="/account">
         <Anchor color="white" href="#" label="My Account" />
       </Link>
-      {unreadNotifications && unreadNotifications.length > 0 && (
+      {notificationCount > 0 && (
         <Link href="/account/notifications">
           <Box
             align="center"
@@ -31,7 +43,7 @@ export const HeaderAccountLink = () => {
             round
             background="error"
           >
-            <Text>{unreadNotifications ? unreadNotifications.length : 0}</Text>
+            <Text>{notificationCount}</Text>
           </Box>
         </Link>
       )}

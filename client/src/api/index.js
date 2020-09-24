@@ -215,6 +215,10 @@ export default {
       list: (userId, authorization) =>
         request(getAPIURL(`users/${userId}/notifications/`), {
           authorization
+        }),
+      filter: (userId, filter, authorization) =>
+        request(getAPIURL(`users/${userId}/notifications/`, filter), {
+          authorization
         })
     }
   },

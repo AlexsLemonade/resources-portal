@@ -9,20 +9,19 @@ import api from 'api'
 
 const Notifications = () => {
   const { refreshUserData, user, token } = useUser()
-  const {
-    notifications,
-    getLastNotificationDate,
-    fetchNotifications
-  } = useNotifications()
+  const { getLastNotificationDate, fetchNotifications } = useNotifications()
   const [didUpdateNotifs, setdidUpdateNotifs] = React.useState(false)
+  const [notifications, setNotifications] = React.useState([])
 
   React.useEffect(() => {
     const updateNotifsViewed = async () => {
-      await fetchNotifications()
+      await fetchNotifications().then((notifs) => {
+        setNotifications(notifs)
+      })
       setdidUpdateNotifs(true)
       await api.user.update(
         user.id,
-        { viewed_notifications_at: getLastNotificationDate() },
+        { viewed_notifications_at: getLastNotificationDate(notifications) },
         token
       )
       refreshUserData()

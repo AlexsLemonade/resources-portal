@@ -5,7 +5,7 @@ import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useNotifications = () => {
   const { user, token } = useUser()
-  const { notifications, setNotifications } = React.useContext(
+  const { notificationCount, setNotificationCount } = React.useContext(
     ResourcesPortalContext
   )
 
@@ -17,11 +17,13 @@ export const useNotifications = () => {
     )
     if (notificationRequest.isOk && notificationRequest.response) {
       const retrievedNotifications = notificationRequest.response.results
-      setNotifications(retrievedNotifications)
+      return retrievedNotifications
     }
+
+    return {}
   }
 
-  const getUnreadNotifications = () => {
+  const getUnreadNotifications = (notifications) => {
     if (!user || !notifications) {
       return false
     }
@@ -36,10 +38,11 @@ export const useNotifications = () => {
       return notifDate > userSeenDate
     })
 
+    setNotificationCount(unreadNotifications.length)
     return unreadNotifications
   }
 
-  const getLastNotificationDate = () => {
+  const getLastNotificationDate = (notifications) => {
     const notificationDates = notifications.map((notification) => {
       return new Date(notification.created_at)
     })
@@ -48,7 +51,8 @@ export const useNotifications = () => {
 
   return {
     fetchNotifications,
-    notifications,
+    notificationCount,
+    setNotificationCount,
     getUnreadNotifications,
     getLastNotificationDate
   }
