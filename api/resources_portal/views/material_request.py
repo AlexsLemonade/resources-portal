@@ -9,7 +9,13 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import MaterialRequest, Notification, Organization, User
+from resources_portal.models import (
+    MaterialRequest,
+    MaterialShareEvent,
+    Notification,
+    Organization,
+    User,
+)
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import (
     AddressRelationSerializer,
@@ -383,8 +389,53 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED", material_request)
                 notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNMENT", material_request)
 
-    def create_events(request_data, material_request):
-        pass
+    def create_events(self, request, material_request, serializer):
+        material = material_request.material
+
+        def field_changed(field_name):
+            return field_name in request.data and serializer.validated_data[field_name] != getattr(
+                material_request, field_name
+            )
+
+        def create_event(event_type, material, created_by, assigned_to):
+            MaterialShareEvent(
+                event_type=event_type,
+                material=material,
+                created_by=created_by,
+                assigned_to=assigned_to,
+            ).save()
+
+        assigned_to = serializer.validated_data["assigned_to"] or material_request.assigned_to
+
+        if field_changed("assigned_to"):
+            create_event(
+                "REQUEST_REASSIGNED", material, request.user, assigned_to,
+            )
+
+        if field_changed("status"):
+            event_type = "REQUEST_" + serializer.validated_data["status"]
+            create_event(event_type, material, request.user, assigned_to)
+
+        if field_changed("irb_attachment"):
+            create_event("REQUESTER_IRB_ADDED", material, request.user, assigned_to)
+
+        if field_changed("requester_signed_mta_attachment"):
+            create_event("REQUESTER_MTA_ADDED", material, request.user, assigned_to)
+
+        if field_changed("payment_method"):
+            create_event(
+                "REQUESTER_PAYMENT_METHOD_ADDED", material, request.user, assigned_to,
+            )
+
+        if field_changed("payment_method_notes"):
+            create_event(
+                "REQUESTER_PAYMENT_METHOD_NOTES_ADDED", material, request.user, assigned_to,
+            )
+
+        if field_changed("executed_mta_attachment"):
+            create_event(
+                "SHARER_MTA_ADDED", material, request.user, assigned_to,
+            )
 
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
@@ -432,6 +483,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                         issue.save()
 
         self.create_notifications(request, material_request, serializer)
+        self.create_events(request, material_request, serializer)
 
         serializer.save()
         material_request.refresh_from_db()
