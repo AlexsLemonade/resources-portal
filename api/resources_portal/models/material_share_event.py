@@ -46,8 +46,6 @@ class MaterialShareEvent(SafeDeleteModel):
     )
     event_type = models.CharField(max_length=255, blank=True, null=True, choices=EVENT_TYPES)
 
-    time = models.DateTimeField()
-
     created_by = models.ForeignKey(
         User,
         blank=False,

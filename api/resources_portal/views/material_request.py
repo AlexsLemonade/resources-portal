@@ -354,11 +354,40 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
         return Response(data=model_to_dict(material_request), status=201)
 
+    def create_notifications(self, request, material_request, serializer):
+        def field_changed(field_name):
+            return field_name in request.data and serializer.validated_data[field_name] != getattr(
+                material_request, field_name
+            )
+
+        if field_changed("status"):
+            notify_request_status_change(serializer.validated_data["status"], material_request)
+
+        if request.user == material_request.requester:
+            if field_changed("requester_signed_mta_attachment"):
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
+            elif (
+                field_changed("payment_method")
+                or field_changed("payment_method_notes")
+                or field_changed("address")
+                or field_changed("irb_attachment")
+            ):
+                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
+
+        else:
+            if field_changed("executed_mta_attachment"):
+                notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
+                notify_sharer("MATERIAL_REQUEST_SHARER_EXECUTED_MTA", material_request)
+
+            if field_changed("assigned_to"):
+                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED", material_request)
+                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNMENT", material_request)
+
+    def create_events(request_data, material_request):
+        pass
+
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
-
-        if material_request.status in ["REJECTED", "CANCELLED", "VERIFIED_FULFILLED"]:
-            return Response(status=403)
 
         serializer = self.get_serializer_class()(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -369,12 +398,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             )
 
         if request.user == material_request.requester:
-            # Can't make it read-only because organization members
-            # should be able to change it.
-            if field_changed("assigned_to"):
-                return Response(status=403)
-
-            added_IRB = False
             if field_changed("irb_attachment"):
                 add_attachment_to_material_request(
                     material_request,
@@ -382,7 +405,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     "irb_attachment",
                     request.user,
                 )
-                added_IRB = True
 
             if field_changed("requester_signed_mta_attachment"):
                 add_attachment_to_material_request(
@@ -391,28 +413,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     "requester_signed_mta_attachment",
                     request.user,
                 )
-                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_MTA", material_request)
-            elif (
-                field_changed("payment_method")
-                or field_changed("payment_method_notes")
-                or field_changed("address")
-                or added_IRB
-            ):
-                notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
-
-            if field_changed("status"):
-                # The only status change the requester can make is to
-                # cancel or verify the request.
-                cancelling = serializer.validated_data["status"] == "CANCELLED"
-                verifying = (
-                    material_request.status == "FULFILLED"
-                    and serializer.validated_data["status"] == "VERIFIED_FULFILLED"
-                )
-                if not (cancelling or verifying):
-                    return Response(status=403)
-
-                notify_request_status_change(serializer.validated_data["status"], material_request)
-
         else:
             if field_changed("executed_mta_attachment"):
                 add_attachment_to_material_request(
@@ -422,17 +422,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-                notify_requester("MATERIAL_REQUEST_REQUESTER_EXECUTED_MTA", material_request)
-                notify_sharer("MATERIAL_REQUEST_SHARER_EXECUTED_MTA", material_request)
-
-            if field_changed("assigned_to"):
-                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED", material_request)
-                notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNMENT", material_request)
-
             if "status" in request.data:
-                if serializer.validated_data["status"] in ["CANCELLED", "VERIFIED_FULFILLED"]:
-                    return Response(status=403)
-
                 if (
                     serializer.validated_data["status"] == "FULFILLED"
                     and material_request.has_issues
@@ -441,7 +431,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                         issue.status = "CLOSED"
                         issue.save()
 
-                notify_request_status_change(serializer.validated_data["status"], material_request)
+        self.create_notifications(request, material_request, serializer)
 
         serializer.save()
         material_request.refresh_from_db()

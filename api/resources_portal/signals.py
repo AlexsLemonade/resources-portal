@@ -1,9 +1,9 @@
-from django.db.models.signals import m2m_changed, post_delete, post_save
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
 
 from django_elasticsearch_dsl.registries import registry
 
-from resources_portal.models.material import Material
+from resources_portal.models import Material, MaterialRequest
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
@@ -65,3 +65,16 @@ def add_member_permissions(sender, instance, action, reverse, model, pk_set, **k
 def add_member_permissions_2(sender, instance, **kwargs):
     """Django doesn't appear to offer a way to manage this without handling all the signals."""
     instance.organization.assign_member_perms(instance.user)
+
+
+# @receiver(pre_save, sender=MaterialRequest)
+# def model_pre_save(sender, instance, **kwargs):
+#     changed_fields = {}
+#     try:
+#         old_instance = MaterialRequest.objects.get(pk=instance.pk)
+#     except MaterialRequest.DoesNotExist:
+#         changed_fields = kwargs
+
+#     import pdb
+
+#     pdb.set_trace()
