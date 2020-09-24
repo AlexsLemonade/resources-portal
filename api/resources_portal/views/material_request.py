@@ -408,9 +408,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         assigned_to = serializer.validated_data["assigned_to"] or material_request.assigned_to
 
         if field_changed("assigned_to"):
-            create_event(
-                "REQUEST_REASSIGNED", material, request.user, assigned_to,
-            )
+            create_event("REQUEST_REASSIGNED", material, request.user, assigned_to)
 
         if field_changed("status"):
             event_type = "REQUEST_" + serializer.validated_data["status"]
@@ -423,19 +421,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             create_event("REQUESTER_MTA_ADDED", material, request.user, assigned_to)
 
         if field_changed("payment_method"):
-            create_event(
-                "REQUESTER_PAYMENT_METHOD_ADDED", material, request.user, assigned_to,
-            )
+            create_event("REQUESTER_PAYMENT_METHOD_ADDED", material, request.user, assigned_to)
 
         if field_changed("payment_method_notes"):
             create_event(
-                "REQUESTER_PAYMENT_METHOD_NOTES_ADDED", material, request.user, assigned_to,
+                "REQUESTER_PAYMENT_METHOD_NOTES_ADDED", material, request.user, assigned_to
             )
 
         if field_changed("executed_mta_attachment"):
-            create_event(
-                "SHARER_MTA_ADDED", material, request.user, assigned_to,
-            )
+            create_event("SHARER_MTA_ADDED", material, request.user, assigned_to)
 
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
