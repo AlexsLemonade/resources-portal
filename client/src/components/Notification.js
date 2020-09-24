@@ -83,6 +83,7 @@ export const createNotificationLinks = (notification) => {
 export const Notification = ({ notification }) => {
   const notificationText = createNotificationLinks(notification)
   const { user } = useUser()
+  // If the user viewing notif is the requester of the associated material, don't show the organization
   const showOrganizationLink = !notificationViewerIsResourceRequester(
     notification,
     user
