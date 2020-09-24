@@ -26,8 +26,8 @@ export default () => {
           background="white"
           pad="large"
         >
-          {!imported && !showRequirements && <ResourceDetailsForm />}
-          {imported && <ResourceEditImportedForm />}
+          {!imported && !showRequirements && <ResourceDetailsForm edit />}
+          {imported && <ResourceEditImportedForm fetched />}
         </Box>
       )}
       {showRequirements && <RequestRequirementsForm />}

@@ -8,14 +8,13 @@ import { ResourceFormField } from './ResourceFormField'
 // TODO:
 // Add api integration
 // add helper text
-export default () => {
+export default ({ edit = false }) => {
   const {
     form,
     getAttribute,
     setAttribute,
     contactUserOptions,
-    attributeHasError,
-    edit = false
+    attributeHasError
   } = useResourceForm()
   if (!form) return <></>
   return (

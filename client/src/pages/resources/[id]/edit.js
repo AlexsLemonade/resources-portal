@@ -27,7 +27,7 @@ export const EditResource = ({ resourceId }) => {
   return (
     <ResourceContextProvider editResource={editResource}>
       <Heading level={4} serif>
-        List a Resource
+        Edit Resource - {editResource.title}
       </Heading>
       <ResourceEditForm />
     </ResourceContextProvider>
