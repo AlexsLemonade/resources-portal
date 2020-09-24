@@ -8,17 +8,12 @@ import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
   const [notificationsFetched, setNotificationsFetched] = React.useState(false)
-  const {
-    notificationCount,
-    fetchNotifications,
-    getUnreadNotifications
-  } = useNotifications()
+  const { notificationCount, fetchNewNotifications } = useNotifications()
 
   React.useEffect(() => {
     if (!notificationsFetched) {
-      fetchNotifications().then((notifications) => {
+      fetchNewNotifications().then(() => {
         setNotificationsFetched(true)
-        getUnreadNotifications(notifications)
       })
     }
   })

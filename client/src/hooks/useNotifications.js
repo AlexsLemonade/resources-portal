@@ -23,6 +23,22 @@ export const useNotifications = () => {
     return {}
   }
 
+  const fetchNewNotifications = async () => {
+    // this should fetch after the date saved in the user object
+    const notificationRequest = await api.user.notifications.filter(
+      user.id,
+      { created_at__gt: user.viewed_notifications_at },
+      token
+    )
+    if (notificationRequest.isOk && notificationRequest.response) {
+      const retrievedNotifications = notificationRequest.response.results
+      setNotificationCount(retrievedNotifications.length)
+      return retrievedNotifications
+    }
+
+    return {}
+  }
+
   const getUnreadNotifications = (notifications) => {
     if (!user || !notifications) {
       return false
@@ -51,6 +67,7 @@ export const useNotifications = () => {
 
   return {
     fetchNotifications,
+    fetchNewNotifications,
     notificationCount,
     setNotificationCount,
     getUnreadNotifications,
