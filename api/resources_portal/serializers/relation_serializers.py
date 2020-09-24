@@ -161,6 +161,7 @@ class ShippingRequirementRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "needs_shipping_address",
+            "sharer_pays_shipping",
             "needs_payment",
             "accepts_shipping_code",
             "accepts_reimbursement",
