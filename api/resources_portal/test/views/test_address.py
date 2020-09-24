@@ -65,14 +65,14 @@ class SingleAddressTestCase(APITestCase):
         self.client.force_authenticate(user=self.address.user)
         address_json = self.client.get(self.url).json()
 
-        new_suite = "Suite 4000"
-        address_json["address_line_2"] = new_suite
+        # We've got the whole building now!
+        address_json["address_line_2"] = None
 
         response = self.client.put(self.url, address_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         address = Address.objects.get(id=self.address.id)
-        self.assertEqual(address.address_line_2, new_suite)
+        self.assertEqual(address.address_line_2, None)
 
     def test_put_request_from_wrong_user_fails(self):
         self.client.force_authenticate(user=self.other_user)
