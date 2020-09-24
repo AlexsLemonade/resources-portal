@@ -27,7 +27,7 @@ class Address(SafeDeleteModel):
     name = models.TextField(blank=False, null=False)
     institution = models.TextField(blank=False, null=False)
     address_line_1 = models.TextField(blank=False, null=False)
-    address_line_2 = models.TextField(blank=False, null=False)
+    address_line_2 = models.TextField(blank=False, null=True)
     locality = models.TextField(blank=False, null=False)
     postal_code = models.TextField(blank=False, null=False)
     state = models.TextField(blank=False, null=False)

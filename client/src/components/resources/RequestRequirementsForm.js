@@ -32,7 +32,6 @@ export default () => {
     showShippingRequirements,
     setShowShippingRequirements
   ] = React.useState(!!getAttribute('shipping_requirement'))
-
   const updateShippingRequirements = (hasShippingRequirements) => {
     setShowShippingRequirements(hasShippingRequirements)
     if (!hasShippingRequirements) {

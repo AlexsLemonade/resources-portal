@@ -1,6 +1,5 @@
 import React from 'react'
-import { Box, Heading, Text, Button, Tabs, Tab } from 'grommet'
-import Link from 'next/link'
+import { Box, Heading, Text, Tabs, Tab } from 'grommet'
 import api from 'api'
 import { ResourceDetails } from 'components/resources/ResourceDetails'
 import { PublicationInformation } from 'components/resources/PublicationInformation'
@@ -8,6 +7,11 @@ import { ContactSubmitter } from 'components/resources/ContactSubmitter'
 import { RequestRequirements } from 'components/resources/RequestRequirements'
 import { RelatedResources } from 'components/resources/RelatedResources'
 import { ResourceCard } from 'components/resources/ResourceCard'
+import dynamic from 'next/dynamic'
+
+const RequestButton = dynamic(() => import('components/RequestButton'), {
+  ssr: false
+})
 
 const ResourceDetailsPage = ({ resource }) => {
   if (!resource)
@@ -25,12 +29,7 @@ const ResourceDetailsPage = ({ resource }) => {
         margin={{ bottom: 'xlarge' }}
       >
         <ResourceCard resource={resource} size="large">
-          <Link
-            href="/resources/[id]/request"
-            as={`/resources/${resource.id}/request`}
-          >
-            <Button label="Request" primary />
-          </Link>
+          <RequestButton resource={resource} />
         </ResourceCard>
       </Box>
       <Box>

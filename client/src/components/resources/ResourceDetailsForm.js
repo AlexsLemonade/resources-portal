@@ -8,7 +8,7 @@ import { ResourceFormField } from './ResourceFormField'
 // TODO:
 // Add api integration
 // add helper text
-export default () => {
+export default ({ edit = false }) => {
   const {
     form,
     getAttribute,
@@ -24,7 +24,7 @@ export default () => {
         margin={{ bottom: 'medium' }}
       >
         <Heading level={5} weight="normal" margin="none">
-          Resource Details
+          {edit && 'Edit '}Resource Details
         </Heading>
       </Box>
       {form.map((formGroup, index) => (
