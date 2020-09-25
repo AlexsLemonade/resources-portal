@@ -3,7 +3,7 @@ from django.db import models
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-from resources_portal.models.material import Material
+from resources_portal.models.material import Material, MaterialRequest
 from resources_portal.models.user import User
 
 
@@ -24,7 +24,16 @@ class MaterialShareEvent(SafeDeleteModel):
         Material, blank=False, null=False, on_delete=models.CASCADE, related_name="share_events"
     )
 
+    material_request = models.ForeignKey(
+        MaterialRequest,
+        blank=False,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="share_events",
+    )
+
     EVENT_TYPES = (
+        ("REQUEST_OPENED", "REQUEST_OPENED"),
         ("REQUEST_REJECTED", "REQUEST_REJECTED"),
         ("REQUEST_CANCELLED", "REQUEST_CANCELLED"),
         ("REQUEST_APPROVED", "REQUEST_APPROVED"),

@@ -1,3 +1,4 @@
+import copy
 import uuid
 
 from django.db import models
@@ -375,6 +376,14 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         notify_sharer("MATERIAL_REQUEST_SHARER_ASSIGNED_NEW", material_request)
         notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED", material_request)
 
+        MaterialShareEvent(
+            event_type="REQUEST_OPENED",
+            material=material,
+            material_request=material_request,
+            created_by=request.user,
+            assigned_to=material_request.assigned_to,
+        ).save()
+
         return Response(data=model_to_dict(material_request), status=201)
 
     def create_notifications(self, request, material_request, serializer):
@@ -418,11 +427,15 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             MaterialShareEvent(
                 event_type=event_type,
                 material=material,
+                material_request=material_request,
                 created_by=created_by,
                 assigned_to=assigned_to,
             ).save()
 
-        assigned_to = serializer.validated_data["assigned_to"] or material_request.assigned_to
+        if "assigned_to" in serializer.validated_data:
+            assigned_to = serializer.validated_data["assigned_to"]
+        else:
+            assigned_to = material_request.assigned_to
 
         if field_changed("assigned_to"):
             create_event("REQUEST_REASSIGNED", material, request.user, assigned_to)
@@ -450,6 +463,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
+        original_material_request = copy.deepcopy(material_request)
 
         serializer = self.get_serializer_class()(material_request, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
@@ -493,8 +507,8 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                         issue.status = "CLOSED"
                         issue.save()
 
-        self.create_notifications(request, material_request, serializer)
-        self.create_events(request, material_request, serializer)
+        self.create_notifications(request, original_material_request, serializer)
+        self.create_events(request, original_material_request, serializer)
 
         serializer.save()
         material_request.refresh_from_db()
