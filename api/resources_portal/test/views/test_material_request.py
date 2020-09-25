@@ -410,6 +410,49 @@ class TestSingleMaterialRequestTestCase(APITestCase):
             1,
         )
 
+    def test_patch_requester_can_move_to_in_fulfillment(self):
+        """If an MTA is not required, the requester can move it to IN_FULFILLMENT"""
+        self.material.mta_attachment = None
+        self.material.save()
+        # Remove the executed MTA so we can test the IN_FULFILLMENT notifications.
+        self.request.executed_mta_attachment = None
+        self.request.status = "APPROVED"
+        self.request.save()
+        self.client.force_authenticate(user=self.request.requester)
+
+        irb_attachment = AttachmentFactory(owned_by_user=self.request.requester)
+        material_request_data = {"status": "IN_FULFILLMENT", "irb_attachment": irb_attachment.id}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_IN_FULFILLMENT"
+                )
+            ),
+            self.organization.members.count(),
+        )
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_REQUESTER_IN_FULFILLMENT"
+                )
+            ),
+            1,
+        )
+
+    def test_patch_requester_cannot_move_to_in_fulfillment(self):
+        """If an MTA is required, the requester cannot move it to IN_FULFILLMENT"""
+        self.client.force_authenticate(user=self.request.requester)
+
+        irb_attachment = AttachmentFactory()
+        material_request_data = {"status": "IN_FULFILLMENT", "irb_attachment": irb_attachment.id}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_put_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
 

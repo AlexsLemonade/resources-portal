@@ -111,8 +111,25 @@ class IsModifyingPermittedFields(BasePermission):
         # First, check status since it's the most complicated:
         if "status" in request.data and request.data["status"] != getattr(obj, "status"):
             if request.user == obj.requester:
-                if request.data["status"] not in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                if request.data["status"] not in [
+                    "CANCELLED",
+                    "IN_FULFILLMENT",
+                    "VERIFIED_FULFILLED",
+                ]:
                     return False
+                # Requester can only move to IN_FULFILLMENT if no MTA
+                # is required and other requirements are provided.
+                elif request.data["status"] == "IN_FULFILLMENT" and (
+                    obj.status != "APPROVED"
+                    or obj.material.needs_mta()
+                    or obj.get_is_missing_requester_documents(
+                        irb_attachment=request.data.get("irb_attachment", None),
+                        address=request.data.get("address", None),
+                        payment_method=request.data.get("payment_method", None),
+                    )
+                ):
+                    return False
+                # Can only verify a fulfilled request.
                 elif request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED":
                     return False
             else:
