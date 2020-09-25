@@ -1,6 +1,6 @@
 // attribute name to markdown string
 export const helperTexts = {
-  bio_safety_level: `Does the unmodified plasmid DNA, either in purified form or when introduced into bacterial or mammalian cells, require handling at Biosafety Level 2 (or higher)? Biosafety classification is based on [U.S. Public Health Service Guidelines](https://www.cdc.gov/labs/BMBL.html), it is the responsibility of the customer to ensure that their facilities comply with biosafety regulations for their own country.`,
+  biosafety_level: `Does the unmodified plasmid DNA, either in purified form or when introduced into bacterial or mammalian cells, require handling at Biosafety Level 2 (or higher)? Biosafety classification is based on [U.S. Public Health Service Guidelines](https://www.cdc.gov/labs/BMBL.html), it is the responsibility of the customer to ensure that their facilities comply with biosafety regulations for their own country.`,
   citation: `How do you want researchers to cite this resource?`,
   contact_user: `This person is responsible for responding to inquiries about resource details, shipping and handling, etc.`,
   organisms: `Provide scientific names of organisms`,
