@@ -88,7 +88,7 @@ export const attributeInputTypes = {
   plasmid_type: 'select',
   primary_vector_type: 'select',
   cloning_method: 'select',
-  biosafety_level: 'select',
+  biosafety_level: 'biosafety_level',
   copy_number: 'select',
   zygosity: 'select',
   is_from_untreated_patient: 'select',
