@@ -4,6 +4,7 @@ import { getReadable } from 'helpers/readableNames'
 import Icon from 'components/Icon'
 import ResourceFormFieldLabel from 'components/resources/ResourceFormFieldLabel'
 import ResourceDynamicInput from 'components/resources/ResourceDynamicInput'
+import HelperText from 'components/InputHelperText'
 import { getInputType } from '.'
 
 const AttributeFormField = ({
@@ -23,6 +24,7 @@ const AttributeFormField = ({
       label={
         labeled ? <ResourceFormFieldLabel attribute={attribute} /> : undefined
       }
+      help={<HelperText attribute={attribute} />}
       error={
         error ? (
           <Box direction="row" gap="xsmall" align="center">
