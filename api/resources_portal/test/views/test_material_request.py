@@ -238,6 +238,10 @@ class TestSingleMaterialRequestTestCase(APITestCase):
             len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLED")), 1,
         )
 
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
+        )
+
     def test_put_request_from_sharer_updates_a_material_request(self):
         self.client.force_authenticate(user=self.sharer)
 

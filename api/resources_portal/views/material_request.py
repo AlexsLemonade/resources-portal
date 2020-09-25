@@ -507,6 +507,14 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                         issue.status = "CLOSED"
                         issue.save()
 
+                        MaterialShareEvent(
+                            event_type="REQUEST_ISSUE_CLOSED",
+                            material=material_request.material,
+                            material_request=material_request,
+                            created_by=request.user,
+                            assigned_to=material_request.assigned_to,
+                        ).save()
+
         self.create_notifications(request, original_material_request, serializer)
         self.create_events(request, original_material_request, serializer)
 

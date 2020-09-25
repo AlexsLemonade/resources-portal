@@ -3,7 +3,8 @@ from django.db import models
 from safedelete.managers import SafeDeleteDeletedManager, SafeDeleteManager
 from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
-from resources_portal.models.material import Material, MaterialRequest
+from resources_portal.models.material import Material
+from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.user import User
 
 
@@ -40,15 +41,15 @@ class MaterialShareEvent(SafeDeleteModel):
         ("REQUEST_IN_FULFILLMENT", "REQUEST_IN_FULFILLMENT"),
         ("REQUEST_FULFILLED", "REQUEST_FULFILLED"),
         ("REQUEST_VERIFIED_FULFILLED", "REQUEST_VERIFIED_FULFILLED"),
-        ("REQUEST_FULFILLMENT_NOTE_ADDED", "REQUEST_FULFILLMENT_NOTE_ADDED"),  # TODO
+        ("REQUEST_FULFILLMENT_NOTE_ADDED", "REQUEST_FULFILLMENT_NOTE_ADDED"),
         ("REQUEST_REASSIGNED", "REQUEST_REASSIGNED"),
         ("REQUESTER_IRB_ADDED", "REQUESTER_IRB_ADDED"),
         ("REQUESTER_MTA_ADDED", "REQUESTER_MTA_ADDED"),
         ("REQUESTER_PAYMENT_METHOD_ADDED", "REQUESTER_PAYMENT_METHOD_ADDED"),
         ("REQUESTER_PAYMENT_METHOD_NOTES_ADDED", "REQUESTER_PAYMENT_METHOD_NOTES_ADDED"),
         ("SHARER_MTA_ADDED", "SHARER_MTA_ADDED"),
-        ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),  # TODO
-        ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),  # TODO
+        ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
+        ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
         ("MATERIAL_MTA_REQUIREMENTS_CHANGED", "MATERIAL_MTA_REQUIREMENTS_CHANGED"),  # TODO
         ("MATERIAL_IRB_REQUIREMENTS_CHANGED", "MATERIAL_IRB_REQUIREMENTS_CHANGED"),  # TODO
         (
