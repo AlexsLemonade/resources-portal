@@ -50,12 +50,10 @@ class MaterialShareEvent(SafeDeleteModel):
         ("SHARER_MTA_ADDED", "SHARER_MTA_ADDED"),
         ("REQUEST_ISSUE_OPENED", "REQUEST_ISSUE_OPENED"),
         ("REQUEST_ISSUE_CLOSED", "REQUEST_ISSUE_CLOSED"),
-        ("MATERIAL_MTA_REQUIREMENTS_CHANGED", "MATERIAL_MTA_REQUIREMENTS_CHANGED"),  # TODO
-        ("MATERIAL_IRB_REQUIREMENTS_CHANGED", "MATERIAL_IRB_REQUIREMENTS_CHANGED"),  # TODO
-        (
-            "MATERIAL_SHIPPING_REQUIREMENTS_CHANGED",
-            "MATERIAL_SHIPPING_REQUIREMENTS_CHANGED",
-        ),  # TODO
+        ("MATERIAL_MTA_REQUIREMENTS_CHANGED", "MATERIAL_MTA_REQUIREMENTS_CHANGED"),
+        ("MATERIAL_IRB_REQUIREMENTS_CHANGED", "MATERIAL_IRB_REQUIREMENTS_CHANGED"),
+        ("MATERIAL_ABSTRACT_REQUIREMENTS_CHANGED", "MATERIAL_ABSTRACT_REQUIREMENTS_CHANGED"),
+        ("MATERIAL_SHIPPING_REQUIREMENTS_CHANGED", "MATERIAL_SHIPPING_REQUIREMENTS_CHANGED",),
     )
     event_type = models.CharField(max_length=255, blank=True, null=True, choices=EVENT_TYPES)
 
@@ -70,7 +68,7 @@ class MaterialShareEvent(SafeDeleteModel):
     assigned_to = models.ForeignKey(
         User,
         blank=False,
-        null=False,
+        null=True,
         on_delete=models.CASCADE,
         related_name="material_share_assignments",
     )
