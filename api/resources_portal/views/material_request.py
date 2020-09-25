@@ -105,8 +105,25 @@ class IsModifyingPermittedFields(BasePermission):
         # First, check status since it's the most complicated:
         if "status" in request.data and request.data["status"] != getattr(obj, "status"):
             if request.user == obj.requester:
-                if request.data["status"] not in ["CANCELLED", "VERIFIED_FULFILLED"]:
+                if request.data["status"] not in [
+                    "CANCELLED",
+                    "IN_FULFILLMENT",
+                    "VERIFIED_FULFILLED",
+                ]:
                     return False
+                # Requester can only move to IN_FULFILLMENT if no MTA
+                # is required and other requirements are provided.
+                elif request.data["status"] == "IN_FULFILLMENT" and (
+                    obj.status != "APPROVED"
+                    or obj.material.needs_mta()
+                    or obj.get_is_missing_requester_documents(
+                        irb_attachment=request.data.get("irb_attachment", None),
+                        address=request.data.get("address", None),
+                        payment_method=request.data.get("payment_method", None),
+                    )
+                ):
+                    return False
+                # Can only verify a fulfilled request.
                 elif request.data["status"] == "VERIFIED_FULFILLED" and obj.status != "FULFILLED":
                     return False
             else:
@@ -401,16 +418,6 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 notify_sharer("MATERIAL_REQUEST_SHARER_RECEIVED_INFO", material_request)
 
             if field_changed("status"):
-                # The only status change the requester can make is to
-                # cancel or verify the request.
-                cancelling = serializer.validated_data["status"] == "CANCELLED"
-                verifying = (
-                    material_request.status == "FULFILLED"
-                    and serializer.validated_data["status"] == "VERIFIED_FULFILLED"
-                )
-                if not (cancelling or verifying):
-                    return Response(status=403)
-
                 notify_request_status_change(serializer.validated_data["status"], material_request)
 
         else:
