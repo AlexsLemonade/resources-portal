@@ -15,8 +15,6 @@ const ExternalAnchor = (props) => {
   return <Anchor {...props} target="_blank"/>
 }
 
-// override links to open in new tab
-
 export default ({ attribute }) => {
   const helperText = getHelperText(attribute)
   if (!helperText) return false
