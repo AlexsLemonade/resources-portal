@@ -473,7 +473,7 @@ const theme = {
       `
         ),
         applyWhen(
-          props.isDrop,
+          props.borderless,
           `
         > div {
           border: none;
