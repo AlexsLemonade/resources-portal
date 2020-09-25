@@ -91,14 +91,18 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     def is_active(self):
         return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT", "FULFILLED"]
 
+    def get_is_missing_requester_documents(
+        self, irb_attachment=None, mta_attachment=None, address=None, payment_method=None
+    ):
+        missing_irb = self.material.needs_irb and not (self.irb_attachment or irb_attachment)
+        missing_mta = self.material.mta_attachment is not None and not (
+            self.requester_signed_mta_attachment or mta_attachment
+        )
+        return missing_irb or missing_mta or self.get_needs_shipping_info(address, payment_method)
+
     @property
     def is_missing_requester_documents(self):
-        missing_irb = self.material.needs_irb and self.irb_attachment is None
-        missing_mta = (
-            self.material.mta_attachment is not None
-            and self.requester_signed_mta_attachment is None
-        )
-        return missing_irb or missing_mta or self.needs_shipping_info
+        return self.get_is_missing_requester_documents()
 
     @property
     def requires_action_sharer(self):
@@ -133,16 +137,19 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     def frontend_URL(self):
         return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
 
-    @property
-    def needs_shipping_info(self):
+    def get_needs_shipping_info(self, address=None, payment_method=None):
         shipping_requirement = self.material.shipping_requirement
         if shipping_requirement:
-            if shipping_requirement.needs_shipping_address and not self.address:
+            if shipping_requirement.needs_shipping_address and not (self.address or address):
                 return True
-            elif shipping_requirement.needs_payment and not self.payment_method:
+            elif shipping_requirement.needs_payment and not (self.payment_method or payment_method):
                 return True
 
         return False
+
+    @property
+    def needs_shipping_info(self):
+        return self.get_needs_shipping_info()
 
     @property
     def required_info_plain_text(self):
