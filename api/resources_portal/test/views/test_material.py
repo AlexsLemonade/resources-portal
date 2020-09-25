@@ -12,6 +12,7 @@ from resources_portal.test.factories import (
     MaterialFactory,
     MaterialRequestFactory,
     OrganizationFactory,
+    ShippingRequirementFactory,
     UserFactory,
 )
 
@@ -234,7 +235,7 @@ class TestSingleMaterialTestCase(APITestCase):
     def test_patch_request_updates_a_material_abstract(self):
         self.client.force_authenticate(user=self.user)
 
-        material_json = {"needs_irb": True}
+        material_json = {"needs_abstract": True}
 
         response = self.client.patch(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -251,7 +252,8 @@ class TestSingleMaterialTestCase(APITestCase):
     def test_patch_request_updates_a_material_shipping(self):
         self.client.force_authenticate(user=self.user)
 
-        material_json = {"needs_irb": True}
+        shipping_requirement = ShippingRequirementFactory(organization=self.organization)
+        material_json = {"shipping_requirement": shipping_requirement.id}
 
         response = self.client.patch(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
