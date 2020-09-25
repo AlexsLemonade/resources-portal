@@ -12,7 +12,7 @@ export const details = [
       'purpose',
       'organisms',
       'number_of_available_samples',
-      'bio_safety_level'
+      'biosafety_level'
     ]
   },
   {
@@ -44,7 +44,7 @@ export const listForm = [
       'purpose',
       'organisms',
       'number_of_available_samples',
-      'bio_safety_level'
+      'biosafety_level'
     ]
   },
   {

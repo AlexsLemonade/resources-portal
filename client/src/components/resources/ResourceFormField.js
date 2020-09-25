@@ -19,7 +19,7 @@ const AttributeFormField = ({
 }) => {
   return (
     <FormField
-      isDrop={inputType === 'sequencemaps'}
+      borderless={['sequencemaps', 'biosafety_level'].includes(inputType)}
       label={
         labeled ? <ResourceFormFieldLabel attribute={attribute} /> : undefined
       }

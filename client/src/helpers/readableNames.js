@@ -25,7 +25,6 @@ export const readableNames = {
   age: 'Age',
   backbone_name: 'Backbone Names',
   bacterial_resistance: 'Bacterial Resistance',
-  bio_safety_level: 'Bio Safety Level',
   biosafety_level: 'Biosafety Level',
   category: 'Resource Type',
   cell_line_name: 'Cell Line Name',

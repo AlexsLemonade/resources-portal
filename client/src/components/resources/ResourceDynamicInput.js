@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Select, TextArea, TextInput } from 'grommet'
+import { Anchor, Box, Select, TextArea, TextInput } from 'grommet'
 import { getInputOptions, getAutoCompleteOptions } from '.'
 import SequenceMapsInput from './SequenceMapsInput'
 
@@ -65,6 +65,24 @@ export default ({
           inputValue={inputValue || []}
           onDone={(uploads) => setAttribute(attribute, uploads)}
         />
+      )
+    case 'biosafety_level':
+      return (
+        <Box direction="row" justify="start" align="center" gap="small">
+          <Box border={{ color: 'black-tint-60' }} round="xsmall">
+            <Select
+              plain
+              closeOnChange
+              options={inputOptions}
+              onChange={({ value }) => setAttribute(attribute, value)}
+            />
+          </Box>
+          <Anchor
+            label="Biosafety Level Guide"
+            href="https://www.cdc.gov/labs/BMBL.html"
+            target="_blank"
+          />
+        </Box>
       )
     case 'contactuser':
       return (
