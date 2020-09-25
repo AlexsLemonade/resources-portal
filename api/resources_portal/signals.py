@@ -1,9 +1,9 @@
-from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
+from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
 
 from django_elasticsearch_dsl.registries import registry
 
-from resources_portal.models import Material, MaterialRequest
+from resources_portal.models import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
