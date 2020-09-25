@@ -440,7 +440,7 @@ const theme = {
     label: {
       margin: {
         horizontal: 'none',
-        bottom: 'medium'
+        bottom: '12px' // plus 4 = 16px
       },
       size: 'medium'
     },
@@ -451,7 +451,9 @@ const theme = {
     extend: (props) =>
       applyAll(
         `
-      // help
+      // FormField help
+      // Same styles as components/InputHelperText.js
+      // Which is used for MarkDown type helper text
       label + span {
         font-style: italic;
         font-size: 12px;
