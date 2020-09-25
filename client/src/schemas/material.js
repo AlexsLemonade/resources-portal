@@ -86,7 +86,7 @@ const materialCategories = {
     treatment_protocol: string(),
     prior_treatment_protocol: string(),
     response_to_treatment: string(),
-    virology_statu: string(),
+    virology_status: string(),
     submitter_tumor_id: string(),
     tissue_of_origin: string(),
     tumor_type: string(),
