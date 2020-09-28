@@ -517,7 +517,6 @@
   "materials_share_events": [
     {
       "event_type": "shared",
-      "time": "2020-01-30 16:12:25-07",
       "assigned_to_id": "20000000-a55d-42b7-b53e-056956e18b8c",
       "created_by_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "material_id": "2"

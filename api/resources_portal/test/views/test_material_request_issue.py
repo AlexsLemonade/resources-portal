@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Notification, OrganizationUserSetting
+from resources_portal.models import MaterialShareEvent, Notification, OrganizationUserSetting
 from resources_portal.test.factories import (
     MaterialFactory,
     MaterialRequestFactory,
@@ -76,6 +76,10 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
                 )
             ),
             self.organization.members.count(),
+        )
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_OPENED")), 1,
         )
 
     def test_post_request_unfulfilled_error(self):
@@ -202,6 +206,10 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
             organization.members.count(),
         )
 
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
+        )
+
     def test_put_request_from_requester_updates_a_material_request(self):
         self.client.force_authenticate(user=self.request.requester)
 
@@ -223,6 +231,10 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.assertEqual(
             len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_FULFILLED")),
             organization.members.count(),
+        )
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
         )
 
     def test_put_request_without_permission_forbidden(self):

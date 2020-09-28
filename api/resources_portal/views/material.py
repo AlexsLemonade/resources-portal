@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import Material, Organization
+from resources_portal.models import Material, MaterialShareEvent, Organization
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
 from resources_portal.views.material_request import MaterialRequestSerializer
@@ -108,17 +108,47 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(material, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
 
-        if (
-            "category" in serializer.validated_data
-            and serializer.validated_data["category"] != material.category
-        ):
+        def field_changed(field_name):
+            return field_name in request.data and serializer.validated_data[field_name] != getattr(
+                material, field_name
+            )
+
+        if field_changed("category"):
             raise ValidationError("Category cannot be changed after a material is created.")
 
-        new_organization = serializer.validated_data["organization"]
-
-        if material.organization != new_organization:
-            if not request.user.has_perm("add_resources", new_organization):
+        if field_changed("organization"):
+            if not request.user.has_perm(
+                "add_resources", serializer.validated_data["organization"]
+            ):
                 return Response(status=status.HTTP_403_FORBIDDEN)
+
+        if field_changed("mta_attachment"):
+            MaterialShareEvent(
+                event_type="MATERIAL_MTA_REQUIREMENTS_CHANGED",
+                material=material,
+                created_by=request.user,
+            ).save()
+
+        if field_changed("needs_irb"):
+            MaterialShareEvent(
+                event_type="MATERIAL_IRB_REQUIREMENTS_CHANGED",
+                material=material,
+                created_by=request.user,
+            ).save()
+
+        if field_changed("needs_abstract"):
+            MaterialShareEvent(
+                event_type="MATERIAL_ABSTRACT_REQUIREMENTS_CHANGED",
+                material=material,
+                created_by=request.user,
+            ).save()
+
+        if field_changed("shipping_requirement"):
+            MaterialShareEvent(
+                event_type="MATERIAL_SHIPPING_REQUIREMENTS_CHANGED",
+                material=material,
+                created_by=request.user,
+            ).save()
 
         response = super(MaterialViewSet, self).update(request, *args, **kwargs)
 
