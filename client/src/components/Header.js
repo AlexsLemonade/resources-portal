@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { AlertsWithQueue } from 'components/Alert'
 import { HeaderAccountLink } from './HeaderAccountLink'
-import LogoSvg from './logo.svg'
+import LogoSvg from '../images/logo.svg'
 import { useIsClient } from '../hooks/useIsClient'
 
 const FixedBox = styled(Box)`
