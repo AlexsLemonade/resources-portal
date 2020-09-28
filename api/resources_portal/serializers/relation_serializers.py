@@ -16,7 +16,6 @@ from resources_portal.models import (
     Material,
     MaterialRequest,
     MaterialRequestIssue,
-    MaterialShareEvent,
     Organization,
     OrganizationInvitation,
     ShippingRequirement,
