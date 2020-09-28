@@ -31,7 +31,7 @@ export default function ResourcesHeader({ className }) {
         <Header
           className={className}
           background="brand"
-          pad="medium"
+          pad="small"
           border={[{ size: 'medium', side: 'bottom', color: '#F3E502' }]}
           justify="center"
           margin={{ bottom: '2rem' }}
