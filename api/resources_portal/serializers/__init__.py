@@ -11,7 +11,6 @@ from resources_portal.serializers.relation_serializers import (
     MaterialRelationSerializer,
     MaterialRequestIssueRelationSerializer,
     MaterialRequestRelationSerializer,
-    MaterialShareEventsRelationSerializer,
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
     ShippingRequirementRelationSerializer,

@@ -230,21 +230,6 @@ class MaterialRequestIssueRelationSerializer(serializers.ModelSerializer):
         )
 
 
-class MaterialShareEventsRelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MaterialShareEvent
-        fields = (
-            "id",
-            "created_at",
-            "updated_at",
-            "material",
-            "time",
-            "event_type",
-            "created_by",
-            "assigned_to",
-        )
-
-
 class OrganizationInvitationRelationSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganizationInvitation
