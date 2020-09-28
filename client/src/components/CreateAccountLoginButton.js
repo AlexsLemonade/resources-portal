@@ -67,16 +67,16 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
         <Box margin={{ left: '30px' }}>
           <Box gap="small">
             <Text weight="bold">
-              Create a BioResources Portal account with your ORCID iD
+              Create a CCRR Portal account with your ORCID iD
             </Text>
             <Text>
-              You can use your existing ORCID iD to create an BioResources
-              Portal account. If you don’t have an ORCID iD, you can use the
-              button below to create one!
+              You can use your existing ORCID iD to create an CCRR Portal
+              account. If you don’t have an ORCID iD, you can use the button
+              below to create one!
             </Text>
             <Text>
-              You can use your BioResources Portal account to request resources,
-              share your resources, and track and manage requests.
+              You can use your CCRR Portal account to request resources, share
+              your resources, and track and manage requests.
             </Text>
             <ORCIDSignInButton label="Create or Connect ORCID iD" />
           </Box>

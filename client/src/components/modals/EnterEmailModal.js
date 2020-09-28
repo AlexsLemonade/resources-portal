@@ -20,7 +20,7 @@ export const EnterEmailModal = ({ onSubmit }) => {
         <Box>
           <Text>
             We were unable to retrieve your email from ORCID. Please provide an
-            email address to associate with your BioResources Portal account.
+            email address to associate with your CCRR Portal account.
           </Text>
         </Box>
         <TextInput
