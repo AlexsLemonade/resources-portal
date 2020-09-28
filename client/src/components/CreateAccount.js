@@ -13,12 +13,12 @@ export const CreateAccountStep = () => {
   return (
     <Box>
       <Text>
-        You can use your BioResources portal account to request resources, track
+        You can use your CCRR Portal account to request resources, track
         requests, and share your own resources.
       </Text>
       <Text>
-        Use your existing ORCID iD to create a Bio Resources Portal account. If
-        you do not have an ORCID iD, you can use the button below to create one.
+        Use your existing ORCID iD to create a CCRR Portal account. If you do
+        not have an ORCID iD, you can use the button below to create one.
       </Text>
       <Box
         align="center"
