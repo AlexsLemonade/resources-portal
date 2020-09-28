@@ -53,23 +53,12 @@ def parse_args():
 
 
 def build_and_push_docker_image(args):
+    """docker-py doesn't seem to work, so use subprocess to call Docker"""
     # This could be configurable, but there isn't much point.
     HTTP_PORT = 8081
 
     image_name = f"{args.dockerhub_repo}/resources_portal_api"
 
-    # Hopefully this gets answered and we can use docker-py:
-    # https://github.com/docker/docker-py/issues/2526
-    #  client = docker.DockerClient(base_url="unix://var/run/docker.sock", version="auto")
-    # # client = docker.from_env(version="auto")
-    # client.images.build(
-    #     path="../api",
-    #     dockerfile="Dockerfile.prod",
-    #     tag=image_name,
-    #     buildargs={"SYSTEM_VERSION": args.system_version, "HTTP_PORT": HTTP_PORT},
-    # )
-
-    # Until then, use subprocess to call docker :(
     # Change dir so docker can see the code.
     os.chdir("../api")
 
