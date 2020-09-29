@@ -1,20 +1,22 @@
 import React from 'react'
 import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
+import { TeamContext } from 'contexts/TeamContext'
 import api from 'api'
 
 export default () => {
   const { addAlert } = useAlertsQueue()
   const { user, token, refreshUser } = useUser()
-  const [team, setTeam] = React.useState({
-    name: '',
-    description: '',
-    members: [],
-    grants: []
-  })
-  const [memberSuggestions, setMemberSuggestions] = React.useState({})
-  const [memberEmail, setMemberEmail] = React.useState('')
-  const [invites, setInvites] = React.useState([])
+  const {
+    team,
+    setTeam,
+    memberSuggestions,
+    setMemberSuggestions,
+    memberEmail,
+    setMemberEmail,
+    invites,
+    setInvites
+  } = React.useContext(TeamContext)
 
   React.useEffect(() => {
     refreshUser()
