@@ -89,15 +89,14 @@ export default () => {
       .map((m) => m.id)
     const teamRequest = await api.teams.get(teamId, token)
     if (teamRequest.isOk) {
-      const existingMemberIds = teamRequest.response.members
-        .map((m) => m.id)
-        .filter((m) => m !== user.id)
+      const existingMemberIds = teamRequest.response.members.map((m) => m.id)
       const addMemberIds = availableMemberIds.filter(
-        (m) => !existingMemberIds.includes(m.id)
+        (m) => !existingMemberIds.includes(m)
       )
-      const removeMemberIds = existingMemberIds.filter(
-        (memberId) => !availableMemberIds.includes(memberId)
-      )
+      const removeMemberIds = existingMemberIds
+        .filter((m) => !availableMemberIds.includes(m))
+        .filter((m) => m !== user.id)
+
       await Promise.all(
         addMemberIds.map((memberId) => {
           const invitation = {
