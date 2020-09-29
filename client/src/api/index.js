@@ -235,6 +235,12 @@ export default {
         method: 'POST',
         body: JSON.stringify(organization)
       }),
+    update: (organizationId, organization, authorization) =>
+      request(getAPIURL(`organizations/${organizationId}/`), {
+        authorization,
+        method: 'PATCH',
+        body: JSON.stringify(organization)
+      }),
     grants: {
       get: (organizationId, authorization) =>
         request(getAPIURL(`organizations/${organizationId}/grants/`), {
