@@ -3,7 +3,7 @@ import { Box, Button, FormField, TextInput, Text } from 'grommet'
 import TeamMembersTable from 'components/TeamMembersTable'
 import useTeamForm from 'hooks/useTeamForm'
 
-export default ({ showActions = true }) => {
+export default () => {
   const {
     team,
     removeMember,
