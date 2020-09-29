@@ -82,8 +82,6 @@ export default () => {
     return team[attribute]
   }
 
-  const inviteMembers = () => {}
-
   const saveMembers = async (newTeamId) => {
     const teamId = newTeamId || team.id
     const availableMemberIds = (getAttribute('members') || [])
@@ -174,7 +172,6 @@ export default () => {
     getAttribute,
     updateMemberSuggestions,
     memberSuggestions,
-    inviteMembers,
     save,
     addMemberOrInvite,
     memberEmail,
