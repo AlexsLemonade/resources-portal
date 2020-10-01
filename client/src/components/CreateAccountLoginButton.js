@@ -111,6 +111,7 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
 
 export const CreateAccountLoginButton = ({
   title,
+  buttonLabel,
   showSignIn,
   plainButton
 }) => {
@@ -118,7 +119,9 @@ export const CreateAccountLoginButton = ({
 
   return (
     <>
-      {!plainButton && <LoginButton onClick={() => setShowing(true)} />}
+      {!plainButton && (
+        <LoginButton onClick={() => setShowing(true)} label={buttonLabel} />
+      )}
       {plainButton && (
         <Button primary onClick={() => setShowing(true)} label={title} />
       )}
