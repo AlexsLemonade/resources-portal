@@ -21,7 +21,6 @@ commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
     "build": "docker-compose --env-file ./docker-compose.env build",
-    "shell": run_api.format('bash -c "./manage.py shell"'),
     "rebuild-index": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"'
     ),
