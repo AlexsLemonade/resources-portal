@@ -13,14 +13,6 @@ const readableTimeAgo = (time) => {
   return daysAgo > 0 ? `${daysAgo} days ago` : 'today'
 }
 
-const notificationViewerIsResourceRequester = (notification, user) => {
-  if (!notification.material_request) {
-    return false
-  }
-
-  return notification.material_request.requester === user.id
-}
-
 const getLink = (linkType, label, notification) => {
   if (linkType === 'request') {
     const href = `/account/requests/${notification.material_request.id}`
@@ -82,11 +74,10 @@ export const createNotificationLinks = (notification) => {
 
 export const Notification = ({ notification }) => {
   const notificationText = createNotificationLinks(notification)
-  const { user } = useUser()
+  const { isResourceRequester } = useUser()
   // If the user viewing notif is the requester of the associated material, don't show the organization
-  const showOrganizationLink = !notificationViewerIsResourceRequester(
-    notification,
-    user
+  const showOrganizationLink = !isResourceRequester(
+    notification.material_request
   )
 
   return (

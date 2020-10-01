@@ -11,10 +11,14 @@ export const HeaderAccountLink = () => {
   const { notificationCount, fetchNewNotifications } = useNotifications()
 
   React.useEffect(() => {
-    if (!notificationsFetched) {
+    const fetchNotifications = async () => {
       fetchNewNotifications().then(() => {
         setNotificationsFetched(true)
       })
+    }
+
+    if (!notificationsFetched && isLoggedIn) {
+      fetchNotifications()
     }
   })
 

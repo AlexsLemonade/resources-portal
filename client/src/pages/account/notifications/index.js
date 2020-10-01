@@ -15,13 +15,12 @@ const Notifications = () => {
 
   React.useEffect(() => {
     const updateNotifsViewed = async () => {
-      await fetchNotifications().then((notifs) => {
-        setNotifications(notifs)
-      })
+      const notifs = await fetchNotifications()
       setdidUpdateNotifs(true)
+      setNotifications(notifs)
       await api.user.update(
         user.id,
-        { viewed_notifications_at: getLastNotificationDate(notifications) },
+        { viewed_notifications_at: getLastNotificationDate(notifs) },
         token
       )
       refreshUserData()
