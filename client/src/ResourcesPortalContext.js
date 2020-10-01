@@ -8,7 +8,7 @@ export const ResourcesPortalContextProvider = ({ children }) => {
   const [user, setUser] = useLocalStorage('user', undefined)
   const [token, setToken] = useLocalStorage('token', '')
   const [alertsQueues, setAlertsQueues] = React.useState({})
-  const [notifications, setNotifications] = React.useState([])
+  const [notifications, setNotifications] = React.useState()
 
   return (
     <ResourcesPortalContext.Provider

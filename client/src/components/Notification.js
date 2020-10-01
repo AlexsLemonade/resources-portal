@@ -83,25 +83,19 @@ export const Notification = ({ notification }) => {
         </Text>
       </Box>
       <Box direction="row" gap="small">
-        {notification.organization && (
-          <Link href={`/account/teams/${notification.organization.id}`}>
-            <Anchor href="/account" label={notification.organization.name} />
-          </Link>
-        )}
-        {notification.material && (
-          <>
-            <Box
-              round
-              width="7px"
-              height="7px"
-              background="brand"
-              alignSelf="center"
-            />
-            <Link href="/account">
-              <Anchor href="/account" label={notification.material.title} />
-            </Link>
-          </>
-        )}
+        <Link href="/account">
+          <Anchor href="/account" label={notification.organization.name} />
+        </Link>
+        <Box
+          round
+          width="7px"
+          height="7px"
+          background="brand"
+          alignSelf="center"
+        />
+        <Link href="/account">
+          <Anchor href="/account" label={notification.material.title} />
+        </Link>
       </Box>
     </Box>
   )

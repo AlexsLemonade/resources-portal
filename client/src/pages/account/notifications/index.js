@@ -8,26 +8,32 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 
 const Notifications = () => {
-  const { refreshUserData, user, token } = useUser()
-  const {
-    notifications,
-    getLastNotificationDate,
-    fetchNotifications
-  } = useNotifications()
+  const { notifications } = useNotifications()
   const [didUpdateNotifs, setdidUpdateNotifs] = React.useState(false)
+  const { refreshUserData, user, token } = useUser()
 
   React.useEffect(() => {
-    const updateNotifsViewed = async () => {
-      await fetchNotifications()
+    if (!didUpdateNotifs) {
       setdidUpdateNotifs(true)
-      await api.user.update(
-        user.id,
-        { viewed_notifications_at: getLastNotificationDate() },
-        token
-      )
-      refreshUserData()
+      const updateNotifsViewed = async () => {
+        const notificationDates = notifications.map((notification) => {
+          return new Date(notification.created_at)
+        })
+        const lastNotificationDate = new Date(
+          Math.max.apply(null, notificationDates)
+        )
+        const response = await api.user
+          .update(
+            user.id,
+            { viewed_notifications_at: lastNotificationDate },
+            token
+          )
+          .then(refreshUserData)
+
+        return response
+      }
+      updateNotifsViewed()
     }
-    if (!didUpdateNotifs) updateNotifsViewed()
   })
 
   if (!notifications) return <Loader />
