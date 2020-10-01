@@ -15,16 +15,16 @@ export const Home = () => {
             <Box width="xlarge" alignSelf="center">
               <Box alignSelf="center">
                 <Text color="turteal-shade-40" size="50px">
-                  Childhood Cancer Research Resources
+                  Childhood Cancer Research Resources Portal
                 </Text>
               </Box>
               <Box align="center" direction="row" justify="between">
                 <Box width={{ min: '320px', max: '540px' }}>
                   <Text color="turteal-shade-40" size="large">
-                    Childhood Cancer Research Resources is a platform to enable
-                    discovery and sharing of research resources such as
-                    datasets, cell lines, PDX models, plasmids, protocols, and
-                    more.
+                    Childhood Cancer Research Resources (CCRR) Portal is a
+                    platform to enable discovery and sharing of research
+                    resources such as datasets, cell lines, PDX models,
+                    plasmids, protocols, and more.
                   </Text>
                 </Box>
                 <Box pad="large">
@@ -296,7 +296,7 @@ export const Home = () => {
               margin={{ top: 'medium' }}
               color="black-tint-40"
               primary
-              label="Create of Connect With ORCID ID"
+              label="Create of Connect With ORCID iD"
             />
           </Box>
         </Box>

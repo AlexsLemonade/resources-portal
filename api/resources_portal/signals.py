@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from django_elasticsearch_dsl.registries import registry
 
-from resources_portal.models.material import Material
+from resources_portal.models import Material
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 
