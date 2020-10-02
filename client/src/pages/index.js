@@ -1,11 +1,14 @@
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
 import Link from 'next/link'
 import React from 'react'
+import { useUser } from 'hooks/useUser'
+import { CreateAccountLoginButton } from 'components/CreateAccountLoginButton'
 import { HomepageCard } from '../components/HomepageCard'
 
 export const Home = () => {
   const heroOverlap = '140px'
   const [showSharing, setShowSharing] = React.useState(true)
+  const { isLoggedIn } = useUser()
 
   return (
     <>
@@ -216,7 +219,7 @@ export const Home = () => {
                       </Paragraph>
                     </HomepageCard>
                     <HomepageCard
-                      label="Track impack of your research"
+                      label="Track impact of your research"
                       imagePath="/impact.png"
                     >
                       <Paragraph>
@@ -277,30 +280,30 @@ export const Home = () => {
           </Box>
         </Box>
       </Box>
-      <Box>
-        <Box background="brand" pad={{ vertical: '66px' }}>
-          <Box alignSelf="center" align="center" width={{ max: 'large' }}>
-            <Text size="50px" color="white">
-              Create a CCRR portal account!
-            </Text>
-            <Paragraph color="white" margin={{ top: 'large' }}>
-              You can use your existing ORCID iD to create an CCRR Portal
-              account. If you don’t have an ORCID iD, you can use the button
-              below to create one!
-            </Paragraph>
-            <Paragraph color="white" margin={{ top: 'medium' }}>
-              You can use your CCRR Portal account to request resources, share
-              your resources, and track and manage requests.
-            </Paragraph>
-            <Button
-              margin={{ top: 'medium' }}
-              color="black-tint-40"
-              primary
-              label="Create of Connect With ORCID iD"
-            />
+      {!isLoggedIn && (
+        <Box>
+          <Box background="brand" pad={{ vertical: '66px' }}>
+            <Box alignSelf="center" align="center" width={{ max: 'large' }}>
+              <Text size="50px" color="white">
+                Create a CCRR portal account!
+              </Text>
+              <Paragraph color="white" margin={{ top: 'large' }}>
+                You can use your existing ORCID iD to create an CCRR Portal
+                account. If you don’t have an ORCID iD, you can use the button
+                below to create one!
+              </Paragraph>
+              <Paragraph color="white" margin={{ top: 'medium' }}>
+                You can use your CCRR Portal account to request resources, share
+                your resources, and track and manage requests.
+              </Paragraph>
+              <CreateAccountLoginButton
+                title="Create or Connect ORCID iD"
+                buttonLabel="Create or Connect ORCID iD"
+              />
+            </Box>
           </Box>
         </Box>
-      </Box>
+      )}
     </>
   )
 }
