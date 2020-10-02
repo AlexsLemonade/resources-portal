@@ -2,7 +2,7 @@
 import { Anchor, Box, Button, Heading, Text } from 'grommet'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import * as React from 'react'
-import ORCIDLogo from '../images/grant.svg'
+import Icon from 'components/Icon'
 import { LoginButton } from './LoginButton'
 import { Modal } from './Modal'
 
@@ -23,7 +23,7 @@ export const ORCIDSignInButton = ({
       <Button
         label={label}
         href={orcidUrl}
-        icon={<ORCIDLogo />}
+        icon={<Icon name="ORCID" size="17px" />}
         onClick={() =>
           setClientRedirectUrl(
             window.location.pathname + window.location.search

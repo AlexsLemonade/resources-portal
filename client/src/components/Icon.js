@@ -32,6 +32,7 @@ import Organism from '../images/organism.svg'
 import ResourceType from '../images/resource-type.svg'
 import List from '../images/list.svg'
 import Later from '../images/later.svg'
+import ORCID from '../images/ORCID.svg'
 
 export const SVGs = {
   Archive,
@@ -65,7 +66,8 @@ export const SVGs = {
   Organism,
   ResourceType,
   List,
-  Later
+  Later,
+  ORCID
 }
 
 export default ({ color = 'brand', size = 'medium', name }) => {
