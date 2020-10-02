@@ -1,5 +1,8 @@
+import datetime
+
 from django.forms.models import model_to_dict
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -143,17 +146,27 @@ class TestMaterialRequestListTestCase(APITestCase):
 
     def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)
+
+        self.request.created_at = timezone.now() - datetime.timedelta(days=8)
+        self.request.save()
+
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
         self.assertIn("organization", response.json()["results"][0]["material"])
+        self.assertEqual("a week ago", response.json()["results"][0]["human_readable_created_at"])
 
     def test_get_request_from_requester_succeeds(self):
         self.client.force_authenticate(user=self.request.requester)
+
+        self.request.created_at = timezone.now() - datetime.timedelta(days=15)
+        self.request.save()
+
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
+        self.assertEqual("2 weeks ago", response.json()["results"][0]["human_readable_created_at"])
 
     def test_get_request_filters(self):
         self.client.force_authenticate(user=self.user_without_perms)
