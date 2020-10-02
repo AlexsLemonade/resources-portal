@@ -55,11 +55,6 @@ export const ManageOptions = ({
       )}
       {options.includes('archive') && (
         <>
-          <Box
-            border={{ side: 'bottom', color: 'border-black', size: 'small' }}
-          >
-            <Text>Archive Resource</Text>
-          </Box>
           <Anchor
             icon={<Icon name="Archive" size="small" />}
             label="Archive"

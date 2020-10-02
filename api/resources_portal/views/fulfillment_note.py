@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
-from resources_portal.models import FulfillmentNote, MaterialRequest
+from resources_portal.models import FulfillmentNote, MaterialRequest, MaterialShareEvent
 from resources_portal.serializers import UserRelationSerializer
 
 
@@ -88,5 +88,13 @@ class FulfillmentNoteViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         fulfillment_note = FulfillmentNote(**serializer.validated_data)
         fulfillment_note.save()
+
+        MaterialShareEvent(
+            event_type="REQUEST_FULFILLMENT_NOTE_ADDED",
+            material=fulfillment_note.material_request.material,
+            material_request=fulfillment_note.material_request,
+            created_by=fulfillment_note.created_by,
+            assigned_to=fulfillment_note.material_request.assigned_to,
+        ).save()
 
         return Response(data=model_to_dict(fulfillment_note), status=201)

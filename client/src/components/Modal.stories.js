@@ -9,7 +9,7 @@ storiesOf('Modal', module).add('Sign in from header', () => {
   return (
     <Grommet theme={theme}>
       <CreateAccountLoginButton
-        title="Create a BioResources Portal Account"
+        title="Create a CCRR Portal Account"
         showSignIn={false}
       />
     </Grommet>

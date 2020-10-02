@@ -6,11 +6,13 @@ from rest_framework.test import APITestCase
 from faker import Faker
 from guardian.shortcuts import assign_perm
 
-from resources_portal.models import Material, Notification
+from resources_portal.models import Material, MaterialShareEvent, Notification
 from resources_portal.test.factories import (
+    AttachmentFactory,
     MaterialFactory,
     MaterialRequestFactory,
     OrganizationFactory,
+    ShippingRequirementFactory,
     UserFactory,
 )
 
@@ -216,6 +218,68 @@ class TestSingleMaterialTestCase(APITestCase):
 
         response = self.client.put(self.url, material_json)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_patch_request_updates_a_material_irb(self):
+        self.client.force_authenticate(user=self.user)
+
+        material_json = {"needs_irb": True}
+
+        response = self.client.patch(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="MATERIAL_IRB_REQUIREMENTS_CHANGED")),
+            1,
+        )
+
+    def test_patch_request_updates_a_material_abstract(self):
+        self.client.force_authenticate(user=self.user)
+
+        material_json = {"needs_abstract": True}
+
+        response = self.client.patch(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                MaterialShareEvent.objects.filter(
+                    event_type="MATERIAL_ABSTRACT_REQUIREMENTS_CHANGED"
+                )
+            ),
+            1,
+        )
+
+    def test_patch_request_updates_a_material_shipping(self):
+        self.client.force_authenticate(user=self.user)
+
+        shipping_requirement = ShippingRequirementFactory(organization=self.organization)
+        material_json = {"shipping_requirement": shipping_requirement.id}
+
+        response = self.client.patch(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(
+                MaterialShareEvent.objects.filter(
+                    event_type="MATERIAL_SHIPPING_REQUIREMENTS_CHANGED"
+                )
+            ),
+            1,
+        )
+
+    def test_patch_request_updates_a_material_mta(self):
+        self.client.force_authenticate(user=self.user)
+
+        new_mta = AttachmentFactory(owned_by_user=self.user)
+        material_json = {"mta_attachment": new_mta.id}
+
+        response = self.client.patch(self.url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="MATERIAL_MTA_REQUIREMENTS_CHANGED")),
+            1,
+        )
 
     def test_delete_request_deletes_a_material(self):
         self.client.force_authenticate(user=self.user)

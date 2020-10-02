@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import FulfillmentNote
+from resources_portal.models import FulfillmentNote, MaterialShareEvent
 from resources_portal.test.factories import FulfillmentNoteFactory, UserFactory
 
 fake = Faker()
@@ -37,6 +37,10 @@ class FulfillmentNoteListTestCase(APITestCase):
 
         self.assertEqual(
             str(self.fulfillment_note_data["created_by"]), response.json()["created_by"]
+        )
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLMENT_NOTE_ADDED")), 1,
         )
 
     def test_post_request_may_not_specify_user(self):

@@ -5,7 +5,12 @@ from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
 
-from resources_portal.models import MaterialRequest, MaterialRequestIssue, Organization
+from resources_portal.models import (
+    MaterialRequest,
+    MaterialRequestIssue,
+    MaterialShareEvent,
+    Organization,
+)
 from resources_portal.notifier import send_notifications
 from resources_portal.serializers import MaterialRequestRelationSerializer
 
@@ -135,6 +140,14 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
             material_request_issue=material_request_issue,
         )
 
+        MaterialShareEvent(
+            event_type="REQUEST_ISSUE_OPENED",
+            material=material,
+            material_request=material_request,
+            created_by=request.user,
+            assigned_to=material_request.assigned_to,
+        ).save()
+
         return Response(data=model_to_dict(material_request_issue), status=201)
 
     def update(self, request, *args, **kwargs):
@@ -177,6 +190,14 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
                     material_request=material_request,
                     material_request_issue=material_request_issue,
                 )
+
+                MaterialShareEvent(
+                    event_type="REQUEST_ISSUE_CLOSED",
+                    material=material_request.material,
+                    material_request=material_request,
+                    created_by=request.user,
+                    assigned_to=material_request.assigned_to,
+                ).save()
 
         material_request_issue.refresh_from_db()
 

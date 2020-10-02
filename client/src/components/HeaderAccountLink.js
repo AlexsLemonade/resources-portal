@@ -23,9 +23,7 @@ export const HeaderAccountLink = () => {
   })
 
   if (!isLoggedIn) {
-    return (
-      <CreateAccountLoginButton title="Create a BioResources Portal Account" />
-    )
+    return <CreateAccountLoginButton title="Create a CCRR Portal Account" />
   }
 
   return (

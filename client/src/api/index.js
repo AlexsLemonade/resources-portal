@@ -117,6 +117,12 @@ export default {
         method: 'POST',
         body: JSON.stringify(resource)
       }),
+    update: (resourceId, resource, authorization) =>
+      request(getAPIURL(`materials/${resourceId}/`), {
+        authorization,
+        method: 'PUT',
+        body: JSON.stringify(resource)
+      }),
     filter: (query) => request(getAPIURL('materials/', query)),
     import: (resource, authorization) =>
       request(getAPIURL('materials/import/'), {
@@ -231,6 +237,12 @@ export default {
       request(getAPIURL('organizations/'), {
         authorization,
         method: 'POST',
+        body: JSON.stringify(organization)
+      }),
+    update: (organizationId, organization, authorization) =>
+      request(getAPIURL(`organizations/${organizationId}/`), {
+        authorization,
+        method: 'PATCH',
         body: JSON.stringify(organization)
       }),
     grants: {

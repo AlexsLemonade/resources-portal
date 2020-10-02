@@ -11,7 +11,7 @@ export const details = [
       'age',
       'sex',
       'ethnicity',
-      'bio_safety_level',
+      'biosafety_level',
       'population_doubling_time'
     ]
   },
@@ -40,7 +40,7 @@ export const listForm = [
       'age',
       'sex',
       'ethnicity',
-      'bio_safety_level',
+      'biosafety_level',
       'population_doubling_time'
     ]
   },

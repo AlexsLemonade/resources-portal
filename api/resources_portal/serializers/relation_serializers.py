@@ -16,7 +16,6 @@ from resources_portal.models import (
     Material,
     MaterialRequest,
     MaterialRequestIssue,
-    MaterialShareEvent,
     Organization,
     OrganizationInvitation,
     ShippingRequirement,
@@ -161,6 +160,7 @@ class ShippingRequirementRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "needs_shipping_address",
+            "sharer_pays_shipping",
             "needs_payment",
             "accepts_shipping_code",
             "accepts_reimbursement",
@@ -226,21 +226,6 @@ class MaterialRequestIssueRelationSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "material_request",
-        )
-
-
-class MaterialShareEventsRelationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MaterialShareEvent
-        fields = (
-            "id",
-            "created_at",
-            "updated_at",
-            "material",
-            "time",
-            "event_type",
-            "created_by",
-            "assigned_to",
         )
 
 

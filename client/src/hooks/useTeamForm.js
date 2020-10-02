@@ -1,20 +1,22 @@
 import React from 'react'
 import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
+import { TeamContext } from 'contexts/TeamContext'
 import api from 'api'
 
 export default () => {
   const { addAlert } = useAlertsQueue()
   const { user, token, refreshUser } = useUser()
-  const [team, setTeam] = React.useState({
-    name: '',
-    description: '',
-    members: [],
-    grants: []
-  })
-  const [memberSuggestions, setMemberSuggestions] = React.useState({})
-  const [memberEmail, setMemberEmail] = React.useState('')
-  const [invites, setInvites] = React.useState([])
+  const {
+    team,
+    setTeam,
+    memberSuggestions,
+    setMemberSuggestions,
+    memberEmail,
+    setMemberEmail,
+    invites,
+    setInvites
+  } = React.useContext(TeamContext)
 
   React.useEffect(() => {
     refreshUser()
@@ -80,8 +82,6 @@ export default () => {
     return team[attribute]
   }
 
-  const inviteMembers = () => {}
-
   const saveMembers = async (newTeamId) => {
     const teamId = newTeamId || team.id
     const availableMemberIds = (getAttribute('members') || [])
@@ -89,15 +89,14 @@ export default () => {
       .map((m) => m.id)
     const teamRequest = await api.teams.get(teamId, token)
     if (teamRequest.isOk) {
-      const existingMemberIds = teamRequest.response.members
-        .map((m) => m.id)
-        .filter((m) => m !== user.id)
+      const existingMemberIds = teamRequest.response.members.map((m) => m.id)
       const addMemberIds = availableMemberIds.filter(
-        (m) => !existingMemberIds.includes(m.id)
+        (m) => !existingMemberIds.includes(m)
       )
-      const removeMemberIds = existingMemberIds.filter(
-        (memberId) => !availableMemberIds.includes(memberId)
-      )
+      const removeMemberIds = existingMemberIds
+        .filter((m) => !availableMemberIds.includes(m))
+        .filter((m) => m !== user.id)
+
       await Promise.all(
         addMemberIds.map((memberId) => {
           const invitation = {
@@ -172,7 +171,6 @@ export default () => {
     getAttribute,
     updateMemberSuggestions,
     memberSuggestions,
-    inviteMembers,
     save,
     addMemberOrInvite,
     memberEmail,

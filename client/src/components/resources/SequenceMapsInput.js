@@ -9,7 +9,7 @@ import {
   Text,
   TextArea
 } from 'grommet'
-import api, { host } from 'api'
+import api from 'api'
 import { useUser } from 'hooks/useUser'
 import useResourceForm from 'hooks/useResourceForm'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
@@ -30,7 +30,7 @@ const SequenceMapInput = ({ sequenceMap, setSequenceMapSequence }) => {
       <Box direction="row" gap="large">
         <Box basis="1/4" height="158px">
           {sequenceMap.id && (
-            <Image fit="cover" src={`${host}${sequenceMap.download_url}`} />
+            <Image fit="cover" src={sequenceMap.download_url} />
           )}
           {!sequenceMap.id && <Image fit="cover" src={sequenceMap.dataURL} />}
         </Box>
@@ -228,10 +228,7 @@ export default ({ inputValue = [], onDone }) => {
                     onClickEditSequenceMap(sequenceMap)
                   }}
                 >
-                  <Image
-                    fit="cover"
-                    src={`${host}${sequenceMap.download_url}`}
-                  />
+                  <Image fit="cover" src={sequenceMap.download_url} />
                   <Text truncate>{sequenceMap.filename}</Text>
                 </Box>
               </Box>

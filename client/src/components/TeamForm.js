@@ -10,28 +10,12 @@ import {
 } from 'grommet'
 import Link from 'next/link'
 import { HeaderRow } from 'components/HeaderRow'
-import TeamMembersTable from 'components/TeamMembersTable'
+import TeamAddMembers from 'components/TeamAddMembers'
 import useTeamForm from 'hooks/useTeamForm'
 import { useRouter } from 'next/router'
 
 export default ({ teamId }) => {
-  const {
-    user,
-    team,
-    setAttribute,
-    getAttribute,
-    fetchTeam,
-    memberSuggestions,
-    updateMemberSuggestions,
-    save,
-    addMemberOrInvite,
-    removeMember,
-    memberEmail,
-    setMemberEmail,
-    invites,
-    removeInvite
-  } = useTeamForm()
-  const members = getAttribute('members')
+  const { user, setAttribute, getAttribute, fetchTeam, save } = useTeamForm()
   const router = useRouter()
   React.useEffect(() => {
     if (teamId) fetchTeam(teamId)
@@ -62,46 +46,8 @@ export default ({ teamId }) => {
           request requirements. Only the owner (you) can add new members and
           remove resources.
         </Text>
-        <FormField label="Email">
-          <TextInput
-            value={memberEmail}
-            onChange={({ target: { value } }) => {
-              updateMemberSuggestions(value)
-              setMemberEmail(value)
-            }}
-            onSelect={({ suggestion: { value } }) => {
-              setMemberEmail(value.email)
-            }}
-            suggestions={memberSuggestions[memberEmail] || []}
-          />
-        </FormField>
-        <Box pad={{ vertical: 'medium' }} align="start">
-          <Button
-            primary
-            label="Add Member"
-            onClick={addMemberOrInvite}
-            disabled={memberEmail === ''}
-          />
-        </Box>
       </Box>
-      <Box>
-        {members.length > 0 && (
-          <Box margin={{ bottom: 'medium' }}>
-            <Text weight="bold">Added Memebers</Text>
-            <TeamMembersTable team={team} onDelete={removeMember} />
-          </Box>
-        )}
-
-        {invites.length > 0 && (
-          <Box margin={{ bottom: 'medium' }}>
-            <Text weight="bold">Invited Members</Text>
-            <TeamMembersTable
-              team={{ ...team, members: invites }}
-              onDelete={removeInvite}
-            />
-          </Box>
-        )}
-      </Box>
+      <TeamAddMembers />
       <Box>
         {user.grants.length === 0 && (
           <Text color="black-tint-60" italic>

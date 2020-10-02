@@ -39,12 +39,12 @@ def email_invitation_view(request):
         f" them manage sharing resources. Please let them know once you create an account"
         f" so they can add you to the relevant teams."
     )
-    cta = "Create an account"
     invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
+    terms_of_use_link = f"https://{settings.AWS_SES_DOMAIN}/terms-of-use"
     formatted_html = (
         EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
-        .replace("REPLACE_CTA", cta)
-        .replace("REPLACE_INVITATION_LINK", invitation_link)
+        .replace("REPLACE_CTA_LINK", invitation_link)
+        .replace("REPLACE_TERMS_LINK", terms_of_use_link)
     )
     plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
     subject = f"CCRR: {request.user.full_name} has invited you to create an account"

@@ -19,12 +19,7 @@ export const ORCIDSignInButton = ({
   )}`
 
   return (
-    <Box
-      alignSelf="center"
-      pad="medium"
-      margin={{ top: 'small' }}
-      width="320px"
-    >
+    <Box alignSelf="center" pad="medium" margin={{ top: 'small' }}>
       <Button
         label={label}
         href={orcidUrl}
@@ -42,7 +37,7 @@ export const ORCIDSignInButton = ({
 
 export const CreateOrLogin = ({ title, showSignIn = true }) => {
   return (
-    <Box width="800px" gap="medium">
+    <Box width="700px" gap="medium">
       <Box
         fill="horizontal"
         border={[{ size: 'small', side: 'bottom', color: 'black-tint-95' }]}
@@ -56,7 +51,7 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
         {showSignIn && (
           <Box
             align="center"
-            width={{ min: '400px' }}
+            width={{ min: '300px' }}
             border={[{ size: 'small', side: 'right', color: 'black-tint-95' }]}
           >
             <Text weight="bold">Sign in with your ORCID iD</Text>
@@ -72,16 +67,16 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
         <Box margin={{ left: '30px' }}>
           <Box gap="small">
             <Text weight="bold">
-              Create a BioResources Portal account with your ORCID iD
+              Create a CCRR Portal account with your ORCID iD
             </Text>
             <Text>
-              You can use your existing ORCID iD to create an BioResources
-              Portal account. If you don’t have an ORCID iD, you can use the
-              button below to create one!
+              You can use your existing ORCID iD to create an CCRR Portal
+              account. If you don’t have an ORCID iD, you can use the button
+              below to create one!
             </Text>
             <Text>
-              You can use your BioResources Portal account to request resources,
-              share your resources, and track and manage requests.
+              You can use your CCRR Portal account to request resources, share
+              your resources, and track and manage requests.
             </Text>
             <ORCIDSignInButton label="Create or Connect ORCID iD" />
           </Box>
@@ -114,12 +109,19 @@ export const CreateOrLogin = ({ title, showSignIn = true }) => {
   )
 }
 
-export const CreateAccountLoginButton = ({ title, showSignIn }) => {
+export const CreateAccountLoginButton = ({
+  title,
+  showSignIn,
+  plainButton
+}) => {
   const [showing, setShowing] = React.useState(false)
 
   return (
     <>
-      <LoginButton onClick={() => setShowing(true)} />
+      {!plainButton && <LoginButton onClick={() => setShowing(true)} />}
+      {plainButton && (
+        <Button primary onClick={() => setShowing(true)} label={title} />
+      )}
       <Modal showing={showing} setShowing={setShowing}>
         <CreateOrLogin title={title} showSignIn={showSignIn} />
       </Modal>

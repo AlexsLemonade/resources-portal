@@ -25,6 +25,7 @@ const Notifications = () => {
       )
       refreshUserData()
     }
+
     if (!didUpdateNotifs) updateNotifsViewed()
   })
 

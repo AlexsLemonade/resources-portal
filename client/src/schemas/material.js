@@ -32,7 +32,7 @@ const materialCategories = {
     age: string(),
     sex: string(),
     ethnicity: string(),
-    bio_safety_level: string(),
+    biosafety_level: string(),
     population_doubling_time: string(),
     storage_medium: string(),
     growth_medium: string(),
@@ -45,7 +45,7 @@ const materialCategories = {
     plasmid_type: string(),
     purpose: string(),
     number_of_available_samples: string(),
-    bio_safety_leve: string(),
+    biosafety_level: string(),
     gene_insert_name: string(),
     relevant_mutations: string(),
     backbone_name: string(),
@@ -86,7 +86,7 @@ const materialCategories = {
     treatment_protocol: string(),
     prior_treatment_protocol: string(),
     response_to_treatment: string(),
-    virology_statu: string(),
+    virology_status: string(),
     submitter_tumor_id: string(),
     tissue_of_origin: string(),
     tumor_type: string(),
@@ -150,7 +150,10 @@ export default object({
   needs_abstract: boolean(),
   imported: boolean(),
   // shipping_requirements: object()
-  import_source: string().oneOf(importSources),
+  import_source: string().when('imported', (imported) => {
+    if (imported) return string().oneOf(importSources)
+    return string().nullable()
+  }),
   contact_user: string().uuid().required(customErrorMessages.contact_user),
   // organization: object(),
   // grants: array(),
@@ -158,14 +161,14 @@ export default object({
   organisms: array().when('category', (category) => {
     if (['PLASMID', 'MODEL_ORGANISM', 'CELL_LINE'].includes(category))
       return array().compact().min(1)
-    return array()
+    return array().nullable()
   }),
-  publication_title: string(),
-  pre_print_doi: string(),
-  pre_print_title: string(),
-  citation: string(),
-  additional_info: string(),
-  embargo_date: string() // confirm what django expects
+  publication_title: string().nullable(),
+  pre_print_doi: string().nullable(),
+  pre_print_title: string().nullable(),
+  citation: string().nullable(),
+  additional_info: string().nullable(),
+  embargo_date: string().nullable() // confirm what django expects
   /* eslint-disable-next-line react/forbid-prop-types */
   // sequence_maps: array() // figure out what to set here
 })
