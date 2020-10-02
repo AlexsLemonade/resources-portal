@@ -1,6 +1,7 @@
 import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
 import Link from 'next/link'
+import { useUser } from 'hooks/useUser'
 
 const readableTimeAgo = (time) => {
   const oneDay = 24 * 60 * 60 * 1000
@@ -73,6 +74,11 @@ export const createNotificationLinks = (notification) => {
 
 export const Notification = ({ notification }) => {
   const notificationText = createNotificationLinks(notification)
+  const { isResourceRequester } = useUser()
+  // If the user viewing notif is the requester of the associated material, don't show the organization
+  const showOrganizationLink = !isResourceRequester(
+    notification.material_request
+  )
 
   return (
     <Box round="medium" elevation="1" fill="horizontal" pad="medium">
@@ -82,20 +88,34 @@ export const Notification = ({ notification }) => {
           {readableTimeAgo(notification.created_at)}
         </Text>
       </Box>
-      <Box direction="row" gap="small">
-        <Link href="/account">
-          <Anchor href="/account" label={notification.organization.name} />
-        </Link>
-        <Box
-          round
-          width="7px"
-          height="7px"
-          background="brand"
-          alignSelf="center"
-        />
-        <Link href="/account">
-          <Anchor href="/account" label={notification.material.title} />
-        </Link>
+      <Box direction="row">
+        {notification.organization && showOrganizationLink && (
+          <Link href={`/account/teams/${notification.organization.id}`}>
+            <Anchor href="/account" label={notification.organization.name} />
+          </Link>
+        )}
+        {notification.organization &&
+          notification.material &&
+          showOrganizationLink && (
+            <Box
+              round
+              width="7px"
+              height="7px"
+              background="brand"
+              alignSelf="center"
+              margin="small"
+            />
+          )}
+        {notification.material && (
+          <>
+            <Link href={`/resources/${notification.material.id}`}>
+              <Anchor
+                href={`/resources/${notification.material.id}`}
+                label={notification.material.title}
+              />
+            </Link>
+          </>
+        )}
       </Box>
     </Box>
   )

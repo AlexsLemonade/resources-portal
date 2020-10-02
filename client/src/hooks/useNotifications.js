@@ -5,45 +5,60 @@ import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useNotifications = () => {
   const { user, token } = useUser()
-  const { notifications, setNotifications } = React.useContext(
+  const { notificationCount, setNotificationCount } = React.useContext(
     ResourcesPortalContext
   )
 
-  React.useEffect(() => {
-    const fetchNotifications = async () => {
-      const notificationRequest = await api.user.notifications.list(
+  const fetchNotifications = async () => {
+    const notificationRequest = await api.user.notifications.list(
+      user.id,
+      token
+    )
+    if (notificationRequest.isOk && notificationRequest.response) {
+      const retrievedNotifications = notificationRequest.response.results
+      return retrievedNotifications
+    }
+
+    return {}
+  }
+
+  const fetchNewNotifications = async () => {
+    let notificationRequest = {}
+
+    // fetchs after the date saved in the user object
+    if (user.viewed_notifications_at === null) {
+      notificationRequest = await api.user.notifications.list(user.id, token)
+    } else {
+      notificationRequest = await api.user.notifications.filter(
         user.id,
+        { created_at__gt: user.viewed_notifications_at },
         token
       )
-      if (notificationRequest.isOk && notificationRequest.response) {
-        const retrievedNotifications = notificationRequest.response.results
-        setNotifications(retrievedNotifications)
-      }
+    }
+    if (notificationRequest.isOk && notificationRequest.response) {
+      const retrievedNotifications = notificationRequest.response.results
+      setNotificationCount(retrievedNotifications.length)
+      return retrievedNotifications
     }
 
-    if (user && !notifications) fetchNotifications()
-  })
+    return {}
+  }
 
-  const getUnreadNotifications = () => {
-    if (!user || !notifications) {
-      return false
-    }
-
-    if (!user.viewed_notifications_at) {
-      return notifications
-    }
-
-    const unreadNotifications = notifications.filter((notification) => {
-      const notifDate = new Date(notification.created_at)
-      const userSeenDate = new Date(user.viewed_notifications_at)
-      return notifDate > userSeenDate
+  const getLastNotificationDate = (notifications) => {
+    const notificationDates = notifications.map((notification) => {
+      return new Date(notification.created_at)
     })
+    const lastNotifDate = new Date(Math.max.apply(null, notificationDates))
+    lastNotifDate.setSeconds(lastNotifDate.getSeconds() + 1)
 
-    return unreadNotifications
+    return lastNotifDate
   }
 
   return {
-    notifications,
-    getUnreadNotifications
+    fetchNotifications,
+    fetchNewNotifications,
+    notificationCount,
+    setNotificationCount,
+    getLastNotificationDate
   }
 }

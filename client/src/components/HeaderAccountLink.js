@@ -7,9 +7,20 @@ import { CreateAccountLoginButton } from './CreateAccountLoginButton'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
-  const { getUnreadNotifications } = useNotifications()
+  const [notificationsFetched, setNotificationsFetched] = React.useState(false)
+  const { notificationCount, fetchNewNotifications } = useNotifications()
 
-  const unreadNotifications = getUnreadNotifications()
+  React.useEffect(() => {
+    const fetchNotifications = async () => {
+      fetchNewNotifications().then(() => {
+        setNotificationsFetched(true)
+      })
+    }
+
+    if (!notificationsFetched && isLoggedIn) {
+      fetchNotifications()
+    }
+  })
 
   if (!isLoggedIn) {
     return <CreateAccountLoginButton title="Create a CCRR Portal Account" />
@@ -20,7 +31,7 @@ export const HeaderAccountLink = () => {
       <Link href="/account">
         <Anchor color="white" href="#" label="My Account" />
       </Link>
-      {unreadNotifications && unreadNotifications.length > 0 && (
+      {notificationCount > 0 && (
         <Link href="/account/notifications">
           <Box
             align="center"
@@ -29,7 +40,7 @@ export const HeaderAccountLink = () => {
             round
             background="error"
           >
-            <Text>{unreadNotifications ? unreadNotifications.length : 0}</Text>
+            <Text>{notificationCount}</Text>
           </Box>
         </Link>
       )}
