@@ -14,7 +14,7 @@ const customResourceData = {
     qualityFieldTokens.forEach((qft) => {
       if (resource.additional_metadata[qft]) data.value.push(getReadable(qft))
     })
-    if (data.value.length === 0) data.value = ['None']
+    if (data.value.length === 0) data.value = undefined
     return data
   }
 }
