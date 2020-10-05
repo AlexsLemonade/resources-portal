@@ -145,7 +145,10 @@ export const readableNames = {
   CLOSED: 'Closed',
   REJECTED: 'Rejected',
   INVALID: 'Invalid',
-  CANCELLED: 'Cancelled'
+  CANCELLED: 'Cancelled',
+  SHIPPING_CODE: 'Shipping Code',
+  REIMBURSEMENT: 'Reimbursement',
+  OTHER_PAYMENT_METHOD: 'Other Payment Method'
 }
 
 export const getReadable = (token) => {
