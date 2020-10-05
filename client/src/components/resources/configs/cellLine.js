@@ -12,7 +12,8 @@ export const details = [
       'sex',
       'ethnicity',
       'biosafety_level',
-      'population_doubling_time'
+      'population_doubling_time',
+      'description'
     ]
   },
   {
@@ -25,7 +26,7 @@ export const details = [
     ]
   },
   {
-    quality: ['str_profile', 'passage_number', 'description']
+    quality: ['str_profile', 'passage_number']
   }
 ]
 
