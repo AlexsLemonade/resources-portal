@@ -409,6 +409,17 @@ export default {
             body: JSON.stringify({ text, material_request: materialRequestId })
           }
         )
+    },
+    issues: {
+      add: (materialRequestId, description, authorization) =>
+        request(getAPIURL(`material-requests/${materialRequestId}/issues/`), {
+          authorization,
+          method: 'POST',
+          body: JSON.stringify({
+            description,
+            material_request: materialRequestId
+          })
+        })
     }
   }
 }
