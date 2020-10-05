@@ -4,7 +4,8 @@ repo_url: https://github.com/AlexsLemonade/resources-portal
 site_dir: site
 copyright: Developed by the <a href="https://www.ccdatalab.org/">Childhood Cancer Data Lab</a>.
 dev_addr: 0.0.0.0:8001
-
+theme:
+  name: material
 nav:
   - Home: 'index.md'
   - Storybook: 'storybook'
