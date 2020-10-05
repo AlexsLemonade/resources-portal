@@ -11,14 +11,35 @@ export const PreviewAttachment = ({ attachment }) => {
   )
 }
 
-export default ({ attachment }) => {
-  if (!attachment) return 'Empty'
+export default ({ label, attachment, emptyMessage = 'Not set' }) => {
+  if (!attachment) {
+    if (!emptyMessage) return false
+    return (
+      <>
+        {label && (
+          <Text weight="bold" margin={{ bottom: 'medium' }}>
+            {label}
+          </Text>
+        )}
+        <Text color="black-tint-60" italic>
+          {emptyMessage}
+        </Text>
+      </>
+    )
+  }
   return (
-    <Anchor href={attachment.download_url} target="_blank">
-      <Box direction="row" gap="small">
-        <Icon color="black-tint-30" size="medium" name="FilePDF" />
-        <Text>{attachment.filename}</Text>
-      </Box>
-    </Anchor>
+    <>
+      {label && (
+        <Text weight="bold" margin={{ bottom: 'medium' }}>
+          {label}
+        </Text>
+      )}
+      <Anchor href={attachment.download_url} target="_blank">
+        <Box direction="row" gap="small">
+          <Icon color="black-tint-30" size="medium" name="FilePDF" />
+          <Text>{attachment.filename}</Text>
+        </Box>
+      </Anchor>
+    </>
   )
 }

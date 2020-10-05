@@ -43,7 +43,7 @@ export default (request) => {
 
   if (request.status === 'IN_FULFILLMENT') {
     if (request.has_issues) {
-      return 'IN_FULFULLMENT_ISSUE_REPORTED'
+      return 'IN_FULFILLMENT_ISSUE_REPORTED'
     }
   }
 

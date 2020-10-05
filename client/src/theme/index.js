@@ -201,9 +201,7 @@ const theme = {
           props.login,
           `
           color: ${normalizeColor('black', props.theme)};
-
           border: none;
-
           background-color: ${normalizeColor('white', props.theme)};
 
           input {
@@ -214,7 +212,41 @@ const theme = {
             background-color: ${normalizeColor('black-tint-90', props.theme)};
             color: ${normalizeColor('black', props.theme)};
           `
-        )
+        ),
+        applyWhen(
+          props.critical,
+          `
+          color: ${normalizeColor('error', props.theme)};
+          border-color: ${normalizeColor('error', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('error', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('error', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          `
+        ),
+        applyWhen(
+          props.success,
+          `
+          color: ${normalizeColor('success', props.theme)};
+          border-color: ${normalizeColor('success', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('error', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('success', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          `
+        ),
+
+        applyWhen(props.plain && props.underline, 'text-decoration: underline;')
       )
   },
   tabs: {
@@ -640,7 +672,7 @@ const theme = {
         light: '#666666'
       },
       focus: 'brand',
-      'border-black': '#CACACA',
+      'border-black': '#F2F2F2',
       'border-brand': '#BAEFFE'
     },
     control: {
@@ -854,10 +886,7 @@ const theme = {
     }
   },
   layer: {
-    background: {
-      dark: '#111111',
-      light: '#FFFFFF'
-    }
+    background: 'white'
   },
   meter: {},
   name: 'resources-portal',

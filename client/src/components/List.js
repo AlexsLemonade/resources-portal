@@ -2,6 +2,24 @@ import React from 'react'
 import { Box, Text } from 'grommet'
 import { Blank } from 'grommet-icons'
 
+export const NumberMarker = ({ number }) => {
+  return (
+    <Box
+      border={{ color: 'brand' }}
+      round="50%"
+      width="16px"
+      height="16px"
+      align="center"
+      justify="center"
+      pad="10px"
+    >
+      <Text color="brand" size="small">
+        {number}
+      </Text>
+    </Box>
+  )
+}
+
 const Circle = ({ color, size }) => (
   <Blank size={size} color={color}>
     <circle cx={12} cy={12} r={12} fill="#000" />
@@ -54,8 +72,10 @@ export const ListItem = ({
   }
 }) => {
   const listMarker = getListMarker(marker)
+  const align =
+    markerMargin === 'none' || markerMargin.top === 'none' ? 'center' : 'start'
   return (
-    <Box as="li" direction="row" margin={margin}>
+    <Box as="li" direction="row" margin={margin} align={align}>
       <Box margin={markerMargin}>{listMarker}</Box>
       <Box flex="grow">
         {title && <Text weight="bold">{title}</Text>}
