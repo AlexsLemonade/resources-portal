@@ -6,7 +6,7 @@ import { getReadable } from 'helpers/readableNames'
 import getRequestState, {
   getRequestProgressStatuses
 } from 'helpers/getRequestStatus'
-import getRequestAwaitingAdditionalDocuments from 'helpers/getRequestAwaitingAdditionalDocuments'
+import getRequesterWillBeAskedToProvide from 'helpers/getRequesterWillBeAskedToProvide'
 import getRequestRequirements from 'helpers/getRequestRequirements'
 import hasRequestDocuments from 'helpers/hasRequestDocuments'
 import { ProgressBar } from 'components/ProgressBar'
@@ -213,8 +213,7 @@ export default ({ request: defaultRequest }) => {
                   <Icon name="Info" />
                   <Text weight="bold">
                     Requester will be asked to provide{' '}
-                    {getRequestAwaitingAdditionalDocuments(request)} once you
-                    accept.
+                    {getRequesterWillBeAskedToProvide(request)} once you accept.
                   </Text>
                 </Box>
               </Box>
