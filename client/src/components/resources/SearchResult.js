@@ -116,17 +116,15 @@ export const SearchResultDetail = ({
   direction = 'row',
   showEmpty
 }) => {
-  const handleArray = (value) =>
-    Array.isArray(value) ? value.join(', ') : value
+  const joinedValue = Array.isArray(data.value)
+    ? data.value.join(', ')
+    : data.value
+  const formattedValue = showEmpty && !joinedValue ? 'None' : joinedValue
   return (
     <Box>
       <Text weight="bold">{data.label}</Text>
       <Box margin={margin} direction={direction}>
-        {showEmpty ? (
-          <Text italic={italic}>{handleArray(data.value || 'None')}</Text>
-        ) : (
-          data.value && <Text italic={italic}>{handleArray(data.value)}</Text>
-        )}
+        <Text italic={italic}>{formattedValue}</Text>
         {children}
       </Box>
     </Box>
