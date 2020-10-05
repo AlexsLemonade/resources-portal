@@ -1,5 +1,5 @@
 import Icon from 'components/Icon'
-import { Box, Button, Layer, Text } from 'grommet'
+import { Box, Button, Layer, Stack, Text } from 'grommet'
 import * as React from 'react'
 
 export const Modal = ({
@@ -15,42 +15,57 @@ export const Modal = ({
     }
   }
   return (
-    <Box>
+    <>
       {showing && (
-        <Layer onEsc={dismissModal} onClickOutside={dismissModal}>
-          <Box
-            pad="none"
-            gap="none"
-            align="center"
-            border={[{ color: 'black-tint-95' }]}
-            background="white"
-          >
-            {!nondismissable && (
-              <Box alignSelf="end">
-                <Button
-                  icon={<Icon color="black-tint-30" name="Cross" />}
-                  onClick={dismissModal}
-                  alignSelf="start"
-                />
+        <Layer
+          onEsc={dismissModal}
+          onClickOutside={dismissModal}
+          modal
+          background="white"
+          border={{ color: 'black-tint-95' }}
+        >
+          <Stack anchor="top-right">
+            <Box
+              flex
+              overflow="auto"
+              height={{ min: 'min-content', max: '100vh' }}
+              pad={{ vertical: 'large', horizontal: 'xlarge' }}
+              gap="none"
+              align="center"
+            >
+              <Box height={{ min: 'min-content' }}>
+                {title && (
+                  <Box
+                    width="full"
+                    border={{
+                      side: 'bottom',
+                      color: 'border-black',
+                      size: 'small'
+                    }}
+                    height={{ min: 'min-content' }}
+                    pad={{ bottom: 'medium' }}
+                    margin={{ bottom: 'medium' }}
+                  >
+                    <Text serif size="xlarge">
+                      {title}
+                    </Text>
+                  </Box>
+                )}
+                {children}
               </Box>
-            )}
-            {title && (
-              <Box width="full" pad={{ horizontal: 'medium' }}>
-                <Box
-                  width="full"
-                  border={{ side: 'bottom', color: 'border-black' }}
-                >
-                  <Text>{title}</Text>
-                </Box>
-              </Box>
-            )}
-            <Box fill pad="medium">
-              {children}
             </Box>
-          </Box>
+            {!nondismissable && (
+              <Button
+                icon={<Icon color="black-tint-30" name="Cross" size="16px" />}
+                onClick={dismissModal}
+                alignSelf="end"
+                margin="medium"
+              />
+            )}
+          </Stack>
         </Layer>
       )}
-    </Box>
+    </>
   )
 }
 
