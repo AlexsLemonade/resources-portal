@@ -134,7 +134,7 @@ export default ({ request: defaultRequest }) => {
         'Review the additional documents submitted by the requests'
       )
     }
-    awaitingMtaSteps.push('Sign and upload the requester signed MTA')
+    awaitingMtaSteps.push('Sign and upload the fully executed MTA')
   }
 
   const awaitingMtaAndDocuments = awaitingMtaSteps.length > 1
