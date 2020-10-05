@@ -180,7 +180,7 @@ export default ({ request: defaultRequest }) => {
               decision.
             </Text>
             <HeaderRow label="Requester Submitted Materials" />
-            {!request.requester_abstract && !request.request.address && (
+            {!request.requester_abstract && !request.address && (
               <Text color="black-tint-60" italic>
                 No submitted materials required.
               </Text>
