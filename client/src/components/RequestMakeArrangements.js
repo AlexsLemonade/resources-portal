@@ -17,7 +17,8 @@ export default ({ request, requesterView = false }) => {
         label={reachOutTo.full_name}
         href={`mailto:${reachOutTo.email}`}
       />{' '}
-      to make arrangements for {getReadable(request.payment_method).toLowerCase()}.
+      to make arrangements for{' '}
+      {getReadable(request.payment_method).toLowerCase()}.
     </Text>
   )
 }
