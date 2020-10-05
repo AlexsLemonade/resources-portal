@@ -27,17 +27,35 @@ import PreviewAddress from 'components/PreviewAddress'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useUser } from 'hooks/useUser'
 import api from 'api'
+import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
+import hasRequestDocuments from 'helpers/hasRequestDocuments'
+import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditionalDocuments'
+import getRequestRequirements from 'helpers/getRequestRequirements'
+import getPaymentOptions from 'helpers/getPaymentOptions'
+import RequestMakeArrangements from 'components/RequestMakeArrangements'
+import { Modal } from 'components/Modal'
 
 export default ({ request: defaultRequest }) => {
   const [request, setRequest] = React.useState(defaultRequest)
+  const hasDocuments = hasRequestDocuments(request.material)
   const { user, token } = useUser()
   const { addAlert } = useAlertsQueue()
   const {
     material: {
       title: materialTitle,
-      contact_user: { email: contactEmail, full_name: contactName }
+      contact_user: { email: contactEmail, full_name: contactName },
+      organization: team
     }
   } = request
+
+  const teamName = team.name === 'Your Resources' ? contactName : team.name
+
+  const {
+    needsIrb,
+    needsMta,
+    shippingRequirement: { needsPayment },
+    mtaAttachment
+  } = getRequestRequirements(request.material)
 
   const materialLink = `/resources/${request.material.id}`
 
@@ -45,27 +63,29 @@ export default ({ request: defaultRequest }) => {
   const progressSteps = getRequestProgressStatuses(request)
   const progressIndex = progressSteps.indexOf(state)
 
+  // Report Issues
+  const [showReportModal, setShowReportModal] = React.useState(false)
+  const [issue, setIssue] = React.useState('')
+  const sendIssue = async () => {
+    setShowReportModal(false)
+    const issueRequest = await api.requests.issues.add(request.id, issue, token)
+    if (issueRequest.isOk) {
+      setIssue('')
+      addAlert('Issue reported', 'success')
+      refreshRequest()
+    } else {
+      addAlert('Error reporting issue', 'error')
+      setShowReportModal(true)
+    }
+  }
+
   const [irbAttachment, setIrbAttachment] = React.useState()
-  const [mtaAttachment, setMtaAttachment] = React.useState()
+  const [requesterMtaAttachment, setRequesterMtaAttachment] = React.useState()
   const [paymentMethod, setPaymentMethod] = React.useState()
   const [paymentDetails, setPaymentDetails] = React.useState()
-  const paymentOptions = []
-  if (request.material.shipping_requirement) {
-    const {
-      accepts_shipping_code: shippingCode,
-      accepts_reimbursement: reimbursement,
-      accepts_other_payment_methods: other
-    } = request.material.shipping_requirement
-    if (shippingCode)
-      paymentOptions.push({ value: 'SHIPPING_CODE', label: 'Shipping Code' })
-    if (reimbursement)
-      paymentOptions.push({ value: 'REIMBURSEMENT', label: 'Reimbursement' })
-    if (other)
-      paymentOptions.push({
-        value: 'OTHER_PAYMENT_METHOD',
-        label: 'Other Payment Method'
-      })
-  }
+  const canCancel =
+    request.is_active &&
+    !['IN_FULFILLMENT', 'FULFILLED', 'VERIFIED_FULFILLED'].includes(state)
 
   const updateStatus = async (status) => {
     const updateRequest = await api.requests.update(
@@ -80,18 +100,20 @@ export default ({ request: defaultRequest }) => {
   const cancelRequest = () => updateStatus('CANCELLED')
   const verifyFulfillment = () => updateStatus('VERIFIED_FULFILLED')
 
+  const refreshRequest = async () => {
+    const requestRequest = await api.requests.get(request.id, token)
+    if (requestRequest.isOk) {
+      setRequest(requestRequest.response)
+    }
+  }
+
   const submitAdditionalDocs = async () => {
     const updates = {}
-    const needsIRB = request.material.needs_irb
-    const irbOk = !needsIRB || irbAttachment
-    const needsMTA = request.material.needs_mta
-    const mtaOk = !needsMTA || mtaAttachment
-    const needsPayment =
-      request.material.shipping_requirement &&
-      request.material.shipping_requirement.needs_payment
+    const irbOk = !needsIrb || irbAttachment
+    const mtaOk = !needsMta || requesterMtaAttachment
     const paymentOk = !needsPayment || (paymentMethod && paymentDetails)
     if (irbOk && mtaOk && paymentOk) {
-      if (needsIRB) {
+      if (needsIrb) {
         const irbRequest = await api.attachments.create(
           { file: irbAttachment, owned_by_user: { id: user.id } },
           token
@@ -102,11 +124,14 @@ export default ({ request: defaultRequest }) => {
           return addAlert('Unable to upload IRB', 'error')
         }
       }
-      if (needsMTA) {
-        const { mta_attachment: template } = request.materials
-        const filename = `requester-signed-${template.filename}`
+      if (needsMta) {
+        const filename = `requester-signed-${mtaAttachment.filename}`
         const mtaRequest = await api.attachments.create(
-          { filename, file: mtaAttachment, owned_by_user: { id: user.id } },
+          {
+            filename,
+            file: requesterMtaAttachment,
+            owned_by_user: { id: user.id }
+          },
           token
         )
         if (mtaRequest.isOk) {
@@ -124,7 +149,7 @@ export default ({ request: defaultRequest }) => {
     }
 
     // this should probably be performed on the API
-    if (!needsMTA) updates.status = 'IN_FULFILLMENT'
+    if (!needsMta) updates.status = 'IN_FULFILLMENT'
 
     const updateRequest = await api.requests.update(request.id, updates, token)
     if (updateRequest.isOk) {
@@ -133,16 +158,17 @@ export default ({ request: defaultRequest }) => {
     }
     return addAlert('Unable to update', 'error')
   }
+
   return (
-    <Box>
+    <Box pad={{ vertical: 'medium' }}>
       <Box
         direction="row"
+        align="center"
         justify="between"
-        pad={{ bottom: 'medum' }}
-        border={{ side: 'bottom' }}
+        pad={{ bottom: 'medium' }}
         margin={{ bottom: 'large' }}
       >
-        <Box>
+        <Box gap="medium">
           <Text>{contactName}</Text>
           <Link href={materialLink}>
             <Anchor href={materialLink} label={materialTitle} />
@@ -150,28 +176,32 @@ export default ({ request: defaultRequest }) => {
           <ResourceTypeOrganisms resource={request.material} />
         </Box>
         <Box>
-          <Button
-            as="a"
-            label="Contact Submitter"
-            href={`mailto:${contactEmail}`}
-          />
+          {!['FULFILLED', 'VERIFIED_FULFILLED'].includes(state) && (
+            <Button
+              as="a"
+              label="Contact Submitter"
+              href={`mailto:${contactEmail}`}
+              margin={{ bottom: 'small' }}
+            />
+          )}
+          <Text italic color="black-tint-40" textAlign="center">
+            {request.human_readable_created_at}
+          </Text>
         </Box>
       </Box>
 
-      <Box
-        pad={{ bottom: 'medum' }}
-        border={{ side: 'bottom' }}
-        margin={{ bottom: 'large' }}
-      >
+      <Box pad={{ bottom: 'medum' }} margin={{ bottom: 'large' }}>
         <Box margin={{ bottom: 'large' }}>
           <ProgressBar
             steps={progressSteps.map(getReadable)}
             index={progressIndex}
           />
         </Box>
-        <Text size="large">{getReadable(state)}</Text>
+        <Text size="large" serif margin={{ bottom: 'medium' }}>
+          {state === 'OPEN' ? 'Open Request' : getReadable(state)}
+        </Text>
         {state === 'OPEN' && (
-          <Box pad={{ bottom: 'large' }}>
+          <Box pad={{ veritcal: 'large' }}>
             <HeaderRow label="Submitted Materials" />
             {request.requester_abstract && (
               <PreviewAbstract abstract={request.requester_abstract} />
@@ -182,28 +212,18 @@ export default ({ request: defaultRequest }) => {
         {state === 'AWAITING_ADDITIONAL_DOCUMENTS' && (
           <>
             <Box pad={{ bottom: 'large' }}>
-              <Text>
+              <Text margin={{ bottom: 'medium' }}>
                 Your request has been accepted on the condition that you provide
                 the following materials
               </Text>
-              {request.material.needs_irb && <Text>IRB</Text>}
-              {request.material.needs_mta && (
-                <>
-                  <Text>Signed Copy of Material Transfer Agreement (MTA)</Text>
-                  <DownloadAttachment
-                    attachment={request.material.mta_attachment}
-                  />
-                </>
-              )}
-              {request.material.shipping_requirement &&
-                request.material.shipping_requirement.needs_payment && (
-                  <Text>Shipping Payment Method</Text>
-                )}
+              <RequestAwaitingAdditionalDocuments request={request} />
             </Box>
             <Box>
               {request.material.needs_irb && (
                 <Box margin={{ bottom: 'large' }}>
-                  <Text>IRB</Text>
+                  <Text weight="bold" margin={{ bottom: 'medium' }}>
+                    Upload IRB
+                  </Text>
                   {irbAttachment && (
                     <Box direction="row" gap="medium" align="center">
                       <PreviewAttachment attachment={irbAttachment} />
@@ -229,58 +249,64 @@ export default ({ request: defaultRequest }) => {
                   )}
                 </Box>
               )}
-              {request.material.needs_mta && (
+              {needsMta && (
                 <Box margin={{ bottom: 'large' }}>
-                  <DownloadAttachment
-                    attachment={request.material.mta_attachment}
-                  />
-                  <Text weight="bold">
+                  <Box margin={{ bottom: 'medium' }}>
+                    <DownloadAttachment
+                      label="Unsigned MTA Attachment"
+                      attachment={mtaAttachment}
+                    />
+                  </Box>
+                  <Text weight="bold" margin={{ bottom: 'medium' }}>
                     Signed Material Transfer Agreement (MTA)
                   </Text>
-                  {mtaAttachment && (
+                  {requesterMtaAttachment && (
                     <Box direction="row" gap="medium" align="center">
-                      <PreviewAttachment attachment={mtaAttachment} />
+                      <PreviewAttachment attachment={requesterMtaAttachment} />
                       <Button
                         plain
                         icon={<Icon name="Cross" size="small" />}
                         label="Remove"
                         onClick={() => {
-                          setMtaAttachment()
+                          setRequesterMtaAttachment()
                         }}
                       />
                     </Box>
                   )}
-                  {!mtaAttachment && (
+                  {!requesterMtaAttachment && (
                     <DropZone
                       fileTypes={['pdf']}
                       onDrop={(files) => {
                         const [file] = files
-                        setMtaAttachment(file)
+                        setRequesterMtaAttachment(file)
                       }}
                     />
                   )}
                 </Box>
               )}
-              {request.material.shipping_requirement &&
-                request.material.shipping_requirement.needs_payment && (
-                  <Box margin={{ bottom: 'medium' }}>
-                    <Text margin={{ bottom: 'small' }}>Payment Method</Text>
-                    <RadioButtonGroup
-                      name="doc"
-                      options={paymentOptions}
-                      value={paymentMethod}
-                      onChange={(event) => setPaymentMethod(event.target.value)}
+              {needsPayment && (
+                <Box margin={{ bottom: 'medium' }}>
+                  <Text weight="bold" margin={{ bottom: 'small' }}>
+                    Payment Method
+                  </Text>
+                  <RadioButtonGroup
+                    name="payment-method"
+                    options={getPaymentOptions(request)}
+                    value={paymentMethod}
+                    onChange={({ target: { value } }) => {
+                      setPaymentMethod(value)
+                    }}
+                  />
+                  <FormField label="Payment Details">
+                    <TextArea
+                      value={paymentDetails}
+                      onChange={({ target: { value } }) => {
+                        setPaymentDetails(value)
+                      }}
                     />
-                    <FormField label="Payment Details">
-                      <TextArea
-                        value={paymentDetails}
-                        onChange={({ target: { value } }) => {
-                          setPaymentDetails(value)
-                        }}
-                      />
-                    </FormField>
-                  </Box>
-                )}
+                  </FormField>
+                </Box>
+              )}
               <Box direction="row" justify="end" margin={{ bottom: 'medium' }}>
                 <Button primary label="Submit" onClick={submitAdditionalDocs} />
               </Box>
@@ -288,17 +314,24 @@ export default ({ request: defaultRequest }) => {
           </>
         )}
         {state === 'AWAITING_MTA' && (
-          <Box pad={{ bottom: 'large' }}>
-            <Text>Waiting for {contactName} to upload fully executed MTA</Text>
+          <Box width="full" pad={{ bottom: 'large' }}>
+            <Text textAlign="center" margin="none">
+              Waiting for {teamName} to review, sign, and upload the MTA.
+            </Text>
           </Box>
         )}
-        {state === 'IN_FULFILLMENT' && (
+        {['IN_FULFILLMENT', 'IN_FULFILLMENT_ISSUE_REPORTED'].includes(
+          state
+        ) && (
           <Box pad={{ bottom: 'large' }}>
             <Box margin={{ veritcal: 'medium' }}>
               <Text>
-                {request.material.organization.name} is working to fulfill your
-                request. Your resource should be on the way soon.
+                {teamName} is working to fulfill your request. Your resource
+                should be on the way soon.
               </Text>
+              {request.payment_method === 'REIMBURSEMENT' && (
+                <RequestMakeArrangements request={request} requesterView />
+              )}
             </Box>
             {request.executed_mta_attachment && (
               <Box margin={{ vertical: 'medium' }}>
@@ -309,15 +342,14 @@ export default ({ request: defaultRequest }) => {
                 />
               </Box>
             )}
-            <Text>View All Request Materials</Text>
           </Box>
         )}
         {['FULFILLED', 'VERIFIED_FULFILLED'].includes(state) && (
           <>
-            <Box pad="medium">
-              <Text>
-                {request.material.organization.name} has marked your request as
-                fulfilled. Please look at the fulfillment note for details.
+            <Box pad={{ bottom: 'large' }}>
+              <Text textAlign="center">
+                {teamName} has marked your request as fulfilled. Please look at
+                the fulfillment note for details.
               </Text>
             </Box>
             <Box margin={{ vertical: 'medium' }}>
@@ -332,32 +364,69 @@ export default ({ request: defaultRequest }) => {
                 </Text>
               )}
             </Box>
-            {state === 'FULFILLED' && (
-              <Box
-                direction="row"
-                gap="medium"
-                align="center"
-                justify="center"
-                margin={{ vertical: 'medium' }}
-              >
-                <Text>
-                  If you have received the resource, please verify that you have
-                  received it.
-                </Text>
-                <Button
-                  color="success"
-                  label="Verify"
-                  onClick={verifyFulfillment}
-                />
-              </Box>
-            )}
           </>
         )}
+        {hasDocuments && state !== 'OPEN' && (
+          <Box margin={{ vertical: 'large' }}>
+            <ViewAllRequestDocuments request={request} />
+          </Box>
+        )}
+        {state === 'FULFILLED' && (
+          <Box
+            direction="row"
+            gap="medium"
+            align="center"
+            justify="center"
+            margin={{ vertical: 'medium' }}
+            border={{ side: 'top', color: 'border-black', size: 'small' }}
+            pad={{ vertical: 'medium' }}
+          >
+            <Text>
+              If you have received the resource, please verify that you have
+              received it.
+            </Text>
+            <Button success label="Verify" onClick={verifyFulfillment} />
+          </Box>
+        )}
       </Box>
-      {state !== 'FULFILLED' && request.is_active && (
-        <Box direction="row" justify="end" gap="medium">
-          <Text>No longer interested in this resource?</Text>
-          <Button label="Cancel Request" onClick={cancelRequest} />
+      {canCancel && (
+        <Box
+          direction="row"
+          justify="end"
+          align="center"
+          gap="medium"
+          border={{ side: 'top' }}
+          pad={{ vertical: 'large' }}
+        >
+          <Text weight="bold">No longer interested in this resource?</Text>
+          <Button critical label="Cancel Request" onClick={cancelRequest} />
+        </Box>
+      )}
+      {state === 'FULFILLED' && (
+        <Box pad={{ bottom: 'large' }}>
+          <Modal
+            title="Report Issue with Resource"
+            showing={showReportModal}
+            setShowing={setShowReportModal}
+          >
+            <FormField label="Please describe the issue in detail below.">
+              <TextArea
+                value={issue}
+                onChange={({ target: { value } }) => setIssue(value)}
+              />
+            </FormField>
+            <Box direction="row" justify="end">
+              <Button label="Send" onClick={sendIssue} />
+            </Box>
+          </Modal>
+          <Text textAlign="center">
+            Problem with received resources?{' '}
+            <Button
+              plain
+              label={`Let ${teamName} know`}
+              onClick={() => setShowReportModal(true)}
+            />
+          </Text>
         </Box>
       )}
     </Box>
