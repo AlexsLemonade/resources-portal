@@ -88,6 +88,11 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(len(response.json()["results"]), 1)
 
+        response = self.client.get(self.url + "?organization__id=10")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(response.json()["results"]), 1)
+
 
 class TestSingleMaterialTestCase(APITestCase):
     """

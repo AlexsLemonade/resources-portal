@@ -43,6 +43,7 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         "imported",
         "import_source",
         "pre_print_doi",
+        "organization__id",
     )
 
     def get_serializer_class(self):
