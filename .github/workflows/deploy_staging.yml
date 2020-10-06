@@ -31,3 +31,4 @@ jobs:
           API_SSH_KEY: ${{ secrets.API_SSH_KEY }}
           OAUTH_URL: ${{ secrets.STAGING_OAUTH_URL }}
           OAUTH_CLIENT_SECRET: ${{ secrets.STAGING_OAUTH_CLIENT_SECRET }}
+          SENTRY_IO_URL: ${{ secrets.STAGING_SENTRY_IO_URL }}
