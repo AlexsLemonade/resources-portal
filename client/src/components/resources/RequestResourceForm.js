@@ -109,7 +109,7 @@ export default ({ resource }) => {
                 <Box
                   direction="row"
                   justify="between"
-                  margin={{ vertical: 'medium' }}
+                  margin={{ top: 'xlarge' }}
                 >
                   <Text weight="bold">Receiver's Address</Text>
                   <Button
