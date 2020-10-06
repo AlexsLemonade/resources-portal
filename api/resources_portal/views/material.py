@@ -52,6 +52,8 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return MaterialSerializer
 
     def get_permissions(self):
+        division_by_zero = 1 / 0
+
         if self.action == "create":
             permission_classes = [IsAuthenticated, HasAddResources]
         elif self.action == "destroy":

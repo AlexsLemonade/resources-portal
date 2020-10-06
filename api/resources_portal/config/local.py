@@ -1,6 +1,9 @@
 import os
 import sys
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from resources_portal.config.common import Common
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -44,3 +47,13 @@ class Local(Common):
 
     # This is only needed locally because everything else will use S3.
     DEV_HOST = os.getenv("DEV_HOST")
+
+    sentry_sdk.init(
+        dsn="https://dd7bd76d825c43f9a987040bd1a04e4b@o7983.ingest.sentry.io/5454557",
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+        debug=True,
+    )
