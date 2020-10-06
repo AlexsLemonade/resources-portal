@@ -114,6 +114,7 @@ export default ({ resource }) => {
                   <Text weight="bold">Receiver's Address</Text>
                   <Button
                     plain
+                    bold
                     label={toggleShippingLabel}
                     icon={
                       showAddresses ? (
@@ -127,7 +128,7 @@ export default ({ resource }) => {
                   />
                 </Box>
                 {!showAddresses && (
-                  <Box>
+                  <Box animation="fadeIn" margin={{ top: 'medium' }}>
                     <Text>Specify New Address</Text>
                     <FormField label="Full Name">
                       <TextInput
@@ -205,7 +206,12 @@ export default ({ resource }) => {
                   </Box>
                 )}
                 {showAddresses && (
-                  <AddressSelect addresses={addresses} onSelect={setAddress} />
+                  <Box animation="fadeIn">
+                    <AddressSelect
+                      addresses={addresses}
+                      onSelect={setAddress}
+                    />
+                  </Box>
                 )}
               </>
             )}

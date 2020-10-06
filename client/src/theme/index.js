@@ -245,8 +245,11 @@ const theme = {
             color: ${normalizeColor('white', props.theme)};
           `
         ),
-
-        applyWhen(props.plain && props.underline, 'text-decoration: underline;')
+        applyWhen(
+          props.plain && props.underline,
+          'text-decoration: underline;'
+        ),
+        applyWhen(props.plain && props.bold, 'font-weight: bold;')
       )
   },
   tabs: {
