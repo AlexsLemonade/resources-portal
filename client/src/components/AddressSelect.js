@@ -18,10 +18,9 @@ export default ({ addresses, onSelect }) => {
   const [address, setAddress] = React.useState({})
   const addressOptions = getAddressOptions(addresses)
 
-  const handleSelect = ({ target: { value } }) => {
-    const selectedOption = addressOptions.find(({ id }) => id === value)
-    setAddress(selectedOption.address)
-    onSelect(selectedOption.address)
+  const handleSelect = (selectedAddress) => {
+    setAddress(selectedAddress)
+    onSelect(selectedAddress)
   }
 
   return (
@@ -40,7 +39,7 @@ export default ({ addresses, onSelect }) => {
             checked={address.id === option.value}
             label={<PreviewAddress noLabel address={option.address} />}
             value={option.value}
-            onChange={handleSelect}
+            onChange={() => handleSelect(option.address)}
           />
         )}
       </AddressRadioButtonGroup>
