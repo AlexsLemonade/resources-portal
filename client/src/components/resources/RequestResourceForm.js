@@ -15,6 +15,7 @@ import { HeaderRow } from 'components/HeaderRow'
 import { InfoCard } from 'components/InfoCard'
 import Icon from 'components/Icon'
 import useRequestResourceForm from 'hooks/useRequestResourceForm'
+import AddressSelect from 'components/AddressSelect'
 
 const SaveAddressCheckBox = styled(CheckBox)`
   margin-left: 0;
@@ -37,7 +38,8 @@ export default ({ resource }) => {
     getAddressAttribute,
     setAddressAttribute,
     addresses,
-    createResourceRequest
+    createResourceRequest,
+    setAddress
   } = useRequestResourceForm(resource)
 
   const [showAddresses, setShowAddresses] = React.useState(false)
@@ -113,6 +115,11 @@ export default ({ resource }) => {
                   <Button
                     plain
                     label={toggleShippingLabel}
+                    icon={
+                      showAddresses ? (
+                        <Icon name="Plus" size="16px" />
+                      ) : undefined
+                    }
                     onClick={() => {
                       setShowAddresses(!showAddresses)
                     }}
@@ -197,7 +204,9 @@ export default ({ resource }) => {
                     </Box>
                   </Box>
                 )}
-                {showAddresses && <Box>existing shipping forms</Box>}
+                {showAddresses && (
+                  <AddressSelect addresses={addresses} onSelect={setAddress} />
+                )}
               </>
             )}
           </>
