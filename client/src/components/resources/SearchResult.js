@@ -98,6 +98,7 @@ export const SearchResult = ({
           <SearchResultDetail
             key={attribute}
             data={getResourceData(resource, attribute)}
+            showEmpty
           />
         ))}
       </Box>
@@ -112,15 +113,18 @@ export const SearchResultDetail = ({
   italic,
   children,
   margin = { top: 'small', bottom: 'medium' },
-  direction = 'row'
+  direction = 'row',
+  showEmpty
 }) => {
-  const handleArray = (value) =>
-    Array.isArray(value) ? value.join(', ') : value
+  const joinedValue = Array.isArray(data.value)
+    ? data.value.join(', ')
+    : data.value
+  const formattedValue = showEmpty && !joinedValue ? 'None' : joinedValue
   return (
     <Box>
       <Text weight="bold">{data.label}</Text>
       <Box margin={margin} direction={direction}>
-        {data.value && <Text italic={italic}>{handleArray(data.value)}</Text>}
+        <Text italic={italic}>{formattedValue}</Text>
         {children}
       </Box>
     </Box>
