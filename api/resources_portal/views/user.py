@@ -18,7 +18,7 @@ from resources_portal.serializers import (
     OrganizationInvitationRelationSerializer,
     OrganizationRelationSerializer,
 )
-from resources_portal.views.address import SavedAddressSerializer
+from resources_portal.views.address import AddressSerializer
 
 logger = get_and_configure_logger(__name__)
 
@@ -99,7 +99,12 @@ class UserSerializer(serializers.ModelSerializer):
     grants = GrantRelationSerializer(many=True, read_only=True)
     assignments = MaterialRequestRelationSerializer(many=True, read_only=True)
     invitations = OrganizationInvitationRelationSerializer(many=True, read_only=True)
-    addresses = SavedAddressSerializer(many=True, read_only=True)
+    addresses = serializers.SerializerMethodField()
+
+    def get_addresses(self, obj):
+        queryset = obj.addresses.filter(saved_for_reuse=True)
+
+        return AddressSerializer(queryset, many=True, read_only=True).data
 
     def to_representation(self, request_data):
         # get the original representation

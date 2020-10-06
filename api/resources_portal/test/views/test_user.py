@@ -131,7 +131,7 @@ class TestUserDetailTestCase(APITestCase):
         for field in PRIVATE_FIELDS:
             self.assertIn(field, response_json)
 
-        self.assertEqual(len(response_json["addresses"]), 2)
+        self.assertEqual(len(response_json["addresses"]), 1)
 
     def test_get_request_from_unauthenticated_user_forbidden(self):
         self.client.force_authenticate(user=None)

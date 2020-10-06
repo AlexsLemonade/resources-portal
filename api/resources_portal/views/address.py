@@ -31,14 +31,6 @@ class AddressSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created_at", "updated_at", "user")
 
 
-class SavedAddressSerializer(AddressSerializer):
-    def to_representation(self, data):
-        if data.saved_for_reuse:
-            return super(AddressSerializer, self).to_representation(data)
-        else:
-            return None
-
-
 class AddressDetailSerializer(AddressSerializer):
     user = UserRelationSerializer(read_only=True)
 
