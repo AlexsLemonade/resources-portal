@@ -1,5 +1,8 @@
 import os
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 from resources_portal.config.common import Common
 
 
@@ -53,3 +56,13 @@ class Production(Common):
             "use_ssl": True,
         }
     }
+
+    sentry_sdk.init(
+        dsn=os.getenv("SENTRY_IO_URL"),
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=1.0,
+        environment=os.getenv("SENTRY_ENV"),
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+    )
