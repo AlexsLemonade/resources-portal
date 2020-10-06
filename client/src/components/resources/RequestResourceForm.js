@@ -15,6 +15,7 @@ import { HeaderRow } from 'components/HeaderRow'
 import { InfoCard } from 'components/InfoCard'
 import Icon from 'components/Icon'
 import useRequestResourceForm from 'hooks/useRequestResourceForm'
+import AddressSelect from 'components/AddressSelect'
 
 const SaveAddressCheckBox = styled(CheckBox)`
   margin-left: 0;
@@ -37,7 +38,8 @@ export default ({ resource }) => {
     getAddressAttribute,
     setAddressAttribute,
     addresses,
-    createResourceRequest
+    createResourceRequest,
+    setAddress
   } = useRequestResourceForm(resource)
 
   const [showAddresses, setShowAddresses] = React.useState(false)
@@ -107,12 +109,18 @@ export default ({ resource }) => {
                 <Box
                   direction="row"
                   justify="between"
-                  margin={{ vertical: 'medium' }}
+                  margin={{ top: 'xlarge' }}
                 >
                   <Text weight="bold">Receiver's Address</Text>
                   <Button
                     plain
+                    bold
                     label={toggleShippingLabel}
+                    icon={
+                      showAddresses ? (
+                        <Icon name="Plus" size="16px" />
+                      ) : undefined
+                    }
                     onClick={() => {
                       setShowAddresses(!showAddresses)
                     }}
@@ -120,7 +128,7 @@ export default ({ resource }) => {
                   />
                 </Box>
                 {!showAddresses && (
-                  <Box>
+                  <Box animation="fadeIn" margin={{ top: 'medium' }}>
                     <Text>Specify New Address</Text>
                     <FormField label="Full Name">
                       <TextInput
@@ -197,7 +205,14 @@ export default ({ resource }) => {
                     </Box>
                   </Box>
                 )}
-                {showAddresses && <Box>existing shipping forms</Box>}
+                {showAddresses && (
+                  <Box animation="fadeIn">
+                    <AddressSelect
+                      addresses={addresses}
+                      onSelect={setAddress}
+                    />
+                  </Box>
+                )}
               </>
             )}
           </>
