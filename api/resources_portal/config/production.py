@@ -61,6 +61,7 @@ class Production(Common):
         dsn=os.getenv("SENTRY_IO_URL"),
         integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
+        environment=os.getenv("SENTRY_ENV"),
         # If you wish to associate users to errors (assuming you are using
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
