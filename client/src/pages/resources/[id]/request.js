@@ -17,12 +17,11 @@ const ResourcesRequest = ({ resource }) => {
   const { isLoggedIn } = useUser()
   const router = useRouter()
 
-  if (!isLoggedIn) {
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (!isLoggedIn) {
       router.replace(router.asPath.split('/request')[0])
-    })
-    return <></>
-  }
+    }
+  })
 
   // you cannot request this resource
   // it might be deleted
