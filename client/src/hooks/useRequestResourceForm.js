@@ -3,12 +3,23 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 
 export default (resource = {}, requestId) => {
-  const { user, token } = useUser()
+  const { user, token, refreshUser } = useUser()
   const [request, setRequest] = React.useState({ material: resource.id })
+  const fetchedUserRef = React.useRef(false)
 
   React.useEffect(() => {
     if (requestId && !request.id) fetchRequest(requestId)
+    if (!fetchedUserRef.current) {
+      refreshUser()
+      fetchedUserRef.current = true
+    }
   })
+
+  const setAddress = (address) => {
+    Object.entries(address)
+      .filter(([k]) => !['id', 'user', 'created_at', 'updated_at'].includes(k))
+      .forEach((entry) => setAddressAttribute(...entry))
+  }
 
   const setAttribute = (attribute, value) => {
     const updatedRequest = { ...request }
@@ -96,6 +107,7 @@ export default (resource = {}, requestId) => {
     getAddressAttribute,
     fetchRequest,
     createResourceRequest,
-    saveChanges
+    saveChanges,
+    setAddress
   }
 }
