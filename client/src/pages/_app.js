@@ -2,7 +2,7 @@ import { Grommet } from 'grommet'
 import Head from 'next/head'
 import React from 'react'
 import * as Sentry from '@sentry/react'
-import Error from 'pages/error'
+import Error from 'pages/_error'
 import { AccountLayout } from '../components/AccountLayout'
 import { HomeLayout } from '../components/HomeLayout'
 import { Layout } from '../components/Layout'
@@ -22,7 +22,7 @@ export default ({ Component, pageProps, router: { pathname } }) => {
   Sentry.init({
     dsn:
       'https://dd7bd76d825c43f9a987040bd1a04e4b@o7983.ingest.sentry.io/5454557',
-    env: 'client-staging'
+    environment: 'client-staging'
   })
 
   return (
