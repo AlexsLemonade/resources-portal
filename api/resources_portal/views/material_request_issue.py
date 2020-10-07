@@ -92,7 +92,7 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == "create":
             permission_classes = [IsAuthenticated, IsRequester]
-        if (
+        elif (
             self.action == "list"
             or self.action == "retrieve"
             or self.action == "update"
