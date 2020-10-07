@@ -22,7 +22,7 @@ export default ({ Component, pageProps, router: { pathname } }) => {
   Sentry.init({
     dsn:
       'https://dd7bd76d825c43f9a987040bd1a04e4b@o7983.ingest.sentry.io/5454557',
-    env: 'client-staging'
+    environment: 'client-staging'
   })
 
   return (
