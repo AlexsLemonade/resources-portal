@@ -13,7 +13,7 @@ export const ErrorPage = ({ errorMessage, eventId }) => {
           </Text>
           {errorMessage && <Text>{errorMessage}</Text>}
           {eventId && (
-            <Text size="small" color="critical" round="small">
+            <Text size="small" color="error" round="small">
               Error ID: {eventId}
             </Text>
           )}
