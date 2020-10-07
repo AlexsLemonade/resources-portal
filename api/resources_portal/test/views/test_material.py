@@ -77,7 +77,7 @@ class TestMaterialListTestCase(APITestCase):
 
     def test_get_request_filter_succeeds(self):
         for i in range(11):
-            MaterialFactory(category="CELL_LINE")
+            last_material = MaterialFactory(category="CELL_LINE")
 
         self.client.force_authenticate(user=None)
 
@@ -91,7 +91,8 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(len(response.json()["results"]), 1)
 
-        response = self.client.get(self.url + "?organization__id=10")
+        last_org_id = last_material.organization.id
+        response = self.client.get(self.url + f"?organization__id={last_org_id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(len(response.json()["results"]), 1)
