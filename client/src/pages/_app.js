@@ -26,7 +26,7 @@ export default ({ Component, pageProps, router: { pathname } }) => {
   })
 
   return (
-    <Sentry.ErrorBoundary fallback={Error}>
+    <Sentry.ErrorBoundary fallback={Error} showDialog>
       <ResourcesPortalContextProvider>
         <Head>
           <link
