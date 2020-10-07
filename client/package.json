@@ -10,6 +10,7 @@
     "storybook": "start-storybook -c storybook"
   },
   "dependencies": {
+    "@sentry/react": "^5.25.0",
     "@storybook/addon-storysource": "^5.3.18",
     "@storybook/react": "^5.3.18",
     "form-data": "^3.0.0",
