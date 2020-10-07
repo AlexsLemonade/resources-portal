@@ -34,10 +34,6 @@ class TestMaterialListTestCase(APITestCase):
         )
         self.material_data = model_to_dict(self.material)
 
-        # Create a bunch for listing
-        for i in range(20):
-            MaterialFactory(category="CELL_LINE")
-
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.user)
         response = self.client.post(self.url, {})
@@ -70,6 +66,9 @@ class TestMaterialListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_request_limit_succeeds(self):
+        for i in range(4):
+            MaterialFactory(category="CELL_LINE")
+
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url + "?limit=3")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -77,13 +76,23 @@ class TestMaterialListTestCase(APITestCase):
         self.assertEqual(len(response.json()["results"]), 3)
 
     def test_get_request_filter_succeeds(self):
+        for i in range(11):
+            last_material = MaterialFactory(category="CELL_LINE")
+
         self.client.force_authenticate(user=None)
+
         response = self.client.get(self.url + "?category=CELL_LINE")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(len(response.json()["results"]), 10)
 
         response = self.client.get(self.url + "?category=PLASMID")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(response.json()["results"]), 1)
+
+        last_org_id = last_material.organization.id
+        response = self.client.get(self.url + f"?organization__id={last_org_id}")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(len(response.json()["results"]), 1)
