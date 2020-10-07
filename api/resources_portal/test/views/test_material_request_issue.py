@@ -254,6 +254,8 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_delete_request_fails(self):
+        self.user.is_staff = True
+        self.user.save()
         self.client.force_authenticate(user=self.user)
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
