@@ -102,7 +102,7 @@ class TestUserDetailTestCase(APITestCase):
         self.second_user = UserFactory()
 
         self.superuser = UserFactory()
-        self.superuser.is_superuser = True
+        self.superuser.is_staff = True
         self.superuser.save()
 
         self.url = reverse("user-detail", kwargs={"pk": self.user.pk})

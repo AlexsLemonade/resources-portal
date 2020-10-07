@@ -1,7 +1,7 @@
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import ValidationError
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from rest_framework_extensions.mixins import NestedViewSetMixin
@@ -26,11 +26,6 @@ class FulfillmentNoteSerializer(serializers.ModelSerializer):
 
 class FulfillmentNoteDetailSerializer(FulfillmentNoteSerializer):
     created_by = UserRelationSerializer(read_only=True)
-
-
-class IsAdminUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_superuser
 
 
 class IsSharer(BasePermission):
