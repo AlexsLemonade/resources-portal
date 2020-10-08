@@ -99,7 +99,7 @@ def send_mail(
     title: str,
     text: str = None,
     html: str = None,
-    embedded_images: list = None,
+    embedded_images: list = [],
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
