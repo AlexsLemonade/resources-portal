@@ -202,7 +202,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.user_without_perms = UserFactory()
 
         self.admin = UserFactory()
-        self.admin.is_superuser = True
+        self.admin.is_staff = True
 
     def test_get_request_from_sharer_succeeds(self):
         self.client.force_authenticate(user=self.sharer)

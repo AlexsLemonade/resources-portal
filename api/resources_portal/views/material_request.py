@@ -5,7 +5,7 @@ from django.db import models
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.permissions import BasePermission, IsAuthenticated
+from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
 from guardian.shortcuts import get_objects_for_user
@@ -81,11 +81,6 @@ class MaterialRequestDetailSerializer(MaterialRequestSerializer):
     executed_mta_attachment = AttachmentRelationSerializer()
     irb_attachment = AttachmentRelationSerializer()
     requester_signed_mta_attachment = AttachmentRelationSerializer()
-
-
-class IsAdminUser(BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return request.user.is_superuser
 
 
 class CanViewRequestsOrIsRequester(BasePermission):
