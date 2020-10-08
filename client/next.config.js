@@ -31,9 +31,12 @@ module.exports = (phase) => {
 
   return {
     env,
+    experimental: {
+      productionBrowserSourceMaps: true
+    },
     webpack: (baseConfig) => {
       const config = { ...baseConfig }
-      config.devtool = 'inline-source-map'
+      config.devtool = 'source-map'
       config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
       config.module.rules.push({
         test: /\.md$/,
