@@ -33,7 +33,7 @@ module.exports = (phase) => {
     env,
     webpack: (baseConfig) => {
       const config = { ...baseConfig }
-      config.devtool = 'eval-source-map'
+      config.devtool = 'inline-source-map'
       config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
       config.module.rules.push({
         test: /\.md$/,
