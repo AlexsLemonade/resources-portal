@@ -1,3 +1,4 @@
+const withSourceMaps = require('@zeit/next-source-maps')
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const path = require('path')
 
@@ -29,16 +30,15 @@ module.exports = (phase) => {
       : 'https://sandbox.orcid.org/'
   }
 
-  return {
+  return withSourceMaps({
     env,
     webpack: (config) => {
       config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
-
       config.module.rules.push({
         test: /\.md$/,
         use: ['raw-loader', 'template-literal-loader']
       })
       return config
     }
-  }
+  })
 }
