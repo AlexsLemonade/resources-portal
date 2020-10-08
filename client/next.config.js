@@ -1,4 +1,3 @@
-const withSourceMaps = require('@zeit/next-source-maps')
 const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const path = require('path')
 
@@ -30,11 +29,11 @@ module.exports = (phase) => {
       : 'https://sandbox.orcid.org/'
   }
 
-  return withSourceMaps({
+  return {
     env,
     webpack: (baseConfig) => {
       const config = { ...baseConfig }
-      config.devtool = 'source-map'
+      config.devtool = 'eval-source-map'
       config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
       config.module.rules.push({
         test: /\.md$/,
@@ -42,5 +41,5 @@ module.exports = (phase) => {
       })
       return config
     }
-  })
+  }
 }
