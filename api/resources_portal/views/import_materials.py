@@ -117,7 +117,12 @@ class ImportViewSet(viewsets.ViewSet):
             for material in Material.objects.filter(imported=True).filter(
                 Q(import_source="SRA") | Q(import_source="GEO")
             ):
-                if request.data["accession_code"] == material.additional_metadata["accession_code"]:
+                if (
+                    request.data["accession_code"]
+                    == "accession_code"
+                    in material.additional_metadata
+                    and material.additional_metadata["accession_code"]
+                ):
                     return JsonResponse(
                         {
                             "error": f'A material with accession code {request.data["accession_code"]} has already been imported.',
@@ -131,7 +136,10 @@ class ImportViewSet(viewsets.ViewSet):
             )
         elif import_source == "PROTOCOLS_IO":
             for material in Material.objects.filter(imported=True, import_source="PROTOCOLS_IO"):
-                if request.data["protocol_doi"] == material.additional_metadata["protocol_doi"]:
+                if (
+                    request.data["protocol_doi"] == "protocol_doi" in material.additional_metadata
+                    and material.additional_metadata["protocol_doi"]
+                ):
                     return JsonResponse(
                         {
                             "error": f'A material with doi {request.data["protocol_doi"]} has already been imported.',
