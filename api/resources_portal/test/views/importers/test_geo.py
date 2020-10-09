@@ -95,9 +95,7 @@ class ImportGEOTestCase(APITestCase):
         response = self.client.post(
             self.url, {"import_source": "GEO", "accession_code": accession_code}
         )
-        import pdb
 
-        pdb.set_trace()
         MaterialFactory(
             imported=True,
             import_source="GEO",
