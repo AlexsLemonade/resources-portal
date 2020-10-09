@@ -186,7 +186,8 @@ class UserViewSet(viewsets.ModelViewSet):
         # Get first and last name
 
         first_name = summary["person"]["name"]["given-names"]["value"]
-        if "family-name" in summary["person"]["name"]:
+        last_name = ""
+        if summary["person"]["name"].get("family-name", None):
             last_name = summary["person"]["name"]["family-name"]["value"]
 
         try:
