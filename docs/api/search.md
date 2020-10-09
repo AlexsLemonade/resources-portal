@@ -127,7 +127,7 @@ Content-Type application/json
                 "embargo_date": "2020-01-30",
                 "title": "GEO Zebrafish Analysis",
                 "description": "This dataset has interesting implications for future research.",
-                "number_samples": "15",
+                "number_of_samples": "15",
             },
             "imported": true,
             "import_source": "SRA"

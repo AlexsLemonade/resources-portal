@@ -32,6 +32,30 @@ ORCID_SUMMARY_DICT = {
     "orcid-identifier": {"path": "ORCID"},
 }
 
+MOCK_DATASET_DATA = {
+    "description": "Array of tea sandwiches",
+    "platform": "Amazon Tabletop",
+    "technology": "Toaster",
+    "title": "Data on tea sandwiches",
+    "url": "www.teasandwiches.com",
+    "number_of_samples": "3",
+    "organism_names": ["Mus Musculus"],
+}
+
+MOCK_PROTOCOL_DATA = {
+    "protocol_name": "How to cook a perfect risotto",
+    "description": "Gordon Ramsey teaches you how to make a perfect risotto",
+    "url": "www.gordonramseyrisotto.com",
+}
+
+
+def get_mock_dataset_data(*args, **kwargs):
+    return MOCK_DATASET_DATA
+
+
+def get_mock_protocol_data(*args, **kwargs):
+    return MOCK_PROTOCOL_DATA
+
 
 class MockORCIDAuthorizationResponse:
     def __init__(self, json_data, status_code):

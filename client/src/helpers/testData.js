@@ -255,7 +255,7 @@ export const fakeSearchMaterialsResponse = {
         technology: 'R-readable array',
         description: 'Data collected from genetically modified zebrafish.',
         accession_code: 'phs000328.v2.p1',
-        number_samples: '15'
+        number_of_samples: '15'
       },
       contact_user: '10000000-0f5a-4165-b518-b2386a753d6f',
       sequence_maps: [],
@@ -363,7 +363,7 @@ export const fakeSearchMaterialsResponse = {
         technology: 'R-readable array',
         description: 'Data collected from genetically modified zebrafish.',
         accession_code: 'GSE24528',
-        number_samples: '15'
+        number_of_samples: '15'
       },
       contact_user: '10000000-0f5a-4165-b518-b2386a753d6f',
       sequence_maps: [],
@@ -398,7 +398,7 @@ export const fakeSearchMaterialsResponse = {
         description:
           'This dataset has interesting implications for future research.',
         embargo_date: '2020-01-30',
-        number_samples: '15'
+        number_of_samples: '15'
       },
       contact_user: '10000000-0f5a-4165-b518-b2386a753d6f',
       sequence_maps: [],
