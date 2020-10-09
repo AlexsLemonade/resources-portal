@@ -118,10 +118,9 @@ class ImportViewSet(viewsets.ViewSet):
                 Q(import_source="SRA") | Q(import_source="GEO")
             ):
                 if (
-                    request.data["accession_code"]
-                    == "accession_code"
-                    in material.additional_metadata
-                    and material.additional_metadata["accession_code"]
+                    "accession_code" in material.additional_metadata
+                    and request.data["accession_code"]
+                    == material.additional_metadata["accession_code"]
                 ):
                     return JsonResponse(
                         {
@@ -137,8 +136,8 @@ class ImportViewSet(viewsets.ViewSet):
         elif import_source == "PROTOCOLS_IO":
             for material in Material.objects.filter(imported=True, import_source="PROTOCOLS_IO"):
                 if (
-                    request.data["protocol_doi"] == "protocol_doi" in material.additional_metadata
-                    and material.additional_metadata["protocol_doi"]
+                    "protocol_doi" in material.additional_metadata
+                    and request.data["protocol_doi"] == material.additional_metadata["protocol_doi"]
                 ):
                     return JsonResponse(
                         {
