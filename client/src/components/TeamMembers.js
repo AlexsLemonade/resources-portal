@@ -38,7 +38,9 @@ export default () => {
               <Button
                 label="Done"
                 onClick={async () => {
-                  await saveChanges('Invites Sent')
+                  await saveChanges(
+                    invites.length > 0 ? 'Invites Sent' : 'Saved Changes'
+                  )
                   setShowTeamModal(false)
                 }}
               />
