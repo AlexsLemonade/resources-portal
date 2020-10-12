@@ -326,7 +326,7 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.client.force_authenticate(user=self.request.requester)
 
         material_request_data = {
-            "payment_method": "REIMBURSMENT",
+            "payment_method": "REIMBURSEMENT",
             "payment_method_notes": "You know I'm good for it!",
         }
 

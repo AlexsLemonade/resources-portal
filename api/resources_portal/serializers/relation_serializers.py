@@ -54,6 +54,7 @@ class OrganizationRelationSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
+            "is_personal_organization",
             "owner",
             "members",
             "materials",

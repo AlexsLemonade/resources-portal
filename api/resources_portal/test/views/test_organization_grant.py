@@ -102,7 +102,18 @@ class OrganizationGrantTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_post_fails_if_not_organization_owner(self):
+    def test_post_succeeds_if_member(self):
+        grant = GrantFactory(user=self.org_1_member)
+        grant_json = {"id": grant.id}
+
+        self.client.force_authenticate(user=self.org_1_member)
+        url = reverse("organizations-grants-list", args=[self.organization1.id])
+
+        response = self.client.post(url, data=grant_json)
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_post_fails_if_not_member(self):
         grant = GrantFactory()
         grant.user = self.organization1.owner
         grant.save()

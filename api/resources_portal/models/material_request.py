@@ -37,7 +37,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     )
     PAYMENT_METHOD_CHOICES = (
         ("SHIPPING_CODE", "SHIPPING_CODE"),
-        ("REIMBURSMENT", "REIMBURSMENT"),
+        ("REIMBURSEMENT", "REIMBURSEMENT"),
         ("OTHER_PAYMENT_METHODS", "OTHER_PAYMENT_METHODS"),
     )
 
