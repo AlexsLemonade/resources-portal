@@ -23,6 +23,17 @@ class TestGrantPostTestCase(APITestCase):
         self.user.personal_organization = PersonalOrganizationFactory(owner=self.user)
         self.user.personal_organization.grants.set([self.grant])
 
+    def test_list_request_non_admin_fails(self):
+        self.client.force_authenticate(user=self.grant.user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_request_admin_succeeds(self):
+        admin = UserFactory(is_staff=True)
+        self.client.force_authenticate(user=admin)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.grant.user)
         response = self.client.post(self.url, {})

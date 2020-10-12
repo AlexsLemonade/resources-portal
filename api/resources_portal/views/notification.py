@@ -49,11 +49,11 @@ class NotificationSerializer(serializers.ModelSerializer):
 class IsUserOrAdmin(BasePermission):
     def has_permission(self, request, view):
         user = User.objects.get(pk=view.kwargs["parent_lookup_user"])
-        return request.user == user or request.user.is_superuser
+        return request.user == user or request.user.is_staff
 
     def has_object_permission(self, request, view, obj):
         user = User.objects.get(pk=view.kwargs["parent_lookup_user"])
-        return (request.user == user and user == obj.notified_user) or request.user.is_superuser
+        return (request.user == user and user == obj.notified_user) or request.user.is_staff
 
 
 class NotificationViewSet(NestedViewSetMixin, viewsets.ModelViewSet):

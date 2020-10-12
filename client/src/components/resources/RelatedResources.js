@@ -8,7 +8,7 @@ export const RelatedResources = ({ resource }) => {
   React.useEffect(() => {
     const asyncResourceFetch = async () => {
       const relatedRequest = await api.resources.filter({
-        organization_id: resource.organization,
+        organization__id: resource.organization,
         limit: 3
       })
 

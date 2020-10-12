@@ -8,6 +8,7 @@ export const useUser = (defaultUser, defaultToken) => {
   )
 
   React.useEffect(() => {
+    if ((!user || !user.id) && token) logOut()
     if (defaultUser && defaultToken) {
       setUser(defaultUser)
       setToken(defaultToken)
