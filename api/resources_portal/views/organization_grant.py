@@ -24,7 +24,7 @@ class OwnsGrantAndInOrganization(BasePermission):
         organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
 
         # Check this early to avoid unnecessary DB call.
-        if organization.members.filter(pk=request.user.id).count() < 1:
+        if not organization.members.filter(pk=request.user.id).exists():
             return False
 
         if view.action == "create":
