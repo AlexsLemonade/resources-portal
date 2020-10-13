@@ -24,9 +24,17 @@ export const getResourceData = (resource, token) => {
     return customResourceData[token](resource, token)
   }
 
+  const value = resource[token] || resource.additional_metadata[token]
+  const otherValue = resource.additional_metadata[`${token}_other`]
+
+  // join the values unless the value is "Other"
+  const joinOther = Array.isArray(value)
+    ? [...value, otherValue]
+    : `${value !== 'Other' ? value : ''} ${otherValue}`
+
   return {
     token,
     label: getReadable(token),
-    value: resource[token] || resource.additional_metadata[token]
+    value: otherValue ? joinOther : value
   }
 }
