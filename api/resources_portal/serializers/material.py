@@ -52,6 +52,9 @@ class MaterialSerializer(serializers.ModelSerializer):
             "has_publication",
         )
 
+    mta_attachment = AttachmentRelationSerializer()
+    shipping_requirement = ShippingRequirementRelationSerializer()
+
     def validate(self, data):
         """Only allow materials with no open requests to be archived.
         """
@@ -72,7 +75,5 @@ class MaterialSerializer(serializers.ModelSerializer):
 
 class MaterialDetailSerializer(MaterialSerializer):
     contact_user = UserRelationSerializer()
-    mta_attachment = AttachmentRelationSerializer()
-    shipping_requirement = ShippingRequirementRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
     organization = OrganizationRelationSerializer()
