@@ -21,6 +21,7 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "owner",
             "name",
             "description",
+            "is_personal_organization",
             "members",
             "materials",
             "grants",
