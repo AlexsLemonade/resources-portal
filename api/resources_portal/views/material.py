@@ -8,7 +8,11 @@ from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Material, MaterialShareEvent, Organization
 from resources_portal.notifier import send_notifications
-from resources_portal.serializers.material import MaterialDetailSerializer, MaterialSerializer
+from resources_portal.serializers.material import (
+    MaterialDetailSerializer,
+    MaterialListSerializer,
+    MaterialSerializer,
+)
 from resources_portal.views.material_request import MaterialRequestSerializer
 
 
@@ -49,6 +53,8 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return MaterialDetailSerializer
+        elif self.action == "list":
+            return MaterialListSerializer
 
         return MaterialSerializer
 

@@ -70,9 +70,12 @@ class MaterialSerializer(serializers.ModelSerializer):
         return data
 
 
-class MaterialDetailSerializer(MaterialSerializer):
-    contact_user = UserRelationSerializer()
+class MaterialListSerializer(MaterialSerializer):
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirement = ShippingRequirementRelationSerializer()
+
+
+class MaterialDetailSerializer(MaterialListSerializer):
+    contact_user = UserRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
     organization = OrganizationRelationSerializer()
