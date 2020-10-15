@@ -47,11 +47,7 @@ export const ResourceCard = ({
     <Box direction="row" justify="between" align="center" width="full">
       <Box width={{ max: '62%' }}>
         <Link href={`/resources/${resource.id}`}>
-          <BoldAnchor
-            size={size}
-            margin={{ bottom: size }}
-            color="brand"
-          >
+          <BoldAnchor size={size} margin={{ bottom: size }} color="brand">
             {resource.title}
           </BoldAnchor>
         </Link>
