@@ -1,11 +1,9 @@
-from django.db.models import Q
 from django.http import JsonResponse
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from resources_portal.importers import geo, protocols_io, sra
 from resources_portal.importers.protocols_io import ProtocolNotFoundError
-from resources_portal.models import Material
 
 
 def import_dataset(import_source, accession_code, user):
@@ -83,7 +81,6 @@ def import_protocol(protocol_doi, user):
     additional_metadata = {
         "protocol_name": metadata["protocol_name"],
         "description": metadata["description"],
-        "protocol_doi": protocol_doi,
         # There's no abstract to import.
         "abstract": "",
     }
@@ -112,41 +109,10 @@ class ImportViewSet(viewsets.ViewSet):
         import_source = request.data["import_source"]
 
         if import_source == "SRA" or import_source == "GEO":
-            # Check if imported material already exists
-
-            for material in Material.objects.filter(imported=True).filter(
-                Q(import_source="SRA") | Q(import_source="GEO")
-            ):
-                if (
-                    "accession_code" in material.additional_metadata
-                    and request.data["accession_code"]
-                    == material.additional_metadata["accession_code"]
-                ):
-                    return JsonResponse(
-                        {
-                            "error": f'A material with accession code {request.data["accession_code"]} has already been imported.',
-                            "error_code": "ALREADY_IMPORTED",
-                        },
-                        status=400,
-                    )
-
             material_json = import_dataset(
                 import_source, request.data["accession_code"], request.user
             )
         elif import_source == "PROTOCOLS_IO":
-            for material in Material.objects.filter(imported=True, import_source="PROTOCOLS_IO"):
-                if (
-                    "protocol_doi" in material.additional_metadata
-                    and request.data["protocol_doi"] == material.additional_metadata["protocol_doi"]
-                ):
-                    return JsonResponse(
-                        {
-                            "error": f'A material with doi {request.data["protocol_doi"]} has already been imported.',
-                            "error_code": "ALREADY_IMPORTED",
-                        },
-                        status=400,
-                    )
-
             material_json = import_protocol(request.data["protocol_doi"], request.user)
         else:
             return JsonResponse(

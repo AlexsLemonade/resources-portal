@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
@@ -29,6 +30,33 @@ class HasDeleteResources(BasePermission):
 class HasEditResources(BasePermission):
     def has_object_permission(self, request, view, obj):
         return request.user.has_perm("edit_resources", obj.organization)
+
+
+def validateImport(data):
+    if data["import_source"] == "SRA" or data["import_source"] == "GEO":
+        # Check if imported material already exists
+
+        for material in Material.objects.filter(imported=True).filter(
+            Q(import_source="SRA") | Q(import_source="GEO")
+        ):
+            if (
+                "accession_code" in data["additional_metadata"]
+                and data["additional_metadata"]["accession_code"]
+                == material.additional_metadata["accession_code"]
+            ):
+                return {"valid": False, "identifier": data["additional_metadata"]["accession_code"]}
+
+        return {"valid": True}
+    elif data["import_source"] == "PROTOCOLS_IO":
+        for material in Material.objects.filter(imported=True, import_source="PROTOCOLS_IO"):
+            if (
+                "protocol_doi" in material.additional_metadata
+                and data["additional_metadata"]["protocol_doi"]
+                == material.additional_metadata["protocol_doi"]
+            ):
+                return {"valid": False, "identifier": data["additional_metadata"]["protocol_doi"]}
+
+        return {"valid": True}
 
 
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
@@ -89,6 +117,17 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             "add_resources", Organization.objects.get(pk=request.data["organization"])
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
+
+        if serializer.validated_data["imported"] == True:
+            importValidation = validateImport(serializer.validated_data)
+            if not importValidation["valid"]:
+                return Response(
+                    {
+                        "error": f'A material with identifier {importValidation["identifier"]} has already been imported.',
+                        "error_code": "ALREADY_IMPORTED",
+                    },
+                    status=400,
+                )
 
         response = super(MaterialViewSet, self).create(request, *args, **kwargs)
 
