@@ -24,9 +24,16 @@ export const getResourceData = (resource, token) => {
     return customResourceData[token](resource, token)
   }
 
+  const baseValue = resource[token] || resource.additional_metadata[token]
+  const otherValue = resource.additional_metadata[`${token}_other`]
+  const withOther = Array.isArray(baseValue)
+    ? [...baseValue, otherValue]
+    : otherValue
+  const value = otherValue ? withOther : baseValue
+
   return {
     token,
     label: getReadable(token),
-    value: resource[token] || resource.additional_metadata[token]
+    value
   }
 }

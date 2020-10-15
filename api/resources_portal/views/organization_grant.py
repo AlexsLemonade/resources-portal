@@ -18,13 +18,13 @@ class IsMemberOfOrganization(BasePermission):
         return request.user in organization.members.all()
 
 
-class OwnsGrantAndOrganization(BasePermission):
+class OwnsGrantAndInOrganization(BasePermission):
     def has_permission(self, request, view):
 
         organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
 
         # Check this early to avoid unnecessary DB call.
-        if not request.user == organization.owner:
+        if not organization.members.filter(pk=request.user.id).exists():
             return False
 
         if view.action == "create":
@@ -35,7 +35,7 @@ class OwnsGrantAndOrganization(BasePermission):
         return request.user == grant.user
 
 
-class OwnsGrantOrOrganization(BasePermission):
+class OwnsGrantOrInOrganization(BasePermission):
     def has_permission(self, request, view):
 
         organization = Organization.objects.get(pk=view.kwargs["parent_lookup_organizations"])
@@ -61,9 +61,9 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action == "create":
-            permission_classes = [IsAuthenticated, OwnsGrantAndOrganization]
+            permission_classes = [IsAuthenticated, OwnsGrantAndInOrganization]
         elif self.action == "destroy":
-            permission_classes = [IsAuthenticated, OwnsGrantOrOrganization]
+            permission_classes = [IsAuthenticated, OwnsGrantOrInOrganization]
         else:
             permission_classes = [IsAuthenticated, IsMemberOfOrganization]
 
