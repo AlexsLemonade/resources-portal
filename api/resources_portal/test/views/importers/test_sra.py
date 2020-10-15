@@ -1,12 +1,9 @@
-from unittest.mock import patch
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import Material
-from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
-from resources_portal.test.utils import get_mock_dataset_data
+from resources_portal.test.factories import OrganizationFactory, UserFactory
 
 
 class ImportSRATestCase(APITestCase):

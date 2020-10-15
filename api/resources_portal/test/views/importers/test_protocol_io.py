@@ -1,17 +1,9 @@
-from unittest.mock import patch
-
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from resources_portal.models import GrantOrganizationAssociation, Material
-from resources_portal.test.factories import (
-    GrantFactory,
-    MaterialFactory,
-    OrganizationFactory,
-    UserFactory,
-)
-from resources_portal.test.utils import get_mock_protocol_data
+from resources_portal.test.factories import GrantFactory, OrganizationFactory, UserFactory
 
 
 class ImportProtocolTestCase(APITestCase):
