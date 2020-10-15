@@ -28,28 +28,51 @@ const PopoverBox = styled(Box)`
 `
 
 export const Popover = ({ label, children }) => {
-  const popoverRef = React.useRef()
+  const buttonRef = React.useRef()
   const [show, setShow] = React.useState(false)
+  const onDropClose = React.useCallback(
+    (event) => {
+      // if the user has clicked on our Button, don't do anything here,
+      // handle that in onClickInternal() below.
+      let node = event.target
+      while (node !== document && node !== buttonRef.current) {
+        node = node.parentNode
+      }
+      if (node !== buttonRef.current) {
+        // don't change internal state if caller is driving
+        setShow(false)
+      }
+    },
+    [buttonRef]
+  )
+  const onClickInternal = React.useCallback(() => {
+    if (!show) {
+      setShow(true)
+    } else {
+      setShow(false)
+    }
+  }, [show])
+
   return (
     <>
       <Button
         label={label}
-        ref={popoverRef}
-        onClick={() => setShow(!show)}
+        ref={buttonRef}
+        onClick={onClickInternal}
         plain
         color="brand"
         width="auto"
       />
-      {popoverRef.current && show && (
+      {buttonRef.current && show && (
         <PopoverDrop
           align={{ top: 'bottom', left: 'left' }}
-          target={popoverRef.current}
-          onEsc={() => setShow(false)}
+          target={buttonRef.current}
+          onEsc={onDropClose}
+          onClickOutside={onDropClose}
           stretch={false}
           overflow="initial"
         >
           <PopoverBox pad="medium" background="white" round={false}>
-            {Array(50).map(() => children)}
             {children}
           </PopoverBox>
         </PopoverDrop>
