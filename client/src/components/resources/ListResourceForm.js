@@ -185,11 +185,9 @@ export default ({ defaultStep = -1 }) => {
               gap="large"
               margin={{ vertical: 'large' }}
             >
-              <Button label="List Privately" />
               <Button
                 primary
                 onClick={async () => {
-                  // you need to show the resource added screen
                   const finishedResource = await save()
                   if (finishedResource.id) setSavedResource(finishedResource)
                 }}
