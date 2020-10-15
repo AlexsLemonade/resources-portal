@@ -127,7 +127,7 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         ):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        if serializer.validated_data["imported"] == True:
+        if serializer.validated_data["imported"]:
             importValidation = validateImport(serializer.validated_data)
             if not importValidation["valid"]:
                 return Response(
