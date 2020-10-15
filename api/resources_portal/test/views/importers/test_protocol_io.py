@@ -88,32 +88,6 @@ class ImportProtocolTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-    @patch(
-        "resources_portal.importers.protocols_io.gather_all_metadata",
-        side_effect=get_mock_protocol_data,
-    )
-    def test_import_previously_imported_protocol_fails(self, mock_protocol):
-        self.client.force_authenticate(user=self.user)
-        protocol_doi = "12345"
-        response = self.client.post(
-            self.url, {"import_source": "PROTOCOLS_IO", "protocol_doi": protocol_doi}
-        )
-        MaterialFactory(
-            imported=True,
-            import_source="PROTOCOLS_IO",
-            additional_metadata={
-                "protocol_doi": response.json()["additional_metadata"]["protocol_doi"]
-            },
-        )
-
-        # Try to import the same material again
-        response = self.client.post(
-            self.url, {"import_source": "PROTOCOLS_IO", "protocol_doi": protocol_doi}
-        )
-
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
-
     def test_import_from_unauthenticated_fails(self):
         response = self.client.post(
             self.url,

@@ -97,6 +97,71 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(len(response.json()["results"]), 1)
 
+    def test_import_previously_imported_geo_fails(self):
+        self.client.force_authenticate(user=self.user)
+        accession_code = "12345"
+
+        material = MaterialFactory(
+            imported=True,
+            import_source="GEO",
+            contact_user=self.user,
+            organization=self.organization,
+            additional_metadata={"accession_code": accession_code},
+        )
+
+        imported_data = model_to_dict(material)
+
+        # Try to import the same material again
+        response = self.client.post(self.url, imported_data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+
+    def test_import_previously_imported_protocol_fails(self):
+        self.client.force_authenticate(user=self.user)
+        protocol_doi = "12345"
+        response = self.client.post(
+            self.url, {"import_source": "PROTOCOLS_IO", "protocol_doi": protocol_doi}
+        )
+
+        material = MaterialFactory(
+            imported=True,
+            import_source="PROTOCOLS_IO",
+            contact_user=self.user,
+            organization=self.organization,
+            additional_metadata={"protocol_doi": protocol_doi},
+        )
+
+        imported_data = model_to_dict(material)
+
+        # Try to import the same material again
+        response = self.client.post(self.url, imported_data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+
+    def test_import_previously_imported_sra_fails(self):
+        self.client.force_authenticate(user=self.user)
+        accession_code = "12345"
+        response = self.client.post(
+            self.url, {"import_source": "SRA", "accession_code": accession_code}
+        )
+        material = MaterialFactory(
+            imported=True,
+            import_source="SRA",
+            contact_user=self.user,
+            organization=self.organization,
+            additional_metadata={"accession_code": accession_code},
+        )
+
+        imported_data = model_to_dict(material)
+
+        # Try to import the same material again
+        response = self.client.post(self.url, imported_data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+
 
 class TestSingleMaterialTestCase(APITestCase):
     """
