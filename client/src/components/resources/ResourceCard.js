@@ -50,7 +50,6 @@ export const ResourceCard = ({
           <BoldAnchor
             size={size}
             margin={{ bottom: size }}
-            weight="bold"
             color="brand"
           >
             {resource.title}
