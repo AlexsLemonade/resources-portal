@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets
 from rest_framework.exceptions import ValidationError
@@ -44,7 +45,11 @@ def validateImport(data):
                 and data["additional_metadata"]["accession_code"]
                 == material.additional_metadata["accession_code"]
             ):
-                return {"valid": False, "identifier": data["additional_metadata"]["accession_code"]}
+                return {
+                    "valid": False,
+                    "identifier": data["additional_metadata"]["accession_code"],
+                    "material": model_to_dict(material),
+                }
 
         return {"valid": True}
     elif data["import_source"] == "PROTOCOLS_IO":
@@ -54,7 +59,11 @@ def validateImport(data):
                 and data["additional_metadata"]["protocol_doi"]
                 == material.additional_metadata["protocol_doi"]
             ):
-                return {"valid": False, "identifier": data["additional_metadata"]["protocol_doi"]}
+                return {
+                    "valid": False,
+                    "identifier": data["additional_metadata"]["protocol_doi"],
+                    "material": model_to_dict(material),
+                }
 
         return {"valid": True}
 
@@ -125,6 +134,7 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
                     {
                         "error": f'A material with identifier {importValidation["identifier"]} has already been imported.',
                         "error_code": "ALREADY_IMPORTED",
+                        "material": importValidation["material"],
                     },
                     status=400,
                 )

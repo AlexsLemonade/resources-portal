@@ -116,6 +116,9 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+        self.assertEqual(
+            response.json()["material"]["additional_metadata"]["accession_code"], accession_code
+        )
 
     def test_import_previously_imported_protocol_fails(self):
         self.client.force_authenticate(user=self.user)
@@ -139,6 +142,9 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+        self.assertEqual(
+            response.json()["material"]["additional_metadata"]["protocol_doi"], protocol_doi
+        )
 
     def test_import_previously_imported_sra_fails(self):
         self.client.force_authenticate(user=self.user)
@@ -161,6 +167,9 @@ class TestMaterialListTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()["error_code"], "ALREADY_IMPORTED")
+        self.assertEqual(
+            response.json()["material"]["additional_metadata"]["accession_code"], accession_code
+        )
 
 
 class TestSingleMaterialTestCase(APITestCase):
