@@ -1,6 +1,5 @@
 import React from 'react'
 import dynamic from 'next/dynamic'
-import { Heading } from 'grommet'
 import { ResourceContextProvider } from 'contexts/ResourceContext'
 
 const ResourceForm = dynamic(
@@ -12,9 +11,6 @@ export const ResourcesList = () => {
   // - prevent people with no grants
   return (
     <ResourceContextProvider localStorageName="list-resource">
-      <Heading level={4} serif>
-        List a Resource
-      </Heading>
       <ResourceForm />
     </ResourceContextProvider>
   )
