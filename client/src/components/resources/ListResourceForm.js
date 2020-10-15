@@ -56,7 +56,6 @@ export default ({ defaultStep = -1 }) => {
             index={step}
           />
         </Box>
-
         {step === -1 && (
           <Box width="large" margin={{ bottom: 'xlarge' }}>
             <Box width="large" gap="large">

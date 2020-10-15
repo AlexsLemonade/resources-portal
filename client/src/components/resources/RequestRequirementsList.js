@@ -1,9 +1,9 @@
 import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
-import { Popover } from 'components/Popover'
+import Popover from 'components/Popover'
 import getRequestRequirements from 'helpers/getRequestRequirements'
 
-export const ShippingRequirementPopover = ({ shippingRequirement }) => {
+const ShippingRequirementPopover = ({ shippingRequirement }) => {
   const {
     sharerPaysShipping,
     acceptsOtherPaymentMethods,

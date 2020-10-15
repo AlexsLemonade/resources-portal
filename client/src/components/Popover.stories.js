@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Grommet, Box, Text } from 'grommet'
 import { storiesOf } from '@storybook/react'
-import { Popover } from './Popover'
+import Popover from './Popover'
 import theme from '../theme'
 
 storiesOf('Popover', module).add('default', () => {

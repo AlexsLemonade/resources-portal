@@ -27,7 +27,7 @@ const PopoverBox = styled(Box)`
   }
 `
 
-export const Popover = ({ label, children }) => {
+export default ({ label, children }) => {
   const buttonRef = React.useRef()
   const [show, setShow] = React.useState(false)
   const onDropClose = React.useCallback(
@@ -80,5 +80,3 @@ export const Popover = ({ label, children }) => {
     </>
   )
 }
-
-export default Popover
