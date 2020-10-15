@@ -11,7 +11,12 @@ export default ({
   onEditResourceRequirements,
   imported = false
 }) => {
-  const { resource } = useResourceForm()
+  const { resource, existingRequirementsResource } = useResourceForm()
+
+  const requirementsResource =
+    existingRequirementsResource && existingRequirementsResource.id
+      ? existingRequirementsResource
+      : resource
 
   return (
     <Box width="xlarge">
@@ -78,7 +83,7 @@ export default ({
               onClick={onEditResourceRequirements}
             />
           </Box>
-          <ReviewRequestRequirements resource={resource} />
+          <ReviewRequestRequirements resource={requirementsResource} />
         </Box>
       )}
     </Box>
