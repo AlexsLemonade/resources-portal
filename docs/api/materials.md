@@ -39,6 +39,20 @@ shipping_requirements_id | integer   | The ID of the shipping requerements. Null
 *Note:*
 
 - Not Authorization Protected
+- You cannot POST the same imported material twice. If you try to do so, you will receive an error in the following format:
+
+```json
+Content-Type application/json
+200 OK
+
+{
+    "error": "A material with identifier 12345 has already been imported.",
+    "error_code": "ALREADY_IMPORTED",
+    "material": {},
+}
+```
+
+The "material" attribute will contain the existing material's information.
 
 ## Get a material's information
 
