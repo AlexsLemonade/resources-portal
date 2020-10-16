@@ -7,7 +7,7 @@ export const PublicationInformation = ({ resource }) => {
       data={[
         {
           label: 'PubMed ID',
-          value: resource.pubmedid
+          value: resource.pubmed_id
         },
         {
           label: 'Publication Title',
