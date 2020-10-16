@@ -202,7 +202,8 @@ export default () => {
                           color="black-tint-60"
                           margin={{ bottom: 'small' }}
                         >
-                          What payment methods do you support? Choose at least 1.
+                          What payment methods do you support? Choose at least
+                          1.
                         </Text>
                         <CheckBoxWithInfo
                           label="Shipping Carrier Code ( ex: UPS, FedEx )"
