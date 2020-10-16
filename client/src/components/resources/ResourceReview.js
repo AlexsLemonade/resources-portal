@@ -8,12 +8,10 @@ import { ResourceDetails } from 'components/resources/ResourceDetails'
 import { PublicationInformation } from 'components/resources/PublicationInformation'
 import { ReviewRequestRequirements } from 'components/resources/RequestRequirements'
 import Icon from 'components/Icon'
-import { isSupportedImportSource } from '.'
 
 export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
   const {
     resource,
-    importSource,
     existingRequirementsResource,
     contactUserOptions
   } = useResourceForm()
