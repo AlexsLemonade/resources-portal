@@ -106,6 +106,7 @@ export const readableNames = {
   purpose: 'Purpose',
   quality: 'Quality',
   relevant_mutations: 'Relevant Mutations',
+  resource_type: 'Resource Type',
   response_to_qa_performed: 'Response to QA Performed',
   response_to_standard_of_care: 'Response to Standard of Care',
   response_to_treatment: 'Response to Treatment',
