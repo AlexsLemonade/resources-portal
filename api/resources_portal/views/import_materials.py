@@ -81,6 +81,7 @@ def import_protocol(protocol_doi, user):
     additional_metadata = {
         "protocol_name": metadata["protocol_name"],
         "description": metadata["description"],
+        "protocol_doi": protocol_doi,
         # There's no abstract to import.
         "abstract": "",
     }
