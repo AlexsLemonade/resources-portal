@@ -103,6 +103,7 @@ export default () => {
               onClick={() => {
                 // TODO:
                 // we need validation here
+                setAttribute('imported', true)
                 setStep(1)
               }}
               primary
@@ -113,7 +114,7 @@ export default () => {
       )}
       {step === 1 && canShowReview && (
         <>
-          <ResourceReview onEditResourceDetails={() => setStep(0)} imported />
+          <ResourceReview onEditResourceDetails={() => setStep(0)} />
           <Box
             width="xlarge"
             direction="row"
