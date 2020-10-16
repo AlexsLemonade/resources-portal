@@ -27,7 +27,7 @@ export const details = [
       'tissue_of_origin',
       'tumor_type',
       'specimen_tumor_tissue',
-      'histology',
+      'tissue_histology',
       'tumor_grade',
       'disease_stage',
       'specific_markers',
@@ -53,9 +53,9 @@ export const details = [
   {
     model_quality_assurance: [
       'tumor_characterization_technology',
-      'is_not_of_EBV_origin',
-      'is_passage_QA_performed',
-      'response_to_QA_performed',
+      'is_not_of_ebv_origin',
+      'is_passage_qa_performed',
+      'response_to_qa_performed',
       'response_to_standard_of_care'
     ]
   },
@@ -65,7 +65,7 @@ export const details = [
       'treatment_protocol',
       'treatment_response',
       'tumor_omics',
-      'matastases_in_strain',
+      'metastases_in_strain',
       'lag_time'
     ]
   },
@@ -102,7 +102,7 @@ export const listForm = [
       'tissue_of_origin',
       'tumor_type',
       'specimen_tumor_tissue',
-      'histology',
+      'tissue_histology',
       'tumor_grade',
       'disease_stage',
       'specific_markers',
@@ -127,10 +127,10 @@ export const listForm = [
   },
   {
     model_quality_assurance: [
-      'tumor_chracterization_technology',
-      'is_not_of_EBV_origin',
-      'is_passage_QA_performed',
-      'response_to_QA_performed',
+      'tumor_characterization_technology',
+      'is_not_of_ebv_origin',
+      'is_passage_qa_performed',
+      'response_to_qa_performed',
       'response_to_standard_of_care'
     ]
   },
@@ -140,7 +140,7 @@ export const listForm = [
       'treatment_protocol',
       'treatment_response',
       'tumor_omics',
-      'matastases_in_strain',
+      'metastases_in_strain',
       'lag_time'
     ]
   },
