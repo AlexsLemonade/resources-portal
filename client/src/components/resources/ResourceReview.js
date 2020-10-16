@@ -2,21 +2,30 @@ import React from 'react'
 import { Box, Text, Button } from 'grommet'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable } from 'helpers/readableNames'
+import { HeaderRow } from 'components/HeaderRow'
+import DetailsTable from 'components/DetailsTable'
 import { ResourceDetails } from 'components/resources/ResourceDetails'
+import { PublicationInformation } from 'components/resources/PublicationInformation'
 import { ReviewRequestRequirements } from 'components/resources/RequestRequirements'
 import Icon from 'components/Icon'
+import { isSupportedImportSource } from '.'
 
-export default ({
-  onEditResourceDetails,
-  onEditResourceRequirements,
-  imported = false
-}) => {
-  const { resource, existingRequirementsResource } = useResourceForm()
-
+export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
+  const {
+    resource,
+    importSource,
+    existingRequirementsResource,
+    contactUserOptions
+  } = useResourceForm()
+  const { imported } = resource
   const requirementsResource =
     existingRequirementsResource && existingRequirementsResource.id
       ? existingRequirementsResource
       : resource
+
+  const contactUser = contactUserOptions.find(
+    (u) => u.id === resource.contact_user
+  )
 
   return (
     <Box width="xlarge">
@@ -63,6 +72,21 @@ export default ({
           />
         </Box>
         <ResourceDetails resource={resource} />
+        <HeaderRow label="Contact User" />
+        <DetailsTable
+          data={[
+            {
+              label: 'Name',
+              value: contactUser.full_name
+            },
+            {
+              label: 'Email',
+              value: contactUser.email
+            }
+          ]}
+        />
+        <HeaderRow label="Publication Information" />
+        <PublicationInformation resource={resource} />
       </Box>
       {!imported && (
         <Box>
