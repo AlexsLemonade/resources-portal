@@ -369,7 +369,12 @@ export default () => {
     )
     if (importRequest.isOk) {
       const { response } = importRequest
-      setResource({ ...resource, ...response, imported: true })
+      setResource({
+        ...resource,
+        ...response,
+        imported: true,
+        contact_user: user.id
+      })
     }
     setFetched(importRequest.isOk)
     return importRequest.isOk
