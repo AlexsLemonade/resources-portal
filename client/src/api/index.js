@@ -322,7 +322,7 @@ export default {
         method: 'DELETE'
       }),
     copy: (id, authorization) =>
-      request(getAPIURL(`attachments/${id}/copy/`), {
+      request(getAPIURL(`attachments/${id}/copy`), {
         authorization,
         method: 'POST'
       })

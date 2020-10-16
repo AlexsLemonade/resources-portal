@@ -26,21 +26,26 @@ export default () => {
     errors,
     setErrors,
     didSetOrganization,
-    clearResourceContext
+    clearResourceContext,
+    teamResources,
+    existingRequirementsResource,
+    setExistingRequirementsResource
   } = React.useContext(ResourceContext)
   const { addAlert } = useAlertsQueue()
-  const config = configs[resource.category]
+  const config = resource ? configs[resource.category] : undefined
 
   // support import forms based on source
   // support a default list form
   const getForm = () => {
-    const importSource = resource.import_source
-    if (config && importSource) {
-      return [...config.importForm(importSource), ...formDefaults]
-    }
+    if (resource) {
+      const importSource = resource.import_source
+      if (config && importSource) {
+        return [...config.importForm(importSource), ...formDefaults]
+      }
 
-    if (config && resource.category) {
-      return [...config.listForm, ...formDefaults]
+      if (config && resource.category) {
+        return [...config.listForm, ...formDefaults]
+      }
     }
 
     return undefined
@@ -48,13 +53,19 @@ export default () => {
 
   const organizationOptions = [...(user.organizations || [])]
 
-  const grant = grantOptions.find((g) => g.id === resource.grant_id) || {}
+  const grant = resource
+    ? grantOptions.find((g) => g.id === resource.grant_id) || {}
+    : {}
 
-  const isSupported = isSupportedImportSource(resource.import_source)
-  const importAttribute = getImportAttribute(resource.import_source)
+  const isSupported = resource
+    ? isSupportedImportSource(resource.import_source)
+    : undefined
+  const importAttribute = resource
+    ? getImportAttribute(resource.import_source)
+    : undefined
 
   React.useEffect(() => {
-    if (grantOptions.length === 0 && resource.organization) {
+    if (resource && grantOptions.length === 0 && resource.organization) {
       didSetOrganization(resource.organization)
     }
   }, [resource])
@@ -102,6 +113,9 @@ export default () => {
   }
 
   const validateShippingRequirement = () => {
+    if (existingRequirementsResource && existingRequirementsResource.id)
+      return true
+
     const shippingRequirement = getAttribute('shipping_requirement')
     const sharerPaysShipping = getAttribute('sharer_pays_shipping')
 
@@ -219,7 +233,7 @@ export default () => {
 
       if (shippingRequest.isOk) {
         setAttribute('shipping_requirement', shippingRequest.response)
-        return shippingRequest.response.id
+        return shippingRequest.response
       }
     }
     return undefined
@@ -268,25 +282,59 @@ export default () => {
   }
 
   const save = async () => {
-    const shippingRequirementId = await saveShippingRequirement()
-
-    const mtaAttachment = getAttribute('mta_attachment')
     const saveResource = { ...resource }
+    // these are posted after created
     delete saveResource.sequence_maps
-    delete saveResource.mta_attachment
+    delete saveResource.grants
 
-    if (shippingRequirementId) {
-      saveResource.shipping_requirement = shippingRequirementId
+    if (existingRequirementsResource.id) {
+      // apply requirements from existing resource
+      saveResource.needs_abstract = existingRequirementsResource.needs_abstract
+      saveResource.needs_irb = existingRequirementsResource.needs_irb
+
+      if (existingRequirementsResource.mta_attachment) {
+        const cloneRequest = await api.attachments.copy(
+          existingRequirementsResource.mta_attachment.id,
+          token
+        )
+        if (cloneRequest.isOk) {
+          saveResource.mta_attachment = cloneRequest.response.id
+        }
+      }
+
+      if (existingRequirementsResource.shipping_requirement) {
+        const {
+          shipping_requirement: cloneShippingRequirement
+        } = existingRequirementsResource
+        delete cloneShippingRequirement.id
+        const cloneShippingRequest = await api.shippingRequirements.create(
+          cloneShippingRequirement,
+          token
+        )
+        if (cloneShippingRequest.isOk) {
+          saveResource.shipping_requirement = cloneShippingRequest.response.id
+        }
+      }
+    } else {
+      // shipping requirement
+      delete saveResource.shipping_requirement
+      const shippingRequirement = await saveShippingRequirement()
+      if (shippingRequirement) {
+        saveResource.shipping_requirement = shippingRequirement.id
+      }
+
+      // mta attachment
+      delete saveResource.mta_attachment
+      const mtaAttachment = getAttribute('mta_attachment')
+      // this wants an integer not an object
+      if (mtaAttachment) {
+        saveResource.mta_attachment = mtaAttachment.id
+      }
     }
 
     if (config.titleAttribute) {
       // we need to choose the title for the resource based on the attributes
       saveResource.title = getAttribute(config.titleAttribute)
-    }
-
-    // this wants an integer not an object
-    if (mtaAttachment) {
-      saveResource.mta_attachment = mtaAttachment.id
     }
 
     const { isOk, response: savedResource } = saveResource.id
@@ -350,6 +398,9 @@ export default () => {
     errors,
     grant,
     save,
-    clearResourceContext
+    clearResourceContext,
+    teamResources,
+    existingRequirementsResource,
+    setExistingRequirementsResource
   }
 }

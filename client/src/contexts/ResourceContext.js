@@ -31,6 +31,11 @@ export const ResourceContextProvider = ({
 
   const [grantOptions, setGrantOptions] = React.useState([])
   const [contactUserOptions, setContactUserOptions] = React.useState([])
+  const [teamResources, setTeamResources] = React.useState([])
+  const [
+    existingRequirementsResource,
+    setExistingRequirementsResource
+  ] = React.useState('')
   const [errors, setErrors] = React.useState([])
   const { user, token, refreshUser } = useUser()
   const fetchRef = React.useRef(false)
@@ -56,6 +61,15 @@ export const ResourceContextProvider = ({
       const teamRequest = await api.teams.get(teamId, token)
       const members = teamRequest.isOk ? teamRequest.response.members : []
       setContactUserOptions(members)
+
+      // set hasResources when team changes
+      const resourcesRequest = await api.resources.filter({
+        organization__id: teamId || resource.organization,
+        imported: false,
+        limit: 20
+      })
+      setTeamResources(resourcesRequest.response.results)
+
       fetchRef.current = false
     }
   }
@@ -64,6 +78,7 @@ export const ResourceContextProvider = ({
   const clearResourceContext = () => {
     setResource()
     setFetched()
+    setExistingRequirementsResource()
   }
 
   return (
@@ -80,7 +95,10 @@ export const ResourceContextProvider = ({
         didSetOrganization,
         errors,
         setErrors,
-        clearResourceContext
+        clearResourceContext,
+        teamResources,
+        existingRequirementsResource,
+        setExistingRequirementsResource
       }}
     >
       {children}
