@@ -14,7 +14,9 @@ import useResourceForm from 'hooks/useResourceForm'
 export default ({ defaultStep = -1 }) => {
   const [savedResource, setSavedResource] = React.useState(false)
   const [step, setStep] = React.useState(defaultStep)
-
+  const goBack = () => {
+    setStep(step - 1)
+  }
   const goToNextStep = () => {
     // validate current step
     setStep(step + 1)
@@ -28,9 +30,17 @@ export default ({ defaultStep = -1 }) => {
     clearResourceContext
   } = useResourceForm()
 
+  const loadedRef = React.useRef(false)
+
   React.useEffect(() => {
-    if (step === defaultStep && defaultStep === -1 && resource.organization) {
+    if (
+      !loadedRef.current &&
+      step === defaultStep &&
+      defaultStep === -1 &&
+      resource.organization
+    ) {
       setStep(0)
+      loadedRef.current = true
     }
 
     if (savedResource) {
@@ -140,7 +150,9 @@ export default ({ defaultStep = -1 }) => {
               direction="row"
               justify="end"
               margin={{ vertical: 'large' }}
+              gap="medium"
             >
+              <Button onClick={goBack} label="Back" />
               <Button
                 onClick={() => {
                   validate(goToNextStep)
@@ -159,7 +171,9 @@ export default ({ defaultStep = -1 }) => {
               direction="row"
               justify="end"
               margin={{ vertical: 'large' }}
+              gap="medium"
             >
+              <Button onClick={goBack} label="Back" />
               <Button
                 primary
                 label="Next"
