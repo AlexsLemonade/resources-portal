@@ -6,8 +6,7 @@ import { getReadable } from 'helpers/readableNames'
 import { getResourceData } from 'helpers/getResourceData'
 import { getPubmedUrl } from 'helpers/getPubmedUrl'
 import { getDOIUrl } from 'helpers/getDOIUrl'
-import ResourceTypeIcon from '../../images/resource-type.svg'
-import OrganismIcon from '../../images/organism.svg'
+import { ResourceTypeOrganisms } from 'components/resources/ResourceCard'
 import configs from './configs'
 
 export const SearchResult = ({
@@ -40,36 +39,14 @@ export const SearchResult = ({
         margin={{ bottom: 'medium' }}
         pad={{ bottom: 'medium' }}
       >
-        <div>
+        <Box>
           <Heading level="5" margin={{ top: '0', bottom: 'medium' }}>
             <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
               <Anchor bold label={resource.title} />
             </Link>
           </Heading>
-          <Box direction="row">
-            <Box
-              as="span"
-              margin={{ right: 'large' }}
-              gap="small"
-              align="center"
-              direction="row"
-            >
-              <ResourceTypeIcon />
-              {getReadable(resource.category)}
-            </Box>
-            {resource.organisms.length > 0 && (
-              <Box as="span" align="center" direction="row" gap="small">
-                <OrganismIcon />
-                <span>
-                  {resource.organisms.map((organism, i) => [
-                    i !== 0 && ', ',
-                    <Text key={organism}>{organism}</Text>
-                  ])}
-                </span>
-              </Box>
-            )}
-          </Box>
-        </div>
+          <ResourceTypeOrganisms resource={resource} />
+        </Box>
         <Box>
           {!resource.imported && (
             <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
