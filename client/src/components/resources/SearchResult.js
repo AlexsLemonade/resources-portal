@@ -191,40 +191,13 @@ export const RequestRequirements = ({ resource }) => {
     )
   }
 
-  const requirements = []
-  const MTA = 'Material Transfer Agreement'
-  if (resource.needs_abstract) requirements.push('Abstract')
-  if (resource.needs_irb) requirements.push('IRB')
-  if (Object.keys(resource.mta_attachment).length) requirements.push(MTA)
-  if (Object.keys(resource.shipping_requirement).length)
-    requirements.push('Shipping Information')
-
-  // NOTE: mta_s3_url will be an attachment in the near future
   return (
     <SearchResultDetail
       title="Request Requirements"
       margin={{ top: 'small' }}
       direction="row"
     >
-      {requirements.length === 0 && 'Not Available'}
-      {requirements.length > 0 && (
-        <span>
-          {requirements.map((req, i) => [
-            i !== 0 && ', ',
-            req === MTA ? (
-              <Anchor
-                key={req}
-                href={resource.mta_attachment.download_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                label={req}
-              />
-            ) : (
-              <Text key={req}>{req}</Text>
-            )
-          ])}
-        </span>
-      )}
+      <RequestRequirementsList resource={resource} />
     </SearchResultDetail>
   )
 }
