@@ -21,7 +21,7 @@ const ResourceDetailsPage = ({ resource }) => {
       </Text>
     )
   return (
-    <>
+    <Box margin={{ bottom: 'xlarge' }}>
       <Box
         direction="row"
         justify="between"
@@ -46,14 +46,16 @@ const ResourceDetailsPage = ({ resource }) => {
             <TabHeading title="Contact Submitter" />
             <ContactSubmitter resource={resource} />
           </Tab>
-          <Tab title="Request Requirements">
-            <TabHeading title="Request Requirements" />
-            <RequestRequirements resource={resource} />
-          </Tab>
+          {!resource.imported && (
+            <Tab title="Request Requirements">
+              <TabHeading title="Request Requirements" />
+              <RequestRequirements resource={resource} />
+            </Tab>
+          )}
         </Tabs>
       </Box>
       <RelatedResources resource={resource} />
-    </>
+    </Box>
   )
 }
 
