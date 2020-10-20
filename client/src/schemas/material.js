@@ -123,6 +123,7 @@ const materialCategories = {
     governance_restriction: string()
   }),
   OTHER: object({
+    resource_type: string().required(),
     description: string().required()
   })
 }

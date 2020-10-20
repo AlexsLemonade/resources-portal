@@ -4,6 +4,7 @@ import { getReadable } from 'helpers/readableNames'
 import useResourceForm from 'hooks/useResourceForm'
 import { HeaderRow } from '../HeaderRow'
 import { ResourceFormField } from './ResourceFormField'
+import { disableImportAttribute } from '.'
 
 // TODO:
 // add helper text
@@ -42,7 +43,7 @@ export default () => {
               attribute={attribute}
               contactUserOptions={contactUserOptions}
               error={attributeHasError(attribute)}
-              disabled={attribute === importAttribute || attribute === 'url'}
+              disabled={disableImportAttribute(attribute, importAttribute)}
             />
           ))}
         </Box>

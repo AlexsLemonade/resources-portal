@@ -202,6 +202,12 @@ export const formDefaults = [
 ]
 
 // helper functions
+export const disableImportAttribute = (attribute, importAttribute) => {
+  return importAttribute
+    ? attribute === importAttribute || attribute === 'url'
+    : false
+}
+
 export const isMetadataAttribute = (attribute) => {
   return !attributes.includes(attribute)
 }
