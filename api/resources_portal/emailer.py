@@ -1,3 +1,4 @@
+import logging
 import os
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -6,8 +7,11 @@ from email.mime.text import MIMEText
 from django.conf import settings
 
 import boto3
+import premailer
 
 from resources_portal.config.logging import get_and_configure_logger
+
+logging.getLogger("CSSUTILS").setLevel("CRITICAL")
 
 logger = get_and_configure_logger(__name__)
 
@@ -106,8 +110,14 @@ def send_mail(
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
+    inlined_html = None
+    if html:
+        inlined_html = premailer.transform(html)
+
     if settings.AWS_SES_DOMAIN:
-        msg = create_multipart_message(source, recipients, title, text, html, embedded_images)
+        msg = create_multipart_message(
+            source, recipients, title, text, inlined_html, embedded_images
+        )
         ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
         return ses_client.send_raw_email(
             Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}

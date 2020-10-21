@@ -31,13 +31,11 @@ logger = get_and_configure_logger(__name__)
 
 
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/notification_email_templated_inlined.html")
+    Path("resources_portal/email_assets/notification_email_template.html")
     .read_text()
     .replace("\n", "")
 )
-CTA_HTML = (
-    Path("resources_portal/email_assets/cta_templated_inlined.html").read_text().replace("\n", "")
-)
+CTA_HTML = Path("resources_portal/email_assets/cta_template.html").read_text().replace("\n", "")
 
 
 class Notification(SafeDeleteModel, ComputedFieldsModel):

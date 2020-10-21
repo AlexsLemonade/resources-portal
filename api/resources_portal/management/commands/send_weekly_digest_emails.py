@@ -17,18 +17,14 @@ from resources_portal.models import User
 logger = get_and_configure_logger(__name__)
 
 EMAIL_HTML_TEMPLATE = (
-    Path("resources_portal/email_assets/weekly_email_template_inlined.html")
-    .read_text()
-    .replace("\n", "")
+    Path("resources_portal/email_assets/weekly_email_template.html").read_text().replace("\n", "")
 )
 EMAIL_HTML_LIST_ITEM = (
-    Path("resources_portal/email_assets/replace_notification_list_inlined.html")
+    Path("resources_portal/email_assets/replace_notification_list.html")
     .read_text()
     .replace("\n", "")
 )
-CTA_HTML = (
-    Path("resources_portal/email_assets/cta_templated_inlined.html").read_text().replace("\n", "")
-)
+CTA_HTML = Path("resources_portal/email_assets/cta_template.html").read_text().replace("\n", "")
 
 
 def get_plain_text_for_notification(notification):
