@@ -24,7 +24,7 @@ EMAIL_HTML_LIST_ITEM = (
     .read_text()
     .replace("\n", "")
 )
-CTA_HTML = Path("resources_portal/email_assets/cta_templated.html").read_text().replace("\n", "")
+CTA_HTML = Path("resources_portal/email_assets/cta_template.html").read_text().replace("\n", "")
 
 
 def get_plain_text_for_notification(notification):

@@ -35,7 +35,7 @@ EMAIL_HTML_BODY = (
     .read_text()
     .replace("\n", "")
 )
-CTA_HTML = Path("resources_portal/email_assets/cta_templated.html").read_text().replace("\n", "")
+CTA_HTML = Path("resources_portal/email_assets/cta_template.html").read_text().replace("\n", "")
 
 
 class Notification(SafeDeleteModel, ComputedFieldsModel):
