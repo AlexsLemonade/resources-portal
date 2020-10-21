@@ -31,7 +31,7 @@ logger = get_and_configure_logger(__name__)
 
 
 EMAIL_HTML_BODY = (
-    Path("resources_portal/email_assets/notification_email_templated.html")
+    Path("resources_portal/email_assets/notification_email_template.html")
     .read_text()
     .replace("\n", "")
 )
