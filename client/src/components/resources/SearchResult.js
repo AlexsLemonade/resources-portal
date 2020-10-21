@@ -1,12 +1,12 @@
 import React from 'react'
 import Link from 'next/link'
 import { Box, Anchor, Button, Heading, Text } from 'grommet'
-import { getReadable } from '../../helpers/readableNames'
-import { getResourceData } from '../../helpers/getResourceData'
-import { getPubmedUrl } from '../../helpers/getPubmedUrl'
-import { getDOIUrl } from '../../helpers/getDOIUrl'
-import ResourceTypeIcon from '../../images/resource-type.svg'
-import OrganismIcon from '../../images/organism.svg'
+import RequestRequirementsList from 'components/resources/RequestRequirementsList'
+import { getReadable } from 'helpers/readableNames'
+import { getResourceData } from 'helpers/getResourceData'
+import { getPubmedUrl } from 'helpers/getPubmedUrl'
+import { getDOIUrl } from 'helpers/getDOIUrl'
+import { ResourceTypeOrganisms } from 'components/resources/ResourceCard'
 import configs from './configs'
 
 export const SearchResult = ({
@@ -39,36 +39,14 @@ export const SearchResult = ({
         margin={{ bottom: 'medium' }}
         pad={{ bottom: 'medium' }}
       >
-        <div>
+        <Box>
           <Heading level="5" margin={{ top: '0', bottom: 'medium' }}>
             <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
               <Anchor bold label={resource.title} />
             </Link>
           </Heading>
-          <Box direction="row">
-            <Box
-              as="span"
-              margin={{ right: 'large' }}
-              gap="small"
-              align="center"
-              direction="row"
-            >
-              <ResourceTypeIcon />
-              {getReadable(resource.category)}
-            </Box>
-            {resource.organisms.length > 0 && (
-              <Box as="span" align="center" direction="row" gap="small">
-                <OrganismIcon />
-                <span>
-                  {resource.organisms.map((organism, i) => [
-                    i !== 0 && ', ',
-                    <Text key={organism}>{organism}</Text>
-                  ])}
-                </span>
-              </Box>
-            )}
-          </Box>
-        </div>
+          <ResourceTypeOrganisms resource={resource} />
+        </Box>
         <Box>
           {!resource.imported && (
             <Link href="/resources/[id]" as={`/resources/${resource.id}`}>
@@ -190,40 +168,13 @@ export const RequestRequirements = ({ resource }) => {
     )
   }
 
-  const requirements = []
-  const MTA = 'Material Transfer Agreement'
-  if (resource.needs_abstract) requirements.push('Abstract')
-  if (resource.needs_irb) requirements.push('IRB')
-  if (Object.keys(resource.mta_attachment).length) requirements.push(MTA)
-  if (Object.keys(resource.shipping_requirement).length)
-    requirements.push('Shipping Information')
-
-  // NOTE: mta_s3_url will be an attachment in the near future
   return (
     <SearchResultDetail
       title="Request Requirements"
       margin={{ top: 'small' }}
       direction="row"
     >
-      {requirements.length === 0 && 'Not Available'}
-      {requirements.length > 0 && (
-        <span>
-          {requirements.map((req, i) => [
-            i !== 0 && ', ',
-            req === MTA ? (
-              <Anchor
-                key={req}
-                href={resource.mta_attachment.download_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                label={req}
-              />
-            ) : (
-              <Text key={req}>{req}</Text>
-            )
-          ])}
-        </span>
-      )}
+      <RequestRequirementsList resource={resource} />
     </SearchResultDetail>
   )
 }
