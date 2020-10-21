@@ -6,6 +6,7 @@ from email.mime.text import MIMEText
 from django.conf import settings
 
 import boto3
+import pynliner
 
 from resources_portal.config.logging import get_and_configure_logger
 
@@ -106,8 +107,12 @@ def send_mail(
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
+    inlined_html = pynliner.fromString(html)
+
     if settings.AWS_SES_DOMAIN:
-        msg = create_multipart_message(source, recipients, title, text, html, embedded_images)
+        msg = create_multipart_message(
+            source, recipients, title, text, inlined_html, embedded_images
+        )
         ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
         return ses_client.send_raw_email(
             Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}
