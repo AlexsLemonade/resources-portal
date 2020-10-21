@@ -110,7 +110,9 @@ def send_mail(
     Taken from: https://stackoverflow.com/a/52105406/6095378
     The sender needs to be a verified email in SES.
     """
-    inlined_html = premailer.transform(html)
+    inlined_html = None
+    if html:
+        inlined_html = premailer.transform(html)
 
     if settings.AWS_SES_DOMAIN:
         msg = create_multipart_message(
