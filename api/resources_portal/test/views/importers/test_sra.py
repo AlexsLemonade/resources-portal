@@ -48,7 +48,7 @@ class ImportSRATestCase(APITestCase):
             material.additional_metadata["accession_code"], self.test_accession_with_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["number_samples"],
+            material.additional_metadata["number_of_samples"],
             self.test_accession_with_pubmed_id_num_samples,
         )
 
@@ -76,7 +76,7 @@ class ImportSRATestCase(APITestCase):
             material.additional_metadata["accession_code"], self.test_accession_without_pubmed_id
         )
         self.assertEqual(
-            material.additional_metadata["number_samples"],
+            material.additional_metadata["number_of_samples"],
             self.test_accession_without_pubmed_id_num_samples,
         )
 

@@ -202,7 +202,7 @@
         "title": "Zebrafish Analyis",
         "accession_code": "phs000328.v2.p1",
         "description": "Data collected from genetically modified zebrafish.",
-        "number_samples": "15",
+        "number_of_samples": "15",
         "technology": "R-readable array",
         "platform": "Amazon s3 Database"
       },
@@ -299,7 +299,7 @@
         "title": "Imported Zebrafish Analyis",
         "accession_code": "GSE24528",
         "description": "Data collected from genetically modified zebrafish.",
-        "number_samples": "15",
+        "number_of_samples": "15",
         "technology": "R-readable array",
         "platform": "Amazon s3 Database"
       },
@@ -325,7 +325,7 @@
         "embargo_date": "2020-01-30",
         "title": "GEO Zebrafish Analysis",
         "description": "This dataset has interesting implications for future research.",
-        "number_samples": "15"
+        "number_of_samples": "15"
       },
       "pubmed_id": "32223680",
       "imported": true,
@@ -348,7 +348,7 @@
         "title": "GEO Zebrafish Analysis",
         "accession": "phs000328.v2.p1",
         "description": "This dataset has interesting implications for future research.",
-        "number_samples": "15"
+        "number_of_samples": "15"
       },
       "pubmed_id": "32223680",
       "imported": true,
