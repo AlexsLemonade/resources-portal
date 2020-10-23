@@ -64,7 +64,7 @@ export default (resource = {}, requestId) => {
         address.save_for_reuse = false
       }
 
-      const addressRequest = await api.user.addresses.create(
+      const addressRequest = await api.users.addresses.create(
         user.id,
         address,
         token
