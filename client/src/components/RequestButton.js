@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'grommet'
 import Link from 'next/link'
-import { CreateAccountLoginButton } from 'components/CreateAccountLoginButton'
+import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
 import { useUser } from 'hooks/useUser'
 
 export const RequestButton = ({ resource }) => {
