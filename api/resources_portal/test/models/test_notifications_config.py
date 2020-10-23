@@ -41,7 +41,7 @@ class NotificationEmailFormattingTestCase(APITestCase):
         # This will actually trigger the send_email function.
         organization = OrganizationFactory()
 
-        notification = NotificationFactory(
+        NotificationFactory(
             notification_type="ORGANIZATION_NEW_MEMBER",
             material=None,
             organization=organization,
