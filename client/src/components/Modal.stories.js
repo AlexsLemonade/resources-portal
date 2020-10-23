@@ -1,9 +1,9 @@
+import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { Box, Button, Grommet } from 'grommet'
-import * as React from 'react'
-import theme from '../theme'
-import { CreateAccountLoginButton } from './CreateAccountLoginButton'
-import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
+import theme from 'theme'
+import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
+import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
 
 storiesOf('Modal', module).add('Sign in from header', () => {
   return (
