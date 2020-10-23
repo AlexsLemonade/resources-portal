@@ -10,7 +10,6 @@ import {
   Image
 } from 'grommet'
 import styled from 'styled-components'
-import { host } from 'api'
 
 let DetailsTable = ({ data, className }) => {
   const datumValue = (value) => {
@@ -21,7 +20,7 @@ let DetailsTable = ({ data, className }) => {
           <Box>
             {value.map((attachment) => (
               <Box key={attachment.filename} width="100px" height="120px">
-                <Image fit="cover" src={`${host}${attachment.download_url}`} />
+                <Image fit="cover" src={attachment.download_url} />
                 <Text truncate>{attachment.filename}</Text>
               </Box>
             ))}
