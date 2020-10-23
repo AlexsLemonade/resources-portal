@@ -260,13 +260,16 @@ class NotificationFactory(factory.django.DjangoModelFactory):
     notified_user = factory.SubFactory(UserFactory)
     associated_user = factory.SubFactory(UserFactory)
     grant = factory.SubFactory(LeafGrantFactory)
+    organization = None
 
     @post_generation
     def post(self, create, extracted, **kwargs):
         self.grant.user = self.notified_user
         self.grant.save()
 
-        self.organization = OrganizationFactory(owner=self.notified_user)
+        if not self.organization:
+            self.organization = OrganizationFactory(owner=self.notified_user)
+
         self.material = MaterialFactory(
             organization=self.organization, contact_user=self.notified_user
         )

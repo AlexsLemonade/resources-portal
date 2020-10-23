@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
-from resources_portal.test.factories import NotificationFactory
+from resources_portal.test.factories import NotificationFactory, OrganizationFactory
 
 fake = Faker()
 
@@ -38,8 +38,14 @@ class NotificationEmailFormattingTestCase(APITestCase):
             self.notification.save()
 
     def test_missing_non_required_field_ok(self):
-        self.notification.notification_type = "ORGANIZATION_NEW_MEMBER"
-        self.notification.material = None
-        self.notification.save()
+        # This will actually trigger the send_email function.
+        organization = OrganizationFactory()
+
+        NotificationFactory(
+            notification_type="ORGANIZATION_NEW_MEMBER",
+            material=None,
+            organization=organization,
+            notified_user=organization.owner,
+        )
 
         # Lack of exception means it was ok!
