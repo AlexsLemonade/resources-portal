@@ -1,9 +1,9 @@
+import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
 import Link from 'next/link'
-import * as React from 'react'
 import { useNotifications } from 'hooks/useNotifications'
-import { useUser } from '../hooks/useUser'
-import { CreateAccountLoginButton } from './CreateAccountLoginButton'
+import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
+import { useUser } from 'hooks/useUser'
 
 export const HeaderAccountLink = () => {
   const { isLoggedIn } = useUser()
@@ -29,7 +29,11 @@ export const HeaderAccountLink = () => {
   return (
     <Box direction="row" gap="small">
       <Link href="/account">
-        <Anchor color="white" href="#" label="My Account" />
+        <Anchor
+          color="white"
+          href="/account/basic-information"
+          label="My Account"
+        />
       </Link>
       {notificationCount > 0 && (
         <Link href="/account/notifications">
