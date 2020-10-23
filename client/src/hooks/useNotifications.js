@@ -4,13 +4,14 @@ import { useUser } from './useUser'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useNotifications = () => {
-  const { user, token } = useUser()
+  const { user, token, isLoggedIn } = useUser()
   const { notificationCount, setNotificationCount } = React.useContext(
     ResourcesPortalContext
   )
 
   const fetchNotifications = async () => {
-    const notificationRequest = await api.user.notifications.list(
+    if (!isLoggedIn) return {}
+    const notificationRequest = await api.users.notifications.list(
       user.id,
       token
     )
@@ -23,18 +24,19 @@ export const useNotifications = () => {
   }
 
   const fetchNewNotifications = async () => {
-    let notificationRequest = {}
+    if (!isLoggedIn) return {}
+
+    const firstView = user.viewed_notifications_at === null
 
     // fetchs after the date saved in the user object
-    if (user.viewed_notifications_at === null) {
-      notificationRequest = await api.user.notifications.list(user.id, token)
-    } else {
-      notificationRequest = await api.user.notifications.filter(
-        user.id,
-        { created_at__gt: user.viewed_notifications_at },
-        token
-      )
-    }
+    const notificationRequest = firstView
+      ? await api.users.notifications.list(user.id, token)
+      : await api.users.notifications.filter(
+          user.id,
+          { created_at__gt: user.viewed_notifications_at },
+          token
+        )
+
     if (notificationRequest.isOk && notificationRequest.response) {
       const retrievedNotifications = notificationRequest.response.results
       setNotificationCount(retrievedNotifications.length)
