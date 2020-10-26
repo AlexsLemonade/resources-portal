@@ -1,0 +1,21 @@
+name: deploy-client-prod
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy-client-prod:
+    container: node:lts-buster
+    env:
+      ZEIT_TOKEN: ${{ secrets.ZEIT_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install vercel
+        run: yarn global add vercel@19.2.0
+
+      - name: Deploy to Production
+        run: cd client && $(yarn global bin)/vercel --confirm --prod --token $ZEIT_TOKEN --local-config vercel.json --scope ccdl

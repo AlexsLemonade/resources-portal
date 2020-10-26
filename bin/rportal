@@ -8,30 +8,37 @@ if not os.path.exists("./bin/rportal"):
     print("Please call rportal from the project's root")
     exit()
 
+# Docker compose uses the current directory in the network name. We
+# need to pass the network name into containers, so we have to know
+# what it is.
+project_folder = os.getcwd().split("/")[-1]
+
 # every docker-compose run api command looks like this
-run_api = "API_NETWORK=resources-portal_default docker-compose --env-file ./docker-compose.env run --rm api {}"
+run_api = f"API_NETWORK={project_folder}_default docker-compose --env-file ./docker-compose.env run --rm api {{}}"
 
 # list of available commands
 commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
     "build": "docker-compose --env-file ./docker-compose.env build",
+    "shell": run_api.format('bash -c "./manage.py shell"'),
     "rebuild-index": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py search_index --rebuild"'
     ),
-    "populate-db": run_api.format(
-        'bash -c "./wait_for_elasticsearch.py && ./manage.py populate_test_database"'
-    ),
+    "populate-db": "./recreate_schema.sh && "
+    + run_api.format('bash -c "./wait_for_elasticsearch.py && ./manage.py populate_dev_database"'),
     "recreate-schema": "./recreate_schema.sh",
-    "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh"'),
+    "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh {}"'),
     "makemigrations": run_api.format(
         'bash -c "./wait_for_elasticsearch.py && ./manage.py makemigrations resources_portal"'
     ),
+    "migrate": run_api.format('bash -c "./wait_for_elasticsearch.py && ./manage.py migrate"'),
     "postgres-cli": "./run_psql_client.sh",
     "createsuperuser": run_api.format("./manage.py createsuperuser"),
     "graph-models": run_api.format("./manage.py graph_models -a -g > model.dot"),
     "run-api": run_api,
     "manage-api": run_api.format("./manage.py {}"),
+    "run-black": run_api.format("black --line-length=100 --exclude=volumes_postgres ."),
     "env": "cat ./docker-compose.env",
 }
 

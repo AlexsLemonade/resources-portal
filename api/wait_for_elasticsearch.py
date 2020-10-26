@@ -24,4 +24,8 @@ while (datetime.now() - start < max_time) and not success:
     if not success:
         print("Waiting on elasticsearch to start....")
 
-        time.sleep(1)
+        time.sleep(3)
+
+if datetime.now() - start > max_time:
+    print("Elasticsearch never came up.")
+    exit(1)

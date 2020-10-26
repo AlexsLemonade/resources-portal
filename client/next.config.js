@@ -1,29 +1,48 @@
-const {
-  PHASE_DEVELOPMENT_SERVER,
-  PHASE_PRODUCTION_BUILD
-} = require('next/constants')
+const { PHASE_DEVELOPMENT_SERVER } = require('next/constants')
+const path = require('path')
 
 module.exports = (phase) => {
-  const stageEnv = process.env.STAGING === '1'
   const isDevelopment = phase === PHASE_DEVELOPMENT_SERVER
-  const isStaging = phase === PHASE_PRODUCTION_BUILD && stageEnv
-  const isProduction = phase === PHASE_PRODUCTION_BUILD && !stageEnv
+  const isProduction = process.env.STAGE === 'production'
+  const apiHost =
+    process.env.API_HOST ||
+    (isProduction
+      ? 'https://api.resources.alexslemonade.org'
+      : 'https://api.staging.resources.alexslemonade.org')
+
+  const clientHost =
+    process.env.CLIENT_HOST ||
+    (isProduction
+      ? 'https://resources.alexslemonade.org'
+      : 'https://staging.resources.alexslemonade.org')
 
   const env = {
     API_VERSION: 'v1',
     IS_DEVELOPMENT: isDevelopment,
-    IS_STAGING: isStaging,
-    IS_PRODUCTION: isProduction,
-    API_HOST: (() => {
-      if (process.env.API_HOST) return process.env.API_HOST
-      if (isDevelopment) return 'http://localhost:8000'
-      if (isStaging) return 'http://api.staging.resources.alexslemonade.org'
-      if (isProduction) return 'http://api.resources.alexslemonade.org'
-      return 'http://api.resources.alexslemonade.org'
-    })()
+    IS_STAGING: !isDevelopment && !isProduction,
+    IS_PRODUCTION: !isDevelopment && isProduction,
+    API_HOST: isDevelopment ? 'http://localhost:8000' : apiHost,
+    CLIENT_HOST: isDevelopment ? 'http://localhost:7000' : clientHost,
+    ORCID_CLIENT_ID: 'APP-2AHZAK2XCFGHRJFM',
+    ORCID_URL: isProduction
+      ? 'https://orcid.org/'
+      : 'https://sandbox.orcid.org/'
   }
 
   return {
-    env
+    env,
+    experimental: {
+      productionBrowserSourceMaps: true
+    },
+    webpack: (baseConfig) => {
+      const config = { ...baseConfig }
+      config.devtool = 'source-map'
+      config.resolveLoader.modules.push(path.resolve(__dirname, 'loaders'))
+      config.module.rules.push({
+        test: /\.md$/,
+        use: ['raw-loader', 'template-literal-loader']
+      })
+      return config
+    }
   }
 }

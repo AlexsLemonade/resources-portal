@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from faker import Faker
 
 from resources_portal.models import User
-from resources_portal.test.factories import OrganizationFactory, UserFactory
+from resources_portal.test.factories import MaterialFactory, OrganizationFactory, UserFactory
 
 fake = Faker()
 
@@ -56,6 +56,9 @@ class OrganizationMembersTestCase(APITestCase):
     def test_delete_self_from_org(self):
         user = UserFactory()
         self.organization.members.add(user)
+
+        user_assigned_material = MaterialFactory(contact_user=user, organization=self.organization)
+
         self.client.force_authenticate(user=user)
         url = reverse("organizations-members-detail", args=[self.organization.id, user.id])
         response = self.client.delete(url)
@@ -64,7 +67,16 @@ class OrganizationMembersTestCase(APITestCase):
         self.organization.refresh_from_db()
         self.assertNotIn(user, self.organization.members.all())
         # Verify that the user was not deleted, just its relationship
-        User.objects.get(pk=user.id)
+        user = User.objects.get(pk=user.id)
+
+        user_assigned_material.refresh_from_db()
+
+        # User loses permissions
+        self.assertFalse(user.has_perm("add_resources", self.organization))
+
+        # User materials are reassigned
+        self.assertFalse(user_assigned_material.contact_user == user)
+        self.assertTrue(user_assigned_material.contact_user == self.organization.owner)
 
     def test_delete_by_owner(self):
         member = UserFactory()
@@ -72,10 +84,22 @@ class OrganizationMembersTestCase(APITestCase):
         self.organization.save()
         self.client.force_authenticate(user=self.organization.owner)
 
+        member_assigned_material = MaterialFactory(
+            contact_user=member, organization=self.organization
+        )
+
         url = reverse("organizations-members-detail", args=[self.organization.id, member.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
+
+        member_assigned_material.refresh_from_db()
+
         self.assertNotIn(member, self.organization.members.all())
+        self.assertFalse(member.has_perm("add_resources", self.organization))
+
+        # Member materials are reassigned
+        self.assertFalse(member_assigned_material.contact_user == member)
+        self.assertTrue(member_assigned_material.contact_user == self.organization.owner)
 
     def test_delete_fails_for_non_owner(self):
         """user1 fails to remove user2"""

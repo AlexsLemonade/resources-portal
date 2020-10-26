@@ -6,14 +6,14 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Grant, GrantMaterialAssociation, Material
-from resources_portal.views.relation_serializers import MaterialRelationSerializer
+from resources_portal.serializers import MaterialRelationSerializer
 
 
 class OwnsGrant(BasePermission):
     def has_permission(self, request, view):
         grant = Grant.objects.get(pk=view.kwargs["parent_lookup_grants"])
 
-        return request.user in grant.users.all()
+        return request.user == grant.user
 
 
 class OwnsGrantAndMaterial(BasePermission):
@@ -26,8 +26,8 @@ class OwnsGrantAndMaterial(BasePermission):
         # use it rather than querying for it a second time in
         # OwnsGrant.
         return (
-            request.user in grant.users.all()
-            and request.user == material.organization.owner
+            request.user == grant.user
+            and request.user in material.organization.members.all()
             and grant in material.organization.grants.all()
         )
 

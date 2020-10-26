@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from rest_framework_extensions.mixins import NestedViewSetMixin
 
 from resources_portal.models import Organization, OrganizationUserAssociation, User
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.notifier import send_notifications
+from resources_portal.serializers import UserRelationSerializer
 
 
 class BelongsToOrganization(BasePermission):
@@ -44,5 +45,14 @@ class OrganizationMemberViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         association = OrganizationUserAssociation.objects.get(organization=organization, user=user)
 
         association.delete()
+        organization.remove_member_perms(user)
+
+        # If any materials are assigned to the user leaving organization, reassign them to the owner of the organization
+        for material in organization.materials.all():
+            if material.contact_user == user:
+                material.contact_user = organization.owner
+                material.save()
+
+        send_notifications("ORGANIZATION_MEMBER_LEFT", user, user, organization)
 
         return Response(status=204)

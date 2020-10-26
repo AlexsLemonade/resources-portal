@@ -57,6 +57,8 @@ coverage.xml
 local_settings.py
 
 volumes_postgres/
+api/test_uploaded_files
+api/uploaded_files
 
 # Flask stuff:
 instance/

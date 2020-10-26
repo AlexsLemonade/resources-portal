@@ -17,6 +17,7 @@ from django_elasticsearch_dsl_drf.viewsets import DocumentViewSet
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from elasticsearch_dsl import TermsFacet
+from elasticsearch_dsl.query import Q
 from six import iteritems
 
 from resources_portal.models import Material, Organization, User
@@ -32,21 +33,21 @@ class MaterialDocumentSerializer(serializers.Serializer):
     pubmed_id = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
-    organism = serializers.ListField(read_only=True)
+    organisms = serializers.ListField(read_only=True)
+    is_archived = serializers.BooleanField(read_only=True)
     has_publication = serializers.BooleanField(read_only=True)
     has_pre_print = serializers.BooleanField(read_only=True)
     additional_info = serializers.CharField(read_only=True)
     needs_mta = serializers.BooleanField(read_only=True)
     needs_irb = serializers.BooleanField(read_only=True)
-    contact_name = serializers.CharField(read_only=True)
-    contact_email = serializers.CharField(read_only=True)
+    needs_abstract = serializers.BooleanField(read_only=True)
     publication_title = serializers.CharField(read_only=True)
     pre_print_doi = serializers.CharField(read_only=True)
     pre_print_title = serializers.CharField(read_only=True)
     citation = (serializers.CharField(read_only=True),)
     embargo_date = serializers.DateField(read_only=True)
     contact_user = serializers.SerializerMethodField(read_only=True)
-    shipping_requirements = serializers.SerializerMethodField(read_only=True)
+    shipping_requirement = serializers.SerializerMethodField(read_only=True)
     organization = serializers.SerializerMethodField(read_only=True)
     mta_attachment = serializers.SerializerMethodField(read_only=True)
     additional_metadata = serializers.SerializerMethodField(read_only=True)
@@ -56,8 +57,8 @@ class MaterialDocumentSerializer(serializers.Serializer):
     def get_contact_user(self, obj):
         return loads(dumps(obj.contact_user.to_dict()))
 
-    def get_shipping_requirements(self, obj):
-        return loads(dumps(obj.shipping_requirements.to_dict()))
+    def get_shipping_requirement(self, obj):
+        return loads(dumps(obj.shipping_requirement.to_dict()))
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
@@ -79,12 +80,11 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "additional_metadata",
             "created_at",
             "updated_at",
-            "organism",
+            "organisms",
+            "is_archived",
             "has_publication",
             "has_pre_print",
             "additional_info",
-            "contact_name",
-            "contact_email",
             "publication_title",
             "pre_print_doi",
             "pre_print_title",
@@ -93,8 +93,44 @@ class MaterialDocumentSerializer(serializers.Serializer):
             "contact_user",
             "imported",
             "import_source",
-            "shipping_requirements",
+            "shipping_requirement",
         )
+
+
+class MaterialFacetedSearchFilterBackend(FacetedSearchFilterBackend):
+    """
+    This is a modification to the FacetedSearchFilterBackend.
+    The main difference is we don't want the search result filters to be too narrow.
+    So we will only have the aggregates be filtered by the query params that are not for that aggregate.
+    In order to support this move any filter you want to show extra aggreates to post_filter_fields so
+    they aren't filtered out of the facet aggregations by default.
+
+    So if we are calulating the aggregates for `category` we apply all filters from `organisms` etc
+    but not the requested categories.
+    """
+
+    def aggregate(self, request, queryset, view):
+        post_filter_fields = view.post_filter_fields.keys()
+        query_params = request.query_params.copy()
+        __facets = self.construct_facets(request, view)
+        for __field, __facet in iteritems(__facets):
+            agg = __facet["facet"].get_aggregation()
+            agg_filter = Q("match_all")
+
+            # loop over each query param and add to aggregate filter
+            # skip if query param is aleady applied (if it is not in post filters)
+            # skip if query param is the current facet aggregation
+            for query_field in query_params:
+                if query_field != __field and query_field in post_filter_fields:
+                    query_values = query_params.getlist(query_field, [])
+                    agg_filter = agg_filter + Q("terms", **{query_field: query_values})
+
+            # add the aggregate to the queryset
+            queryset.aggs.bucket("_filter_" + __field, "filter", filter=agg_filter).bucket(
+                __field, agg
+            )
+
+        return queryset
 
 
 ##
@@ -111,10 +147,10 @@ class MaterialDocumentSerializer(serializers.Serializer):
                 description="Allows filtering the results by category, can have multiple values. Eg: `?category=plasmid&category=other`",
             ),
             openapi.Parameter(
-                name="organism",
+                name="organisms",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
-                description="Allows filtering the results by organism",
+                description="Allows filtering the results by organisms",
             ),
             openapi.Parameter(
                 name="contact_user.email",
@@ -129,6 +165,12 @@ class MaterialDocumentSerializer(serializers.Serializer):
                 description="Allows filtering the results by the owner's published_name",
             ),
             openapi.Parameter(
+                name="is_archived",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by is_archived",
+            ),
+            openapi.Parameter(
                 name="has_publication",
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
@@ -139,6 +181,12 @@ class MaterialDocumentSerializer(serializers.Serializer):
                 in_=openapi.IN_QUERY,
                 type=openapi.TYPE_STRING,
                 description="Allows filtering the results by has_pre_print",
+            ),
+            openapi.Parameter(
+                name="organization.name",
+                in_=openapi.IN_QUERY,
+                type=openapi.TYPE_STRING,
+                description="Allows filtering the results by the name of the material's organization",
             ),
         ],
         operation_description="""
@@ -172,7 +220,7 @@ class MaterialDocumentView(DocumentViewSet):
         OrderingFilterBackend,
         DefaultOrderingFilterBackend,
         CompoundSearchFilterBackend,
-        FacetedSearchFilterBackend,
+        MaterialFacetedSearchFilterBackend,
         PostFilterFilteringFilterBackend,
     ]
 
@@ -185,32 +233,37 @@ class MaterialDocumentView(DocumentViewSet):
         "contact_user": None,
         "additional_metadata": None,
         "pubmed_id": None,
-        "organism": None,
+        "organisms": None,
         "additional_info": None,
-        "contact_name": None,
-        "contact_email": None,
         "contact_user.published_name": None,
         "publication_title": None,
         "pre_print_doi": None,
         "pre_print_title": None,
         "citation": None,
+        "organization.name": None,
     }
 
     # Define filtering fields
     filter_fields = {
         "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
-        "category": "category",
-        "organization": {"field": "name"},
+        "organization": {"field": "organization.name"},
         "title": "title",
-        "organism": "organism",
+        "is_archived": "is_archived",
         "contact_user.email": "contact_user.email",
         "contact_user.published_name": "contact_user.published_name",
-        "has_publication": "has_publication",
-        "has_pre_print": "has_pre_print",
+    }
+
+    # Define post filter fields
+    post_filter_fields = {
+        "category": {"field": "category"},
+        "organisms": {"field": "organisms"},
+        "has_publication": {"field": "has_publication"},
+        "has_pre_print": {"field": "has_pre_print"},
     }
 
     # Define ordering fields
     ordering_fields = {
+        "is_archived": "is_archived",
         "id": "id",
         "title": "title.raw",
         "category": "category.raw",
@@ -221,29 +274,26 @@ class MaterialDocumentView(DocumentViewSet):
     # Specify default ordering
     ordering = (
         "_score",
+        "is_archived",
         "updated_at",
         "id",
     )
 
     faceted_search_fields = {
         "category": {"field": "category", "facet": TermsFacet, "enabled": True},
-        "organism": {"field": "organism", "facet": TermsFacet, "enabled": True},
+        "organisms": {"field": "organisms", "facet": TermsFacet, "enabled": True},
         "contact_user.email": {"field": "contact_user.email", "facet": TermsFacet, "enabled": True},
         "contact_user.published_name": {
             "field": "contact_user.published_name",
             "facet": TermsFacet,
             "enabled": True,
         },
+        "is_archived": {"field": "is_archived", "facet": TermsFacet, "enabled": True},
         "has_publication": {"field": "has_publication", "facet": TermsFacet, "enabled": True},
         "has_pre_print": {"field": "has_pre_print", "facet": TermsFacet, "enabled": True},
+        "organization": {"field": "organization.name", "facet": TermsFacet, "enabled": True},
     }
     faceted_search_param = "facet"
-
-    # Specify post filter fields
-    post_filter_fields = {
-        "category_pf": {"field": "category"},
-        "organism_pf": {"field": "organism"},
-    }
 
     def list(self, request, *args, **kwargs):
         response = super(MaterialDocumentView, self).list(request, args, kwargs)
@@ -346,6 +396,8 @@ class UserDocumentSerializer(serializers.Serializer):
     first_name = serializers.CharField(read_only=True)
     last_name = serializers.CharField(read_only=True)
     published_name = serializers.CharField(read_only=True)
+    full_name = serializers.CharField(read_only=True)
+    email = serializers.CharField(read_only=True)
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
 
@@ -356,6 +408,8 @@ class UserDocumentSerializer(serializers.Serializer):
             "first_name",
             "last_name",
             "published_name",
+            "full_name",
+            "email",
             "created_at",
             "updated_at",
         )

@@ -21,18 +21,18 @@ class GrantMaterialsTestCase(APITestCase):
         self.url = reverse("grant-detail", args=[self.grant.id])
 
     def test_get_single_material_not_allowed(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         material = self.grant.materials.first()
         url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 405)
 
     def test_get_request_returns_materials(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(response.json()["count"], 1)
 
     def test_get_fails_if_not_owner(self):
         user = UserFactory()
@@ -42,7 +42,7 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_post_request_associates_a_material(self):
-        user = self.grant.users.first()
+        user = self.grant.user
         organization = self.grant.organizations.first()
 
         # Organization's owner is a new user by default.
@@ -59,7 +59,7 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertIn(material, self.grant.materials.all())
 
     def test_post_fails_if_not_material_owner(self):
-        user = self.grant.users.first()
+        user = self.grant.user
         organization = self.grant.organizations.first()
 
         self.client.force_authenticate(user=user)
@@ -83,7 +83,7 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_post_fails_if_grant_not_associated(self):
-        user = self.grant.users.first()
+        user = self.grant.user
         self.client.force_authenticate(user=user)
 
         # Organization's owner is a new user by default.
@@ -96,7 +96,7 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_delete_request_disassociates_a_material(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         material = self.grant.materials.first()
         url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.delete(url)
@@ -117,7 +117,7 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_cannot_put_a_relationship(self):
-        self.client.force_authenticate(user=self.grant.users.first())
+        self.client.force_authenticate(user=self.grant.user)
         material = MaterialFactory()
         url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.put(url)

@@ -1,6 +1,6 @@
-import React from 'react'
-import { normalizeColor } from 'grommet/utils'
 import { Blank } from 'grommet-icons'
+import { normalizeColor } from 'grommet/utils'
+import React from 'react'
 
 const applyAll = (...rules) => rules.concat()
 const applyWhen = (evaluation, rule) => (evaluation ? rule : '')
@@ -13,6 +13,15 @@ const DownArrow = (props) => (
 )
 
 const theme = {
+  icon: {
+    size: {
+      xsmall: '8px',
+      small: '12px',
+      medium: '24px',
+      large: '64px',
+      xlarge: '96px'
+    }
+  },
   anchor: {
     fontWeight: 400,
     extend: (props) => applyWhen(props.bold, 'font-weight: 600')
@@ -27,30 +36,23 @@ const theme = {
       down: DownArrow
     },
     control: {
+      border: {
+        radius: '4px'
+      },
       extend: (props) =>
         applyAll(
+          `
+            border-radius: 4px;
+            border-color: ${normalizeColor('black-tint-60', props.theme)};
+          `,
           applyWhen(
-            props.open && !props.plain,
+            props.open,
             `background-color: ${normalizeColor('black-tint-80', props.theme)};`
           ),
           applyWhen(
-            props.plain,
+            !props.disabled,
             `
-            background-color: ${normalizeColor('black-tint-95', props.theme)};
-            `
-          ),
-          applyWhen(
-            !props.disabled && !props.plain,
-            `
-            &:hover {
-              background-color: ${normalizeColor('black-tint-80', props.theme)};
-            }
-
-            input {
-              border-top-right-radius: 0;
-              border-bottom-right-radius: 0;
-              background-color:  ${normalizeColor('white', props.theme)};
-            }
+            background-color: ${normalizeColor('white', props.theme)};
             `
           ),
           applyWhen(
@@ -194,7 +196,60 @@ const theme = {
           color: ${normalizeColor('black-tint-60', props.theme)};
 
           `
-        )
+        ),
+        applyWhen(
+          props.login,
+          `
+          color: ${normalizeColor('black', props.theme)};
+          border: none;
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('black', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('black-tint-90', props.theme)};
+            color: ${normalizeColor('black', props.theme)};
+          `
+        ),
+        applyWhen(
+          props.critical,
+          `
+          color: ${normalizeColor('error', props.theme)};
+          border-color: ${normalizeColor('error', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('error', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('error', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          `
+        ),
+        applyWhen(
+          props.success,
+          `
+          color: ${normalizeColor('success', props.theme)};
+          border-color: ${normalizeColor('success', props.theme)};
+          background-color: ${normalizeColor('white', props.theme)};
+
+          input {
+            color: ${normalizeColor('error', props.theme)};
+          }
+
+          &:hover {
+            background-color: ${normalizeColor('success', props.theme)};
+            color: ${normalizeColor('white', props.theme)};
+          `
+        ),
+        applyWhen(
+          props.plain && props.underline,
+          'text-decoration: underline;'
+        ),
+        applyWhen(props.plain && props.bold, 'font-weight: bold;')
       )
   },
   tabs: {
@@ -300,7 +355,21 @@ const theme = {
           light: 'black-tint-60'
         }
       }
-    }
+    },
+    margin: {
+      vertical: 'small'
+    },
+    extend: (props) =>
+      applyWhen(
+        !props.reverse,
+        `
+        align-items: start;
+        margin: 0 8px;
+        div:first-child {
+          margin-top: 4px;
+        }
+      `
+      )
   },
   clock: {
     analog: {
@@ -362,6 +431,7 @@ const theme = {
     border: {
       color: 'black-tint-60',
       error: {
+        size: '12px',
         color: {
           dark: 'white',
           light: 'status-critical'
@@ -384,14 +454,15 @@ const theme = {
     error: {
       color: 'status-critical',
       margin: {
-        horizontal: 'small',
+        horizontal: 'none',
         vertical: 'xsmall'
       }
     },
     help: {
-      color: 'brand',
+      color: 'black-tint-40',
       margin: {
-        start: 'none'
+        start: 'none',
+        bottom: 'xsmall'
       }
     },
     info: {
@@ -403,13 +474,50 @@ const theme = {
     },
     label: {
       margin: {
-        horizontal: 'xsmall',
-        vertical: 'xsmall'
+        horizontal: 'none',
+        bottom: '12px' // plus 4 = 16px
       },
       size: 'medium'
     },
-    margin: 'medium',
-    round: '4px'
+    margin: {
+      vertical: 'medium'
+    },
+    round: '4px',
+    extend: (props) =>
+      applyAll(
+        `
+      // FormField help
+      // Same styles as components/InputHelperText.js
+      // Which is used for MarkDown type helper text
+      label + span {
+        font-style: italic;
+        font-size: 12px;
+        line-height: 18px;
+      }
+      button, input, textarea {
+        border: none;
+      }
+    `,
+        applyWhen(
+          props.checkbox,
+          `
+        > div {
+          border: none;
+          > div {
+            padding: 0;
+          }
+        }
+      `
+        ),
+        applyWhen(
+          props.borderless,
+          `
+        > div {
+          border: none;
+        }
+          `
+        )
+      )
   },
   global: {
     active: {
@@ -459,6 +567,8 @@ const theme = {
       }
     },
     colors: {
+      gradient: 'linear-gradient(180deg, #FDFDFD 0%, #DCF7FE 100%)',
+      'gradient-reverse': 'linear-gradient(0deg, #FDFDFD 0%, #DCF7FE 100%)',
       'alexs-navy': '#002F6C',
       'alexs-navy-tint-20': '#0051BC',
       'alexs-navy-tint-40': '#0D76FF',
@@ -478,7 +588,7 @@ const theme = {
       'turteal-tint-80': '#BAEFFE',
       'turteal-tint-90': '#DCF7FE',
       'turteal-shade-20': '#006582',
-      'turteal-shade-40': '#AAA000',
+      'turteal-shade-40': '#004C61',
       'soda-orange': '#E55517',
       'soda-orange-tint-20': '#ec7643',
       'soda-orange-tint-40': '#F09872',
@@ -564,7 +674,9 @@ const theme = {
         dark: '#999999',
         light: '#666666'
       },
-      focus: 'brand'
+      focus: 'brand',
+      'border-black': '#F2F2F2',
+      'border-brand': '#BAEFFE'
     },
     control: {
       border: {
@@ -591,6 +703,7 @@ const theme = {
       responsiveBreakpoint: 'small',
       small: '8px',
       xlarge: '48px',
+      xxlarge: '64px',
       gutter: '40px',
       xsmall: '4px',
       xxsmall: '2px'
@@ -611,7 +724,10 @@ const theme = {
       color: 'active-text'
     },
     input: {
-      padding: '8px',
+      font: {
+        height: '28px'
+      },
+      padding: '6px',
       weight: 400
     },
     selected: {
@@ -620,8 +736,8 @@ const theme = {
     },
     size: {
       full: '100%',
-      large: '512px',
-      medium: '224px',
+      large: `${8 * 91}px`,
+      medium: `${8 * 65}px`,
       small: '128px',
       xlarge: `${8 * 130}px`,
       xsmall: '64px',
@@ -773,18 +889,15 @@ const theme = {
     }
   },
   layer: {
-    background: {
-      dark: '#111111',
-      light: '#FFFFFF'
-    }
+    background: 'white'
   },
   meter: {},
   name: 'resources-portal',
   paragraph: {
     large: {
-      height: '19px',
+      height: '32px',
       maxWidth: undefined,
-      size: '15px'
+      size: '21px'
     },
     medium: {
       height: '24px',
@@ -830,11 +943,19 @@ const theme = {
   scale: 1,
   spacing: 16,
   text: {
-    extend: (props) => applyWhen(props.italic, 'font-style: italic'),
+    extend: (props) =>
+      applyAll(
+        applyWhen(props.italic, 'font-style: italic'),
+        applyWhen(
+          props.serif,
+          `
+      font-family: 'Arvo'`
+        )
+      ),
     large: {
-      height: '19px',
+      height: '32px',
       maxWidth: '235px',
-      size: '15px'
+      size: '21px'
     },
     medium: {
       height: '24px',
@@ -842,14 +963,14 @@ const theme = {
       size: '16px'
     },
     small: {
-      height: '15px',
+      height: '18px',
       maxWidth: '171px',
-      size: '11px'
+      size: '12px'
     },
     xlarge: {
-      height: '21px',
+      height: '42px',
       maxWidth: '277px',
-      size: '17px'
+      size: '28px'
     },
     xsmall: {
       height: '13px',

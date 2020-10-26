@@ -1,4 +1,12 @@
 module.exports = {
+  parser: '@babel/eslint-parser',
+  parserOptions: {
+    ecmaVersion: 6,
+    sourceType: 'module',
+    ecmaFeatures: {
+      modules: true
+    }
+  },
   extends: ['airbnb', 'plugin:prettier/recommended'],
   env: {
     browser: true,
@@ -43,6 +51,13 @@ module.exports = {
     'react/no-multi-comp': 0,
     'import/no-mutable-exports': 0,
     'react/jsx-props-no-spreading': 'warn',
-    'no-console': 'warn'
+    'no-console': 0
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        moduleDirectory: ['node_modules', 'src']
+      }
+    }
   }
 }

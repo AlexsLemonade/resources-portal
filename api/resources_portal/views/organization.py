@@ -4,7 +4,13 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
-from resources_portal.views.relation_serializers import UserRelationSerializer
+from resources_portal.notifier import send_notifications
+from resources_portal.serializers import (
+    AttachmentRelationSerializer,
+    GrantRelationSerializer,
+    MaterialRelationSerializer,
+    UserRelationSerializer,
+)
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -14,16 +20,32 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "id",
             "owner",
             "name",
+            "description",
+            "is_personal_organization",
             "members",
+            "materials",
+            "grants",
+            "attachments",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at", "members")
+        read_only_fields = (
+            "id",
+            "created_at",
+            "updated_at",
+            "members",
+            "materials",
+            "grants",
+            "attachments",
+        )
 
 
 class OrganizationDetailSerializer(OrganizationSerializer):
     owner = UserRelationSerializer()
     members = UserRelationSerializer(many=True, read_only=True)
+    materials = MaterialRelationSerializer(many=True, read_only=True)
+    grants = GrantRelationSerializer(many=True, read_only=True)
+    attachments = AttachmentRelationSerializer(many=True, read_only=True)
 
     def create(self, validated_data):
         owner = validated_data.pop("owner")
@@ -96,5 +118,16 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 
         if is_owner_changing and new_owner not in organization.members.all():
             raise ValidationError("The new owner must already be a member of the organization.")
+
+        if is_owner_changing:
+            organization.remove_owner_perms(organization.owner)
+            organization.assign_owner_perms(new_owner)
+
+            send_notifications(
+                "ORGANIZATION_BECAME_OWNER", request.user, new_owner, organization,
+            )
+            send_notifications(
+                "ORGANIZATION_NEW_OWNER", request.user, new_owner, organization,
+            )
 
         return super(OrganizationViewSet, self).update(request, *args, **kwargs)

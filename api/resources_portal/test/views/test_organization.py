@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from faker import Faker
 
-from resources_portal.models import Organization
+from resources_portal.models import Notification, Organization
 from resources_portal.test.factories import (
     OrganizationFactory,
     PersonalOrganizationFactory,
@@ -23,6 +23,12 @@ class TestOrganizationPostTestCase(APITestCase):
         self.url = reverse("organization-list")
         self.organization = PersonalOrganizationFactory()
 
+    def test_list_succeeds(self):
+        self.client.force_authenticate(user=self.organization.owner)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
     def test_post_request_with_no_data_fails(self):
         self.client.force_authenticate(user=self.organization.owner)
         response = self.client.post(self.url, {})
@@ -34,10 +40,16 @@ class TestOrganizationPostTestCase(APITestCase):
         self.client.force_authenticate(user=user)
 
         # members can be empty and the owner should still become a member.
-        organization_data = {"name": "test org", "members": [], "owner": {"id": user.id}}
+        organization_data = {
+            "name": "test org",
+            "description": "My org.",
+            "members": [],
+            "owner": {"id": user.id},
+        }
 
         response = self.client.post(self.url, organization_data, format="json")
         response_json = response.json()
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(str(user.id), response_json["owner"]["id"])
@@ -60,13 +72,9 @@ class TestSingleOrganizationTestCase(APITestCase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_unauthenticated_get_request_fails(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 403)
-
     def test_get_requires_account(self):
         response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 401)
 
     def test_put_request_fails_by_non_owner(self):
         user = UserFactory()
@@ -91,6 +99,7 @@ class TestSingleOrganizationTestCase(APITestCase):
         organization_json = self.client.get(self.url).json()
 
         new_owner = UserFactory()
+        old_owner = self.organization.owner
         # The new owner must belong to the organization already.
         self.organization.members.add(new_owner)
         new_owner_json = {"id": new_owner.id}
@@ -113,8 +122,20 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertEqual(new_owner, self.organization.owner)
         self.assertEqual(new_name, self.organization.name)
 
+        # The owner has owner perms, old owner is downgraded to member
+        self.assertTrue(new_owner.has_perm("add_members", self.organization))
+        self.assertFalse(old_owner.has_perm("add_members", self.organization))
+
         # But adding members requires a request to the nested route:
         self.assertNotIn(new_member, self.organization.members.all())
+
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_BECAME_OWNER")), 1,
+        )
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_OWNER")),
+            self.organization.members.count() - 1,
+        )
 
     def test_put_owner_fails_if_not_member(self):
         """The new owner must belong to the organization already."""
@@ -150,3 +171,9 @@ class TestSingleOrganizationTestCase(APITestCase):
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Organization.objects.count(), 0)
+
+    def test_delete_only_soft_deletes(self):
+        self.client.force_authenticate(user=self.organization.owner)
+        response = self.client.delete(self.url)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Organization.deleted_objects.count(), 1)

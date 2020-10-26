@@ -1,27 +1,58 @@
 import React from 'react'
-import { Box, Grid } from 'grommet'
+import { Box, Grid, Text } from 'grommet'
 
-import { searchQueryIsEmpty } from '../helpers/searchQueryIsEmpty'
-import api from '../api'
+import { searchQueryIsEmpty } from 'helpers/searchQueryIsEmpty'
+import api from 'api'
 
-import SearchInput from '../components/SearchInput'
-import { SearchResultsLimit } from '../components/SearchResultsLimit'
-import { SearchResultsFilters } from '../components/SearchResultsFilters'
-import { SearchResultsOffset } from '../components/SearchResultsOffset'
-import { SearchResult } from '../components/resources'
-
-import { useSearchResources } from '../hooks/useSearchResources'
+import SearchInput from 'components/SearchInput'
+import { SearchResultsLimit } from 'components/SearchResultsLimit'
+import { SearchResultsFilters } from 'components/SearchResultsFilters'
+import { SearchResultsOffset } from 'components/SearchResultsOffset'
+import { SearchResult } from 'components/resources/SearchResult'
+import { useSearchResources } from 'hooks/useSearchResources'
+import EmptySearch from '../images/empty-search.svg'
+import SearchNoResults from '../images/search-no-results.svg'
 
 const Search = (search) => {
   const { response } = useSearchResources(search)
+  const hasNoSearch = !response
+  const hasNoResults = response && response.count === 0
+  const hasResults = response && response.count > 0
 
   return (
     <>
       <Box pad={{ horizontal: '144px' }} margin={{ bottom: 'xlarge' }}>
         <SearchInput />
       </Box>
-      {!response && <Box>Waiting on dizzies</Box>}
-      {response && (
+      {hasNoSearch && (
+        <Box width="full" align="center">
+          <Box align="center" width="large">
+            <Text
+              textAlign="center"
+              size="xlarge"
+              margin={{ vertical: '90px' }}
+            >
+              Search the portal for cell lines, plasmids, PDX models, datasets,
+              and more!
+            </Text>
+            <EmptySearch />
+          </Box>
+        </Box>
+      )}
+      {hasNoResults && (
+        <Box width="full" align="center">
+          <Box align="center" width="large">
+            <Text textAlign="center" size="xlarge" margin={{ top: '90px' }}>
+              No results for term ‘{search.query.search}’.
+            </Text>
+            <Text textAlign="center" size="xlarge" margin={{ bottom: '90px' }}>
+              Try a different term.
+            </Text>
+            <SearchNoResults />
+          </Box>
+        </Box>
+      )}
+      {hasResults && (
         <Grid
           fill
           rows={['auto', 'flex']}
@@ -33,7 +64,7 @@ const Search = (search) => {
             { name: 'results', start: [1, 1], end: [1, 1] }
           ]}
         >
-          <Box gridArea="filters" width="medium">
+          <Box gridArea="filters" width="224px">
             <SearchResultsFilters />
           </Box>
           <Box gridArea="searchLimit">

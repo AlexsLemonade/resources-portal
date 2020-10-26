@@ -9,14 +9,15 @@ services:
     container_name: '${API_NAME}'
     network_mode: '${API_NETWORK}'
     restart: always
-    environment:
-      - DJANGO_SECRET_KEY=local
+    env_file: infrastructure/api-configuration/dev-secrets
     image: api
     build:
       context: ./api
       dockerfile: Dockerfile.local
       args:
         PORT: '${API_PORT}'
+    environment:
+      DEV_HOST: 'http://localhost:${API_PORT}'
     command: >
       bash -c 'python wait_for_postgres.py &&
                python3 wait_for_elasticsearch.py &&
@@ -45,8 +46,8 @@ services:
     command: >
       bash -c 'cd /home/user/code &&
                yarn &&
-               yarn dev -p ${CLIENT_PORT} &&
-               yarn storybook --quiet -p ${STORYBOOK_PORT}'
+               (yarn storybook --quiet -p ${STORYBOOK_PORT} &
+               yarn dev -p ${CLIENT_PORT})'
     volumes:
       - ./client:/home/user/code
       - ./client/node_modules:/home/user/code/node_modules

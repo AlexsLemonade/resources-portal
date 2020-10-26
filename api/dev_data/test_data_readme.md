@@ -17,6 +17,15 @@ There are fours organizations which have these users as members:
 - PostDocOrg, owned by PostDoc
 - SecondaryProfOrg, owned by SecondaryProf
 
+The members of each organization have the relevant permissions for their status in the organization, as shown below:
+
+Permissions:          |PrimaryProf |PostDoc     |SecondaryProf
+----------------------|------------|----------- |--------------
+PrimaryLab            |Owner Perms |Member Perms|None
+PrimaryProfPersonalOrg|Owner Perms |None        |None
+PostDocOrg            |None        |Owner Perms |None
+SecondaryProfOrg      |None        |None        |Owner Perms
+
 There are two grants:
 - A grant for melanoma research, owned by PrimaryProf
 - A grant for tumor growth research, co-owned by PrimaryProf and SecondaryProf
@@ -54,7 +63,7 @@ The following notifcation settings are in place:
 The PrimProf's protocol was requested by SecondaryProf and transferred to him by PostDoc.
 
 There are four orgainzation invitations:
-- A pending request from PrimProf to join SecondaryProfOrg, managed by SecProf
+- An open request from PrimProf to join SecondaryProfOrg, managed by SecProf
 - A accepted request for PostDoc to join PrimaryLab, managed by PrimProf
 - A rejected request for SecProf to join PrimaryLab, managed by PrimProf
 - A invalid request for SecProf to join PrimaryLab, managed by PostDoc. This would have become invalid because PostDoc lost permissions to invite/approve requests to join the organizations

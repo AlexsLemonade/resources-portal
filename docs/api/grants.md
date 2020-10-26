@@ -1,7 +1,10 @@
 # Grants
 Supports adding, viewing, and updating grants. Contains nested routes for associated materials.
 
-## Register a new user account
+## Description
+The Grant object represents ALSF grants associated with users or organizations.
+
+## Register a new grant
 
 **Request**:
 
@@ -18,6 +21,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 
 - **[Authorization Protected](authentication.md)**
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -26,9 +31,14 @@ Content-Type application/json
    "id":5,
    "title":"Young Investigator's Grant",
    "funder_id":"1234567890",
-   "users":[
-
-   ],
+   "user": {
+         "id":"3f8b7a1a-adc8-4fa1-b015-814a9a4b5357",
+         "username":"testuser96",
+         "first_name":"Shane",
+         "last_name":"Cain",
+         "created_at":"2020-05-11T13:47:53+0000",
+         "updated_at":"2020-05-11T13:47:53+0000"
+   },
    "organizations":[
 
    ],
@@ -51,6 +61,8 @@ Content-Type application/json
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can get its information.
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -59,16 +71,14 @@ Content-Type application/json
    "id":8,
    "title":"Young Investigator's Grant",
    "funder_id":"1234567890",
-   "users":[
-      {
+   "user":{
          "id":"3f8b7a1a-adc8-4fa1-b015-814a9a4b5357",
          "username":"testuser96",
          "first_name":"Shane",
          "last_name":"Cain",
          "created_at":"2020-05-11T13:47:53+0000",
          "updated_at":"2020-05-11T13:47:53+0000"
-      }
-   ],
+   },
    "organizations":[
       {
          "id":26,
@@ -121,6 +131,8 @@ funder_id  | string | Alex's Lemonade Stand Foundation or third-party grant id.
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can update it.
 
+**Response**:
+
 ```json
 Content-Type application/json
 200 OK
@@ -129,16 +141,14 @@ Content-Type application/json
    "id":10,
    "title":"New Title",
    "funder_id":"YYY-YYY-YYY",
-   "users":[
-      {
+   "user": {
          "id":"c362123d-7526-4fd8-a3b0-6e3fa026125c",
          "username":"testuser118",
          "first_name":"Carl",
          "last_name":"Mckinney",
          "created_at":"2020-05-11T13:55:46+0000",
          "updated_at":"2020-05-11T13:55:46+0000"
-      }
-   ],
+   },
    "organizations":[
       {
          "id":32,
@@ -182,6 +192,8 @@ Content-Type application/json
 
 - **[Authorization Protected](authentication.md)**
 - Only the owner of a grant can view the materials.
+
+**Response**:
 
 ```json
 Content-Type application/json

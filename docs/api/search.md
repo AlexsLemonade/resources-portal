@@ -12,7 +12,7 @@ Searches can be performed by adding ```?:search_parameter``` onto the search req
 
 Filtering can narrow down your search results. To filter, specify the name of your filterable field and a value to filter on. For example, to filter your search to dataset materials only, your request would be:
 ```search/materials?category=DATASET```
-A list of all filterable fields for a given search will be returned with the search results, under the "facets" field, in the follwing format:
+A list of all filterable fields for a given search will be returned with the search results, under the "facets" field, in the following format:
 ```json
 "facets": {
     "has_publication": {
@@ -36,36 +36,6 @@ A list of all filterable fields for a given search will be returned with the sea
 }
 ```
 Note that only Materials are filterable.
-
-### Post Filters
-
-Post Filters are filters that are not applied to the facet aggregations. They are useful for iteratively creating a search query.
-Filters return facets with aggregations that show how many *are* contained in the search results.
-Post Filters return facets with aggregations that show how many *would* be contained in the search result if included - in addition to what is contained in the results.
-
-The Materials search endpoint currently supports two Post Filter parameters: ```category_pf``` and ```organism_pf```.
-They accept the same values as the ```category``` and ```organism``` filters respectively.
-
-For example the request:  ```search/materials?search=zebrafish&category_pf=DATASET```
-Would give the following reponse:
-```json
-"facets": {
-    "category": {
-        "DATASET": 4,
-        "MODEL_ORGANISM": 4,
-        "CELL_LINE": 2,
-        "OTHER": 2,
-        "PLASMID": 2,
-        "PROTOCOL": 2,
-        "PDX": 1
-    }
-},
-"results": ["Array of 4 materials where category=DATASET"]
-```
-As you can see above the facets contain the aggregation counts for all material categories and is not limited to only ```DATASET```
-Those aggregation counts are affected by the search parameter and any other filtering included in the request. Only the Post Filters are ommited during aggregation.
-
-Note: Post Filters can be combined with other Filters but Filters will always be applied before Post Filters.
 
 ### Ordering
 
@@ -122,14 +92,12 @@ Content-Type application/json
             "pubmed_id": "32223680",
             "created_at": "2020-05-08T15:23:20.139476+00:00",
             "updated_at": "2020-05-08T15:23:20.139490+00:00",
-            "organism": [],
+            "organisms": [],
             "has_publication": true,
             "has_pre_print": true,
             "additional_info": "This paper was co-authored by Postworth Docktor.",
             "needs_mta": false,
             "needs_irb": false,
-            "contact_name": null,
-            "contact_email": "pprof@harvard.edu",
             "publication_title": "Data collected from genetically modified zebrafish",
             "pre_print_doi": "10.1109/5.771073",
             "pre_print_title": "Proposal for Data Collection from Zebrafish",
@@ -159,8 +127,7 @@ Content-Type application/json
                 "embargo_date": "2020-01-30",
                 "title": "GEO Zebrafish Analysis",
                 "description": "This dataset has interesting implications for future research.",
-                "number_samples": "15",
-                "contact_name": "Prim Proffer"
+                "number_of_samples": "15",
             },
             "imported": true,
             "import_source": "SRA"

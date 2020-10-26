@@ -36,7 +36,7 @@ class MaterialDocument(Document):
     )
     category = fields.KeywordField()
 
-    organism = fields.ListField(
+    organisms = fields.ListField(
         fields.TextField(
             fielddata=True, analyzer=string_analyzer, fields={"raw": fields.KeywordField()}
         )
@@ -52,10 +52,13 @@ class MaterialDocument(Document):
     )
 
     organization = fields.ObjectField(
-        properties={"name": fields.TextField(), "id": fields.IntegerField()}
+        properties={
+            "name": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
+            "id": fields.IntegerField(),
+        }
     )
 
-    shipping_requirements = fields.ObjectField(
+    shipping_requirement = fields.ObjectField(
         properties={
             "needs_shipping_address": fields.BooleanField(),
             "needs_payment": fields.BooleanField(),
@@ -87,6 +90,7 @@ class MaterialDocument(Document):
     # Basic Fields
     id = fields.IntegerField()
     url = fields.TextField()
+    is_archived = fields.BooleanField()
     needs_irb = fields.BooleanField()
     needs_mta = fields.BooleanField()
     needs_abstract = fields.BooleanField()
@@ -96,11 +100,6 @@ class MaterialDocument(Document):
     additional_metadata = fields.TextField()
     imported = fields.BooleanField()
     import_source = fields.TextField()
-
-    # These fields are optional, so we need to have the redundancy with the referenced
-    # contact_user above.
-    contact_name = fields.TextField()
-    contact_email = fields.TextField()
 
     publication_title = fields.TextField()
     pre_print_doi = fields.TextField()
@@ -157,6 +156,9 @@ class UserDocument(Document):
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     published_name = fields.TextField(
+        fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
+    )
+    full_name = fields.TextField(
         fielddata=True, analyzer=html_strip, fields={"raw": fields.KeywordField()}
     )
     email = fields.TextField(

@@ -7,8 +7,8 @@
         <circle id="badges/resource-type--path-1" cx="12" cy="12" r="12"></circle>
     </defs>
     <g id="badges/resource-type--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="badges/resource-type--Artboard" transform="translate(-282.000000, -229.000000)">
-            <g id="badges/resource-type--badges/resource-type" transform="translate(282.000000, 229.000000)">
+        <g id="badges/resource-type--icons-badges-variations" transform="translate(-361.000000, -229.000000)">
+            <g id="badges/resource-type--badges/resource-type" transform="translate(361.000000, 229.000000)">
                 <mask id="badges/resource-type--mask-2" fill="white">
                     <use xlink:href="#badges/resource-type--path-1"></use>
                 </mask>

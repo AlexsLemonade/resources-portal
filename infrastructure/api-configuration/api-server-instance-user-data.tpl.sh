@@ -21,6 +21,30 @@ apt-get install nginx -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
+if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
+    # Create and install SSL Certificate for the API.
+    # Only necessary on staging and prod.
+    # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
+    apt-get install -y software-properties-common
+    add-apt-repository ppa:certbot/certbot
+    apt-get update
+    apt-get install -y python-certbot-nginx
+
+    # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
+    # have configured to forward mail to the #teamcontact channel in
+    # slack. Certbot will use it for "important account
+    # notifications".
+
+    # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
+    sleep 180
+    BASE_URL="resources.alexslemonade.org"
+    if [[ ${stage} == "staging" ]]; then
+        certbot --nginx -d api.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
+    elif [[ ${stage} == "prod" ]]; then
+        certbot --nginx -d api.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
+    fi
+fi
+
 # Install, configure and launch our CloudWatch Logs agent
 cat <<EOF >awslogs.conf
 [general]
@@ -40,7 +64,7 @@ EOF
 
 mkdir /var/lib/awslogs
 wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py
-python ./awslogs-agent-setup.py --region ${region} --non-interactive --configfile awslogs.conf
+python3 ./awslogs-agent-setup.py --region ${region} --non-interactive --configfile awslogs.conf
 # Rotate the logs, delete after 3 days.
 echo "
 /tmp/error.log {
@@ -66,58 +90,23 @@ cat <<"EOF" > environment
 ${api_environment}
 EOF
 
-chown -R ubuntu /home/ubuntu
+# Install the API startup script
+cat <<"EOF" > start_api_with_migrations.sh
+${start_api_with_migrations}
+EOF
 
-STATIC_VOLUMES=/tmp/volumes_static
-mkdir -p /tmp/volumes_static
-chmod a+rwx /tmp/volumes_static
+chmod +x ./start_api_with_migrations.sh
 
-# Pull the API image.
-api_docker_image=${dockerhub_repo}/resources_portal_api:${system_version}
-docker pull $api_docker_image
+./start_api_with_migrations.sh
 
-# Migrate first.
-# These database values are created after TF
-# is run, so we have to pass them in programatically
-docker run \
-       --env-file environment \
-       -e DJANGO_CONFIGURATION=Production \
-       -e DATABASE_HOST=${database_host} \
-       -e DATABASE_PORT=${database_port} \
-       -e DATABASE_NAME=${database_name} \
-       -e DATABASE_USER=${database_user} \
-       -e DATABASE_PASSWORD=${database_password} \
-       -e PORT=8081 \
-       -v "$STATIC_VOLUMES":/tmp/www/static \
-       --log-driver=awslogs \
-       --log-opt awslogs-region=${region} \
-       --log-opt awslogs-group=${log_group} \
-       --log-opt awslogs-stream=${log_stream} \
-       -p 8081:8081 \
-       --name=resources_portal_migrations \
-       $api_docker_image python3 manage.py migrate
-
-# Start the API image.
-docker run \
-       --env-file environment \
-       -e DJANGO_CONFIGURATION=Production \
-       -e DATABASE_HOST=${database_host} \
-       -e DATABASE_PORT=${database_port} \
-       -e DATABASE_NAME=${database_name} \
-       -e DATABASE_USER=${database_user} \
-       -e DATABASE_PASSWORD=${database_password} \
-       -e PORT=8081 \
-       -v "$STATIC_VOLUMES":/tmp/www/static \
-       --log-driver=awslogs \
-       --log-opt awslogs-region=${region} \
-       --log-opt awslogs-group=${log_group} \
-       --log-opt awslogs-stream=${log_stream} \
-       -p 8081:8081 \
-       --name=resources_portal_api \
-       -d $api_docker_image
-
-# Don't leave secrets lying around.
-rm -f environment
+# Set up a cron job to rebuild the ES index every five minutes.
+crontab -l > tempcron
+# TODO: Stop logging this once it definitely is working!
+# https://github.com/AlexsLemonade/resources-portal/issues/422
+echo -e "SHELL=/bin/bash\nPATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n*/5 * * * * docker exec resources_portal_api python3 manage.py update_es_index > /var/log/api_cron.log 2>&1" >> tempcron
+# install new cron file
+crontab tempcron
+rm tempcron
 
 # Delete the cloudinit and syslog in production.
 export STAGE=${stage}
