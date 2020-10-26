@@ -74,17 +74,25 @@ export const createNotificationLinks = (notification) => {
 
 export const Notification = ({ notification }) => {
   const notificationText = createNotificationLinks(notification)
-  const { isResourceRequester } = useUser()
+  const { user, isResourceRequester } = useUser()
   // If the user viewing notif is the requester of the associated material, don't show the organization
-  const showOrganizationLink = !isResourceRequester(
-    notification.material_request
-  )
+  const showOrganizationLink =
+    (notification.material_request &&
+      !isResourceRequester(notification.material_request)) ||
+    (notification.organization &&
+      notification.organization.members.includes(user.id))
 
   return (
-    <Box round="medium" elevation="1" fill="horizontal" pad="medium">
-      <Box direction="row" border={{ side: 'bottom' }} alignContent="between">
+    <Box round="medium" fill="horizontal" pad="medium">
+      <Box
+        direction="row"
+        border={{ side: 'bottom' }}
+        pad={{ bottom: 'small' }}
+        margin={{ bottom: 'small' }}
+        justify="between"
+      >
         <Text wordBreak="keep-all">{notificationText}</Text>
-        <Text textAlign="end" color="black-tint-40" wordBreak="keep-all">
+        <Text italic textAlign="end" color="black-tint-40" wordBreak="keep-all">
           {readableTimeAgo(notification.created_at)}
         </Text>
       </Box>

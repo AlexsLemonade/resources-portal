@@ -168,11 +168,11 @@ export const ManageOptions = ({
                       background="error"
                       label="Delete Resource"
                       onClick={async () => {
-                        const deleteResourceRequest = await api.resources.delete(
+                        const deleteRequest = await api.resources.delete(
                           resource.id,
                           token
                         )
-                        if (deleteResourceRequest.isOk) {
+                        if (deleteRequest.isOk) {
                           if (onChange) onChange()
                         } else {
                           addAlert('Unable to delete resource', 'error')

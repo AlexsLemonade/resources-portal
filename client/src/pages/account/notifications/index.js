@@ -1,4 +1,5 @@
 import React from 'react'
+import { Box } from 'grommet'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
 import { Loader } from 'components/Loader'
@@ -43,7 +44,14 @@ const Notifications = () => {
       {notifications.length !== 0 &&
         notifications.map((notification) => {
           return (
-            <Notification notification={notification} key={notification.id} />
+            <Box
+              key={notification.id}
+              elevation="medium"
+              margin={{ bottom: 'large' }}
+              round="xsmall"
+            >
+              <Notification notification={notification} />
+            </Box>
           )
         })}
     </DrillDownNav>
