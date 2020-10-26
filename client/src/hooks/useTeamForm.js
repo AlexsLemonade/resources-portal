@@ -69,6 +69,10 @@ export default () => {
     setTeam({ ...team, members: newMembers })
   }
 
+  const transferOwnership = (newOwner) => {
+    setTeam({ ...team, owner: newOwner })
+  }
+
   const removeInvite = (invite) => {
     const newInvites = invites.filter((i) => i !== invite)
     setInvites(newInvites)
@@ -181,6 +185,7 @@ export default () => {
     fetchTeam,
     teamFetched: !!team.id,
     addGrant,
-    removeGrant
+    removeGrant,
+    transferOwnership
   }
 }
