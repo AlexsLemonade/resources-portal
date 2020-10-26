@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Stack } from 'grommet'
-import { CreateOrLogin } from 'components/CreateAccountLoginButton'
+import CreateOrLogin from 'components/CreateOrLogin'
 import styled from 'styled-components'
 import { useUser } from 'hooks/useUser'
 

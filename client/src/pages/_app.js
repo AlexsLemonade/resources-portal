@@ -1,15 +1,20 @@
 import { Grommet } from 'grommet'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import React from 'react'
 import * as Sentry from '@sentry/react'
 import Error from 'pages/_error'
-import { AccountLayout } from '../components/AccountLayout'
-import { HomeLayout } from '../components/HomeLayout'
-import { Layout } from '../components/Layout'
-import { ResourcesPortalContextProvider } from '../ResourcesPortalContext'
+import { HomeLayout } from 'components/HomeLayout'
+import AccountLayout from 'components/AccountLayout'
+import { Layout } from 'components/Layout'
+import { ResourcesPortalContextProvider } from 'ResourcesPortalContext'
 // global styles
 import '../styles/app.scss'
-import theme from '../theme'
+import theme from 'theme'
+
+const LoginRequired = dynamic(() => import('components/LoginRequired'), {
+  ssr: false
+})
 
 export default ({ Component, pageProps, router: { pathname } }) => {
   const isHome = pathname === '/'
@@ -42,9 +47,11 @@ export default ({ Component, pageProps, router: { pathname } }) => {
             </HomeLayout>
           )}
           {isAccount && (
-            <AccountLayout>
-              <Page />
-            </AccountLayout>
+            <LoginRequired showHeader>
+              <AccountLayout>
+                <Page />
+              </AccountLayout>
+            </LoginRequired>
           )}
           {isDefault && (
             <Layout>

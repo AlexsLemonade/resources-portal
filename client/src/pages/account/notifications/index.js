@@ -8,7 +8,7 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 
 const Notifications = () => {
-  const { refreshUserData, user, token } = useUser()
+  const { refreshUser, user, token } = useUser()
   const { getLastNotificationDate, fetchNotifications } = useNotifications()
   const [didUpdateNotifs, setdidUpdateNotifs] = React.useState(false)
   const [notifications, setNotifications] = React.useState([])
@@ -18,12 +18,12 @@ const Notifications = () => {
       const notifs = await fetchNotifications()
       setdidUpdateNotifs(true)
       setNotifications(notifs)
-      await api.user.update(
+      await api.users.update(
         user.id,
         { viewed_notifications_at: getLastNotificationDate(notifs) },
         token
       )
-      refreshUserData()
+      refreshUser()
     }
 
     if (!didUpdateNotifs) updateNotifsViewed()

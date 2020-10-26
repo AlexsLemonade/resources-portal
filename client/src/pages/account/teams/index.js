@@ -16,7 +16,7 @@ const Teams = () => {
 
   React.useEffect(() => {
     const fetchTeams = async () => {
-      const teamsRequest = await api.user.teams.list(user.id, token)
+      const teamsRequest = await api.users.teams.list(user.id, token)
       if (teamsRequest.isOk && teamsRequest.response) {
         const publicTeams = teamsRequest.response.results.filter(
           (t) => t.id !== user.personal_organization.id
