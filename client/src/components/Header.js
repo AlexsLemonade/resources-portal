@@ -4,9 +4,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { AlertsWithQueue } from 'components/Alert'
-import { HeaderAccountLink } from './HeaderAccountLink'
+import { HeaderAccountLink } from 'components/HeaderAccountLink'
 import LogoSvg from '../images/logo.svg'
-import { useIsClient } from '../hooks/useIsClient'
 
 const FixedBox = styled(Box)`
   position: fixed;
@@ -21,10 +20,8 @@ const Logo = styled(LogoSvg)`
 
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
-  const isClient = useIsClient()
   const queue = useAlertsQueue()
-  return isClient(
-    'Loading',
+  return (
     <Box height={queue.alerts.length > 0 ? '201px' : '80px'}>
       <FixedBox background="white">
         <AlertsWithQueue queue={queue} />
@@ -49,19 +46,18 @@ export default function ResourcesHeader({ className }) {
                 </Anchor>
               </Link>
             </Box>
-
             <Nav
               direction="row"
               gap={size === 'large' ? 'xlarge' : 'medium'}
               align="center"
             >
               <Link href="/search">
-                <Anchor color="white" href="#" label="Search" />
+                <Anchor color="white" href="/search" label="Search" />
               </Link>
               <Link href="/resources">
-                <Anchor color="white" href="#" label="Add Resource" />
+                <Anchor color="white" href="/resources" label="Add Resource" />
               </Link>
-              <Anchor color="white" href="#" label="Help" />
+              <Anchor color="white" href="/help" label="Help" />
               <HeaderAccountLink />
             </Nav>
           </Box>

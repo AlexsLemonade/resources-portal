@@ -1,15 +1,16 @@
+import React from 'react'
+import { string } from 'yup'
 import { Anchor, Box, Button, Text, TextInput } from 'grommet'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useCreateUser } from 'hooks/useCreateUser'
 import Link from 'next/link'
-import * as React from 'react'
+import ORCIDSignInButton from 'components/ORCIDSignInButton'
+import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
 import GrantIcon from '../images/grant.svg'
 import NextSteps from '../images/join-by-invite-next-steps.svg'
-import { ORCIDSignInButton } from './CreateAccountLoginButton'
-import { IncorrectGrantModal } from './modals/IncorrectGrantModal'
 
-export const CreateAccountStep = () => {
-  const { ORCID, getNextStep } = useCreateUser()
+export const CreateAccountStep = ({ ORCID }) => {
+  const { getNextStep } = useCreateUser()
   return (
     <Box>
       <Text>
@@ -35,9 +36,7 @@ export const CreateAccountStep = () => {
         <Box align="center" pad="medium" gap="medium">
           <ORCIDSignInButton
             label="Sign in with ORCID iD"
-            redirectUrl={`${
-              process.env.CLIENT_HOST
-            }/create-account?stepName=${getNextStep()}`}
+            redirectPath={`/create-account?stepName=${getNextStep()}`}
           />
         </Box>
       </Box>
@@ -51,7 +50,7 @@ export const CreateAccountStep = () => {
           outputs and activities to your iD.
         </Text>
         <Anchor
-          color="#017FA3"
+          target="_blank"
           href="https://orcid.org/"
           label="Learn more at orcid.org"
         />
@@ -61,23 +60,29 @@ export const CreateAccountStep = () => {
 }
 
 export const EnterEmailStep = () => {
-  const {
-    setEmail,
-    setNeedsEmail,
-    stepForward,
-    save,
-    user,
-    createUser,
-    validEmail
-  } = useCreateUser()
-  const onChange = (email) => {
-    setEmail(email)
-    save()
+  const emailSchema = string().email().required()
+  const { newUser, user, setNewUser, stepForward } = useCreateUser()
+  const [valid, setValid] = React.useState(false)
+  const [email, setEmail] = React.useState(newUser.email)
+
+  const onChange = (newEmail) => {
+    setEmail(newEmail)
   }
+
   const onClick = () => {
-    setNeedsEmail(false)
+    setNewUser({ ...newUser, email })
     stepForward()
   }
+
+  React.useEffect(() => {
+    try {
+      emailSchema.validateSync(email)
+      setValid(true)
+    } catch (e) {
+      setValid(false)
+    }
+  })
+
   if (user) {
     return (
       <Box pad="medium" gap="medium">
@@ -100,14 +105,14 @@ export const EnterEmailStep = () => {
         width="300px"
         placeholder="Enter email"
         onChange={(event) => onChange(event.target.value)}
-        value={createUser.email || ''}
+        value={email || ''}
         type="email"
       />
       <Box width="200px" alignSelf="center">
         <Button
           label="Submit"
           onChange={onChange}
-          disabled={!validEmail()}
+          disabled={!valid}
           onClick={onClick}
         />
       </Box>
@@ -116,7 +121,7 @@ export const EnterEmailStep = () => {
 }
 
 export const VerifyGrantStep = () => {
-  const { stepForward, createUser } = useCreateUser()
+  const { stepForward, newUser } = useCreateUser()
   const { addAlert } = useAlertsQueue()
   const [showing, setShowing] = React.useState(false)
 
@@ -131,8 +136,12 @@ export const VerifyGrantStep = () => {
         Grants Recieved
       </Text>
       <Box gap="medium">
-        {createUser.grants.map((grant) => (
-          <Box key={grant.funder_id} direction="row" align="center">
+        {newUser.grants.map((grant) => (
+          <Box
+            key={`${grant.title}-${grant.funder_id}`}
+            direction="row"
+            align="center"
+          >
             <Box pad="small">
               <GrantIcon />
             </Box>
@@ -179,7 +188,6 @@ export const NextStepsStep = () => {
         </Link>
         <Link href="/account/teams">
           <Anchor
-            color="#017FA3"
             href="/account/teams"
             label="Add members of your lab or organization to help you manage resources"
           />

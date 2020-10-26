@@ -1,101 +1,45 @@
-import { CreateUserContext } from 'contexts/CreateUserContext'
-import { useRouter } from 'next/router'
 import React from 'react'
-import { string } from 'yup'
-import api from '../api'
-import { useUser } from './useUser'
+import { CreateUserContext } from 'contexts/CreateUserContext'
+import { useUser } from 'hooks/useUser'
+import api from 'api'
 
-export const useCreateUser = (
-  email,
-  grants,
-  ORCID,
-  queryCode,
-  initialRedirectUrl
-) => {
-  const { user, setUser, setToken } = useUser()
+export const useCreateUser = (code, originUrl) => {
+  const { user, fetchUserWithNewToken } = useUser()
   const {
-    createUser,
-    setCreateUser,
-    orcidInfo,
-    setOrcidInfo,
+    newUser,
+    setNewUser,
     steps,
     setSteps,
     currentStep,
-    setCurrentStep,
-    needsEmail,
-    setNeedsEmail,
-    authCodeUsed,
-    setAuthCodeUsed,
-    cleanup
+    setCurrentStep
   } = React.useContext(CreateUserContext)
-  const router = useRouter()
-
-  const handleRouteChangeStart = (url) => {
-    if (!url.includes('orcid.org') && !url.includes('create-account')) {
-      cleanup()
-    }
-  }
-
-  const save = () => {
-    setCreateUser({ ...createUser })
-  }
-
-  let needsSave = false
-
-  if (email && !createUser.email) {
-    createUser.email = email
-    needsSave = true
-  }
-
-  if (grants && !createUser.grants) {
-    createUser.grants = grants
-    needsSave = true
-  }
-
-  if (needsSave) {
-    save()
-    needsSave = false
-  }
+  const orcidRef = React.useRef(false)
 
   React.useEffect(() => {
-    router.events.on('routeChangeStart', handleRouteChangeStart)
-
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method:
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChangeStart)
+    const asyncGetORCID = async () => {
+      const orcidRequest = await api.orcid.create(code, originUrl)
+      if (orcidRequest.isOk) {
+        setNewUser({ ...newUser, ...orcidRequest.response })
+      }
     }
-  })
 
-  React.useEffect(() => {
     // If we have the auth code, get the ORCID info
-    if (queryCode && Object.keys(orcidInfo).length === 0 && !authCodeUsed) {
-      api.user.getORCID(queryCode, initialRedirectUrl).then((response) => {
-        setOrcidInfo({ ...response.response })
-      })
-      setAuthCodeUsed(true)
+    if (code && !newUser.access_token && !orcidRef.current) {
+      orcidRef.current = true
+      asyncGetORCID()
     }
 
     //  Once we have that info, login the user
-    if (
-      queryCode &&
-      Object.keys(orcidInfo).length !== 0 &&
-      !user &&
-      !needsEmail
-    ) {
-      createAndLoginUser(
-        orcidInfo.orcid,
-        orcidInfo.access_token,
-        orcidInfo.refresh_token
-      )
+    if (code && !user && newUser.access_token) {
+      createAndLoginUser()
     }
 
     // Generate initial steps
     const stepsArray = ['Create an Account']
-    if (!createUser.email) {
+    if (!newUser.email) {
       stepsArray.push('Enter Email')
     }
-    if (createUser.grants) {
+    if (newUser.grants) {
       stepsArray.push('Verify Grant Information')
     }
     stepsArray.push('Next Steps')
@@ -106,9 +50,38 @@ export const useCreateUser = (
 
     if (currentStep === '') {
       setCurrentStep(stepsArray[0])
-      setNeedsEmail(false)
     }
   })
+
+  const createAndLoginUser = async () => {
+    const createUserRequest = await api.users.create(newUser)
+
+    if (createUserRequest.status === 401) {
+      return { error: createUserRequest }
+    }
+
+    if (!createUserRequest.isOk) {
+      // TODO::SENTRY
+      console.log('error', createUserRequest)
+      return { error: createUserRequest }
+    }
+
+    const {
+      response: { user_id: userId, token }
+    } = createUserRequest
+
+    await fetchUserWithNewToken(userId, token)
+
+    return {}
+  }
+
+  const getNextStep = () => {
+    const nextStepIndex = Math.min(
+      steps.length - 1,
+      steps.indexOf(currentStep) + 1
+    )
+    return steps[nextStepIndex]
+  }
 
   const stepForward = () => {
     const currentIndex = steps.indexOf(currentStep)
@@ -124,99 +97,16 @@ export const useCreateUser = (
     }
   }
 
-  const callCreateUser = async (
-    orcid,
-    accessToken,
-    refreshToken,
-    loginEmail,
-    loginGrants
-  ) => {
-    const [tokenRequest, userRequest] = await api.user.create(
-      orcid,
-      accessToken,
-      refreshToken,
-      loginEmail,
-      loginGrants
-    )
-
-    if (tokenRequest.status === 401) {
-      setNeedsEmail(true)
-      return { error: tokenRequest }
-    }
-
-    if (!tokenRequest.isOk) {
-      console.log('error', tokenRequest)
-      return { error: tokenRequest }
-    }
-
-    const { token } = tokenRequest.response
-
-    if (!userRequest.status === 200) {
-      console.log('error', userRequest)
-      return { error: userRequest }
-    }
-
-    const authenticatedUser = userRequest.response
-
-    return { authenticatedUser, token }
-  }
-
-  const createAndLoginUser = async (orcid, accessToken, refreshToken) => {
-    const { authenticatedUser, token } = await callCreateUser(
-      orcid,
-      accessToken,
-      refreshToken,
-      createUser.email,
-      createUser.grants
-    )
-    if (authenticatedUser && authenticatedUser.id) {
-      setUser(authenticatedUser)
-    }
-    if (token) {
-      setToken(token)
-    }
-  }
-
-  const setEmail = (newEmail) => {
-    createUser.email = newEmail
-  }
-
-  const setGrants = (newGrants) => {
-    createUser.grants = newGrants
-  }
-
-  const validEmail = () => {
-    const schema = string().email().required()
-    try {
-      schema.validateSync(createUser.email)
-    } catch (e) {
-      return false
-    }
-    return true
-  }
-
-  const getNextStep = () => {
-    const nextStepIndex = Math.min(
-      steps.length - 1,
-      steps.indexOf(currentStep) + 1
-    )
-    return steps[nextStepIndex]
-  }
-
   return {
-    createUser,
+    newUser,
+    setNewUser,
     user,
     steps,
     currentStep,
     setCurrentStep,
     createAndLoginUser,
-    setNeedsEmail,
     stepForward,
     stepBack,
-    getNextStep,
-    setGrants,
-    setEmail,
-    save,
-    validEmail
+    getNextStep
   }
 }

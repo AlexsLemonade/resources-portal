@@ -2,7 +2,7 @@ import React from 'react'
 import { Box, Heading, Button, Anchor, Text } from 'grommet'
 import Link from 'next/link'
 import { useUser } from 'hooks/useUser'
-import { CreateAccountLoginButton } from 'components/CreateAccountLoginButton'
+import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
 import ListResources from '../../images/list-resources.svg'
 
 export default function ListResource() {

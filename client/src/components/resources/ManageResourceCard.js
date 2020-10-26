@@ -83,7 +83,7 @@ export const ManageOptions = ({
                       primary
                       label="Archive Resource"
                       onClick={async () => {
-                        const archiveRequest = await api.resource.update(
+                        const archiveRequest = await api.resources.update(
                           resource.id,
                           { is_archived: true },
                           token
@@ -168,7 +168,7 @@ export const ManageOptions = ({
                       background="error"
                       label="Delete Resource"
                       onClick={async () => {
-                        const deleteResourceRequest = await api.resource.delete(
+                        const deleteResourceRequest = await api.resources.delete(
                           resource.id,
                           token
                         )
