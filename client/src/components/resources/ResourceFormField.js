@@ -1,11 +1,19 @@
 import React from 'react'
-import { Box, Button, FormField, TextInput, TextArea, Text } from 'grommet'
+import {
+  Anchor,
+  Box,
+  Button,
+  FormField,
+  TextInput,
+  TextArea,
+  Text
+} from 'grommet'
 import { getReadable } from 'helpers/readableNames'
 import Icon from 'components/Icon'
 import ResourceFormFieldLabel from 'components/resources/ResourceFormFieldLabel'
 import ResourceDynamicInput from 'components/resources/ResourceDynamicInput'
 import HelperText from 'components/InputHelperText'
-import { getInputType } from '.'
+import { getInputType, getMustExistAt } from '.'
 
 const AttributeFormField = ({
   labeled,
@@ -18,6 +26,28 @@ const AttributeFormField = ({
   contactUserOptions,
   disabled = false
 }) => {
+  const getInfo = () => {
+    const mustExistAt = getMustExistAt(attribute)
+    if (!mustExistAt || !inputValue) return undefined
+    const existAtUrl = mustExistAt(inputValue)
+    return (
+      <Box direction="row" gap="small" align="center">
+        <Icon name="Warning" color="warning" />
+        <Box>
+          <Text size="small">
+            Please verify that the following link is correct before continuing.
+          </Text>
+          <Anchor
+            size="small"
+            target="_blank"
+            href={existAtUrl}
+            label={existAtUrl}
+          />
+        </Box>
+      </Box>
+    )
+  }
+
   return (
     <FormField
       borderless={['sequencemaps', 'biosafety_level'].includes(inputType)}
@@ -37,6 +67,7 @@ const AttributeFormField = ({
           false
         )
       }
+      info={getInfo()}
     >
       <ResourceDynamicInput
         attribute={attribute}
