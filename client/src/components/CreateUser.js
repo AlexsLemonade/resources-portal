@@ -18,7 +18,7 @@ export default ({ ORCID, originUrl, code, stepName }) => {
   )
 
   React.useEffect(() => {
-    // this from requires grants to be present
+    // this component requires newUser to have grants
     if (!newUser.grants) {
       router.replace('/')
     } else if (stepName && stepName !== currentStep) {
