@@ -27,7 +27,9 @@ export default ({ defaultStep = -1 }) => {
     validateShippingRequirement,
     resource,
     save,
-    clearResourceContext
+    clearResourceContext,
+    getAttribute,
+    setAttribute
   } = useResourceForm()
 
   const loadedRef = React.useRef(false)
@@ -42,6 +44,10 @@ export default ({ defaultStep = -1 }) => {
       setStep(0)
       loadedRef.current = true
     }
+
+    // force not imported
+    if (resource && getAttribute('imported') === undefined)
+      setAttribute('imported', false)
 
     if (savedResource) {
       clearResourceContext()
