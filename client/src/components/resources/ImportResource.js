@@ -20,7 +20,8 @@ export default () => {
     isSupported,
     importAttribute,
     save,
-    clearResourceContext
+    clearResourceContext,
+    validate
   } = useResourceForm()
   const router = useRouter()
   const { addAlert } = useAlertsQueue()
@@ -32,6 +33,10 @@ export default () => {
   const canShowReview = importSource && (fetched || !isSupported)
   const canShowInfoCard =
     !isSupported && importSource && importSource !== 'OTHER'
+
+  React.useEffect(() => {
+    if (!getAttribute('imported')) setAttribute('imported', true)
+  })
 
   return (
     <Box align="center">
@@ -101,10 +106,7 @@ export default () => {
           >
             <Button
               onClick={() => {
-                // TODO:
-                // we need validation here
-                setAttribute('imported', true)
-                setStep(1)
+                validate(() => setStep(1))
               }}
               primary
               label="Review"
