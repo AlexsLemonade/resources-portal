@@ -54,8 +54,6 @@ def validateImport(data):
                     "identifier": data["additional_metadata"]["accession_code"],
                     "material": model_to_dict(material),
                 }
-
-        return {"valid": True}
     elif data["import_source"] == "PROTOCOLS_IO":
         for material in Material.objects.filter(imported=True, import_source="PROTOCOLS_IO"):
             if (
@@ -69,7 +67,7 @@ def validateImport(data):
                     "material": model_to_dict(material),
                 }
 
-        return {"valid": True}
+    return {"valid": True}
 
 
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
