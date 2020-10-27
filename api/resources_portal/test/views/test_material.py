@@ -50,6 +50,19 @@ class TestMaterialListTestCase(APITestCase):
             self.organization.members.count(),
         )
 
+    def test_import_other_with_valid_data_succeeds(self):
+        self.client.force_authenticate(user=self.user)
+        self.material_data["imported"] = True
+        self.material_data["type"] = "OTHER"
+        response = self.client.post(self.url, self.material_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        self.assertEqual(self.material.category, response.json()["category"])
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="MATERIAL_ADDED")),
+            self.organization.members.count(),
+        )
+
     def test_post_request_without_permission_forbidden(self):
         self.client.force_authenticate(user=self.user_without_perms)
         response = self.client.post(self.url, self.material_data, format="json")
