@@ -2,11 +2,17 @@ import React from 'react'
 import { Box, Paragraph } from 'grommet'
 import Icon from 'components/Icon'
 
-export const InfoCard = ({ label = '', type = 'Info', children }) => {
-  const color = type && type.toLowerCase()
+export const InfoCard = ({
+  elevation = 'medium',
+  label = '',
+  type = 'Info',
+  iconColor,
+  children
+}) => {
+  const color = iconColor || (type && type.toLowerCase())
   return (
     <Box
-      elevation="medium"
+      elevation={elevation}
       round="xsmall"
       direction="row"
       align="center"

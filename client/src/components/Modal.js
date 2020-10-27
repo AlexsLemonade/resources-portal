@@ -7,13 +7,15 @@ export const Modal = ({
   setShowing,
   nondismissable,
   children,
-  title
+  title,
+  critical = false
 }) => {
   const dismissModal = () => {
     if (!nondismissable) {
       setShowing(false)
     }
   }
+
   return (
     <>
       {showing && (
@@ -32,6 +34,12 @@ export const Modal = ({
               pad={{ vertical: 'large', horizontal: 'xlarge' }}
               gap="none"
               align="center"
+              round="xsmall"
+              border={
+                critical
+                  ? { side: 'top', color: 'error', size: 'medium' }
+                  : undefined
+              }
             >
               <Box height={{ min: 'min-content' }}>
                 {title && (

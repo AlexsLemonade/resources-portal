@@ -9,15 +9,22 @@ import { useAlertsQueue } from 'hooks/useAlertsQueue'
 
 export default () => {
   const { addAlert } = useAlertsQueue()
-  const { team, removeMember, invites, save } = useTeamForm()
+  const { team, removeMember, transferOwnership, invites, save } = useTeamForm()
   const [showTeamModal, setShowTeamModal] = React.useState(false)
-  const saveChanges = async (message) => {
-    if (await save()) {
-      addAlert(message, 'success')
-    } else {
-      addAlert('An error occurred while saving. Please refresh.', 'error')
+  const saveRef = React.useRef(false)
+
+  React.useEffect(() => {
+    const saveTeam = async (message) => {
+      saveRef.current = false
+      if (await save()) {
+        addAlert(message, 'success')
+      } else {
+        addAlert('An error occurred while saving. Please refresh.', 'error')
+      }
     }
-  }
+    if (saveRef.current) saveTeam(saveRef.current)
+  })
+
   return (
     <Box pad={{ vertical: 'medium' }}>
       {team.members.length === 0 && (
@@ -38,10 +45,9 @@ export default () => {
               <Button
                 label="Done"
                 onClick={async () => {
-                  await saveChanges(
-                    invites.length > 0 ? 'Invites Sent' : 'Saved Changes'
-                  )
                   setShowTeamModal(false)
+                  saveRef.current =
+                    invites.length > 0 ? 'Invites Sent' : 'Saved Changes'
                 }}
               />
             </Box>
@@ -53,7 +59,11 @@ export default () => {
         team={team}
         onDelete={(member) => {
           removeMember(member)
-          saveChanges('Member Removed')
+          saveRef.current = 'Member Removed'
+        }}
+        onTransferOwner={(newOwner) => {
+          transferOwnership(newOwner)
+          saveRef.current = 'New Owner Saved'
         }}
       />
     </Box>
