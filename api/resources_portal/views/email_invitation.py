@@ -9,8 +9,9 @@ from rest_framework.response import Response
 
 from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.emailer import (
+    ALEXS_LOGO_URL,
+    CCRR_LOGO_URL,
     EMAIL_SOURCE,
-    LOGO_EMBEDDED_IMAGE_CONFIGS,
     PLAIN_TEXT_EMAIL_FOOTER,
     send_mail,
 )
@@ -41,22 +42,26 @@ def email_invitation_view(request):
     )
     invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
     terms_of_use_link = f"https://{settings.AWS_SES_DOMAIN}/terms-of-use"
+
+    # Format in image URLs.
+    alexs_logo_url = "https://{settings.AWS_SES_DOMAIN}/alexs-logo.png"
+    ccrr_logo_url = "https://{settings.AWS_SES_DOMAIN}/ccrr-logo.png"
+    formatted_html = EMAIL_HTML_BODY.replace("REPLACE_ALEXS_LOGO", alexs_logo_url)
+    formatted_html = formatted_html.replace("REPLACE_CCRR_LOGO", ccrr_logo_url)
+
     formatted_html = (
-        EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
+        formatted_html.replace("REPLACE_MAIN_TEXT", body)
         .replace("REPLACE_CTA_LINK", invitation_link)
         .replace("REPLACE_TERMS_LINK", terms_of_use_link)
+        .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
+        .replace("REPLACE_CCRR_LOGO", CCRR_LOGO_URL)
     )
     plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
     subject = f"CCRR: {request.user.full_name} has invited you to create an account"
 
     logger.info("Sending an email invitation to {email}.")
     send_mail(
-        EMAIL_SOURCE,
-        [email],
-        subject,
-        plain_text_email,
-        formatted_html,
-        LOGO_EMBEDDED_IMAGE_CONFIGS,
+        EMAIL_SOURCE, [email], subject, plain_text_email, formatted_html,
     )
 
     return Response(status=status.HTTP_201_CREATED)

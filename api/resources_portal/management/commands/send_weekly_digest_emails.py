@@ -7,8 +7,9 @@ from django.utils import timezone
 from resources_portal import utils
 from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.emailer import (
+    ALEXS_LOGO_URL,
+    CCRR_LOGO_URL,
     EMAIL_SOURCE,
-    LOGO_EMBEDDED_IMAGE_CONFIGS,
     PLAIN_TEXT_EMAIL_FOOTER,
     send_mail,
 )
@@ -74,17 +75,18 @@ def send_user_weekly_digest(user):
         html_body_list += get_formatted_text_for_notification(notification)
 
     plain_text += PLAIN_TEXT_EMAIL_FOOTER
+
     html_body = (
         EMAIL_HTML_TEMPLATE.replace("REPLACE_NAME", user.full_name)
         .replace("REPLACE_INTRO_LINE", intro_line)
         .replace("REPLACE_NOTIFICATION_LIST", html_body_list)
+        .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
+        .replace("REPLACE_CCRR_LOGO", CCRR_LOGO_URL)
     )
 
     subject = "CCRR: Weekly Notification Digest"
 
-    send_mail(
-        EMAIL_SOURCE, [user.email], subject, plain_text, html_body, LOGO_EMBEDDED_IMAGE_CONFIGS,
-    )
+    send_mail(EMAIL_SOURCE, [user.email], subject, plain_text, html_body)
 
     user.weekly_digest_last_sent = start_time
     user.save()

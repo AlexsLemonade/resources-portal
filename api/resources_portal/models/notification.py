@@ -11,8 +11,9 @@ from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 from resources_portal.config.logging import get_and_configure_logger
 from resources_portal.emailer import (
+    ALEXS_LOGO_URL,
+    CCRR_LOGO_URL,
     EMAIL_SOURCE,
-    LOGO_EMBEDDED_IMAGE_CONFIGS,
     NOTIFICATIONS_URL,
     PLAIN_TEXT_EMAIL_FOOTER,
     send_mail,
@@ -162,9 +163,13 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         notification_config = EMAIL_NOTIFICATIONS[self.notification_type]
 
         body = notification_config["body"].format(**props)
-        formatted_html = EMAIL_HTML_BODY.replace(
-            "REPLACE_FULL_NAME", self.notified_user.full_name
-        ).replace("REPLACE_MAIN_TEXT", body)
+
+        formatted_html = (
+            EMAIL_HTML_BODY.replace("REPLACE_FULL_NAME", self.notified_user.full_name)
+            .replace("REPLACE_MAIN_TEXT", body)
+            .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
+            .replace("REPLACE_CCRR_LOGO", CCRR_LOGO_URL)
+        )
         formatted_cta_html = ""
         cta = ""
         cta_link = ""
@@ -221,7 +226,6 @@ def send_email_notification(sender, instance=None, created=False, **kwargs):
         email_dict["subject"],
         email_dict["plain_text_email"],
         email_dict["formatted_html"],
-        LOGO_EMBEDDED_IMAGE_CONFIGS,
     )
 
     instance.delivered = True
