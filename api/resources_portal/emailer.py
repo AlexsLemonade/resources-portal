@@ -81,7 +81,9 @@ def create_multipart_message(
 
         image_part.add_header("Content-ID", f"<{embedded_image['content_id']}>")
         image_part.add_header(
-            "Content-Disposition", "inline", filename=os.path.basename(embedded_image["file_path"])
+            "Content-Disposition",
+            "attachment",
+            filename=os.path.basename(embedded_image["file_path"]),
         )
         msg.attach(image_part)
 
