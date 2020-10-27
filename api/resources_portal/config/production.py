@@ -1,6 +1,9 @@
 import os
 
+import boto3
 import sentry_sdk
+from elasticsearch import RequestsHttpConnection
+from requests_aws4auth import AWS4Auth
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from resources_portal.config.common import Common
@@ -49,11 +52,22 @@ class Production(Common):
         }
     }
 
+    credentials = boto3.Session().get_credentials()
+    aws_auth = AWS4Auth(
+        credentials.access_key,
+        credentials.secret_key,
+        "us-east-1",
+        "es",
+        session_token=credentials.token,
+    )
+
     ELASTICSEARCH_DSL = {
         "default": {
             "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
             "port": 443,
             "use_ssl": True,
+            "http_auth": aws_auth,
+            "connection_class": RequestsHttpConnection,
         }
     }
 

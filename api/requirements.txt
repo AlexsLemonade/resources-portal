@@ -44,6 +44,7 @@ django-storages==1.8.0
 boto3==1.11.1
 uwsgi==2.0.18
 premailer==3.7.0
+requests-aws4auth==1.0.1
 
 # ElasticSearch
 django-elasticsearch-dsl-drf==0.20.8
