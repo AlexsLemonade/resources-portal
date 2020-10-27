@@ -35,7 +35,7 @@ class Material(SafeDeleteModel):
         ("DATASET", "DATASET"),
         ("PROTOCOLS_IO", "PROTOCOLS_IO"),
         ("ADDGENE", "ADDGENE"),
-        ("JACKSON_LAB", "JACKSON_LAB"),
+        ("JACKSON_LABS", "JACKSON_LABS"),
         ("ATCC", "ATCC"),
         ("ZIRC", "ZIRC"),
         ("OTHER", "OTHER"),
