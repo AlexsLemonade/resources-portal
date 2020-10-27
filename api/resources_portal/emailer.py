@@ -75,15 +75,6 @@ def create_multipart_message(
     msg["From"] = sender
     msg["To"] = ", ".join(recipients)
 
-    # Record the MIME types of both parts - text/plain and text/html.
-    # According to RFC 2046, the last part of a multipart message, in this case the HTML message, is best and preferred.
-    if text:
-        part = MIMEText(text, "plain")
-        msg.attach(part)
-    if html:
-        part = MIMEText(html, "html")
-        msg.attach(part)
-
     for embedded_image in embedded_images:
         with open(embedded_image["file_path"], "rb") as f:
             image_part = MIMEImage(f.read(), embedded_image["subtype"])
@@ -93,6 +84,15 @@ def create_multipart_message(
             "Content-Disposition", "inline", filename=os.path.basename(embedded_image["file_path"])
         )
         msg.attach(image_part)
+
+    # Record the MIME types of both parts - text/plain and text/html.
+    # According to RFC 2046, the last part of a multipart message, in this case the HTML message, is best and preferred.
+    if text:
+        part = MIMEText(text, "plain")
+        msg.attach(part)
+    if html:
+        part = MIMEText(html, "html")
+        msg.attach(part)
 
     return msg
 
