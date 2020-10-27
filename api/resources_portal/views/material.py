@@ -71,6 +71,8 @@ def validateImport(data):
 
         return {"valid": True}
 
+    return {"valid": True}
+
 
 class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Material.objects.all()
