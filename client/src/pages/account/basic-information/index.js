@@ -6,6 +6,7 @@ import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { Modal } from 'components/Modal'
 import Icon from 'components/Icon'
+import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
 
 const BasicInformation = () => {
   const { user, refreshUser, updateEmail, isLoggedIn, logOut } = useUser()
@@ -13,6 +14,7 @@ const BasicInformation = () => {
   const [showEmailForm, setShowEmailForm] = React.useState(false)
   const { addAlert } = useAlertsQueue()
   const [showLogOutModal, setShowLogOutModal] = React.useState(false)
+  const [showGrantModal, setShowGrantModal] = React.useState(false)
 
   React.useEffect(() => {
     if (isLoggedIn) refreshUser()
@@ -81,9 +83,13 @@ const BasicInformation = () => {
       <Box align="end">
         <Button
           onClick={() => {
-            console.log(user.id)
+            setShowGrantModal(true)
           }}
           label="Report Missing / Incomplete Info"
+        />
+        <IncorrectGrantModal
+          showing={showGrantModal}
+          setShowing={setShowGrantModal}
         />
       </Box>
       <Box margin={{ vertical: 'xlarge' }} align="start">
