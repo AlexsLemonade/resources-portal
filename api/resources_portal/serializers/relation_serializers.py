@@ -80,6 +80,7 @@ class MaterialRelationSerializer(serializers.ModelSerializer):
             "url",
             "organisms",
             "organization",
+            "contact_user",
             "pubmed_id",
             "is_archived",
             "additional_metadata",
