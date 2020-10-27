@@ -344,6 +344,8 @@ export default () => {
     if (isOk) {
       await saveSequenceMaps(savedResource)
       await saveGrants(savedResource)
+    } else {
+      return {}
     }
 
     // should optionally set the resource here from the saved version

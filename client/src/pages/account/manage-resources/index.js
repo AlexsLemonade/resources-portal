@@ -11,6 +11,7 @@ import EmptyManageResources from '../../../images/empty-manage-resources.svg'
 const ManageResources = () => {
   const { user, token } = useUser()
   const [resources, setResources] = React.useState(false)
+  const [refresh, setRefresh] = React.useState(false)
 
   React.useEffect(() => {
     const asyncResourceFetch = async () => {
@@ -25,10 +26,11 @@ const ManageResources = () => {
         return []
       })
 
+      setRefresh(false)
       setResources([].concat(...fetchedResources))
     }
 
-    if (!resources) asyncResourceFetch()
+    if (!resources || refresh) asyncResourceFetch()
   })
 
   return (
@@ -55,6 +57,7 @@ const ManageResources = () => {
               resource={resource}
               options={['edit', 'manage']}
               moreOptions={['view', 'archive', 'delete']}
+              onChange={() => setRefresh(true)}
             />
           </Box>
         ))}
