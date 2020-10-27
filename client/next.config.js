@@ -23,9 +23,7 @@ module.exports = (phase) => {
     IS_PRODUCTION: !isDevelopment && isProduction,
     API_HOST: isDevelopment ? 'http://localhost:8000' : apiHost,
     CLIENT_HOST: isDevelopment ? 'http://localhost:7000' : clientHost,
-    ORCID_CLIENT_ID: isProduction
-      ? 'APP-N32GUPNA5FDWVSAN'
-      : 'APP-2AHZAK2XCFGHRJFM',
+    ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID || 'APP-2AHZAK2XCFGHRJFM',
     ORCID_URL: isProduction
       ? 'https://orcid.org/'
       : 'https://sandbox.orcid.org/'

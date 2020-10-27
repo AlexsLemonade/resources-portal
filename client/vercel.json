@@ -10,6 +10,7 @@
   "build": {
     "env": {
       "API_HOST": "https://api.resources.alexslemonade.org",
+      "ORCID_CLIENT_ID": "APP-N32GUPNA5FDWVSAN",
       "STAGE": "production"
     }
   }
