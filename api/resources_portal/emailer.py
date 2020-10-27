@@ -93,7 +93,21 @@ def create_multipart_message(
         part = MIMEText(text, "plain")
         msg.attach(part)
     if html:
-        part = MIMEText(html, "html")
+        part = MIMEMultipart("mixed")
+        part.attach(MIMEText(html, "html"))
+
+        for embedded_image in embedded_images:
+            with open(embedded_image["file_path"], "rb") as f:
+                image_part = MIMEImage(f.read(), embedded_image["subtype"])
+
+            image_part.add_header("Content-ID", f"<{embedded_image['content_id']}>")
+            image_part.add_header(
+                "Content-Disposition",
+                "attachment",
+                filename=os.path.basename(embedded_image["file_path"]),
+            )
+            part.attach(image_part)
+
         msg.attach(part)
 
     return msg
