@@ -27,6 +27,9 @@ commands = {
     ),
     "populate-db": "./recreate_schema.sh && "
     + run_api.format('bash -c "./wait_for_elasticsearch.py && ./manage.py populate_dev_database"'),
+    "migrate-metadata-keys": run_api.format(
+        'bash -c "./wait_for_elasticsearch.py && ./manage.py material_additional_metadata_key_change {}"'
+    ),
     "recreate-schema": "./recreate_schema.sh",
     "test-api": run_api.format('bash -c "./wait_for_elasticsearch.py && ./run_tests.sh {}"'),
     "makemigrations": run_api.format(
