@@ -17,7 +17,7 @@ def addKey(category, new_key):
 
     if category:
         if not validateCategory(category):
-            logger.error("The provided category is not a valid material category.")
+            logger.error(f"The provided category '{category}' is not a valid material category.")
             return
         querySet = Material.objects.filter(category=category)
     else:
@@ -38,7 +38,7 @@ def removeKey(category, old_key):
 
     if category:
         if not validateCategory(category):
-            logger.error("The provided category is not a valid material category.")
+            logger.error(f"The provided category '{category}' is not a valid material category.")
             return
         querySet = Material.objects.filter(category=category)
     else:
@@ -59,12 +59,13 @@ def material_additional_metadata_key_change(category, old_key, new_key):
 
     if category:
         if not validateCategory(category):
-            logger.error("The provided category is not a valid material category.")
+            logger.error(f"The provided category '{category}' is not a valid material category.")
             return
         querySet = Material.objects.filter(additional_metadata__has_key=old_key, category=category)
     else:
         querySet = Material.objects.filter(additional_metadata__has_key=old_key)
 
+    # Note that this doesn't use the above add and remove commands. This is because doing so would require twice the queries.
     with transaction.atomic():
         for material in querySet:
             material.additional_metadata[new_key] = material.additional_metadata[old_key]
