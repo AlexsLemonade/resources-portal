@@ -132,13 +132,14 @@ class Command(BaseCommand):
     This is a command to add, remove, or change the names of additional metadata fields currently in the server.
     It has the following use cases:
     1. Change a metadata key
-    ./rportal migrate-metadata-keys old_key new_key --category [CATEGORY]
+    ./rportal migrate-metadata-keys old_key new_key --category [CATEGORY] --pagination [PAGINATION]
     2. Add a metadata key
-    ./rportal migrate-metadata-keys --add new_key --category [CATEGORY] --default [DEFAULT]
+    ./rportal migrate-metadata-keys --add new_key --category [CATEGORY] --default [DEFAULT] --pagination [PAGINATION]
     The default is the the value that all the new keys will be initialized with.
     2. Remove a metadata key
-    ./rportal migrate-metadata-keys --remove old_key --category [CATEGORY]
+    ./rportal migrate-metadata-keys --remove old_key --category [CATEGORY] --pagination [PAGINATION]
     For each use case, the category parameter is optional, and categories should be specified in all caps, like "PLASMID" or "MODEL_ORGANISM".
+    The pagination parameter is also optional. It controls the size of the queryset pagination.
     """
 
     help = "Replaces all instances of old_key in materials (of an optional category) with new_key."
