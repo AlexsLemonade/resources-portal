@@ -10,7 +10,7 @@ jobs:
     container: node:lts-buster
     env:
       ZEIT_TOKEN: ${{ secrets.ZEIT_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
