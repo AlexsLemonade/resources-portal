@@ -43,14 +43,8 @@ def email_invitation_view(request):
     invitation_link = f"https://{settings.AWS_SES_DOMAIN}"
     terms_of_use_link = f"https://{settings.AWS_SES_DOMAIN}/terms-of-use"
 
-    # Format in image URLs.
-    alexs_logo_url = "https://{settings.AWS_SES_DOMAIN}/alexs-logo.png"
-    ccrr_logo_url = "https://{settings.AWS_SES_DOMAIN}/ccrr-logo.png"
-    formatted_html = EMAIL_HTML_BODY.replace("REPLACE_ALEXS_LOGO", alexs_logo_url)
-    formatted_html = formatted_html.replace("REPLACE_CCRR_LOGO", ccrr_logo_url)
-
     formatted_html = (
-        formatted_html.replace("REPLACE_MAIN_TEXT", body)
+        EMAIL_HTML_BODY.replace("REPLACE_MAIN_TEXT", body)
         .replace("REPLACE_CTA_LINK", invitation_link)
         .replace("REPLACE_TERMS_LINK", terms_of_use_link)
         .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
