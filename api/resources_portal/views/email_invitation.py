@@ -53,7 +53,7 @@ def email_invitation_view(request):
     plain_text_email = body + PLAIN_TEXT_EMAIL_FOOTER
     subject = f"CCRR: {request.user.full_name} has invited you to create an account"
 
-    logger.info("Sending an email invitation to {email}.")
+    logger.info(f"Sending an email invitation to {email}.")
     send_mail(
         EMAIL_SOURCE, [email], subject, plain_text_email, formatted_html,
     )
