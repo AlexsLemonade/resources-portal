@@ -4,6 +4,7 @@ export const details = [
   {
     basic_information: [
       'cell_line_name',
+      'cell_type',
       'organisms',
       'tissue',
       'disease',
@@ -34,6 +35,7 @@ export const listForm = [
   {
     basic_information: [
       'cell_line_name',
+      'cell_type',
       'organisms',
       'tissue',
       'disease',

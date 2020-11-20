@@ -126,6 +126,7 @@ const importedCategories = {
 const listedCategories = {
   CELL_LINE: object({
     cell_line_name: string().required(),
+    cell_type: string().required(),
     tissue: string().required(),
     disease: string().required(),
     number_of_available_cell_lines: string(),
