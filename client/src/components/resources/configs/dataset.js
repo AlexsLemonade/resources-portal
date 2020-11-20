@@ -39,6 +39,7 @@ export const importForm = (importSource) => {
           'accession_code',
           'url',
           'description',
+          'organisms',
           'number_of_samples',
           'additional_info'
         ]
