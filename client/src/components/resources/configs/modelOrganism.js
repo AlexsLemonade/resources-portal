@@ -31,17 +31,14 @@ export const listForm = [
 ]
 
 export const importForm = (importSource) => {
-  if (importSource === 'ZIRC') {
+  if (['ZIRC', 'JACKSON_LABS'].includes(importSource)) {
     return [
       {
         basic_information: [
+          'url',
           'title',
           'organisms',
           'description',
-          'genetic_background',
-          'zygosity',
-          'number_of_available_models',
-          'construct_details',
           'additional_info'
         ]
       }
@@ -50,6 +47,7 @@ export const importForm = (importSource) => {
   return [
     {
       basic_information: [
+        'url',
         'title',
         'organisms',
         'description',

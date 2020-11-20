@@ -60,11 +60,12 @@ const importedCategories = {
   }),
   MODEL_ORGANISM: object({
     description: string().required(),
-    genetic_background: string().required(),
-    zygosity: string().required(),
-    number_of_available_models: string().required(),
-    construct_details: string().required(),
-    additional_info: string()
+    additional_info: string(),
+    // the following are not asked for currently for imports
+    genetic_background: string(),
+    zygosity: string(),
+    number_of_available_models: string(),
+    construct_details: string()
   }),
   // this currently can't be imported
   // when it can remove keys which have no inputs
