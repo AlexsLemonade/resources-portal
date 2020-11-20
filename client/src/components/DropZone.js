@@ -11,7 +11,7 @@ export default ({ fileTypes = [], multiple = true, onDrop }) => {
       onDrop={onDrop}
       maxSize={1000000000}
     >
-      {({ getRootProps, getInputProps, open }) => (
+      {({ getRootProps, getInputProps }) => (
         <Box
           {...getRootProps()} // eslint-disable-line react/jsx-props-no-spreading
           width="full"
