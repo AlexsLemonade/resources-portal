@@ -55,7 +55,7 @@ export const details = [
       'tumor_characterization_technology',
       'is_not_of_ebv_origin',
       'is_passage_qa_performed',
-      'response_to_qa_performed',
+      'animal_health_status',
       'response_to_standard_of_care'
     ]
   },
@@ -130,7 +130,7 @@ export const listForm = [
       'tumor_characterization_technology',
       'is_not_of_ebv_origin',
       'is_passage_qa_performed',
-      'response_to_qa_performed',
+      'animal_health_status',
       'response_to_standard_of_care'
     ]
   },
