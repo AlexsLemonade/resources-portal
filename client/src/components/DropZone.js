@@ -27,7 +27,7 @@ export default ({ fileTypes = [], multiple = true, onDrop }) => {
         >
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <input {...getInputProps()} />
-          <Button label="Select Files" onClick={open} primary />
+          <Button label="Select Files" primary />
           <Text color="text-weak" margin={{ top: 'small', bottom: 'medium' }}>
             or drag and drop files
           </Text>
