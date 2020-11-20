@@ -60,6 +60,7 @@ export default () => {
                 disabled={fetched}
                 onClick={async () => {
                   if (await fetchImport()) {
+                    // todo:: validate here before showing preview view
                     setStep(1)
                   } else {
                     addAlert('An error occurred while importing', 'error')
@@ -124,7 +125,6 @@ export default () => {
             gap="large"
             margin={{ vertical: 'large' }}
           >
-            <Button label="List Privately" />
             <Button
               primary
               onClick={async () => {
