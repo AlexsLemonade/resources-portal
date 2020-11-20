@@ -29,7 +29,7 @@ const importedCategories = {
     cell_line_name: string().required(),
     tissue: string().required(),
     disease: string().required(),
-    number_of_availible_cell_lines: string().required(),
+    number_of_available_cell_lines: string(),
     age: string(),
     sex: string(),
     ethnicity: string(),
@@ -53,9 +53,9 @@ const importedCategories = {
   DATASET: object({
     accession_code: string().required(),
     description: string().required().required(),
-    number_of_samples: string(),
-    technology: string().required(),
-    platform: string().required(),
+    number_of_samples: string().required(),
+    technology: string(), // required for geo and sra .required(),
+    platform: string(), // required for geo and sra .required(),
     additional_info: string()
   }),
   MODEL_ORGANISM: object({
@@ -112,7 +112,7 @@ const importedCategories = {
     tumor_omics: string(),
     metastases_in_strain: string(),
     lag_time: string(),
-    number_of_availible_models: string(),
+    number_of_available_models: string(),
     pdx_model_availability: string(),
     governance_restriction: string()
   }),
@@ -126,9 +126,10 @@ const importedCategories = {
 const listedCategories = {
   CELL_LINE: object({
     cell_line_name: string().required(),
+    cell_type: string().required(),
     tissue: string().required(),
     disease: string().required(),
-    number_of_availible_cell_lines: string().required(),
+    number_of_available_cell_lines: string(),
     age: string(),
     sex: string(),
     ethnicity: string(),
@@ -147,7 +148,7 @@ const listedCategories = {
     plasmid_name: string().required(),
     plasmid_type: string().required(),
     purpose: string().required(),
-    number_of_available_samples: string().required(),
+    number_of_available_samples: string(),
     biosafety_level: string().required(),
     gene_insert_name: string().required(),
     relevant_mutations: string().required(),
@@ -177,7 +178,7 @@ const listedCategories = {
     description: string().required(),
     genetic_background: string().required(),
     zygosity: string().required(),
-    number_of_available_models: string().required(),
+    number_of_available_models: string(),
     construct_details: string().required(),
     additional_info: string()
   }),
@@ -217,14 +218,14 @@ const listedCategories = {
     tumor_characterization_technology: string().required(),
     is_not_of_ebv_origin: string().required(),
     is_passage_qa_performed: boolean().required(),
-    response_to_qa_performed: string().required(),
+    animal_health_status: string().required(),
     response_to_standard_of_care: string().required(),
     treatment_passage: string().required(),
     treatment_response: string().required(),
     tumor_omics: string().required(),
     metastases_in_strain: string().required(),
     lag_time: string().required(),
-    number_of_availible_models: string().required(),
+    number_of_available_models: string(),
     pdx_model_availability: string().required(),
     governance_restriction: string().required()
   }),
@@ -273,6 +274,7 @@ export default object({
   // grants: array(),
   /* eslint-disable-next-line react/forbid-prop-types */
   organisms: array().when('category', (category) => {
+    // if it is a dataset and not dbgap then require organisms
     if (
       ['PLASMID', 'MODEL_ORGANISM', 'CELL_LINE', 'DATASET', 'PDX'].includes(
         category
