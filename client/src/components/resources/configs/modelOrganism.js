@@ -35,6 +35,7 @@ export const importForm = (importSource) => {
     return [
       {
         basic_information: [
+          'url',
           'title',
           'organisms',
           'description',
@@ -46,6 +47,7 @@ export const importForm = (importSource) => {
   return [
     {
       basic_information: [
+        'url',
         'title',
         'organisms',
         'description',
