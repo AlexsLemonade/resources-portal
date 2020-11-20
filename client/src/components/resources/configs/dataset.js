@@ -1,4 +1,4 @@
-export const searchResult = []
+export const searchResult = ['accession_code', 'description']
 
 export const details = [
   {
