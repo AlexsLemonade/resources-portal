@@ -158,7 +158,7 @@ def run_terraform(args):
 
 
 def run_remote_command(ip_address, command):
-    completed_command = subprocess.check_call(
+    completed_command = subprocess.check_output(
         [
             "ssh",
             "-i",
@@ -175,11 +175,16 @@ def run_remote_command(ip_address, command):
 
 def restart_api_if_still_running(args, api_ip_address):
     try:
-        run_remote_command(api_ip_address, "echo The API is still up! Restarting it!")
+        if not run_remote_command(api_ip_address, "docker ps -q"):
+            print(
+                "Seems like the API came up, but has no docker images so it will start them itself."
+            )
+            return 0
     except subprocess.CalledProcessError:
         print("Seems like the API isn't up yet, which means it got cylced.")
         return 0
 
+    print("The API is still up! Restarting!")
     run_remote_command(api_ip_address, "docker rm -f $(docker ps -a -q) 2>/dev/null || true")
 
     print("Waiting for API container to stop.")
@@ -191,7 +196,11 @@ def restart_api_if_still_running(args, api_ip_address):
     script_is_present = run_remote_command(api_ip_address, "test -e start_api_with_migrations.sh")
 
     if script_is_present == 0:
-        return run_remote_command(api_ip_address, "sudo bash start_api_with_migrations.sh")
+        try:
+            run_remote_command(api_ip_address, "sudo bash start_api_with_migrations.sh")
+        except subprocess.CalledProcessError:
+            return 1
+        return 0
     else:
         print("API start script not written yet, letting the init script run it instead.")
         return 0
