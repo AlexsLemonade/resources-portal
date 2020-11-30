@@ -1,6 +1,4 @@
 import logging
-import os
-from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -20,19 +18,9 @@ EMAIL_SOURCE = (
     if settings.AWS_SES_DOMAIN
     else "Resources Portal Mail Robot"
 )
-LOGO_EMBEDDED_IMAGE_CONFIGS = [
-    {
-        "content_id": "ccrr-logo",
-        "file_path": "resources_portal/email_assets/ccrr-logo.png",
-        "subtype": "png",
-    },
-    {
-        "content_id": "alexs-logo",
-        "file_path": "resources_portal/email_assets/alexs-logo.png",
-        "subtype": "png",
-    },
-]
 NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/settings"
+ALEXS_LOGO_URL = f"https://{settings.AWS_SES_DOMAIN}/alexs-logo.png"
+CCRR_LOGO_URL = f"https://{settings.AWS_SES_DOMAIN}/ccrr-logo.png"
 # The blank line in this footer is intentional:
 PLAIN_TEXT_EMAIL_FOOTER = """
 
@@ -48,12 +36,7 @@ Alex's Lemonade Stand Foundation
 
 
 def create_multipart_message(
-    sender: str,
-    recipients: list,
-    title: str,
-    text: str = None,
-    html: str = None,
-    embedded_images: list = [],
+    sender: str, recipients: list, title: str, text: str = None, html: str = None,
 ) -> MIMEMultipart:
     """
     Creates a MIME multipart message object.
@@ -66,7 +49,6 @@ def create_multipart_message(
     :param title: The title of the email.
     :param text: The text version of the email body (optional).
     :param html: The html version of the email body (optional).
-    :param embedded_images: List of images to embed in the email's HTML.
     :return: A `MIMEMultipart` to be used to send the email.
     """
     multipart_content_subtype = "alternative" if text and html else "mixed"
@@ -78,32 +60,15 @@ def create_multipart_message(
     # Record the MIME types of both parts - text/plain and text/html.
     # According to RFC 2046, the last part of a multipart message, in this case the HTML message, is best and preferred.
     if text:
-        part = MIMEText(text, "plain")
-        msg.attach(part)
+        msg.attach(MIMEText(text, "plain"))
     if html:
-        part = MIMEText(html, "html")
-        msg.attach(part)
-
-    for embedded_image in embedded_images:
-        with open(embedded_image["file_path"], "rb") as f:
-            image_part = MIMEImage(f.read(), embedded_image["subtype"])
-
-        image_part.add_header("Content-ID", f"<{embedded_image['content_id']}>")
-        image_part.add_header(
-            "Content-Disposition", "inline", filename=os.path.basename(embedded_image["file_path"])
-        )
-        msg.attach(image_part)
+        msg.attach(MIMEText(html, "html"))
 
     return msg
 
 
 def send_mail(
-    source: str,
-    recipients: list,
-    title: str,
-    text: str = None,
-    html: str = None,
-    embedded_images: list = [],
+    source: str, recipients: list, title: str, text: str = None, html: str = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.
@@ -115,9 +80,7 @@ def send_mail(
         inlined_html = premailer.transform(html)
 
     if settings.AWS_SES_DOMAIN:
-        msg = create_multipart_message(
-            source, recipients, title, text, inlined_html, embedded_images
-        )
+        msg = create_multipart_message(source, recipients, title, text, inlined_html)
         ses_client = boto3.client("ses", region_name=settings.AWS_REGION)
         return ses_client.send_raw_email(
             Source=source, Destinations=recipients, RawMessage={"Data": msg.as_string()}

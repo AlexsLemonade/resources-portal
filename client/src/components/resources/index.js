@@ -1,3 +1,5 @@
+import { getPubmedUrl } from 'helpers/getPubmedUrl'
+import { getDOIUrl } from 'helpers/getDOIUrl'
 import { knownOrganisms } from '../../helpers/knownOrganisms'
 
 export const resourceCategories = [
@@ -56,6 +58,7 @@ export const shippingAttributes = [
   'restrictions'
 ]
 
+// this shows the "(optional)" in the label
 export const optionalAttributes = [
   'pubmed_id',
   'publication_title',
@@ -68,7 +71,10 @@ export const optionalAttributes = [
   'cryopreservation',
   'age',
   'sex',
-  'ethnicity'
+  'ethnicity',
+  'number_of_available_cell_lines',
+  'number_of_available_models',
+  'number_of_available_samples'
 ]
 
 export const attributeInputTypes = {
@@ -201,6 +207,11 @@ export const formDefaults = [
   }
 ]
 
+export const mustExistAtEndpoints = {
+  pubmed_id: getPubmedUrl,
+  pre_print_doi: getDOIUrl
+}
+
 // helper functions
 export const disableImportAttribute = (attribute, importAttribute) => {
   return importAttribute
@@ -256,4 +267,8 @@ export const isSupportedImportSource = (importSource) => {
 
 export const getImportSourceCategory = (importSource) => {
   return importSourceCategories[importSource]
+}
+
+export const getMustExistAt = (attribute) => {
+  return mustExistAtEndpoints[attribute]
 }

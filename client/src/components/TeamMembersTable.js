@@ -3,13 +3,18 @@ import { Anchor, Box, Text } from 'grommet'
 import { useUser } from 'hooks/useUser'
 import Icon from 'components/Icon'
 import TableButton from 'components/TableButton'
+import TeamMembersChangeOwner from 'components/TeamMembersChangeOwner'
 
-export default ({ team, onDelete }) => {
+export default ({ team, onDelete, onTransferOwner }) => {
   const { user } = useUser()
-  const areOwner = !team.owner || team.owner.id === user.id
+  const [showTransferOwner, setShowTransferOwner] = React.useState(false)
   const canTransfer = team.members.length > 1
-  const isOwner = (member) => {
+  const userIsOwner = !team.owner || team.owner.id === user.id
+  const memberIsUser = (member) => {
     return member.id === user.id
+  }
+  const memberIsOwner = (member) => {
+    return team.owner && member.id === team.owner.id
   }
 
   return (
@@ -35,7 +40,7 @@ export default ({ team, onDelete }) => {
             )}
           </Box>
           <Box textAlign="end">
-            {areOwner && !isOwner(member) && (
+            {userIsOwner && !memberIsUser(member) && (
               <TableButton
                 plain
                 color="error"
@@ -45,15 +50,31 @@ export default ({ team, onDelete }) => {
                 onClick={() => onDelete(member)}
               />
             )}
-            {areOwner && canTransfer && isOwner(member) && (
-              <TableButton
-                plain
-                icon={<Icon name="TransferMember" color="error" size="small" />}
-                label="Transfer Ownership"
-                color="error"
-                size="small"
-                margin={{ right: 'medium' }}
-              />
+            {userIsOwner && canTransfer && memberIsUser(member) && (
+              <>
+                <TableButton
+                  plain
+                  icon={
+                    <Icon name="TransferMember" color="error" size="small" />
+                  }
+                  label="Transfer Ownership"
+                  color="error"
+                  size="small"
+                  margin={{ right: 'medium' }}
+                  onClick={() => setShowTransferOwner(true)}
+                />
+                <TeamMembersChangeOwner
+                  showing={showTransferOwner}
+                  setShowing={setShowTransferOwner}
+                  onTransferOwner={onTransferOwner}
+                  members={team.members}
+                />
+              </>
+            )}
+            {memberIsOwner(member) && !userIsOwner && (
+              <Text italic color="black-tint-60">
+                (Owner)
+              </Text>
             )}
           </Box>
         </Box>

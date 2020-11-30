@@ -1,11 +1,14 @@
 import React from 'react'
-import api from '../api'
+import { useRouter } from 'next/router'
+import api from 'api'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useUser = (defaultUser, defaultToken) => {
   const { user, setUser, token, setToken } = React.useContext(
     ResourcesPortalContext
   )
+
+  const router = useRouter()
 
   React.useEffect(() => {
     if ((!user || !user.id) && token) logOut()
@@ -16,33 +19,38 @@ export const useUser = (defaultUser, defaultToken) => {
   })
 
   const isLoggedIn = Boolean(user && token)
-  const refreshUserData = async () => {
-    const { response: refreshUser, isOk: userIsOk } = await api.user.get(
-      user.id,
-      token
+
+  const fetchUserWithNewToken = async (userId, newToken) => {
+    const { response: freshUser, isOk: userIsOk } = await api.users.get(
+      userId,
+      newToken
     )
     if (userIsOk) {
-      setUser(refreshUser)
+      setUser(freshUser)
+      setToken(newToken)
     }
+    return userIsOk
   }
 
   const refreshUser = async () => {
-    const { response: freshUser, isOk: userIsOk } = await api.user.get(
+    const { response: freshUser, isOk: userIsOk } = await api.users.get(
       user.id,
       token
     )
     if (userIsOk) {
       setUser(freshUser)
     }
+    return userIsOk
   }
 
   const logOut = () => {
     setUser()
     setToken()
+    router.push('/')
   }
 
   const updateEmail = async (email) => {
-    const updateRequest = await api.user.update(user.id, { email }, token)
+    const updateRequest = await api.users.update(user.id, { email }, token)
     if (updateRequest.isOk) refreshUser()
     return updateRequest.isOk
   }
@@ -91,7 +99,7 @@ export const useUser = (defaultUser, defaultToken) => {
     setToken,
     token,
     isLoggedIn,
-    refreshUserData,
+    fetchUserWithNewToken,
     refreshUser,
     updateEmail,
     logOut,

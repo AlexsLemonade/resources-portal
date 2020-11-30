@@ -1,4 +1,5 @@
 import React from 'react'
+import { Box } from 'grommet'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
 import { Loader } from 'components/Loader'
@@ -8,7 +9,7 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 
 const Notifications = () => {
-  const { refreshUserData, user, token } = useUser()
+  const { refreshUser, user, token } = useUser()
   const { getLastNotificationDate, fetchNotifications } = useNotifications()
   const [didUpdateNotifs, setdidUpdateNotifs] = React.useState(false)
   const [notifications, setNotifications] = React.useState([])
@@ -18,12 +19,12 @@ const Notifications = () => {
       const notifs = await fetchNotifications()
       setdidUpdateNotifs(true)
       setNotifications(notifs)
-      await api.user.update(
+      await api.users.update(
         user.id,
         { viewed_notifications_at: getLastNotificationDate(notifs) },
         token
       )
-      refreshUserData()
+      refreshUser()
     }
 
     if (!didUpdateNotifs) updateNotifsViewed()
@@ -43,7 +44,14 @@ const Notifications = () => {
       {notifications.length !== 0 &&
         notifications.map((notification) => {
           return (
-            <Notification notification={notification} key={notification.id} />
+            <Box
+              key={notification.id}
+              elevation="medium"
+              margin={{ bottom: 'large' }}
+              round="xsmall"
+            >
+              <Notification notification={notification} />
+            </Box>
           )
         })}
     </DrillDownNav>

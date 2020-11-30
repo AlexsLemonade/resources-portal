@@ -1,9 +1,9 @@
+import React from 'react'
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
 import Link from 'next/link'
-import React from 'react'
 import { useUser } from 'hooks/useUser'
-import { CreateAccountLoginButton } from 'components/CreateAccountLoginButton'
-import { HomepageCard } from '../components/HomepageCard'
+import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
+import { HomepageCard } from 'components/HomepageCard'
 
 export const Home = () => {
   const heroOverlap = '140px'

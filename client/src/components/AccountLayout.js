@@ -2,12 +2,10 @@ import React from 'react'
 import { Box, Heading, Main } from 'grommet'
 import { useRouter } from 'next/router'
 import { useNotifications } from 'hooks/useNotifications'
-import { useIsClient } from '../hooks/useIsClient'
 import { SideNav } from './SideNav'
 import Header from './Header'
 
-export const AccountLayout = ({ children }) => {
-  const isClient = useIsClient()
+export default ({ children }) => {
   const { notificationCount } = useNotifications()
   const router = useRouter()
 
@@ -40,7 +38,7 @@ export const AccountLayout = ({ children }) => {
   ]
 
   const [active, setActive] = React.useState(
-    links.find((link) => link.href === router.route)
+    links.find((link) => router.pathname.startsWith(link.href))
   )
 
   const onLinkClick = (link) => {
@@ -48,8 +46,7 @@ export const AccountLayout = ({ children }) => {
     setActive(link)
   }
 
-  return isClient(
-    '',
+  return (
     <Box height={{ min: '100vh' }}>
       <Box margin={{ bottom: 'xlarge' }}>
         <Header />
@@ -75,5 +72,3 @@ export const AccountLayout = ({ children }) => {
     </Box>
   )
 }
-
-export default AccountLayout

@@ -1,32 +1,17 @@
-import api from 'api'
+import React from 'react'
 import { Loader } from 'components/Loader'
 import { EnterEmailModal } from 'components/modals/EnterEmailModal'
 import { useSignIn } from 'hooks/useSignIn'
-import { useRouter } from 'next/router'
-import React from 'react'
 
-export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
-  const router = useRouter()
-  const {
-    needsEmail,
-    orcidInfo,
-    setOrcidInfo,
-    setEmail,
-    setNeedsEmail,
-    setError,
-    user
-  } = useSignIn()
+// This page should only:
+// 1) finish sign up by asking for email
+// 2) let the hook redirect the user to where they left off
 
-  // If the user navigates to /account manually, redirect them to /account/basic-information
-  if (noCode && !needsEmail && user) {
-    router.replace('/account/basic-information')
-  }
-
-  React.useEffect(() => {
-    if (!orcidInfo && orcid && accessToken && refreshToken) {
-      setOrcidInfo({ orcid, accessToken, refreshToken })
-    }
-  })
+export const Account = ({ code, originUrl }) => {
+  const { needsEmail, setEmail, setNeedsEmail, setError } = useSignIn(
+    code,
+    originUrl
+  )
 
   if (needsEmail) {
     return (
@@ -45,28 +30,12 @@ export const Account = ({ noCode, orcid, accessToken, refreshToken }) => {
 
 Account.getInitialProps = async ({ req, query }) => {
   // Revisit how to present errors thrown from this function
-  if (!query.code) {
-    return { noCode: true }
-  }
+  const originUrl = decodeURI(`${process.env.CLIENT_HOST}${req ? req.url : ''}`)
 
-  const orcidRequest = await api.user.getORCID(
-    query.code,
-    decodeURI(`${process.env.CLIENT_HOST}${req ? req.url : ''}`)
-  )
-  if (orcidRequest.isOk) {
-    const {
-      orcid,
-      access_token: accessToken,
-      refresh_token: refreshToken
-    } = orcidRequest.response
-
-    return {
-      orcid,
-      accessToken,
-      refreshToken
-    }
+  return {
+    code: query.code,
+    originUrl
   }
-  return {}
 }
 
 export default Account

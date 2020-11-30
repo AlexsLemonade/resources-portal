@@ -10,29 +10,21 @@ import { useCreateUser } from 'hooks/useCreateUser'
 import { useRouter } from 'next/router'
 import React from 'react'
 
-export default ({ props }) => {
-  const { ORCID, email, stepName, grants, code, originUrl } = props
-  const { steps, currentStep, setCurrentStep, createUser } = useCreateUser(
-    email,
-    grants,
-    ORCID,
+export default ({ ORCID, originUrl, code, stepName }) => {
+  const router = useRouter()
+  const { newUser, steps, currentStep, setCurrentStep } = useCreateUser(
     code,
     originUrl
   )
-  const router = useRouter()
-
-  if (!grants && !createUser.grants) {
-    router.replace('/')
-  }
-
-  const [redirectAlreadyFired, setRedirectAlreadyFired] = React.useState(false)
 
   React.useEffect(() => {
-    if (stepName && !redirectAlreadyFired) {
+    // this component requires newUser to have grants
+    if (!newUser.grants) {
+      router.replace('/')
+    } else if (stepName && stepName !== currentStep) {
       setCurrentStep(stepName)
-      setRedirectAlreadyFired(true)
     }
-  })
+  }, [])
 
   return (
     <Box pad="small">
@@ -43,8 +35,10 @@ export default ({ props }) => {
         <Box pad="medium">
           <ProgressBar steps={steps} index={steps.indexOf(currentStep)} />
         </Box>
-        <Box alignSelf="center">
-          {currentStep === 'Create an Account' && <CreateAccountStep />}
+        <Box>
+          {currentStep === 'Create an Account' && (
+            <CreateAccountStep ORCID={ORCID} />
+          )}
           {currentStep === 'Enter Email' && <EnterEmailStep />}
           {currentStep === 'Verify Grant Information' && <VerifyGrantStep />}
           {currentStep === 'Next Steps' && <NextStepsStep />}

@@ -69,6 +69,10 @@ export default () => {
     setTeam({ ...team, members: newMembers })
   }
 
+  const transferOwnership = (newOwner) => {
+    setTeam({ ...team, owner: newOwner })
+  }
+
   const removeInvite = (invite) => {
     const newInvites = invites.filter((i) => i !== invite)
     setInvites(newInvites)
@@ -140,7 +144,7 @@ export default () => {
   const removeGrant = (teamId, grantId) =>
     api.teams.grants.remove(teamId, grantId, token)
 
-  const sendEmailInvite = (email) => api.invite(email, token)
+  const sendEmailInvite = (email) => api.invitations.create(email, token)
 
   const save = async () => {
     const teamRequest = team.id
@@ -181,6 +185,7 @@ export default () => {
     fetchTeam,
     teamFetched: !!team.id,
     addGrant,
-    removeGrant
+    removeGrant,
+    transferOwnership
   }
 }

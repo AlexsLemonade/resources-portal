@@ -4,16 +4,20 @@ import { DrillDownNav } from 'components/DrillDownNav'
 import { HeaderRow } from 'components/HeaderRow'
 import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
+import { Modal } from 'components/Modal'
 import Icon from 'components/Icon'
+import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
 
 const BasicInformation = () => {
-  const { user, refreshUser, updateEmail } = useUser()
+  const { user, refreshUser, updateEmail, isLoggedIn, logOut } = useUser()
   const [newEmail, setNewEmail] = React.useState(user.email)
   const [showEmailForm, setShowEmailForm] = React.useState(false)
   const { addAlert } = useAlertsQueue()
+  const [showLogOutModal, setShowLogOutModal] = React.useState(false)
+  const [showGrantModal, setShowGrantModal] = React.useState(false)
 
   React.useEffect(() => {
-    refreshUser()
+    if (isLoggedIn) refreshUser()
   }, [])
 
   return (
@@ -67,7 +71,7 @@ const BasicInformation = () => {
         {user.grants.length === 0 && <Paragraph>You have no grants.</Paragraph>}
         {user.grants.length !== 0 &&
           user.grants.map(({ title, funder_id: funderId }) => (
-            <Box key={funderId} direction="row" align="center">
+            <Box key={`${title}-${funderId}`} direction="row" align="center">
               <Icon color="plain" name="Grant" />
               <Box pad={{ left: 'small' }}>
                 <Paragraph margin="none">{title}</Paragraph>
@@ -79,10 +83,44 @@ const BasicInformation = () => {
       <Box align="end">
         <Button
           onClick={() => {
-            console.log(user.id)
+            setShowGrantModal(true)
           }}
           label="Report Missing / Incomplete Info"
         />
+        <IncorrectGrantModal
+          showing={showGrantModal}
+          setShowing={setShowGrantModal}
+        />
+      </Box>
+      <Box margin={{ vertical: 'xlarge' }} align="start">
+        <Button
+          critical
+          label="Log Out"
+          onClick={() => {
+            setShowLogOutModal(true)
+          }}
+        />
+        <Modal
+          title="Log Out"
+          showing={showLogOutModal}
+          setShowing={setShowLogOutModal}
+        >
+          <Box width="medium">
+            <Text size="large">Are you sure you want to log out?</Text>
+            <Box
+              margin={{ vertical: 'medium' }}
+              justify="end"
+              gap="medium"
+              direction="row"
+            >
+              <Button
+                label="Cancel"
+                onClick={() => setShowLogOutModal(false)}
+              />
+              <Button critical label="Confirm" onClick={logOut} />
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </DrillDownNav>
   )
