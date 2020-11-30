@@ -175,7 +175,7 @@ def run_remote_command(ip_address, command):
 
 def restart_api_if_still_running(args, api_ip_address):
     try:
-        if not run_remote_command("docker ps -q"):
+        if not run_remote_command(api_ip_address, "docker ps -q"):
             print(
                 "Seems like the API came up, but has no docker images so it will start them itself."
             )
