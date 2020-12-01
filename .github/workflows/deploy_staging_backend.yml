@@ -1,9 +1,9 @@
 name: staging-backend
 
-on:
-  push:
-    branches:
-      - dev
+on: push
+  # push:
+  #   branches:
+  #     - dev
 
 jobs:
   deploy:
