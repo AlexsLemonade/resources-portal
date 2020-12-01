@@ -25,9 +25,8 @@ export default ({ Component, pageProps, router: { pathname } }) => {
 
   // configuring sentry
   Sentry.init({
-    dsn:
-      'https://dd7bd76d825c43f9a987040bd1a04e4b@o7983.ingest.sentry.io/5454557',
-    environment: 'client-staging'
+    dsn: process.env.SENTRY_DSN,
+    environment: process.env.SENTRY_ENV
   })
 
   return (

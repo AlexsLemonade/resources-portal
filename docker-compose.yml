@@ -42,7 +42,14 @@ services:
       - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
       - '${CLIENT_PORT}:${CLIENT_PORT}'
     environment:
+      API_VERSION: '${API_VERSION}'
       API_HOST: 'http://localhost:${API_PORT}'
+      CLIENT_HOST: 'http://localhost:${CLIENT_PORT}'
+      ORCID_CLIENT_ID: '${ORCID_CLIENT_ID}'
+      ORCID_URL: '${ORCID_URL}'
+      SENTRY_DSN: '${SENTRY_DSN}'
+      SENTRY_ENV: '${SENTRY_ENV}'
+
     command: >
       bash -c 'cd /home/user/code &&
                yarn &&

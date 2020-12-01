@@ -11,7 +11,7 @@ export default ({ fileTypes = [], multiple = true, onDrop }) => {
       onDrop={onDrop}
       maxSize={1000000000}
     >
-      {({ getRootProps, getInputProps, open }) => (
+      {({ getRootProps, getInputProps }) => (
         <Box
           {...getRootProps()} // eslint-disable-line react/jsx-props-no-spreading
           width="full"
@@ -27,7 +27,7 @@ export default ({ fileTypes = [], multiple = true, onDrop }) => {
         >
           {/* eslint-disable-next-line react/jsx-props-no-spreading */}
           <input {...getInputProps()} />
-          <Button label="Select Files" onClick={open} primary />
+          <Button label="Select Files" primary />
           <Text color="text-weak" margin={{ top: 'small', bottom: 'medium' }}>
             or drag and drop files
           </Text>

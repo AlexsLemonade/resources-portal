@@ -394,10 +394,12 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         updated_request = MaterialRequest.objects.get(id=self.request.id)
         self.assertEqual(updated_request.assigned_to, self.other_member)
 
-        self.assertEqual(
-            len(Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED")),
-            1,
+        personal_notifications = Notification.objects.filter(
+            notification_type="MATERIAL_REQUEST_SHARER_ASSIGNED"
         )
+        self.assertEqual(personal_notifications[0].associated_user, self.other_member)
+        self.assertEqual(personal_notifications.count(), 1)
+
         self.assertEqual(
             len(
                 Notification.objects.filter(notification_type="MATERIAL_REQUEST_SHARER_ASSIGNMENT")
