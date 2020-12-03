@@ -124,7 +124,7 @@ class OrganizationViewSet(viewsets.ModelViewSet):
             organization.assign_owner_perms(new_owner)
 
             send_notifications(
-                "ORGANIZATION_BECAME_OWNER", request.user, new_owner, organization,
+                "ORGANIZATION_BECAME_OWNER", new_owner, request.user, organization,
             )
             send_notifications(
                 "ORGANIZATION_NEW_OWNER", request.user, new_owner, organization,
