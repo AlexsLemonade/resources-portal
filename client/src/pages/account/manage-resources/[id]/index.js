@@ -24,9 +24,7 @@ const ManageResource = ({ resourceId }) => {
         { is_active_sharer: true },
         token
       )
-      // if requests are appearing here that should be closed
-      // recommendation: add a filter to remove 'FULFILLED'
-      // ie `const cleanedRequests = openRequest.response.results.map((r) => r.status != 'FULFILLED')`
+
       setOpenRequests(openRequest.isOk ? openRequest.response.results : [])
       const closedRequest = await api.resources.requests.filter(
         resourceId,
