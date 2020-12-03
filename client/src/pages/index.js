@@ -24,14 +24,14 @@ export const Home = () => {
               <Box align="center" direction="row" justify="between">
                 <Box width={{ min: '320px', max: '540px' }}>
                   <Text color="turteal-shade-40" size="large">
-                    Childhood Cancer Research Resources (CCRR) Portal is a
+                    The Childhood Cancer Research Resources (CCRR) Portal is a
                     platform to enable discovery and sharing of research
                     resources such as datasets, cell lines, PDX models,
                     plasmids, protocols, and more.
                   </Text>
                 </Box>
                 <Box pad="large">
-                  <img alt="placeholder" src="/temp-hero.svg" />
+                  <img alt="placeholder" src="/landing-page-hero.svg" />
                 </Box>
               </Box>
             </Box>
@@ -48,7 +48,7 @@ export const Home = () => {
               align="start"
               width="366px"
             >
-              <Text size="28px" margin={{ top: 'medium' }}>
+              <Text size="28px" weight="bold" margin={{ top: 'medium' }}>
                 Add a Resource
               </Text>
               <Paragraph size="large" margin={{ top: 'small' }}>
@@ -70,7 +70,7 @@ export const Home = () => {
               align="start"
               width="366px"
             >
-              <Text size="28px" margin={{ top: 'medium' }}>
+              <Text size="28px" weight="bold" margin={{ top: 'medium' }}>
                 Discover Resources
               </Text>
               <Paragraph size="large" margin={{ top: 'small' }}>
@@ -130,8 +130,8 @@ export const Home = () => {
               imagePath="/collaboration.png"
             >
               <Paragraph>
-                Sharing can lead to new and exciting collaborations expanding
-                your research.
+                Sharing can lead to new and exciting collaborations, expanding
+                the reach of your research.
               </Paragraph>
             </HomepageCard>
           </Box>
@@ -176,7 +176,7 @@ export const Home = () => {
               {showSharing && (
                 <>
                   <Text alignSelf="center" size="large">
-                    Resources portal helps streamline your sharing process
+                    The CCRR portal helps streamline your sharing process.
                   </Text>
                   <Box direction="row" gap="60px" margin={{ top: 'xlarge' }}>
                     <HomepageCard
@@ -194,8 +194,8 @@ export const Home = () => {
                       imagePath="/mta.png"
                     >
                       <Paragraph>
-                        Add a template MTA to your resources and avoid drafting
-                        up MTAs over and over and over again.
+                        Add a template MTA to your shared resources and avoid
+                        drafting MTAs over and over again.
                       </Paragraph>
                     </HomepageCard>
                     <HomepageCard
@@ -210,7 +210,7 @@ export const Home = () => {
                   </Box>
                   <Box direction="row" gap="80px" margin={{ top: 'xlarge' }}>
                     <HomepageCard
-                      label="Sharing is a team effort"
+                      label="Sharing is a Team Effort"
                       imagePath="/team.png"
                     >
                       <Paragraph>
@@ -219,7 +219,7 @@ export const Home = () => {
                       </Paragraph>
                     </HomepageCard>
                     <HomepageCard
-                      label="Track impact of your research"
+                      label="Track Impact of Your Research"
                       imagePath="/impact.png"
                     >
                       <Paragraph>
@@ -253,8 +253,8 @@ export const Home = () => {
                       imagePath="/discover.png"
                     >
                       <Paragraph>
-                        The portal allows you discover wide variety of resources
-                        with ease.
+                        The portal allows you discover a wide variety of
+                        resources with ease.
                       </Paragraph>
                     </HomepageCard>
                     <HomepageCard label="Templated MTAs" imagePath="/mta.png">
@@ -269,8 +269,8 @@ export const Home = () => {
                       imagePath="/request-n--track.png"
                     >
                       <Paragraph>
-                        You can request for resource through the portal and keep
-                        tabs on them through the sharing process.
+                        You can request a resource through the portal and keep
+                        tabs on it through the sharing process.
                       </Paragraph>
                     </HomepageCard>
                   </Box>
