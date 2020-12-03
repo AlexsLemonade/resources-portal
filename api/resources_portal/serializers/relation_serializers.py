@@ -191,7 +191,8 @@ class MaterialRequestRelationSerializer(serializers.ModelSerializer):
         model = MaterialRequest
         fields = (
             "id",
-            "is_active",
+            "is_active_sharer",
+            "is_active_requester",
             "rejection_reason",
             "status",
             "payment_method",

@@ -84,7 +84,7 @@ export default ({ request: defaultRequest }) => {
   const [paymentMethod, setPaymentMethod] = React.useState()
   const [paymentDetails, setPaymentDetails] = React.useState()
   const canCancel =
-    request.is_active &&
+    request.is_active_requester &&
     !['IN_FULFILLMENT', 'FULFILLED', 'VERIFIED_FULFILLED'].includes(state)
 
   const updateStatus = async (status) => {

@@ -21,7 +21,7 @@ const ManageResource = ({ resourceId }) => {
       setResource(resourceRequest.isOk ? resourceRequest.response : false)
       const openRequest = await api.resources.requests.filter(
         resourceId,
-        { is_active: true },
+        { is_active_sharer: true },
         token
       )
       // if requests are appearing here that should be closed
@@ -30,7 +30,7 @@ const ManageResource = ({ resourceId }) => {
       setOpenRequests(openRequest.isOk ? openRequest.response.results : [])
       const closedRequest = await api.resources.requests.filter(
         resourceId,
-        { is_active: false },
+        { is_active_sharer: false },
         token
       )
       setClosedRequests(
