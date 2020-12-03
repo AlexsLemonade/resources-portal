@@ -28,15 +28,15 @@ const Requests = () => {
         setRequests(newRequests)
         // filter assigned
         const newAssigned = newRequests.filter(
-          (r) => r.assigned_to === user.id && r.is_active
+          (r) => r.assigned_to === user.id && r.is_active_sharer
         )
         setAssigned(newAssigned)
         const newReceived = newRequests.filter(
-          (r) => r.requester.id !== user.id && r.is_active
+          (r) => r.requester.id !== user.id && r.is_active_sharer
         )
         setReceived(newReceived)
         const newSent = newRequests.filter(
-          (r) => r.requester.id === user.id && r.is_active
+          (r) => r.requester.id === user.id && r.is_active_requester
         )
         setSent(newSent)
       }

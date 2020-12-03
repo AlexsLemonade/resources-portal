@@ -37,7 +37,8 @@ class MaterialRequestSerializer(serializers.ModelSerializer):
         model = MaterialRequest
         fields = (
             "id",
-            "is_active",
+            "is_active_requester",
+            "is_active_sharer",
             "rejection_reason",
             "status",
             "payment_method",
@@ -135,7 +136,8 @@ class IsModifyingPermittedFields(BasePermission):
 
         if request.user == obj.requester:
             forbidden_fields = [
-                "is_active",
+                "is_active_sharer",
+                "is_active_requester",
                 "assigned_to",
                 "rejection_reason",
                 "requires_action_sharer",
@@ -157,7 +159,8 @@ class IsModifyingPermittedFields(BasePermission):
             # the request post-approval, but the sharer can update
             # those fields for the requester if necessary.
             forbidden_fields = [
-                "is_active",
+                "is_active_sharer",
+                "is_active_requester",
                 "payment_method",
                 "payment_method_notes",
                 "has_issues",
@@ -285,7 +288,14 @@ def add_attachment_to_material_request(material_request, attachment, attachment_
 
 
 class MaterialRequestViewSet(viewsets.ModelViewSet):
-    filterset_fields = ("id", "status", "requester__id", "assigned_to__id", "is_active")
+    filterset_fields = (
+        "id",
+        "status",
+        "requester__id",
+        "assigned_to__id",
+        "is_active_requester",
+        "is_active_sharer",
+    )
 
     def get_queryset(self):
         if self.action == "list":

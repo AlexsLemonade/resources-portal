@@ -510,7 +510,8 @@ EMAIL_NOTIFICATIONS = {
         "CTA": "Manage Team",
         "CTA_link_field": "organization",
         "plain_text_email": (
-            "{other_name} was added to {organization_name}."
+            "{other_name} has made you the owner of {organization_name}."
+            "\nYou can now add new team members and remove members and resources."
             "\n\nManage team. ({organization_url})."
         ),
         "required_associations": ["associated_user", "organization",],
