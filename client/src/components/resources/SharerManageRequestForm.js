@@ -438,7 +438,7 @@ export default ({ request: defaultRequest }) => {
           </Box>
         </Box>
       </Modal>
-      {request.is_active &&
+      {request.is_active_sharer &&
         !['OPEN', 'FULFILLED', 'VERIFIED_FULFILLED'].includes(state) && (
           <Box
             direction="row"
