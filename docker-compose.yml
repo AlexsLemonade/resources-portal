@@ -42,13 +42,12 @@ services:
       - '${STORYBOOK_PORT}:${STORYBOOK_PORT}'
       - '${CLIENT_PORT}:${CLIENT_PORT}'
     environment:
-      API_VERSION: '${API_VERSION}'
-      API_HOST: 'http://localhost:${API_PORT}'
-      CLIENT_HOST: 'http://localhost:${CLIENT_PORT}'
-      ORCID_CLIENT_ID: '${ORCID_CLIENT_ID}'
-      ORCID_URL: '${ORCID_URL}'
-      SENTRY_DSN: '${SENTRY_DSN}'
-      SENTRY_ENV: '${SENTRY_ENV}'
+      STAGE_API_VERSION: '${API_VERSION}'
+      STAGE_API_HOST: 'http://localhost:${API_PORT}'
+      STAGE_ORCID_CLIENT_ID: '${ORCID_CLIENT_ID}'
+      STAGE_ORCID_URL: '${ORCID_URL}'
+      STAGE_SENTRY_DSN: '${SENTRY_DSN}'
+      STAGE_SENTRY_ENV: '${SENTRY_ENV}'
 
     command: >
       bash -c 'cd /home/user/code &&
