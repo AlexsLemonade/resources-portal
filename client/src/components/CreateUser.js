@@ -1,3 +1,6 @@
+import React from 'react'
+import { Box, Heading } from 'grommet'
+import { useRouter } from 'next/router'
 import {
   CreateAccountStep,
   EnterEmailStep,
@@ -5,16 +8,14 @@ import {
   VerifyGrantStep
 } from 'components/CreateAccount'
 import { ProgressBar } from 'components/ProgressBar'
-import { Box, Heading } from 'grommet'
 import { useCreateUser } from 'hooks/useCreateUser'
-import { useRouter } from 'next/router'
-import React from 'react'
+import getRedirectQueryParam from 'helpers/getRedirectQueryParam'
 
-export default ({ ORCID, originUrl, code, stepName }) => {
+export default ({ ORCID, clientPath, code, stepName }) => {
   const router = useRouter()
   const { newUser, steps, currentStep, setCurrentStep } = useCreateUser(
     code,
-    originUrl
+    getRedirectQueryParam(clientPath)
   )
 
   React.useEffect(() => {

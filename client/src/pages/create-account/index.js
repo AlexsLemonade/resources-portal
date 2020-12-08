@@ -8,14 +8,14 @@ const CreateUser = dynamic(() => import('components/CreateUser'), {
   ssr: false
 })
 
-const CreateAccount = ({ ORCID, defaultUser, code, originUrl, stepName }) => {
+const CreateAccount = ({ ORCID, defaultUser, code, clientPath, stepName }) => {
   return (
     <CreateUserContextProvider defaultUser={defaultUser}>
       <Box fill align="center" justify="center">
         <Box width="large" margin={{ bottom: 'xlarge' }}>
           <CreateUser
             ORCID={ORCID}
-            originUrl={originUrl}
+            clientPath={clientPath}
             code={code}
             stepName={stepName}
           />
@@ -36,7 +36,7 @@ CreateAccount.getInitialProps = async ({ req, query }) => {
     ORCID: query.ORCID,
     defaultUser,
     code: query.code,
-    originUrl: decodeURI(`${process.env.CLIENT_HOST}${req.url}`),
+    clientPath: req ? req.url : '',
     stepName: query.stepName
   }
 }
