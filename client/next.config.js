@@ -3,6 +3,9 @@ const path = require('path')
 module.exports = () => {
   const isProduction = process.env.VERCEL_GIT_COMMIT_REF === 'master'
 
+  console.log('VERCEL_ENV: ', process.env.VERCEL_ENV)
+  console.log('API_HOST: ', process.env.API_HOST)
+
   const productionEnv = {
     API_VERSION: process.env.API_VERSION,
     API_HOST: process.env.API_HOST,
