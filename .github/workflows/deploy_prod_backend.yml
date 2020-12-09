@@ -30,6 +30,7 @@ jobs:
           ORCID_OAUTH_KEY: ${{ secrets.PROD_ORCID_OAUTH_KEY }}
           API_SSH_KEY: ${{ secrets.API_SSH_KEY }}
           OAUTH_URL: ${{ secrets.PROD_OAUTH_URL }}
+          OAUTH_CLIENT_ID: ${{ secrets.PROD_OAUTH_CLIENT_ID }}
           OAUTH_CLIENT_SECRET: ${{ secrets.PROD_OAUTH_CLIENT_SECRET }}
           SENTRY_IO_URL: ${{ secrets.SENTRY_IO_URL }}
           SENTRY_ENV: prod-api

@@ -52,8 +52,8 @@ class Common(Configuration):
     WSGI_APPLICATION = "resources_portal.wsgi.application"
 
     # OAuth
+    CLIENT_ID = os.getenv("OAUTH_CLIENT_ID")
     CLIENT_SECRET = os.getenv("OAUTH_CLIENT_SECRET")
-    CLIENT_ID = "APP-2AHZAK2XCFGHRJFM"
 
     # Email
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

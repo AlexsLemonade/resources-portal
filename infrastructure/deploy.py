@@ -126,6 +126,7 @@ def load_env_vars(args):
     os.environ["TF_VAR_dockerhub_repo"] = args.dockerhub_repo
     os.environ["TF_VAR_system_version"] = args.system_version
     os.environ["TF_VAR_oauth_url"] = os.environ["OAUTH_URL"]
+    os.environ["TF_VAR_oauth_client_id"] = os.environ["OAUTH_CLIENT_ID"]
     os.environ["TF_VAR_oauth_client_secret"] = os.environ["OAUTH_CLIENT_SECRET"]
 
     # This isn't a secret, so include it here to be explicit.
