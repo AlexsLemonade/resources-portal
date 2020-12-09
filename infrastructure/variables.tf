@@ -63,6 +63,10 @@ variable "oauth_client_secret" {
   default = "MISSING_VALUE"
 }
 
+variable "oauth_client_id" {
+  default = "MISSING_VALUE"
+}
+
 output "environment_variables" {
   value = [
     {name = "DATABASE_NAME"

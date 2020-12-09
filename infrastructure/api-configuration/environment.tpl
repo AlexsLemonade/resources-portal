@@ -12,4 +12,5 @@ AWS_REGION=${aws_region}
 AWS_SES_DOMAIN=${aws_ses_domain}
 AWS_S3_BUCKET_NAME=${aws_s3_bucket_name}
 OAUTH_URL=${oauth_url}
+OAUTH_CLIENT_ID=${oauth_client_id}
 OAUTH_CLIENT_SECRET=${oauth_client_secret}
