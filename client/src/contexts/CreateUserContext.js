@@ -2,8 +2,6 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 
-//  defaults={{ ORCID, email, grants, code, originUrl, stepName }}
-
 export const CreateUserContext = React.createContext({})
 
 export const CreateUserContextProvider = ({ defaultUser, children }) => {

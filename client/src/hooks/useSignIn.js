@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import React from 'react'
 import api from 'api'
 import { useUser } from 'hooks/useUser'
+import getOrcidUrl from 'helpers/getOrcidUrl'
 
 export const useSignIn = (code, originUrl) => {
   const { user, fetchUserWithNewToken } = useUser()
@@ -11,6 +12,7 @@ export const useSignIn = (code, originUrl) => {
   const [needsEmail, setNeedsEmail] = useLocalStorage('needsEmail', false)
   const [orcidInfo, setOrcidInfo] = useLocalStorage('orcidInfo')
   const [clientRedirectUrl] = useLocalStorage('clientRedirectUrl', '')
+  const codeRef = React.useRef(false)
   const router = useRouter()
 
   const cleanup = () => {
@@ -21,6 +23,11 @@ export const useSignIn = (code, originUrl) => {
   }
 
   const loginOrCreateUser = async () => {
+    // get new code if used
+    if (codeRef.current) window.location = getOrcidUrl()
+
+    codeRef.current = true
+
     const orcidRequest = await api.orcid.create(code, originUrl)
 
     if (!orcidRequest.isOk) {
@@ -40,10 +47,10 @@ export const useSignIn = (code, originUrl) => {
     // the user was not able to be authenticated
     // create them
     if (!tokenRequest.isOk) {
-      const createUserRequest = await api.users.create(
-        orcidRequest.response,
+      const createUserRequest = await api.users.create({
+        ...orcidRequest.response,
         email
-      )
+      })
 
       if (createUserRequest.status === 401) {
         setError(createUserRequest)
