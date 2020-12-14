@@ -58,6 +58,7 @@ export const shippingAttributes = [
   'restrictions'
 ]
 
+// this shows the "(optional)" in the label
 export const optionalAttributes = [
   'pubmed_id',
   'publication_title',
@@ -70,7 +71,10 @@ export const optionalAttributes = [
   'cryopreservation',
   'age',
   'sex',
-  'ethnicity'
+  'ethnicity',
+  'number_of_available_cell_lines',
+  'number_of_available_models',
+  'number_of_available_samples'
 ]
 
 export const attributeInputTypes = {

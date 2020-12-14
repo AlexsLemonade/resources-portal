@@ -88,8 +88,12 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
     )
 
     @computed(models.BooleanField(blank=False, null=True))
-    def is_active(self):
+    def is_active_requester(self):
         return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT", "FULFILLED"]
+
+    @computed(models.BooleanField(blank=False, null=True))
+    def is_active_sharer(self):
+        return self.status in ["OPEN", "APPROVED", "IN_FULFILLMENT"]
 
     def get_is_missing_requester_documents(
         self, irb_attachment=None, mta_attachment=None, address=None, payment_method=None
@@ -106,7 +110,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
 
     @property
     def requires_action_sharer(self):
-        if not self.is_active:
+        if not self.is_active_sharer:
             return False
 
         if self.status == "APPROVED":

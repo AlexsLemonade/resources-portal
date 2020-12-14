@@ -4,10 +4,11 @@ export const details = [
   {
     basic_information: [
       'cell_line_name',
+      'cell_type',
       'organisms',
       'tissue',
       'disease',
-      'number_of_availible_cell_lines',
+      'number_of_available_cell_lines',
       'age',
       'sex',
       'ethnicity',
@@ -34,10 +35,11 @@ export const listForm = [
   {
     basic_information: [
       'cell_line_name',
+      'cell_type',
       'organisms',
       'tissue',
       'disease',
-      'number_of_availible_cell_lines',
+      'number_of_available_cell_lines',
       'age',
       'sex',
       'ethnicity',
@@ -68,7 +70,7 @@ export const importForm = () => [
       'organisms',
       'tissue',
       'disease',
-      'number_of_availible_cell_lines',
+      'number_of_available_cell_lines',
       'age',
       'sex',
       'ethnicity',

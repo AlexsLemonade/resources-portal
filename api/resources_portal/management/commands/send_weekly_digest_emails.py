@@ -88,7 +88,7 @@ def send_user_weekly_digest(user):
 
     send_mail(EMAIL_SOURCE, [user.email], subject, plain_text, html_body)
 
-    user.weekly_digest_last_sent = start_time
+    user.weekly_digest_last_sent = timezone.now()
     user.save()
 
 
