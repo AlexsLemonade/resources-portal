@@ -166,29 +166,42 @@ class UserViewSet(viewsets.ModelViewSet):
         except Exception as error:
             return JsonResponse({"error": error}, status=500,)
 
-        email = ""
+        # check if email, first_name, last_name included in request
+        email = request.data.get("email", None)
+        first_name = request.data.get("first_name", None)
+        last_name = request.data.get("last_name", None)
 
-        if "email" in request.data:
-            email = request.data["email"]
-        else:
-            if len(summary["person"]["emails"]["email"]) == 0:
-                return JsonResponse(
-                    {
-                        "error": "There were no emails made availible on the provided ORCID record. Please provide an email in the POST request.",
-                        "needs_email": True,
-                    },
-                    status=401,
-                )
+        emails = summary["person"]["emails"].get("email", None)
+        name = summary["person"].get("name", None)
 
-            # Use the email first added to the ORCID account
-            email = summary["person"]["emails"]["email"][0]["email"]
+        # fall back to ORCID response
+        if emails and not email:
+            email = emails[0]["email"]
 
-        # Get first and last name
+        if not first_name and name and name.get("given-names", None):
+            first_name = name["given-names"]["value"]
 
-        first_name = summary["person"]["name"]["given-names"]["value"]
-        last_name = ""
-        if summary["person"]["name"].get("family-name", None):
-            last_name = summary["person"]["name"]["family-name"]["value"]
+        if not last_name and name and name.get("family-name", None):
+            last_name = name["family-name"]["value"]
+
+        # Return error if all are not available
+        if not email or not first_name or not last_name:
+            required = []
+
+            if not first_name:
+                required.append("first_name")
+            if not last_name:
+                required.append("last_name")
+            if not email:
+                required.append("email")
+
+            return JsonResponse(
+                {
+                    "error": "There were details not provided on the provided ORCID record. Please provide missing details in the POST request.",
+                    "required": required,
+                },
+                status=401,
+            )
 
         try:
             user = User.objects.create(
