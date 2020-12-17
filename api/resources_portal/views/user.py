@@ -154,7 +154,11 @@ class UserViewSet(viewsets.ModelViewSet):
             )
         if User.objects.filter(orcid=request.data["orcid"]).exists():
             return JsonResponse(
-                {"error": "A user with the provided ORCID already exists."}, status=400,
+                {
+                    "error": "A user with the provided ORCID already exists.",
+                    "error_code": "USER_EXISTS",
+                },
+                status=400,
             )
 
         try:
