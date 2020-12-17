@@ -1,4 +1,7 @@
 export const readableNames = {
+  first_name: 'First Name',
+  last_name: 'Last Name',
+  email: 'Email',
   ADDGENE: 'Addgene',
   ALL: 'All',
   ATCC: 'ATCC',
