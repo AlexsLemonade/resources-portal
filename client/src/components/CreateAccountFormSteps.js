@@ -1,11 +1,11 @@
 import React from 'react'
-import { string } from 'yup'
-import { Anchor, Box, Button, Text, TextInput } from 'grommet'
+import { Anchor, Box, Button, Text } from 'grommet'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { useCreateUser } from 'hooks/useCreateUser'
 import Link from 'next/link'
 import ORCIDSignInButton from 'components/ORCIDSignInButton'
 import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
+import CreateAccountDetailsForm from 'components/CreateAccountDetailsForm'
 import GrantIcon from '../images/grant.svg'
 import NextSteps from '../images/join-by-invite-next-steps.svg'
 
@@ -59,38 +59,17 @@ export const CreateAccountStep = ({ ORCID }) => {
   )
 }
 
-export const EnterEmailStep = () => {
-  const emailSchema = string().email().required()
-  const { newUser, user, setNewUser, stepForward } = useCreateUser()
-  const [valid, setValid] = React.useState(false)
-  const [email, setEmail] = React.useState(newUser.email)
-
-  const onChange = (newEmail) => {
-    setEmail(newEmail)
-  }
-
-  const onClick = () => {
-    setNewUser({ ...newUser, email })
-    stepForward()
-  }
-
-  React.useEffect(() => {
-    try {
-      emailSchema.validateSync(email)
-      setValid(true)
-    } catch (e) {
-      setValid(false)
-    }
-  })
+export const EnterDetailsStep = () => {
+  const { user, stepForward } = useCreateUser()
 
   if (user) {
     return (
       <Box pad="medium" gap="medium">
         <Text>
-          The following email was retrieved from your ORCID record: {user.email}
+          The following email was extracted from your ORCID record: {user.email}
         </Text>
         <Box width="200px" alignSelf="center">
-          <Button label="Continue" onClick={stepForward} />
+          <Button label="Next" onClick={stepForward} />
         </Box>
       </Box>
     )
@@ -98,24 +77,11 @@ export const EnterEmailStep = () => {
 
   return (
     <Box pad="medium" gap="medium" width={{ min: '400px' }}>
-      <Box>
-        <Text>Enter your email below:</Text>
-      </Box>
-      <TextInput
-        width="300px"
-        placeholder="Enter email"
-        onChange={(event) => onChange(event.target.value)}
-        value={email || ''}
-        type="email"
+      <CreateAccountDetailsForm
+        onSubmit={() => {
+          stepForward()
+        }}
       />
-      <Box width="200px" alignSelf="center">
-        <Button
-          label="Submit"
-          onChange={onChange}
-          disabled={!valid}
-          onClick={onClick}
-        />
-      </Box>
     </Box>
   )
 }
@@ -129,11 +95,11 @@ export const VerifyGrantStep = () => {
     <Box gap="medium">
       <Text weight="bold">Your account has been created!</Text>
       <Text>
-        Please take a moment to verify the grants you have recieved from Alex's
+        Please take a moment to verify the grants you have received from Alex's
         Lemonade Stand Foundation.
       </Text>
       <Text margin={{ top: 'small' }} weight="bold">
-        Grants Recieved
+        Grants Received
       </Text>
       <Box gap="medium">
         {newUser.grants.map((grant) => (
