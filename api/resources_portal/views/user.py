@@ -46,6 +46,34 @@ def remove_code_parameter_from_uri(url):
     return url.split("code")[0].strip("&").strip("/?")
 
 
+def parse_orcid_response(response):
+    """
+    This safely digs into the ORCID user summary response and returns consistent dict
+     representation independent of the user's visibility settings.
+    """
+    return {
+        "orcid": response.get("orcid-identifier", {}).get("path", None),
+        "email": response.get("person", {})
+        .get("emails", {})
+        .get("email", [{}])[0]
+        .get("email", None),
+        "first_name": (
+            response.get("person", {}).get("name", {}).get("given-names", {}).get("value", None)
+        ),
+        "last_name": (
+            response.get("person", {}).get("name", {}).get("family-name", {}).get("value", None)
+        ),
+    }
+
+
+def get_unset_keys(dictionary, keys):
+    """
+    This is a utility that takes a dictionary and a list of keys
+     and returns any keys with no value or missing from the dict.
+    """
+    return [k for k in keys if k not in dictionary or not dictionary[k]]
+
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -129,7 +157,7 @@ class UserViewSet(viewsets.ModelViewSet):
     http_method_names = ["get", "post", "delete", "put", "patch", "head", "options"]
 
     def get_permissions(self):
-        if self.action == "update" or self.action == "partial_update" or self.action == "destroy":
+        if self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [IsAuthenticated, IsUserOrAdmin]
         elif self.action == "create":
             permission_classes = []
@@ -139,19 +167,20 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
-        if "orcid" not in request.data:
+        grants = request.data.get("grants", [])
+        missing_params = get_unset_keys(request.data, ["orcid", "access_token", "refresh_token"])
+        malformed_grants = [g for g in grants if get_unset_keys(g, ["title", "funder_id"])]
+
+        if missing_params or malformed_grants:
             return JsonResponse(
-                {"error": "orcid parameter was not found in the request."}, status=400,
+                {
+                    "error": "Please check that all required parameters are present and correct in request.",
+                    "missing_parameters": missing_params,
+                    "malformed_grants": malformed_grants,
+                },
+                status=400,
             )
 
-        if "access_token" not in request.data:
-            return JsonResponse(
-                {"error": "access_token parameter was not found in the request."}, status=400,
-            )
-        if "refresh_token" not in request.data:
-            return JsonResponse(
-                {"error": "refresh_token parameter was not found in the request."}, status=400,
-            )
         if User.objects.filter(orcid=request.data["orcid"]).exists():
             return JsonResponse(
                 {
@@ -164,94 +193,55 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             api = orcid.PublicAPI(CLIENT_ID, CLIENT_SECRET, sandbox=IS_OAUTH_SANDBOX)
 
-            summary = api.read_record_public(
+            orcid_response = api.read_record_public(
                 request.data["orcid"], "record", request.data["access_token"]
             )
+            orcid_data = parse_orcid_response(orcid_response)
         except Exception as error:
             return JsonResponse({"error": error}, status=500,)
 
-        # check if email, first_name, last_name included in request
-        email = request.data.get("email", None)
-        first_name = request.data.get("first_name", None)
-        last_name = request.data.get("last_name", None)
+        # use request data fallback to parsed orcid data
+        user_data = {
+            "orcid": orcid_data["orcid"],
+            "orcid_access_token": request.data.get("access_token", None),
+            "orcid_refresh_token": request.data.get("refresh_token", None),
+            "first_name": request.data.get("first_name", orcid_data["first_name"]),
+            "last_name": request.data.get("last_name", orcid_data["last_name"]),
+            "email": request.data.get("email", orcid_data["email"]),
+        }
 
-        emails = summary["person"]["emails"].get("email", None)
-        name = summary["person"].get("name", None)
+        # check if missing param should be passed up
+        missing_data = get_unset_keys(user_data, ["email", "first_name", "last_name"])
 
-        # fall back to ORCID response
-        if emails and not email:
-            email = emails[0]["email"]
-
-        if not first_name and name and name.get("given-names", None):
-            first_name = name["given-names"]["value"]
-
-        if not last_name and name and name.get("family-name", None):
-            last_name = name["family-name"]["value"]
-
-        # Return error if all are not available
-        if not email or not first_name or not last_name:
-            required = []
-
-            if not first_name:
-                required.append("first_name")
-            if not last_name:
-                required.append("last_name")
-            if not email:
-                required.append("email")
-
+        if missing_data:
             return JsonResponse(
                 {
                     "error": "There were details not provided on the provided ORCID record. Please provide missing details in the POST request.",
-                    "required": required,
+                    "required": missing_data,
                 },
                 status=401,
             )
 
+        # create user and related resources
         try:
-            user = User.objects.create(
-                orcid=summary["orcid-identifier"]["path"],
-                orcid_access_token=request.data["access_token"],
-                orcid_refresh_token=request.data["refresh_token"],
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-            )
+            user = User.objects.create(**user_data)
         except Exception as error:
             return JsonResponse({"error": error}, status=500,)
 
-        org = Organization(owner=user, name="My Resources", is_personal_organization=True)
-        org.save()
+        org = Organization.objects.create(
+            owner=user, name="My Resources", is_personal_organization=True
+        )
         user.personal_organization = org
 
-        if "grants" in request.data:
-            grant_json = request.data["grants"]
-
-            for grant_info in grant_json:
-                if "title" not in grant_info:
-                    return JsonResponse(
-                        {
-                            "error": f"Attribute 'title' not found in provided json for user grant creation: {grant_json}",
-                        },
-                        status=400,
-                    )
-                if "funder_id" not in grant_info:
-                    return JsonResponse(
-                        {
-                            "error": f"Attribute 'funder_id' not found in provided json for user grant creation: {grant_json}",
-                        },
-                        status=400,
-                    )
-
-                grant = Grant.objects.create(
-                    title=grant_info["title"], funder_id=grant_info["funder_id"], user=user
-                )
-                user.grants.add(grant)
+        for g in grants:
+            grant = Grant.objects.create(**g, user=user)
+            user.grants.add(grant)
 
         user.save()
 
-        token = ExpiringToken.objects.get(user=user)
+        existing_token = ExpiringToken.objects.get(user=user)
 
-        is_expired, token = token_expire_handler(token)
+        is_expired, token = token_expire_handler(existing_token)
 
         return JsonResponse(
             {"user_id": user.id, "token": token.key, "expires": token.expires}, status=200,
