@@ -95,7 +95,7 @@ export const useCreateUser = (code, clientPath) => {
         return createUserRequest
       }
 
-      if (createUserRequest.status === 400) {
+      if (createUserRequest.status === 422) {
         const {
           response: { error_code: errorCode }
         } = createUserRequest
