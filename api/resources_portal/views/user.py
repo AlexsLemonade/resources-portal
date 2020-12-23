@@ -187,7 +187,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     "error": "A user with the provided ORCID already exists.",
                     "error_code": "USER_EXISTS",
                 },
-                status=400,
+                status=422,
             )
 
         try:
