@@ -5,7 +5,7 @@ import { useLocalStorage } from 'hooks/useLocalStorage'
 import getOrcidUrl from 'helpers/getOrcidUrl'
 
 export default ({ label, redirectPath = '/account' }) => {
-  const [, setClientRedirectUrl] = useLocalStorage('clientRedirectUrl')
+  const [, setClientRedirectUrl] = useLocalStorage('client-redirect-url')
   const orcidUrl = getOrcidUrl(redirectPath)
 
   return (

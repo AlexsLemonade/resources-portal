@@ -4,16 +4,19 @@ import { Box } from 'grommet'
 import { CreateUserContextProvider } from 'contexts/CreateUserContext'
 import zipGrantParams from 'helpers/zipGrantParams'
 
-const CreateUser = dynamic(() => import('components/CreateUser'), {
-  ssr: false
-})
+const CreateAccountForm = dynamic(
+  () => import('components/CreateAccountForm'),
+  {
+    ssr: false
+  }
+)
 
 const CreateAccount = ({ ORCID, defaultUser, code, clientPath, stepName }) => {
   return (
     <CreateUserContextProvider defaultUser={defaultUser}>
       <Box fill align="center" justify="center">
         <Box width="large" margin={{ bottom: 'xlarge' }}>
-          <CreateUser
+          <CreateAccountForm
             ORCID={ORCID}
             clientPath={clientPath}
             code={code}
