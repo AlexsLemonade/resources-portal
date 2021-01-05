@@ -99,7 +99,7 @@ def _gather_study_metadata(accession_code: str) -> None:
     for child in study:
         if child.tag == "DESCRIPTOR":
             for grandchild in child:
-                if grandchild.tag == "STUDY_TITLE" or grandchild.tag == "STUDY_ABSTRACT":
+                if grandchild.tag == "STUDY_TITLE":
                     metadata["study_title"] = grandchild.text
 
                 if grandchild.tag == "STUDY_DESCRIPTION" or grandchild.tag == "STUDY_ABSTRACT":
