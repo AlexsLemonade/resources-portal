@@ -4,6 +4,7 @@ import { CreateUserContext } from 'contexts/CreateUserContext'
 import { useUser } from 'hooks/useUser'
 import api from 'api'
 import getRedirectQueryParam from 'helpers/getRedirectQueryParam'
+import arraysMatch from 'helpers/arraysMatch'
 
 export const useCreateUser = (code, clientPath) => {
   const router = useRouter()
@@ -67,9 +68,8 @@ export const useCreateUser = (code, clientPath) => {
       stepsArray.push('Verify Grant Information')
     }
     stepsArray.push('Next Steps')
-    const stepsMatch = steps.every((step, index) => step === stepsArray[index])
 
-    if (!stepsMatch) {
+    if (!arraysMatch(stepsArray, steps)) {
       setSteps(stepsArray)
     }
 
