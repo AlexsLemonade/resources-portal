@@ -100,7 +100,10 @@ def _gather_study_metadata(accession_code: str) -> None:
         if child.tag == "DESCRIPTOR":
             for grandchild in child:
                 if grandchild.tag == "STUDY_TITLE" or grandchild.tag == "STUDY_ABSTRACT":
-                    metadata[grandchild.tag.lower()] = grandchild.text
+                    metadata["study_title"] = grandchild.text
+
+                if grandchild.tag == "STUDY_DESCRIPTION" or grandchild.tag == "STUDY_ABSTRACT":
+                    metadata["study_abstract"] = grandchild.text
         elif child.tag == "STUDY_LINKS":
             for grandchild in child:
                 for ggc in grandchild:
@@ -187,6 +190,8 @@ def gather_all_metadata(accession_code):
     # URL so we don't have to worry about them.
     if accession_code.lower().startswith("https://www.ebi.ac.uk"):
         accession_code = accession_code.split("/")[-1]
+    elif accession_code.lower().startswith("https://trace.ncbi.nlm.nih.gov/"):
+        accession_code = accession_code.split("=")[-1]
 
     if accession_code.upper().startswith("PRJNA"):
         accession_code = get_SRP_from_PRJNA(accession_code)

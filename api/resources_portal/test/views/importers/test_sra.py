@@ -209,3 +209,55 @@ class ImportSRATestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.additional_metadata["accession_code"], "SRP000598")
         self.assertEqual(material.additional_metadata["number_of_samples"], 2)
+
+    def test_import_succeeds_with_SRP_ncbi_URL(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "import_source": "SRA",
+                "accession_code": "https://trace.ncbi.nlm.nih.gov/Traces/sra/?study=SRP003819",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.additional_metadata["accession_code"], "SRP003819")
+        self.assertEqual(material.additional_metadata["number_of_samples"], 2)
+
+    def test_import_succeeds_with_SRR_ncbi_URL(self):
+
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "import_source": "SRA",
+                "accession_code": "https://trace.ncbi.nlm.nih.gov/Traces/sra/?run=SRR013547",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.additional_metadata["accession_code"], "SRP000598")
+        self.assertEqual(material.additional_metadata["number_of_samples"], 2)
