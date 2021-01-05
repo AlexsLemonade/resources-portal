@@ -47,6 +47,6 @@ export default ({
     )
   }
 
-  // as you were
+  // if user is logged in render child components
   return children
 }
