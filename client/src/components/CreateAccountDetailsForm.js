@@ -21,18 +21,18 @@ export default ({ onSubmit }) => {
   // validate on any value change
   React.useEffect(() => {
     if (!required) return
-
     let newValid = true
     if (required.includes('first_name') && !firstName) newValid = false
     if (required.includes('last_name') && !lastName) newValid = false
     if (required.includes('email')) {
       try {
         emailSchema.validateSync(email)
-        setValid(newValid)
       } catch (e) {
-        setValid(false)
+        newValid = false
       }
     }
+
+    if (valid !== newValid) setValid(newValid)
   })
 
   const onChange = (attribute, value) => {
