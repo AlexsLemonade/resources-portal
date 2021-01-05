@@ -1,13 +1,11 @@
 /*
- * Simple way to compare multiple arrays for sameness.
+ * Simple way to compare multiple values for sameness.
+ * Converts arguments to stringifed JSON and then compares.
  *
  */
 
 export default (...arrays) => {
-  return (
-    arrays.length > 0 &&
-    arrays
-      .map((array) => JSON.stringify(array))
-      .every((strArray, index, strArrays) => strArray === strArrays[0])
-  )
+  return arrays
+    .map((array) => JSON.stringify(array))
+    .every((strArray, index, strArrays) => strArray === strArrays[0])
 }
