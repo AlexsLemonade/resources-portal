@@ -46,32 +46,38 @@ def remove_code_parameter_from_uri(url):
     return url.split("code")[0].strip("&").strip("/?")
 
 
-def parse_orcid_response(response):
-    """
-    This safely digs into the ORCID user summary response and returns consistent dict
-     representation independent of the user's visibility settings.
-    """
-    return {
-        "orcid": response.get("orcid-identifier", {}).get("path", None),
-        "email": response.get("person", {})
-        .get("emails", {})
-        .get("email", [{}])[0]
-        .get("email", None),
-        "first_name": (
-            response.get("person", {}).get("name", {}).get("given-names", {}).get("value", None)
-        ),
-        "last_name": (
-            response.get("person", {}).get("name", {}).get("family-name", {}).get("value", None)
-        ),
-    }
-
-
 def get_unset_keys(dictionary, keys):
     """
     This is a utility that takes a dictionary and a list of keys
      and returns any keys with no value or missing from the dict.
     """
     return [k for k in keys if k not in dictionary or not dictionary[k]]
+
+
+def get_nested_key(dictionary, *keys):
+    """
+    This dives into a dictionary or list without throwing a AttributeError or KeyError
+    """
+    value = dictionary
+    try:
+        for key in keys:
+            value = value[key]
+    except Exception:
+        return None
+    return value
+
+
+def parse_orcid_response(response):
+    """
+    This safely digs into the ORCID user summary response and returns consistent dict
+     representation independent of the user's visibility settings.
+    """
+    return {
+        "orcid": get_nested_key(response, "orcid-identifier", "path"),
+        "email": get_nested_key(response, "person", "emails", "email", 0, "email"),
+        "first_name": get_nested_key(response, "person", "name", "given-names", "value"),
+        "last_name": get_nested_key(response, "person", "name", "family-name", "value"),
+    }
 
 
 class UserSerializer(serializers.ModelSerializer):
