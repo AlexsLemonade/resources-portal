@@ -61,16 +61,15 @@ export const useCreateUser = (code, clientPath) => {
     }
 
     // Generate initial steps
-    const stepsArray = ['Create an Account']
-    if (!newUser.email) {
-      stepsArray.push('Enter Details')
-    }
+    const stepsArray = ['Create an Account', 'Enter Details']
+
     if (newUser.grants) {
       stepsArray.push('Verify Grant Information')
     }
     stepsArray.push('Next Steps')
+    const stepsMatch = steps.every((step, index) => step === stepsArray[index])
 
-    if (steps.length === 0) {
+    if (!stepsMatch) {
       setSteps(stepsArray)
     }
 
