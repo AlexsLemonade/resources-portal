@@ -193,7 +193,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     "error": "A user with the provided ORCID already exists.",
                     "error_code": "USER_EXISTS",
                 },
-                status=422,
+                status=409,
             )
 
         try:
@@ -225,14 +225,14 @@ class UserViewSet(viewsets.ModelViewSet):
                     "error": "There were details not provided on the provided ORCID record. Please provide missing details in the POST request.",
                     "required": missing_data,
                 },
-                status=401,
+                status=422,
             )
 
         # create user and related resources
         try:
             user = User.objects.create(**user_data)
         except Exception as error:
-            return JsonResponse({"error": error}, status=500,)
+            return JsonResponse({"error": error}, status=500)
 
         org = Organization.objects.create(
             owner=user, name="My Resources", is_personal_organization=True

@@ -83,7 +83,7 @@ export const useCreateUser = (code, clientPath) => {
     const createUserRequest = await api.users.create(newUser)
 
     if (!createUserRequest.isOk) {
-      if (createUserRequest.status === 401) {
+      if (createUserRequest.status === 422) {
         const {
           response: { required: newRequired }
         } = createUserRequest
@@ -95,7 +95,7 @@ export const useCreateUser = (code, clientPath) => {
         return createUserRequest
       }
 
-      if (createUserRequest.status === 422) {
+      if (createUserRequest.status === 409) {
         const {
           response: { error_code: errorCode }
         } = createUserRequest
