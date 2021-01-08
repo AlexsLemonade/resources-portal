@@ -37,10 +37,12 @@ class HasEditResources(BasePermission):
         return request.user.has_perm("edit_resources", obj.organization)
 
 
-def validateImport(data):
+def validate_import(data):
     if data["import_source"] == "SRA" or data["import_source"] == "GEO":
-        # Check if imported material already exists
+        if "accession_code" not in data["additional_metadata"]:
+            return {"valid": False, "missing_metadata_field": "accession_code"}
 
+        # Check if imported material already exists
         for material in Material.objects.filter(imported=True).filter(
             Q(import_source="SRA") | Q(import_source="GEO")
         ):
@@ -132,16 +134,26 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         if serializer.validated_data["imported"]:
-            importValidation = validateImport(serializer.validated_data)
-            if not importValidation["valid"]:
-                return Response(
-                    {
-                        "error": f'A material with identifier {importValidation["identifier"]} has already been imported.',
-                        "error_code": "ALREADY_IMPORTED",
-                        "material": importValidation["material"],
-                    },
-                    status=400,
-                )
+            import_validation = validate_import(serializer.validated_data)
+            if not import_validation["valid"]:
+                if "missing_metadata_field" in import_validation:
+                    return Response(
+                        {
+                            "error": f'The material is missing a {import_validation["missing_metadata_field"]} field which is required.',
+                            "error_code": "ALREADY_IMPORTED",
+                            "material": import_validation["material"],
+                        },
+                        status=400,
+                    )
+                else:
+                    return Response(
+                        {
+                            "error": f'A material with identifier {import_validation["identifier"]} has already been imported.',
+                            "error_code": "ALREADY_IMPORTED",
+                            "material": import_validation["material"],
+                        },
+                        status=400,
+                    )
 
         response = super(MaterialViewSet, self).create(request, *args, **kwargs)
 

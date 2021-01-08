@@ -18,6 +18,7 @@ from resources_portal.models import (
     ShippingRequirement,
     User,
 )
+from resources_portal.views.material import validate_import
 
 logger = get_and_configure_logger(__name__)
 
@@ -82,8 +83,17 @@ def populate_dev_database():
     attachments_json = loads(open("./dev_data/attachments.json").read())
     add_class_to_database(attachments_json["attachments"], Attachment)
 
-    # add materials
     materials_json = loads(open("./dev_data/materials.json").read())
+    # Make sure the additional_data fields of dev data materials are valid.
+    for material in materials_json["materials"]:
+        if material["imported"]:
+            validity = validate_import(material)
+            if "valid" not in validity or not validity["valid"]:
+                raise KeyError(
+                    "The data for a Material object is not valid. It may be an issue with additional_metadata."
+                )
+
+    # add materials
     add_class_to_database(materials_json["materials"], Material)
 
     # add grants
