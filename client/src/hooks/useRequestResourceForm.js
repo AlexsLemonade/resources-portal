@@ -1,10 +1,16 @@
 import React from 'react'
 import { useUser } from 'hooks/useUser'
 import api from 'api'
+import getErrorMessages from 'helpers/getErrorMessages'
+import { getCreateRequestSchema } from 'schemas/materialRequest'
+import { useAlertsQueue } from 'hooks/useAlertsQueue'
 
 export default (resource = {}, requestId) => {
+  const { addAlert } = useAlertsQueue()
+  const schema = getCreateRequestSchema(resource)
   const { user, token, refreshUser } = useUser()
   const [request, setRequest] = React.useState({ material: resource.id })
+  const [validationErrors, setValidationErrors] = React.useState({})
   const fetchedUserRef = React.useRef(false)
 
   React.useEffect(() => {
@@ -53,6 +59,11 @@ export default (resource = {}, requestId) => {
   }
 
   const createResourceRequest = async () => {
+    if (!(await validateNewRequest())) {
+      addAlert('There are fields that need review.', 'error')
+      return false
+    }
+
     const saveRequest = { ...request }
 
     if (saveRequest.address) {
@@ -73,7 +84,7 @@ export default (resource = {}, requestId) => {
       if (addressRequest.isOk) {
         saveRequest.address = addressRequest.response.id
       } else {
-        console.log(addressRequest.response)
+        // send to sentry & alert error
         return false
       }
     }
@@ -98,6 +109,19 @@ export default (resource = {}, requestId) => {
     return false
   }
 
+  const validateNewRequest = async () => {
+    try {
+      await schema.validate(request, { abortEarly: false })
+      setValidationErrors({})
+    } catch (errors) {
+      const errorMessages = getErrorMessages(errors)
+      setValidationErrors(errorMessages)
+      return false
+    }
+
+    return true
+  }
+
   return {
     request,
     addresses: user.addresses,
@@ -108,6 +132,7 @@ export default (resource = {}, requestId) => {
     fetchRequest,
     createResourceRequest,
     saveChanges,
-    setAddress
+    setAddress,
+    validationErrors
   }
 }
