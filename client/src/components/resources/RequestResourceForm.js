@@ -16,6 +16,9 @@ import { InfoCard } from 'components/InfoCard'
 import Icon from 'components/Icon'
 import useRequestResourceForm from 'hooks/useRequestResourceForm'
 import AddressSelect from 'components/AddressSelect'
+import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
+import { addressAttributes } from 'schemas/address'
+import { getReadable } from 'helpers/readableNames'
 
 const SaveAddressCheckBox = styled(CheckBox)`
   margin-left: 0;
@@ -39,14 +42,15 @@ export default ({ resource }) => {
     setAddressAttribute,
     addresses,
     createResourceRequest,
-    setAddress
+    setAddress,
+    validationErrors
   } = useRequestResourceForm(resource)
 
-  const [showAddresses, setShowAddresses] = React.useState(false)
+  const hasAddresses = addresses.length !== 0
+  const [showAddresses, setShowAddresses] = React.useState(hasAddresses)
   const toggleShippingLabel = showAddresses
     ? 'Specify New Address'
     : 'View Saved Addresses'
-  const hasAddresses = addresses.length !== 0
 
   return (
     <>
@@ -58,7 +62,16 @@ export default ({ resource }) => {
       >
         {needsAbstract && (
           <Box margin={{ bottom: 'medium' }}>
-            <FormField label="Abstract">
+            <FormField
+              label="Abstract"
+              error={
+                validationErrors.requester_abstract && (
+                  <FormFieldErrorLabel
+                    message={validationErrors.requester_abstract}
+                  />
+                )
+              }
+            >
               <TextArea
                 value={getAttribute('requester_abstract')}
                 onChange={({ target: { value } }) => {
@@ -130,70 +143,28 @@ export default ({ resource }) => {
                 {!showAddresses && (
                   <Box animation="fadeIn" margin={{ top: 'medium' }}>
                     <Text>Specify New Address</Text>
-                    <FormField label="Full Name">
-                      <TextInput
-                        value={getAddressAttribute('name')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('name', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="Institution/Organization Name">
-                      <TextInput
-                        value={getAddressAttribute('institution')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('institution', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="Address">
-                      <TextInput
-                        value={getAddressAttribute('address_line_1')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('address_line_1', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="Building/Floor/Suite">
-                      <TextInput
-                        value={getAddressAttribute('address_line_2')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('address_line_2', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="City">
-                      <TextInput
-                        value={getAddressAttribute('locality')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('locality', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="State/Province/Region">
-                      <TextInput
-                        value={getAddressAttribute('state')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('state', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="Zip/Postal Code">
-                      <TextInput
-                        value={getAddressAttribute('postal_code')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('postal_code', value)
-                        }}
-                      />
-                    </FormField>
-                    <FormField label="Country">
-                      <TextInput
-                        value={getAddressAttribute('country')}
-                        onChange={({ target: { value } }) => {
-                          setAddressAttribute('country', value)
-                        }}
-                      />
-                    </FormField>
+                    {addressAttributes.map((addressAttribute) => (
+                      <FormField
+                        label={getReadable(addressAttribute)}
+                        error={
+                          validationErrors.address &&
+                          validationErrors.address[addressAttribute] && (
+                            <FormFieldErrorLabel
+                              message={
+                                validationErrors.address[addressAttribute]
+                              }
+                            />
+                          )
+                        }
+                      >
+                        <TextInput
+                          value={getAddressAttribute(addressAttributes)}
+                          onChange={({ target: { value } }) => {
+                            setAddressAttribute(addressAttribute, value)
+                          }}
+                        />
+                      </FormField>
+                    ))}
                     <Box margin={{ vertical: 'medium' }}>
                       <SaveAddressCheckBox
                         checked={getAttribute('saved_for_reuse')}
@@ -210,6 +181,7 @@ export default ({ resource }) => {
                     <AddressSelect
                       addresses={addresses}
                       onSelect={setAddress}
+                      validationErrors={validationErrors.address}
                     />
                   </Box>
                 )}
