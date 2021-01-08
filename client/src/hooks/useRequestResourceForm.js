@@ -22,9 +22,18 @@ export default (resource = {}, requestId) => {
   })
 
   const setAddress = (address) => {
-    Object.entries(address)
-      .filter(([k]) => !['id', 'user', 'created_at', 'updated_at'].includes(k))
-      .forEach((entry) => setAddressAttribute(...entry))
+    const filterKeys = [
+      'id',
+      'user',
+      'created_at',
+      'updated_at',
+      'saved_for_reuse'
+    ]
+    const newAddress = Object.fromEntries(
+      Object.entries(address).filter(([k]) => !filterKeys.includes(k))
+    )
+
+    setAttribute('address', newAddress)
   }
 
   const setAttribute = (attribute, value) => {
