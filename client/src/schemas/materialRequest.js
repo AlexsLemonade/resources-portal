@@ -1,11 +1,10 @@
-import { object, string, number } from 'yup'
-import addressSchema from 'schemas/address'
+import { object, string, number, boolean } from 'yup'
+import address from 'schemas/address'
 import getRequestRequirements from 'helpers/getRequestRequirements'
 
-export const CREATE_REQUEST_RESOURCE_REQUIREMENTS = ['needs_abstract', 'needs_']
-
 export const defaultSchema = object({
-  material: number().required()
+  material: number().required(),
+  save_for_reuse: boolean()
 })
 
 // this determines the schema for validating the create material request
@@ -26,7 +25,7 @@ export const getCreateRequestSchema = (resource) => {
   }
 
   if (needsShippingAddress) {
-    schema = schema.shape({ address: addressSchema })
+    schema = schema.shape({ address })
   }
 
   return schema
