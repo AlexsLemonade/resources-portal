@@ -207,10 +207,8 @@ export default ({ resource }) => {
           label="Request"
           onClick={async () => {
             const saved = await createResourceRequest()
-            if (saved.id) {
+            if (saved && saved.id) {
               router.push(`/account/requests/${saved.id}`)
-            } else {
-              // show error
             }
           }}
         />
