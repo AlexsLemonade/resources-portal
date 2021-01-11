@@ -3,6 +3,7 @@ import { Box, RadioButtonGroup, RadioButton, Text } from 'grommet'
 import getAddressOptions from 'helpers/getAddressOptions'
 import PreviewAddress from 'components/PreviewAddress'
 import styled from 'styled-components'
+import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 
 const AddressRadioButtonGroup = styled(RadioButtonGroup)`
   label label {
@@ -14,7 +15,7 @@ const AddressRadioButtonGroup = styled(RadioButtonGroup)`
   }
 `
 
-export default ({ addresses, onSelect }) => {
+export default ({ addresses, onSelect, validationErrors }) => {
   const [address, setAddress] = React.useState({})
   const addressOptions = getAddressOptions(addresses)
 
@@ -25,6 +26,11 @@ export default ({ addresses, onSelect }) => {
 
   return (
     <Box margin={{ vertical: 'medium' }}>
+      {validationErrors && (
+        <Box margin={{ bottom: 'small' }}>
+          <FormFieldErrorLabel />
+        </Box>
+      )}
       <Text margin={{ bottom: 'small' }}>Saved Addresses</Text>
       <AddressRadioButtonGroup
         name="addresses"
