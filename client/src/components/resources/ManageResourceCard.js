@@ -21,6 +21,7 @@ export const ManageOptions = ({
   const manageLink = `/account/manage-resources/${resource.id}`
   const editLink = `/resources/${resource.id}/edit`
   const viewResourceLink = `resources/${resource.id}`
+  const ArchiveLabel = resource.is_archived ? 'Unarchive' : 'Archive'
 
   return (
     <Box direction={direction} gap="medium" pad={pad}>
@@ -55,7 +56,7 @@ export const ManageOptions = ({
         <>
           <Anchor
             icon={<Icon name="Archive" size="small" />}
-            label="Archive"
+            label={ArchiveLabel}
             onClick={() => {
               setShowArchive(true)
               onModalOpen()
