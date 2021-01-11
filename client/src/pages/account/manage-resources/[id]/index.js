@@ -82,8 +82,8 @@ const ManageResource = ({ resourceId }) => {
                       onClick={() => setShowClosedModal(true)}
                     />
                     <Modal
-                      showModal={showClosedModal}
-                      setShowModal={setShowClosedModal}
+                      showing={showClosedModal}
+                      setShowing={setShowClosedModal}
                     >
                       <ManageRequestsTable requests={closedRequests} />
                     </Modal>
