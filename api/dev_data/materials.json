@@ -322,6 +322,7 @@
       "contact_user_id": "10000000-0f5a-4165-b518-b2386a753d6f",
       "organization_id": "1",
       "additional_metadata": {
+        "accession_code": "GSE37165",
         "embargo_date": "2020-01-30",
         "title": "GEO Zebrafish Analysis",
         "description": "This dataset has interesting implications for future research.",
