@@ -607,6 +607,18 @@ class TestNestedMaterialRequestListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
+    def test_get_request_from_sharer_filters_fields(self):
+        self.client.force_authenticate(user=self.sharer)
+        response = self.client.get(self.url + "?status=OPEN")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_get_request_from_sharer_filters_fields_out(self):
+        self.client.force_authenticate(user=self.sharer)
+        response = self.client.get(self.url + "?status=APPROVED")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 0)
+
     def test_get_request_from_requester_succeeds(self):
         self.client.force_authenticate(user=self.request.requester)
         response = self.client.get(self.url)
