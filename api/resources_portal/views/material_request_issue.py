@@ -76,7 +76,7 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
                 material__organization__in=organizations
             )
 
-            viewable_requests = requests_made_by_user.union(requests_viewable_by_user)
+            viewable_requests = (requests_made_by_user | requests_viewable_by_user).distinct()
             return MaterialRequestIssue.objects.filter(
                 material_request_id__in=viewable_requests.values("id")
             )

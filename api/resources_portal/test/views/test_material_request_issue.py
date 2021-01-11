@@ -130,6 +130,18 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
+    def test_get_request_from_sharer_filters(self):
+        self.client.force_authenticate(user=self.sharer)
+        response = self.client.get(self.url + "?status=OPEN")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_get_request_from_sharer_filters_out(self):
+        self.client.force_authenticate(user=self.sharer)
+        response = self.client.get(self.url + "?status=CLOSED")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 0)
+
     def test_get_request_from_unauthenticated_fails(self):
         self.client.force_authenticate(user=None)
         response = self.client.get(self.url)
