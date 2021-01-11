@@ -41,7 +41,7 @@ const ManageResource = ({ resourceId }) => {
   return (
     <DrillDownNav title="Manage Resources" linkBack="/account/manage-resources">
       {resource && (
-        <>
+        <Box margin={{ bottom: 'medium' }}>
           <Box>
             <ManageResourceCard
               resource={resource}
@@ -92,7 +92,7 @@ const ManageResource = ({ resourceId }) => {
               </Box>
             </>
           )}
-        </>
+        </Box>
       )}
     </DrillDownNav>
   )
