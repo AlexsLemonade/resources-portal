@@ -23,7 +23,7 @@ def import_dataset(import_source, accession_code, user):
 
     try:
         additional_metadata = {
-            "accession_code": accession_code,
+            "accession_code": metadata["accession_code"],
             "description": metadata["description"],
             "platform": metadata["platform"],
             "technology": metadata["technology"],
