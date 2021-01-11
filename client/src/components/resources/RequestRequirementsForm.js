@@ -43,7 +43,9 @@ export default () => {
     setAttribute(attribute, value === 'true')
   }
 
-  const [showExisting, setShowExisting] = React.useState(true)
+  const [showExisting, setShowExisting] = React.useState(
+    teamResources && teamResources.length > 0
+  )
   const handleSelect = (resource) => {
     setExistingRequirementsResource(resource)
   }
