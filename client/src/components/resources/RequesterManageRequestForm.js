@@ -240,7 +240,7 @@ export default ({ request: defaultRequest }) => {
 
                   {!irbAttachment && (
                     <DropZone
-                      fileTypes={['docx', 'doc', 'txt']}
+                      fileTypes={['pdf', 'docx', 'doc', 'txt']}
                       onDrop={(files) => {
                         const [file] = files
                         setIrbAttachment(file)
