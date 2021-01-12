@@ -9,7 +9,15 @@ import { useAlertsQueue } from 'hooks/useAlertsQueue'
 
 export default () => {
   const { addAlert } = useAlertsQueue()
-  const { team, removeMember, transferOwnership, invites, save } = useTeamForm()
+  const {
+    user,
+    team,
+    removeMember,
+    leaveTeam,
+    transferOwnership,
+    invites,
+    save
+  } = useTeamForm()
   const [showTeamModal, setShowTeamModal] = React.useState(false)
   const saveRef = React.useRef(false)
 
@@ -58,8 +66,12 @@ export default () => {
       <TeamMembersTable
         team={team}
         onDelete={(member) => {
-          removeMember(member)
-          saveRef.current = 'Member Removed'
+          if (user.id === member.id) {
+            leaveTeam(member)
+          } else {
+            removeMember(member)
+            saveRef.current = 'Member Removed'
+          }
         }}
         onTransferOwner={(newOwner) => {
           transferOwnership(newOwner)
