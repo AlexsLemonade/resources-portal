@@ -196,10 +196,7 @@ export const ManageResourceCard = ({
             height="8px"
             margin="small"
           />
-          <Text italic={resource.is_archived}>
-            {archivedStatus}
-            {resource.is_archived}
-          </Text>
+          <Text italic={resource.is_archived}>{archivedStatus}</Text>
         </>
       </Box>
       <Modal showing={showArchive} setShowing={setShowArchive}>
