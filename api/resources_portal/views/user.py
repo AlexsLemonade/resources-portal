@@ -235,7 +235,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return JsonResponse({"error": error}, status=500)
 
         org = Organization.objects.create(
-            owner=user, name="My Resources", is_personal_organization=True
+            owner=user, name=user.full_name, is_personal_organization=True
         )
         user.personal_organization = org
 
