@@ -84,7 +84,7 @@ export default ({ defaultStep = -1 }) => {
                 </Box>
               </Box>
               <Text weight="bold">
-                Before we get started here are a few things to keep handy{' '}
+                Before we get started here are a few things to keep handy:{' '}
               </Text>
               <Box direction="row" align="center" gap="medium">
                 <Icon color="plain" name="Details" size="large" />
