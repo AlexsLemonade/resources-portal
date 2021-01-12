@@ -43,9 +43,9 @@ export default () => {
     setAttribute(attribute, value === 'true')
   }
 
-  const [showExisting, setShowExisting] = React.useState(
-    teamResources && teamResources.length > 0
-  )
+  const hasExisting = teamResources && teamResources.length > 0
+  const iconColor = hasExisting ? 'brand' : 'black-tint-80'
+  const [showExisting, setShowExisting] = React.useState(hasExisting)
   const handleSelect = (resource) => {
     setExistingRequirementsResource(resource)
   }
@@ -101,7 +101,8 @@ export default () => {
         <Button
           plain
           bold
-          icon={<Icon name="Plus" size="16px" />}
+          disabled={!hasExisting}
+          icon={<Icon name="Plus" size="16px" color={iconColor} />}
           label={toggleButtonLabel}
           onClick={toggleExisting}
         />
