@@ -18,8 +18,10 @@ export default () => {
     invites,
     save
   } = useTeamForm()
+
   const [showTeamModal, setShowTeamModal] = React.useState(false)
   const saveRef = React.useRef(false)
+  const isOwner = user.id === team.owner.id
 
   React.useEffect(() => {
     const saveTeam = async (message) => {
@@ -40,28 +42,30 @@ export default () => {
           You have no members.
         </Text>
       )}
-      <Box direction="row" justify="end">
-        <Button label="Add Members" onClick={() => setShowTeamModal(true)} />
-        <Modal
-          showing={showTeamModal}
-          setShowing={setShowTeamModal}
-          title="Add Members"
-        >
-          <Box width="large">
-            <TeamAddMembers showActions={false} />
-            <Box direction="row" justify="end">
-              <Button
-                label="Done"
-                onClick={async () => {
-                  setShowTeamModal(false)
-                  saveRef.current =
-                    invites.length > 0 ? 'Invites Sent' : 'Saved Changes'
-                }}
-              />
+      {isOwner && (
+        <Box direction="row" justify="end">
+          <Button label="Add Members" onClick={() => setShowTeamModal(true)} />
+          <Modal
+            showing={showTeamModal}
+            setShowing={setShowTeamModal}
+            title="Add Members"
+          >
+            <Box width="large">
+              <TeamAddMembers showActions={false} />
+              <Box direction="row" justify="end">
+                <Button
+                  label="Done"
+                  onClick={async () => {
+                    setShowTeamModal(false)
+                    saveRef.current =
+                      invites.length > 0 ? 'Invites Sent' : 'Saved Changes'
+                  }}
+                />
+              </Box>
             </Box>
-          </Box>
-        </Modal>
-      </Box>
+          </Modal>
+        </Box>
+      )}
       <HeaderRow label={`Members (${team.members.length})`} />
       <TeamMembersTable
         team={team}
