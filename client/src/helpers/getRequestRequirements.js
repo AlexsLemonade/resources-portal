@@ -20,8 +20,13 @@ export default (material) => {
     sharer_pays_shipping: sharerPaysShipping
   } = material.shipping_requirement || {}
 
+  // checks for mtaAttachment for accuracy before resource is saved
   const hasRequirements =
-    needsMta || needsIrb || needsAbstract || hasShippingRequirement
+    !!mtaAttachment ||
+    needsMta ||
+    needsIrb ||
+    needsAbstract ||
+    hasShippingRequirement
 
   return {
     hasRequirements,
