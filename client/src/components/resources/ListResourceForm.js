@@ -96,10 +96,10 @@ export default ({ defaultStep = -1 }) => {
                 <Icon color="plain" name="MTA" size="large" />
                 <Box>
                   <Paragraph>
-                    If you require a{' '}
+                    If your institution requires a{' '}
                     <Text weight="bold">Material Transfer Agreement (MTA)</Text>{' '}
-                    to share, then you will need to upload it in order to list
-                    your resource.
+                    to share, you will need to upload it in order to list your
+                    resource.
                   </Paragraph>
                 </Box>
               </Box>
@@ -109,18 +109,17 @@ export default ({ defaultStep = -1 }) => {
                   If your{' '}
                   <Text weight="bold">resource needs to be shipped</Text>, you
                   will need to provide any restrictions that are imposed by you
-                  or your organization, for example cannot ship internationally
-                  or can only ship via specific service providers like UPS or
-                  FedEx.{' '}
+                  or your organization (e.g. cannot ship internationally or can
+                  only ship via specific providers such as UPS or FedEx).
                 </Paragraph>
               </Box>
               <Box pad={{ vertical: 'medium', horizontal: 'xlarge' }}>
                 <Text>
-                  Please be aware that you are responsible for the
-                  administrative activities like reviewing, responding to
-                  requests, and shipping/sending resources to requesters. We
-                  only provide tools to help you manage requests and add
-                  transparency to the sharing process.
+                  Please be aware that you are responsible for administrative
+                  activities such as reviewing and responding to requests and
+                  shipping/sending resources to requestors. We only provide the
+                  infrastructure to enable sharing and improve transparency
+                  during the sharing process.
                 </Text>
               </Box>
             </Box>
