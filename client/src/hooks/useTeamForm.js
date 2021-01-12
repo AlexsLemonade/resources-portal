@@ -1,10 +1,12 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { TeamContext } from 'contexts/TeamContext'
 import api from 'api'
 
 export default () => {
+  const router = useRouter()
   const { addAlert } = useAlertsQueue()
   const { user, token, refreshUser } = useUser()
   const {
@@ -167,6 +169,22 @@ export default () => {
     return true
   }
 
+  const leaveTeam = async (member) => {
+    if (member.id === team.owner.id) {
+      addAlert('Owners must transfer their team to a new owner.', 'error')
+      return false
+    }
+    const { isOk } = await api.teams.members.remove(team.id, member.id, token)
+    if (isOk) {
+      addAlert('You have left the team successfully.', 'success')
+      await refreshUser()
+      router.push('/account/teams')
+      return true
+    }
+    addAlert('An error occurred when saving please try again later', 'error')
+    return false
+  }
+
   return {
     user,
     team,
@@ -186,6 +204,7 @@ export default () => {
     teamFetched: !!team.id,
     addGrant,
     removeGrant,
-    transferOwnership
+    transferOwnership,
+    leaveTeam
   }
 }
