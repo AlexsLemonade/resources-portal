@@ -9,6 +9,7 @@ import {
 import configs, { formDefaults } from 'components/resources/configs'
 import schema from 'schemas/material'
 import { getToken, getReadable } from 'helpers/readableNames'
+import renamePersonalOrg from 'helpers/renamePersonalOrg'
 import { ResourceContext } from 'contexts/ResourceContext'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import api from 'api'
@@ -51,7 +52,7 @@ export default () => {
     return undefined
   }
 
-  const organizationOptions = [...(user.organizations || [])]
+  const organizationOptions = [...renamePersonalOrg(user.organizations || [])]
 
   const grant = resource
     ? grantOptions.find((g) => g.id === resource.grant_id) || {}
