@@ -14,6 +14,7 @@ import DropZone from 'components/DropZone'
 import Icon from 'components/Icon'
 import useResourceForm from 'hooks/useResourceForm'
 import getResourceOptions from 'helpers/getResourceOptions'
+import getRequestRequirements from 'helpers/getRequestRequirements'
 import RequirementsLabel from 'components/resources/ResourceRequirementsRadioLabel'
 
 // this overrides the default styles for a RadioButtonGroup
@@ -28,6 +29,7 @@ const ExistingResourcesRadioButtonGroup = styled(RadioButtonGroup)`
 
 export default () => {
   const {
+    resource,
     setAttribute,
     getAttribute,
     setMtaAttachment,
@@ -35,7 +37,8 @@ export default () => {
     teamResources,
     grantOptions,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    isSaved
   } = useResourceForm()
   const onCheckChange = (attribute, { target: { checked } }) =>
     setAttribute(attribute, checked)
@@ -43,14 +46,16 @@ export default () => {
     setAttribute(attribute, value === 'true')
   }
 
+  const { hasRequirements } = getRequestRequirements(resource)
   const hasExisting = teamResources && teamResources.length > 0
   const iconColor = hasExisting ? 'brand' : 'black-tint-80'
-  const [showExisting, setShowExisting] = React.useState(hasExisting)
-  const handleSelect = (resource) => {
-    setExistingRequirementsResource(resource)
+  const [showExisting, setShowExisting] = React.useState(
+    existingRequirementsResource || (!hasRequirements && hasExisting)
+  )
+  const handleSelect = (requirementsResource) => {
+    setExistingRequirementsResource(requirementsResource)
   }
   const teamResourceOptions = getResourceOptions(teamResources, grantOptions)
-
   const toggleExisting = () => {
     if (showExisting) setExistingRequirementsResource('')
     setShowExisting(!showExisting)
@@ -75,12 +80,13 @@ export default () => {
     }
   }
 
-  const title = showExisting
-    ? 'Use same requirements as'
+  const formTitle = isSaved
+    ? 'Edit Request Requirements'
     : 'Specify New Requirements'
+  const title = showExisting ? 'Use Same Requirements As' : formTitle
   const toggleButtonLabel = showExisting
-    ? 'Specify new requirements'
-    : 'Use Existing Requirements'
+    ? formTitle
+    : 'Copy Requirements from Another Resource'
 
   return (
     <Box width="large" height={{ min: '500px' }}>
