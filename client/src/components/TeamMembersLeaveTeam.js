@@ -12,7 +12,7 @@ export default ({ showing, setShowing, team, onLeaveTeam }) => {
   return (
     <Modal
       critical
-      title="Transfer Owner"
+      title="Leave Team"
       showing={showing}
       setShowing={setShowing}
     >
