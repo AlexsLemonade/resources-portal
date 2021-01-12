@@ -98,7 +98,7 @@ export const ManageResourceCard = ({
   const { addAlert } = useAlertsQueue()
   const [showDelete, setShowDelete] = React.useState(false)
   const [showArchive, setShowArchive] = React.useState(false)
-  const archiveText = resource.is_archived
+  const archiveButtonLabel = resource.is_archived
     ? 'Unarchive Resource'
     : 'Archive Resource'
   const archivedMessage = resource.is_archived
@@ -226,7 +226,7 @@ export const ManageResourceCard = ({
                 <Button label="Cancel" onClick={() => setShowArchive(false)} />
                 <Button
                   primary
-                  label={archiveText}
+                  label={archiveButtonLabel}
                   onClick={async () => {
                     const archiveRequest = await api.resources.update(
                       resource.id,
