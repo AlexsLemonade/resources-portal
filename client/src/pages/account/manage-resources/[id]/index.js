@@ -41,7 +41,7 @@ const ManageResource = ({ resourceId }) => {
   return (
     <DrillDownNav title="Manage Resources" linkBack="/account/manage-resources">
       {resource && (
-        <>
+        <Box margin={{ bottom: 'medium' }}>
           <Box>
             <ManageResourceCard
               resource={resource}
@@ -82,8 +82,8 @@ const ManageResource = ({ resourceId }) => {
                       onClick={() => setShowClosedModal(true)}
                     />
                     <Modal
-                      showModal={showClosedModal}
-                      setShowModal={setShowClosedModal}
+                      showing={showClosedModal}
+                      setShowing={setShowClosedModal}
                     >
                       <ManageRequestsTable requests={closedRequests} />
                     </Modal>
@@ -92,7 +92,7 @@ const ManageResource = ({ resourceId }) => {
               </Box>
             </>
           )}
-        </>
+        </Box>
       )}
     </DrillDownNav>
   )
