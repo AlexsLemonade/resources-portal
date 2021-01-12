@@ -315,7 +315,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 material__organization__in=organizations
             )
 
-            queryset = requests_made_by_user.union(requests_viewable_by_user)
+            queryset = (requests_made_by_user | requests_viewable_by_user).distinct()
         else:
             queryset = MaterialRequest.objects.all()
 
