@@ -117,7 +117,7 @@ export default ({ defaultStep = -1 }) => {
                 <Text>
                   Please be aware that you are responsible for administrative
                   activities such as reviewing and responding to requests and
-                  shipping/sending resources to requestors. We only provide the
+                  shipping/sending resources to requesters. We only provide the
                   infrastructure to enable sharing and improve transparency
                   during the sharing process.
                 </Text>
