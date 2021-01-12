@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, FormField, TextInput, Paragraph } from 'grommet'
+import { Box, Button, FormField, Text, TextInput, Paragraph } from 'grommet'
 import { useRouter } from 'next/router'
 import { InfoCard } from 'components/InfoCard'
 import ResourceImportSourceSelector from 'components/resources/ResourceImportSourceSelector'
@@ -38,6 +38,16 @@ export default () => {
     if (!getAttribute('imported')) setAttribute('imported', true)
   })
 
+  const importFieldInfo = {
+    protocol_doi: (
+      <Paragraph size="small" color="black-tint-40">
+        Please use the following format:{' '}
+        <Text size="small" weight="bold">
+          dx.doi.org/10.17504/protocols.io.bj64krgw
+        </Text>
+      </Paragraph>
+    )
+  }
   return (
     <Box align="center">
       {step === 0 && (
@@ -45,7 +55,11 @@ export default () => {
           <ResourceImportSourceSelector />
           {isSupported && (
             <>
-              <FormField fill label={getReadable(importAttribute)}>
+              <FormField
+                fill
+                label={getReadable(importAttribute)}
+                info={importFieldInfo[importAttribute]}
+              >
                 <TextInput
                   value={getAttribute(importAttribute) || ''}
                   onChange={({ target: { value } }) => {
