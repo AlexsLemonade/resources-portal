@@ -263,15 +263,15 @@ export default () => {
             options={teamResourceOptions}
             name="existing-requirements"
           >
-            {({ resource, ...option }, { hover }) => (
+            {({ resource: existingResource, ...option }, { hover }) => (
               <RadioButton
                 key={option.label}
                 name={option.name}
                 hover={hover}
                 checked={existingRequirementsResource.id === option.value}
                 value={option.value}
-                label={<RequirementsLabel resource={resource} />}
-                onChange={() => handleSelect(resource)}
+                label={<RequirementsLabel resource={existingResource} />}
+                onChange={() => handleSelect(existingResource)}
               />
             )}
           </ExistingResourcesRadioButtonGroup>
