@@ -18,7 +18,7 @@ export const readableNames = {
   MODEL_ORGANISM: 'Model Organism',
   OPEN: 'Open',
   OTHER: 'Other',
-  OTHER_PAYMENT_METHOD: 'Other Payment Method',
+  OTHER_PAYMENT_METHODS: 'Other Payment Methods',
   PDX: 'PDX Model',
   PLASMID: 'Plasmid',
   PROTOCOL: 'Protocol',
