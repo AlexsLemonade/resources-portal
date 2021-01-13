@@ -409,6 +409,7 @@ export default () => {
     clearResourceContext,
     teamResources,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    isSaved: !!resource.id
   }
 }
