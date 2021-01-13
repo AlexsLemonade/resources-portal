@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Tabs, Tab, Text } from 'grommet'
+import { Box, Grid, Tabs, Tab, Text } from 'grommet'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
 import ManageRequestsTable from 'components/ManageRequestsTable'
@@ -15,6 +15,7 @@ const Requests = () => {
   const [requests, setRequests] = React.useState()
   const [assigned, setAssigned] = React.useState([])
   const [received, setReceived] = React.useState([])
+  const [closed, setClosed] = React.useState([])
   const [sent, setSent] = React.useState([])
   const hasAnyRequests = Array.isArray(requests) && requests.length > 0
 
@@ -37,6 +38,11 @@ const Requests = () => {
           (r) => r.requester.id === user.id && r.is_active_requester
         )
         setSent(newSent)
+        const activeIds = [...newAssigned, ...newReceived, ...newSent].map(
+          (r) => r.id
+        )
+        const newClosed = newRequests.filter((r) => !activeIds.includes(r.id))
+        setClosed(newClosed)
       }
     }
 
@@ -58,11 +64,13 @@ const Requests = () => {
         <Box>
           <Tabs>
             <Tab title="Overview">
-              <Box
-                direction="row"
-                gap="xxlarge"
+              <Grid
+                columns={{
+                  count: 3,
+                  size: 'auto'
+                }}
                 margin={{ vertical: 'xlarge' }}
-                alignContent="stretch"
+                gap="xlarge"
               >
                 <RequestOverviewCard
                   label="Requests Assigned To You"
@@ -76,7 +84,11 @@ const Requests = () => {
                   label="Acitve Sent Requests"
                   requests={sent}
                 />
-              </Box>
+                <RequestOverviewCard
+                  label="Closed Requests"
+                  requests={closed}
+                />
+              </Grid>
             </Tab>
             <Tab title="Received Requests">
               <Box margin={{ vertical: 'xlarge' }}>
@@ -99,6 +111,17 @@ const Requests = () => {
                 )}
 
                 {sent.length > 0 && <ManageRequestsTable requests={sent} />}
+              </Box>
+            </Tab>
+            <Tab title="Closed Requests">
+              <Box margin={{ vertical: 'xlarge' }}>
+                {closed.length === 0 && (
+                  <Text italic color="black-tint-60">
+                    You have no closed requests.
+                  </Text>
+                )}
+
+                {closed.length > 0 && <ManageRequestsTable requests={closed} />}
               </Box>
             </Tab>
           </Tabs>
