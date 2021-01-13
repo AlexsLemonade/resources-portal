@@ -170,9 +170,16 @@ export default ({ request: defaultRequest }) => {
             index={progressIndex}
           />
         </Box>
-        <Text size="large" serif margin={{ bottom: 'medium' }}>
-          {state === 'OPEN' ? 'Open Request' : getReadable(state)}
-        </Text>
+        <Box direction="row" align="center" gap="small">
+          <Text size="large" serif margin={{ bottom: 'medium' }}>
+            {state === 'OPEN' ? 'Open Request' : getReadable(state)}
+          </Text>
+          {state === 'VERIFIED_FULFILLED' && (
+            <Text margin={{ top: '-8px' }}>
+              <Icon name="Check" color="success" />
+            </Text>
+          )}
+        </Box>
         {state === 'OPEN' && (
           <Box pad={{ bottom: 'large' }}>
             <Text margin={{ left: 'large', bottom: 'medium' }}>
@@ -415,9 +422,16 @@ export default ({ request: defaultRequest }) => {
             </Modal>
           </Box>
         )}
-        {['FULFILLED', 'VERIFIED_FULFILLED'].includes(state) && (
+        {['FULFILLED'].includes(state) && (
           <Box direction="row" align="center" pad="medium">
             <Text>This request has been fulfilled.</Text>
+          </Box>
+        )}
+        {['VERIFIED_FULFILLED'].includes(state) && (
+          <Box direction="row" align="center" pad="medium">
+            <Text>
+              {requester.full_name} has confirmed the receipt of this resource.
+            </Text>
           </Box>
         )}
         {hasDocuments && state !== 'OPEN' && (
