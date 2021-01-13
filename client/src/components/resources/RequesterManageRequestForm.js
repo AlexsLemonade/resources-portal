@@ -58,8 +58,12 @@ export default ({ request: defaultRequest }) => {
   const materialLink = `/resources/${request.material.id}`
 
   const state = getRequestState(request)
+  const fulfilledState =
+    state === 'IN_FULFILLMENT_ISSUE_REPORTED' ? 'IN_FULFILLMENT' : state
+  const indexState =
+    fulfilledState === 'VERIFIED_FULFILLED' ? 'FULFILLED' : fulfilledState
   const progressSteps = getRequestProgressStatuses(request)
-  const progressIndex = progressSteps.indexOf(state)
+  const progressIndex = progressSteps.indexOf(indexState)
 
   // Report Issues
   const [showReportModal, setShowReportModal] = React.useState(false)
@@ -195,9 +199,16 @@ export default ({ request: defaultRequest }) => {
             index={progressIndex}
           />
         </Box>
-        <Text size="large" serif margin={{ bottom: 'medium' }}>
-          {state === 'OPEN' ? 'Open Request' : getReadable(state)}
-        </Text>
+        <Box direction="row" align="center" gap="small">
+          <Text size="large" serif margin={{ bottom: 'medium' }}>
+            {state === 'OPEN' ? 'Open Request' : getReadable(state)}
+          </Text>
+          {state === 'VERIFIED_FULFILLED' && (
+            <Text margin={{ top: '-8px' }}>
+              <Icon name="Check" color="success" />
+            </Text>
+          )}
+        </Box>
         {state === 'OPEN' && (
           <Box pad={{ veritcal: 'large' }}>
             <HeaderRow label="Submitted Materials" />
@@ -342,12 +353,34 @@ export default ({ request: defaultRequest }) => {
             )}
           </Box>
         )}
-        {['FULFILLED', 'VERIFIED_FULFILLED'].includes(state) && (
+        {['FULFILLED'].includes(state) && (
           <>
             <Box pad={{ bottom: 'large' }}>
               <Text textAlign="center">
                 {team.name} has marked your request as fulfilled. Please look at
                 the fulfillment note for details.
+              </Text>
+            </Box>
+            <Box margin={{ vertical: 'medium' }}>
+              <HeaderRow label="Request Materials" />
+              <Text weight="bold">Fulfullment Note</Text>
+              {request.fulfillment_notes.map((note) => (
+                <Text key={note.id}>{note.text}</Text>
+              ))}
+              {request.fulfillment_notes.length === 0 && (
+                <Text color="black-tint-60" italic>
+                  There are no notes.
+                </Text>
+              )}
+            </Box>
+          </>
+        )}
+        {['VERIFIED_FULFILLED'].includes(state) && (
+          <>
+            <Box pad={{ bottom: 'large' }}>
+              <Text textAlign="center">
+                You have confirmed reciept of this resource. Please look at the
+                fulfillment note for details.
               </Text>
             </Box>
             <Box margin={{ vertical: 'medium' }}>
