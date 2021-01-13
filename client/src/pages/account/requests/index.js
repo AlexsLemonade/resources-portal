@@ -16,9 +16,7 @@ const Requests = () => {
   const [assigned, setAssigned] = React.useState([])
   const [received, setReceived] = React.useState([])
   const [sent, setSent] = React.useState([])
-  const hasReceived = received && received.length > 0
-  const hasSent = sent && sent.length > 0
-  const hasAnyRequests = hasReceived || hasSent
+  const hasAnyRequests = Array.isArray(requests) && requests.length > 0
 
   React.useEffect(() => {
     const fetchRequests = async () => {
