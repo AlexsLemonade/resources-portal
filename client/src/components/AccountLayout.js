@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useNotifications } from 'hooks/useNotifications'
 import { SideNav } from './SideNav'
 import Header from './Header'
+import { Footer } from './Footer'
 
 export default ({ children }) => {
   const { notificationCount } = useNotifications()
@@ -51,7 +52,12 @@ export default ({ children }) => {
       <Box margin={{ bottom: 'xlarge' }}>
         <Header />
       </Box>
-      <Main width="xxlarge" alignSelf="center" overflow="visible">
+      <Main
+        width="xxlarge"
+        alignSelf="center"
+        overflow="visible"
+        margin={{ bottom: 'large' }}
+      >
         <Heading serif level={4} margin={{ vertical: 'small' }}>
           My Account
         </Heading>
@@ -69,6 +75,7 @@ export default ({ children }) => {
           </Box>
         </Box>
       </Main>
+      <Footer />
     </Box>
   )
 }
