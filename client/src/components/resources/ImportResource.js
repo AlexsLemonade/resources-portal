@@ -58,7 +58,7 @@ export default () => {
               <FormField
                 fill
                 label={getReadable(importAttribute)}
-                info={importFieldInfo[importAttribute]}
+                help={importFieldInfo[importAttribute]}
               >
                 <TextInput
                   value={getAttribute(importAttribute) || ''}
