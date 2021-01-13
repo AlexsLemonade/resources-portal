@@ -48,8 +48,6 @@ export default ({ request: defaultRequest }) => {
     }
   } = request
 
-  const teamName = team.name === 'Your Resources' ? contactName : team.name
-
   const {
     needsIrb,
     needsMta,
@@ -316,7 +314,7 @@ export default ({ request: defaultRequest }) => {
         {state === 'AWAITING_MTA' && (
           <Box width="full" pad={{ bottom: 'large' }}>
             <Text textAlign="center" margin="none">
-              Waiting for {teamName} to review, sign, and upload the MTA.
+              Waiting for {team.name} to review, sign, and upload the MTA.
             </Text>
           </Box>
         )}
@@ -326,7 +324,7 @@ export default ({ request: defaultRequest }) => {
           <Box pad={{ bottom: 'large' }}>
             <Box margin={{ veritcal: 'medium' }}>
               <Text>
-                {teamName} is working to fulfill your request. Your resource
+                {team.name} is working to fulfill your request. Your resource
                 should be on the way soon.
               </Text>
               {request.payment_method === 'REIMBURSEMENT' && (
@@ -348,7 +346,7 @@ export default ({ request: defaultRequest }) => {
           <>
             <Box pad={{ bottom: 'large' }}>
               <Text textAlign="center">
-                {teamName} has marked your request as fulfilled. Please look at
+                {team.name} has marked your request as fulfilled. Please look at
                 the fulfillment note for details.
               </Text>
             </Box>
@@ -423,7 +421,7 @@ export default ({ request: defaultRequest }) => {
             Problem with received resources?{' '}
             <Button
               plain
-              label={`Let ${teamName} know`}
+              label={`Let ${team.name} know`}
               onClick={() => setShowReportModal(true)}
             />
           </Text>

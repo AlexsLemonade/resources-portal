@@ -71,7 +71,7 @@ class TestUserPostTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(user.personal_organization.name, "My Resources")
+        self.assertEqual(user.personal_organization.name, user.full_name)
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
