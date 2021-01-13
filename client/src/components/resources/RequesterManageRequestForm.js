@@ -295,7 +295,10 @@ export default ({ request: defaultRequest }) => {
                       setPaymentMethod(value)
                     }}
                   />
-                  <FormField label="Payment Details">
+                  <FormField
+                    label="Payment Details"
+                    help={`Do not enter banking information here. Contact ${team.name} directly if you need to provide that information`}
+                  >
                     <TextArea
                       value={paymentDetails}
                       onChange={({ target: { value } }) => {
