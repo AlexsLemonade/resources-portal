@@ -15,15 +15,14 @@ export default function ListResource() {
           <Heading level="4" serif margin={{ top: 'none', bottom: 'medium' }}>
             Add Resources
           </Heading>
-          <p>
-            We recommend you to list your resource in a repository specific to
-            your resource and import them here.
-          </p>
-          <p>
-            Using these repositories will reduce the administrative burden on
-            your and your staff. It also increases discoverability and
-            citations.
-          </p>
+          <Text>
+            We recommend, where possible, depositing your resources in a public
+            repository specific to the resource type and then importing them
+            here. Using these repositories will reduce administrative burden on
+            you and your staff. It also increases resource discoverability,
+            improves research transparency and may lead to increased citations
+            of your work.
+          </Text>
         </Box>
         <Box>
           <ListResources />
