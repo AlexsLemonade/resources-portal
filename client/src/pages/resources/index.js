@@ -154,7 +154,7 @@ export default function ListResource() {
             Repository for your resource doesn’t exist? Can’t list your resource
             in a repository yet?{' '}
             <Link href="/resources/list">
-              <Anchor label="List with us" />
+              <Anchor label="List with us." />
             </Link>
           </Text>
         </Box>
