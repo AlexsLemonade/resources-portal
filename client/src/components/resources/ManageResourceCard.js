@@ -20,7 +20,7 @@ export const ManageOptions = ({
 }) => {
   const manageLink = `/account/manage-resources/${resource.id}`
   const editLink = `/resources/${resource.id}/edit`
-  const viewResourceLink = `resources/${resource.id}`
+  const viewResourceLink = `/resources/${resource.id}`
   const archiveButtonLabel = resource.is_archived ? 'Unarchive' : 'Archive'
 
   return (
