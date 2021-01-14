@@ -1,7 +1,5 @@
 import React from 'react'
 import { Anchor, Box, Button, Text } from 'grommet'
-import styled from 'styled-components'
-import Link from 'next/link'
 import Icon from 'components/Icon'
 import { ResourceTypeOrganisms } from 'components/resources/ResourceCard'
 import { Pill } from 'components/Pill'
@@ -9,6 +7,7 @@ import AssignRequestSelect from 'components/AssignRequestSelect'
 import { useUser } from 'hooks/useUser'
 import getRequestStatus from 'helpers/getRequestStatus'
 import { getReadable } from 'helpers/readableNames'
+import ResourceLink from 'components/ResourceLink'
 
 const getRequestConfig = (request) => {
   const status = getRequestStatus(request)
@@ -80,9 +79,6 @@ const getRequestConfig = (request) => {
   return config
 }
 
-const BoldAnchor = styled(Anchor)`
-  font-weight: bold;
-`
 export default ({ request: defaultRequest }) => {
   const [request, setRequest] = React.useState(defaultRequest)
   const { isResourceRequester } = useUser()
@@ -98,7 +94,6 @@ export default ({ request: defaultRequest }) => {
     ? 'Waiting on Requester'
     : 'Requires Action'
   const fallbackDate = new Date(request.created_at).toDateString()
-  const resourceLink = `/resources/${request.material.id}`
 
   return (
     <Box elevation="medium" round="small" overflow="hidden">
@@ -123,9 +118,7 @@ export default ({ request: defaultRequest }) => {
       </Box>
       <Box direction="row" align="center" pad="medium" justify="between">
         <Box>
-          <Link href={resourceLink}>
-            <BoldAnchor href={resourceLink} label={request.material.title} />
-          </Link>
+          <ResourceLink resource={request.material} />
           <Anchor
             margin={{ vertical: 'medium' }}
             href={`mailto:${request.requester.email}`}

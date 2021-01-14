@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import { Anchor, Button, Box, Text, TextArea, FormField } from 'grommet'
 import api from 'api'
 import { getReadable } from 'helpers/readableNames'
@@ -29,6 +28,7 @@ import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditi
 import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import { List, ListItem, NumberMarker } from 'components/List'
 import PreviewIssue from 'components/PreviewIssue'
+import ResourceLink from 'components/ResourceLink'
 
 export default ({ request: defaultRequest }) => {
   const { addAlert } = useAlertsQueue()
@@ -39,13 +39,7 @@ export default ({ request: defaultRequest }) => {
   const [note, setNote] = React.useState('')
   const [executedMTA, setExecutedMTA] = React.useState(defaultExecutedMTA)
   const [showRejection, setShowRejection] = React.useState(false)
-  const {
-    material: {
-      title: materialTitle,
-      contact_user: { full_name: contactName }
-    },
-    requester
-  } = request
+  const { requester } = request
 
   const {
     needsIrb,
@@ -54,7 +48,6 @@ export default ({ request: defaultRequest }) => {
   } = getRequestRequirements(request.material)
 
   const hasDocuments = hasRequestDocuments(request.material)
-  const materialLink = `/resources/${request.material.id}`
 
   const state = getRequestState(request)
   // the states dont represent these special cases
@@ -149,10 +142,12 @@ export default ({ request: defaultRequest }) => {
         margin={{ bottom: 'large' }}
       >
         <Box gap="medium">
-          <Text>{contactName}</Text>
-          <Link href={materialLink}>
-            <Anchor href={materialLink} label={materialTitle} />
-          </Link>
+          <ResourceLink resource={request.material} />
+          <Anchor
+            margin={{ vertical: 'medium' }}
+            href={`mailto:${request.requester.email}`}
+            label={request.requester.full_name}
+          />
           <ResourceTypeOrganisms resource={request.material} />
         </Box>
         <Box>
