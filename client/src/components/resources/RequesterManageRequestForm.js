@@ -1,5 +1,4 @@
 import React from 'react'
-import Link from 'next/link'
 import {
   Anchor,
   Button,
@@ -34,6 +33,7 @@ import getRequestRequirements from 'helpers/getRequestRequirements'
 import getPaymentOptions from 'helpers/getPaymentOptions'
 import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import { Modal } from 'components/Modal'
+import ResourceLink from 'components/ResourceLink'
 
 export default ({ request: defaultRequest }) => {
   const [request, setRequest] = React.useState(defaultRequest)
@@ -42,8 +42,7 @@ export default ({ request: defaultRequest }) => {
   const { addAlert } = useAlertsQueue()
   const {
     material: {
-      title: materialTitle,
-      contact_user: { email: contactEmail, full_name: contactName },
+      contact_user: { email: contactEmail },
       organization: team
     }
   } = request
@@ -54,8 +53,6 @@ export default ({ request: defaultRequest }) => {
     shippingRequirement: { needsPayment },
     mtaAttachment
   } = getRequestRequirements(request.material)
-
-  const materialLink = `/resources/${request.material.id}`
 
   const state = getRequestState(request)
   const fulfilledState =
@@ -171,10 +168,12 @@ export default ({ request: defaultRequest }) => {
         margin={{ bottom: 'large' }}
       >
         <Box gap="medium">
-          <Text>{contactName}</Text>
-          <Link href={materialLink}>
-            <Anchor href={materialLink} label={materialTitle} />
-          </Link>
+          <ResourceLink resource={request.material} />
+          <Anchor
+            margin={{ vertical: 'medium' }}
+            href={`mailto:${request.requester.email}`}
+            label={request.requester.full_name}
+          />
           <ResourceTypeOrganisms resource={request.material} />
         </Box>
         <Box>
