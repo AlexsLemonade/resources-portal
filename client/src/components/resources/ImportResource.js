@@ -38,8 +38,32 @@ export default () => {
     if (!getAttribute('imported')) setAttribute('imported', true)
   })
 
-  const importFieldInfo = {
-    protocol_doi: (
+  const importSourceHelpers = {
+    GEO: (
+      <Paragraph size="small" color="black-tint-40">
+        ex:{' '}
+        <Text size="small" weight="bold">
+          GSE24542
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
+          https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM609241
+        </Text>
+      </Paragraph>
+    ),
+    SRA: (
+      <Paragraph size="small" color="black-tint-40">
+        ex:{' '}
+        <Text size="small" weight="bold">
+          SRR944283
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
+          https://www.ebi.ac.uk/ena/browser/view/SRP003819
+        </Text>
+      </Paragraph>
+    ),
+    PROTOCOLS_IO: (
       <Paragraph size="small" color="black-tint-40">
         Please use the following format:{' '}
         <Text size="small" weight="bold">
@@ -58,7 +82,7 @@ export default () => {
               <FormField
                 fill
                 label={getReadable(importAttribute)}
-                help={importFieldInfo[importAttribute]}
+                help={importSourceHelpers[importSource]}
               >
                 <TextInput
                   value={getAttribute(importAttribute) || ''}
