@@ -97,7 +97,8 @@ export const SearchResultDetail = ({
   const joinedValue = Array.isArray(data.value)
     ? data.value.join(', ')
     : data.value
-  const formattedValue = showEmpty && !joinedValue ? 'None' : joinedValue
+  const formattedValue =
+    showEmpty && !joinedValue ? 'Not Specified' : joinedValue
   return (
     <Box>
       <Text weight="bold">{data.label}</Text>
@@ -112,18 +113,16 @@ export const SearchResultDetail = ({
 export const PublicationDetails = ({ resource }) => {
   // Link To Publication
   if (resource.pubmed_id) {
-    const title = 'Publication'
-    const label =
-      resource.additional_metadata.publication_title || 'Link to Publication'
+    const publicationTitle = resource.publication_title || 'Link to Publication'
     const link = getPubmedUrl(resource.pubmed_id)
 
     return (
-      <SearchResultDetail title={title}>
+      <SearchResultDetail data={{ label: 'Publication' }}>
         <Anchor
           href={link}
           rel="noopener noreferrer"
           target="_blank"
-          label={label}
+          label={publicationTitle}
         />
       </SearchResultDetail>
     )
@@ -131,31 +130,29 @@ export const PublicationDetails = ({ resource }) => {
 
   // Link To Pre-print
   if (resource.pre_print_doi) {
-    const title = 'Pre-print Title'
-    const label =
-      resource.additional_metadata.pre_print_title || 'Link to Publication'
-    const link = getDOIUrl(resource.additional_metadata.pre_print_doi)
+    const prePrintTitle = resource.pre_print_title || 'Link to Pre-print'
+    const link = getDOIUrl(resource.pre_print_doi)
 
     return (
-      <SearchResultDetail title={title}>
+      <SearchResultDetail data={{ label: 'Pre-print Title' }}>
         <Anchor
           href={link}
           rel="noopener noreferrer"
           target="_blank"
-          label={label}
+          label={prePrintTitle}
         />
       </SearchResultDetail>
     )
   }
 
   // fall back to not specified
-  return <SearchResultDetail italic title="Publication" label="not specified" />
+  return <SearchResultDetail italic showEmpty data={{ label: 'Publication' }} />
 }
 
 export const RequestRequirements = ({ resource }) => {
   if (resource.imported) {
     return (
-      <SearchResultDetail title="Request Requirements">
+      <SearchResultDetail data={{ label: 'Request Requirements' }}>
         <Anchor
           href={resource.url}
           label={`Request on ${
@@ -170,7 +167,7 @@ export const RequestRequirements = ({ resource }) => {
 
   return (
     <SearchResultDetail
-      title="Request Requirements"
+      data={{ label: 'Request Requirements' }}
       margin={{ top: 'small' }}
       direction="row"
     >
