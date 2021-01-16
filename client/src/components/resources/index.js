@@ -1,30 +1,15 @@
 import { getPubmedUrl } from 'helpers/getPubmedUrl'
 import { getDOIUrl } from 'helpers/getDOIUrl'
-import { knownOrganisms } from '../../helpers/knownOrganisms'
+import { knownOrganisms } from 'helpers/knownOrganisms'
+import {
+  categories as resourceCategories,
+  importSources
+} from 'schemas/material'
 
-export const resourceCategories = [
-  'CELL_LINE',
-  'PLASMID',
-  'PROTOCOL',
-  'DATASET',
-  'MODEL_ORGANISM',
-  'PDX',
-  'OTHER'
-]
+export { resourceCategories }
+export { importSources }
 
 export const supportedImportSources = ['SRA', 'GEO', 'PROTOCOLS_IO']
-
-export const importSources = [
-  'GEO',
-  'SRA',
-  'DBGAP',
-  'PROTOCOLS_IO',
-  'ADDGENE',
-  'JACKSON_LABS',
-  'ATCC',
-  'ZIRC',
-  'OTHER'
-]
 
 export const importAttributes = {
   SRA: 'accession_code',
@@ -45,7 +30,8 @@ export const importSourceCategories = {
 }
 
 export const autoCompleteOptions = {
-  organisms: knownOrganisms
+  organisms: knownOrganisms,
+  model_organism: knownOrganisms
 }
 
 export const shippingAttributes = [
@@ -56,25 +42,6 @@ export const shippingAttributes = [
   'accepts_other_payment_methods',
   'sharer_pays_shipping',
   'restrictions'
-]
-
-// this shows the "(optional)" in the label
-export const optionalAttributes = [
-  'pubmed_id',
-  'publication_title',
-  'pre_print_doi',
-  'pre_print_title',
-  'citation',
-  'sequence_maps',
-  'additional_info',
-  'subculturing',
-  'cryopreservation',
-  'age',
-  'sex',
-  'ethnicity',
-  'number_of_available_cell_lines',
-  'number_of_available_models',
-  'number_of_available_samples'
 ]
 
 export const attributeInputTypes = {
@@ -97,12 +64,14 @@ export const attributeInputTypes = {
   biosafety_level: 'biosafety_level',
   copy_number: 'select',
   zygosity: 'select',
-  is_from_untreated_patient: 'select',
-  is_strain_humanized: 'select',
   bacterial_resistance: 'multiselect',
   growth_temp_celsius: 'float',
   number_of_samples: 'integer',
-  contact_user: 'contactuser'
+  contact_user: 'contactuser',
+  is_passage_qa_performed: 'boolean',
+  is_strain_immunized: 'boolean',
+  is_from_untreated_patient: 'boolean',
+  is_strain_humanized: 'boolean'
 }
 
 // Some Input Types need a lot more data
@@ -161,9 +130,7 @@ export const attributeOptions = {
   ],
   copy_number: ['High Copy', 'Low Copy', 'Unknown'],
   zygosity: ['Hetrozygous', 'Homozygous'],
-  conset_to_share: ['Yes', 'No'],
-  is_from_untreated_patient: ['Yes', 'No', 'Not Specified'],
-  is_strain_humanized: ['Yes', 'No', 'Not Specified']
+  conset_to_share: ['Yes', 'No']
 }
 
 export const attributes = [
@@ -235,7 +202,7 @@ export const getInputOptions = (attribute) => {
   return attributeOptions[attribute] || ['Other']
 }
 
-export const getIsOptional = (attribute) => {
+export const getIsOptional = (optionalAttributes, attribute) => {
   return optionalAttributes.includes(attribute)
 }
 
