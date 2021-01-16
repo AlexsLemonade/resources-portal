@@ -7,8 +7,9 @@ import {
   getImportAttribute
 } from 'components/resources'
 import configs, { formDefaults } from 'components/resources/configs'
-import schema from 'schemas/material'
+import { getSchema } from 'schemas/material'
 import { getToken, getReadable } from 'helpers/readableNames'
+import getOptionalAttributes from 'helpers/getOptionalAttributes'
 import renamePersonalOrg from 'helpers/renamePersonalOrg'
 import { ResourceContext } from 'contexts/ResourceContext'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
@@ -34,6 +35,11 @@ export default () => {
   } = React.useContext(ResourceContext)
   const { addAlert } = useAlertsQueue()
   const config = resource ? configs[resource.category] : undefined
+  const schema = getSchema(resource)
+  const optionalAttributes = React.useMemo(
+    () => getOptionalAttributes(schema, resource),
+    [resource.category, resource.imported]
+  )
 
   // support import forms based on source
   // support a default list form
@@ -162,7 +168,6 @@ export default () => {
       additional_metadata: {},
       ...resource
     }
-
     if (isShippingAttribute(attribute)) {
       const newShippingRequirement = resource.shipping_requirement || {}
       newShippingRequirement[attribute] = value
@@ -207,10 +212,11 @@ export default () => {
         resetResource.additional_metadata[importAttribute] =
           updatedResource.additional_metadata[importAttribute]
       }
+
       setResource(resetResource)
       setFetched(false)
     } else {
-      setResource({ ...updatedResource })
+      setResource(updatedResource)
     }
 
     // after validating remove error while entering
@@ -410,6 +416,7 @@ export default () => {
     teamResources,
     existingRequirementsResource,
     setExistingRequirementsResource,
-    isSaved: !!resource.id
+    isSaved: !!resource.id,
+    optionalAttributes
   }
 }
