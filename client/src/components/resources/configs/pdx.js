@@ -15,9 +15,8 @@ export const details = [
       'consent_to_share',
       'ethnicity',
       'treatment_drug',
-      'treatment_protocol',
-      'prior_treatment_protocol',
-      'response_to_treatment',
+      'current_treatment_protocol',
+      'prior_treatment_response',
       'virology_status'
     ]
   },
@@ -55,8 +54,8 @@ export const details = [
       'tumor_characterization_technology',
       'is_not_of_ebv_origin',
       'is_passage_qa_performed',
-      'animal_health_status',
-      'response_to_standard_of_care'
+      'response_to_standard_of_care',
+      'animal_health_status'
     ]
   },
   {
@@ -90,9 +89,8 @@ export const listForm = [
       'consent_to_share',
       'ethnicity',
       'treatment_drug',
-      'treatment_protocol',
-      'prior_treatment_protocol',
-      'response_to_treatment',
+      'current_treatment_protocol',
+      'prior_treatment_response',
       'virology_status'
     ]
   },
