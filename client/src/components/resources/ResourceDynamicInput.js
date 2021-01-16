@@ -7,15 +7,14 @@ export default ({
   attribute,
   inputType,
   inputValue,
+  unsafeInputValue,
   isMultiple,
   setAttribute,
   contactUserOptions,
   disabled = false
 }) => {
+  const [localValue, setLocalValue] = React.useState(inputValue)
   const inputOptions = getInputOptions(attribute)
-  const onInputChange = ({ target: { value } }) => {
-    setAttribute(attribute, value)
-  }
   const parseValue = (type, value, fallback) => {
     let parsed = NaN
     if (type === 'float') {
@@ -34,16 +33,40 @@ export default ({
 
     return parsed
   }
+
   const onFloatChange = ({ target: { value } }) =>
-    setAttribute(attribute, parseValue('float', value, inputValue))
+    setLocalValue(parseValue('float', value, inputValue))
   const onIntegerChange = ({ target: { value } }) =>
-    setAttribute(attribute, parseValue('integer', value, inputValue))
+    setLocalValue(parseValue('integer', value, inputValue))
+  const onInputChange = ({ target: { value } }) => setLocalValue(value)
+  const onSelectChange = ({ value }) => setLocalValue(value)
+  const onUploadChange = (uploads) => setLocalValue(uploads)
+  const onBooleanChange = ({ value }) => setLocalValue(getBooleanValue(value))
+  const onSuggestionChange = ({ suggestion }) => setLocalValue(suggestion)
+
+  // This isnt ideal but handling boolean and undefined values
+  // in selects has issues.
+  const booleanOptions = ['Yes', 'No', 'Not Specified']
+  const getBooleanString = (value) => {
+    if (typeof value === 'undefined') return 'Not Specified'
+    if (value.length === 0) return 'Not Specified'
+    return value ? 'Yes' : 'No'
+  }
+  const getBooleanValue = (string) => {
+    if (string === 'Yes') return true
+    if (string === 'No') return false
+    return undefined
+  }
+
+  React.useEffect(() => {
+    setAttribute(attribute, localValue)
+  }, [localValue])
 
   switch (inputType) {
     case 'textarea':
       return (
         <Box height="100px">
-          <TextArea fill value={inputValue} onChange={onInputChange} />
+          <TextArea fill value={localValue} onChange={onInputChange} />
         </Box>
       )
     case 'select':
@@ -53,17 +76,17 @@ export default ({
           isDrop
           multiple={isMultiple}
           closeOnChange={!isMultiple}
-          value={inputValue}
+          value={localValue}
           options={inputOptions}
-          onChange={({ value }) => setAttribute(attribute, value)}
+          onChange={onSelectChange}
           messages={{ multiple: 'Multiple Options Selected' }}
         />
       )
     case 'sequencemaps':
       return (
         <SequenceMapsInput
-          inputValue={inputValue || []}
-          onDone={(uploads) => setAttribute(attribute, uploads)}
+          inputValue={localValue || []}
+          onDone={onUploadChange}
         />
       )
     case 'biosafety_level':
@@ -73,8 +96,9 @@ export default ({
             <Select
               plain
               closeOnChange
+              value={localValue}
               options={inputOptions}
-              onChange={({ value }) => setAttribute(attribute, value)}
+              onChange={onSelectChange}
             />
           </Box>
           <Anchor
@@ -90,23 +114,32 @@ export default ({
           closeOnChange
           labelKey={(user) => `${user.full_name} | ${user.email}`}
           valueKey="id"
-          value={{ id: inputValue }}
+          value={{ id: localValue }}
           options={contactUserOptions}
-          onChange={({ value }) => setAttribute(attribute, value)}
+          onChange={onSelectChange}
+        />
+      )
+    case 'boolean':
+      return (
+        <Select
+          closeOnChange
+          value={getBooleanString(localValue || unsafeInputValue)}
+          options={booleanOptions}
+          onChange={onBooleanChange}
         />
       )
     case 'float':
-      return <TextInput value={inputValue} onChange={onFloatChange} />
+      return <TextInput value={localValue} onChange={onFloatChange} />
     case 'integer':
-      return <TextInput value={inputValue} onChange={onIntegerChange} />
+      return <TextInput value={localValue} onChange={onIntegerChange} />
     default:
       return (
         <TextInput
           disabled={disabled}
-          value={inputValue}
+          value={localValue}
           onChange={onInputChange}
           suggestions={getAutoCompleteOptions(attribute, inputValue)}
-          onSelect={({ suggestion }) => setAttribute(attribute, suggestion)}
+          onSelect={onSuggestionChange}
         />
       )
   }
