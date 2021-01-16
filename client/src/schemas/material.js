@@ -1,5 +1,9 @@
 import { object, string, array, boolean } from 'yup'
 
+export const customErrorMessages = {
+  contact_user: 'You must select a Contact User for the resource.'
+}
+
 export const categories = [
   'CELL_LINE',
   'PLASMID',
@@ -79,7 +83,7 @@ const importedCategories = {
     ethnicity: string(),
     treatment_drug: string(),
     treatment_protocol: string(),
-    prior_treatment_protocol: string(),
+    prior_treatment_response: string(),
     response_to_treatment: string(),
     virology_status: string(),
     submitter_tumor_id: string(),
@@ -90,13 +94,13 @@ const importedCategories = {
     tumor_grade: string(),
     disease_stage: string(),
     specific_markers: string(),
-    is_from_untreated_patient: boolean(),
+    is_from_untreated_patient: boolean().nullable().required(),
     tumor_sample_type: string(),
     existing_model_explanation: string(),
     pdx_id: string(),
     model_organism: string(),
     model_strain_and_source: string(),
-    is_strain_immunized: boolean(),
+    is_strain_immunized: boolean().nullable().required(),
     type_of_humanization: string(),
     tumor_preparation: string(),
     injection_type_and_site: string(),
@@ -105,7 +109,7 @@ const importedCategories = {
     engraftment_time: string(),
     tumor_characterization_technology: string(),
     is_not_of_ebv_origin: string(),
-    is_passage_qa_performed: boolean(),
+    is_passage_qa_performed: boolean().nullable().required(),
     response_to_qa_performed: string(),
     response_to_standard_of_care: string(),
     treatment_passage: string(),
@@ -190,10 +194,10 @@ const listedCategories = {
     diagnosis: string().required(),
     consent_to_share: string().required(),
     ethnicity: string(),
-    treatment_drug: string().required(),
-    treatment_protocol: string().required(),
-    prior_treatment_protocol: string().required(),
-    response_to_treatment: string().required(),
+    treatment_drug: string(),
+    current_treatment_protocol: string(),
+    treatment_protocol: string(),
+    prior_treatment_response: string(),
     virology_status: string().required(),
     submitter_tumor_id: string().required(),
     tissue_of_origin: string().required(),
@@ -203,13 +207,13 @@ const listedCategories = {
     tumor_grade: string().required(),
     disease_stage: string().required(),
     specific_markers: string().required(),
-    is_from_untreated_patient: boolean().required(),
+    is_from_untreated_patient: boolean().nullable().required(),
     tumor_sample_type: string().required(),
     existing_model_explanation: string().required(),
     pdx_id: string().required(),
     model_organism: string().required(),
     model_strain_and_source: string().required(),
-    is_strain_immunized: boolean().required(),
+    is_strain_immunized: boolean().nullable().required(),
     type_of_humanization: string().required(),
     tumor_preparation: string().required(),
     injection_type_and_site: string().required(),
@@ -218,17 +222,17 @@ const listedCategories = {
     engraftment_time: string().required(),
     tumor_characterization_technology: string().required(),
     is_not_of_ebv_origin: string().required(),
-    is_passage_qa_performed: boolean().required(),
+    is_passage_qa_performed: boolean().nullable().required(),
     animal_health_status: string().required(),
-    response_to_standard_of_care: string().required(),
-    treatment_passage: string().required(),
-    treatment_response: string().required(),
-    tumor_omics: string().required(),
-    metastases_in_strain: string().required(),
-    lag_time: string().required(),
+    response_to_standard_of_care: string(),
+    treatment_passage: string(),
+    treatment_response: string(),
+    tumor_omics: string(),
+    metastases_in_strain: string(),
+    lag_time: string(),
     number_of_available_models: string(),
-    pdx_model_availability: string().required(),
-    governance_restriction: string().required()
+    pdx_model_availability: string(),
+    governance_restriction: string()
   }),
   OTHER: object({
     resource_type: string().required(),
@@ -236,11 +240,7 @@ const listedCategories = {
   })
 }
 
-const customErrorMessages = {
-  contact_user: 'You must select a Contact User for the resource.'
-}
-
-export default object({
+export const defaultSchema = object({
   category: string().oneOf(categories),
   url: string().when('imported', (imported) => {
     if (imported) return string().url().required()
@@ -293,3 +293,49 @@ export default object({
   /* eslint-disable-next-line react/forbid-prop-types */
   // sequence_maps: array() // figure out what to set here
 })
+
+export const getSchema = ({ imported, category }) => {
+  let schema = defaultSchema.clone()
+
+  if (imported) {
+    schema = schema.shape({
+      url: string().url().required(),
+      import_source: string().oneOf(importSources)
+    })
+  }
+
+  if (category && imported) {
+    schema = schema.shape({
+      additional_metadata: importedCategories[category].required()
+    })
+  }
+
+  if (category && !imported) {
+    schema = schema.shape({
+      additional_metadata: listedCategories[category].required()
+    })
+  }
+
+  if (['DATASET', 'OTHER', 'MODEL_ORGANISM'].includes(category)) {
+    schema = schema.shape({
+      title: string().required()
+    })
+  }
+
+  if (
+    ['PLASMID', 'MODEL_ORGANISM', 'CELL_LINE', 'DATASET', 'PDX'].includes(
+      category
+    )
+  ) {
+    schema = schema.shape({ organisms: array().compact().min(1).required() })
+  }
+
+  if (category === 'PLASMID') {
+    schema = schema.shape({ sequence_maps: array().nullable() })
+  }
+
+  // shipping_requirements: object()
+  return schema
+}
+
+export default defaultSchema
