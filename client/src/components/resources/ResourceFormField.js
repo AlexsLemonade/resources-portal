@@ -1,86 +1,9 @@
 import React from 'react'
-import {
-  Anchor,
-  Box,
-  Button,
-  FormField,
-  TextInput,
-  TextArea,
-  Text
-} from 'grommet'
+import { Box, Button, TextInput, TextArea } from 'grommet'
 import { getReadable } from 'helpers/readableNames'
 import Icon from 'components/Icon'
-import ResourceFormFieldLabel from 'components/resources/ResourceFormFieldLabel'
-import ResourceDynamicInput from 'components/resources/ResourceDynamicInput'
-import HelperText from 'components/InputHelperText'
-import { getInputType, getMustExistAt } from '.'
-
-const AttributeFormField = ({
-  labeled,
-  error,
-  attribute,
-  inputType,
-  inputValue,
-  isMultiple,
-  setAttribute,
-  contactUserOptions,
-  disabled = false
-}) => {
-  const getInfo = () => {
-    const mustExistAt = getMustExistAt(attribute)
-    if (!mustExistAt || !inputValue) return undefined
-    const existAtUrl = mustExistAt(inputValue)
-    return (
-      <Box direction="row" gap="small" align="center">
-        <Icon name="Warning" color="warning" />
-        <Box>
-          <Text size="small">
-            Please verify that the following link is correct before continuing.
-          </Text>
-          <Anchor
-            size="small"
-            target="_blank"
-            href={existAtUrl}
-            label={existAtUrl}
-          />
-        </Box>
-      </Box>
-    )
-  }
-
-  return (
-    <FormField
-      borderless={['sequencemaps', 'biosafety_level'].includes(inputType)}
-      label={
-        labeled ? <ResourceFormFieldLabel attribute={attribute} /> : undefined
-      }
-      help={<HelperText attribute={attribute} />}
-      error={
-        error ? (
-          <Box direction="row" gap="xsmall" align="center">
-            <Icon name="Warning" color="error" size="medium" />
-            <Text color="error" size="12px" margin={{ top: '2px' }}>
-              Required
-            </Text>
-          </Box>
-        ) : (
-          false
-        )
-      }
-      info={getInfo()}
-    >
-      <ResourceDynamicInput
-        attribute={attribute}
-        inputType={inputType}
-        inputValue={inputValue}
-        isMultiple={isMultiple}
-        setAttribute={setAttribute}
-        contactUserOptions={contactUserOptions}
-        disabled={disabled}
-      />
-    </FormField>
-  )
-}
+import AttributeFormField from 'components/AttributeFormField'
+import { getInputType } from '.'
 
 // This Component Takes a resource attribute
 // it uses the attribute to determine the input type
@@ -93,14 +16,15 @@ export const ResourceFormField = ({
   setAttribute,
   contactUserOptions,
   error,
-  disabled = false
+  disabled = false,
+  optionalAttributes = []
 }) => {
   const inputType = getInputType(attribute)
-  const otherAttribute = `${attribute}_other`
   const attributeName = getReadable(attribute)
+  const otherAttribute = `${attribute}_other`
 
-  const inputValue =
-    getAttribute(attribute) || (inputType === 'list' ? [''] : '')
+  const unsafeInputValue = getAttribute(attribute)
+  const inputValue = unsafeInputValue || (inputType === 'list' ? [''] : '')
 
   const otherInputValue = getAttribute(otherAttribute) || ''
 
@@ -134,6 +58,7 @@ export const ResourceFormField = ({
             attribute={attribute}
             inputType={inputType}
             inputValue={inputValue[index]}
+            unsafeInputValue={unsafeInputValue}
             isMultiple={isMultiple}
             setAttribute={(attr, indexValue) => {
               const newValue = [...inputValue]
@@ -142,6 +67,7 @@ export const ResourceFormField = ({
             }}
             contactUserOptions={contactUserOptions}
             disabled={disabled}
+            optionalAttributes={optionalAttributes}
           />
         ))
       ) : (
@@ -151,10 +77,12 @@ export const ResourceFormField = ({
           attribute={attribute}
           inputType={inputType}
           inputValue={inputValue}
+          unsafeInputValue={unsafeInputValue}
           isMultiple={isMultiple}
           setAttribute={setAttribute}
           contactUserOptions={contactUserOptions}
           disabled={disabled}
+          optionalAttributes={optionalAttributes}
         />
       )}
       {inputType === 'list' && (
