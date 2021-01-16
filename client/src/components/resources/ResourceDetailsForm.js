@@ -5,16 +5,15 @@ import useResourceForm from 'hooks/useResourceForm'
 import { HeaderRow } from '../HeaderRow'
 import { ResourceFormField } from './ResourceFormField'
 
-// TODO:
-// Add api integration
-// add helper text
 export default ({ edit = false }) => {
   const {
     form,
+    resource,
     getAttribute,
     setAttribute,
     contactUserOptions,
-    attributeHasError
+    attributeHasError,
+    optionalAttributes = []
   } = useResourceForm()
   if (!form) return <></>
   return (
@@ -39,7 +38,9 @@ export default ({ edit = false }) => {
               setAttribute={setAttribute}
               attribute={attribute}
               contactUserOptions={contactUserOptions}
+              resource={resource}
               error={attributeHasError(attribute)}
+              optionalAttributes={optionalAttributes}
             />
           ))}
         </Box>
