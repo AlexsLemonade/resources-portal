@@ -1,5 +1,7 @@
 import React from 'react'
 import { Anchor, Box, Select, TextArea, TextInput } from 'grommet'
+import parseValue from 'helpers/parseValue'
+import debounce from 'helpers/debounce'
 import { getInputOptions, getAutoCompleteOptions } from '.'
 import SequenceMapsInput from './SequenceMapsInput'
 
@@ -13,27 +15,9 @@ export default ({
   contactUserOptions,
   disabled = false
 }) => {
+  const updateRef = React.useRef(debounce(setAttribute, 300))
   const [localValue, setLocalValue] = React.useState(inputValue)
   const inputOptions = getInputOptions(attribute)
-  const parseValue = (type, value, fallback) => {
-    let parsed = NaN
-    if (type === 'float') {
-      parsed = parseFloat(value)
-      if (`${value}`.endsWith('.')) {
-        parsed = `${parsed}.`
-      }
-    }
-    if (type === 'integer') {
-      parsed = parseInt(value, 10)
-    }
-
-    if (value === '') return ''
-
-    if (Number.isNaN(parsed)) return fallback
-
-    return parsed
-  }
-
   const onFloatChange = ({ target: { value } }) =>
     setLocalValue(parseValue('float', value, inputValue))
   const onIntegerChange = ({ target: { value } }) =>
@@ -59,7 +43,7 @@ export default ({
   }
 
   React.useEffect(() => {
-    setAttribute(attribute, localValue)
+    updateRef.current(attribute, localValue)
   }, [localValue])
 
   switch (inputType) {
