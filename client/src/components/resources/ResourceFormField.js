@@ -1,9 +1,13 @@
 import React from 'react'
-import { Box, Button, TextInput, TextArea } from 'grommet'
+import { Box, Button, FormField, TextInput, TextArea } from 'grommet'
 import { getReadable } from 'helpers/readableNames'
 import Icon from 'components/Icon'
-import AttributeFormField from 'components/AttributeFormField'
-import { getInputType } from '.'
+import ResourceFormFieldLabel from 'components/resources/ResourceFormFieldLabel'
+import ResourceDynamicInput from 'components/resources/ResourceDynamicInput'
+import HelperText from 'components/InputHelperText'
+import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
+import FormFieldMustExistLabel from 'components/FormFieldMustExistLabel'
+import { getMustExistAt, getInputType } from 'components/resources'
 
 // This Component Takes a resource attribute
 // it uses the attribute to determine the input type
@@ -37,54 +41,70 @@ export const ResourceFormField = ({
     : inputValue === 'Other'
 
   const isMultiple = inputType === 'multiselect'
+  const isList = inputType === 'list'
 
-  const listRef = React.useRef([])
-  if (inputType === 'list' && listRef.current.length === 0) {
-    const now = Date.now()
-    listRef.current = inputValue.map((_, index) => `${now}-${index}`)
-  }
+  const keyRef = React.useRef(
+    isList
+      ? inputValue.map((_, index) => `${attribute}-${index}`)
+      : [`${attribute}-0`]
+  )
 
   const addAnotherDisabled = inputValue.includes && inputValue.includes('')
   const addAnotherColor = addAnotherDisabled ? 'black-tint-60' : 'brand'
 
+  const getAttributeSetter = (index) => (attr, indexValue) => {
+    if (!isList) return setAttribute(attr, indexValue)
+    inputValue[index] = indexValue
+    return setAttribute(attr, [...inputValue])
+  }
+
+  const getAttributeAtIndex = (index) => {
+    if (!isList) return inputValue
+    return inputValue[index]
+  }
+
+  const optional = React.useMemo(() => optionalAttributes.includes(attribute), [
+    optionalAttributes,
+    attribute
+  ])
+  const mustExistAt = React.useMemo(() => getMustExistAt(attribute), [
+    attribute
+  ])
+
   return (
     <Box>
-      {inputType === 'list' ? (
-        inputValue.map((value, index) => (
-          <AttributeFormField
-            key={listRef.current[index]}
-            labeled={index === 0}
-            error={error}
+      {(isList ? inputValue : [inputValue]).map((value, index) => (
+        <FormField
+          key={keyRef.current[index]}
+          borderless={['sequencemaps', 'biosafety_level'].includes(inputType)}
+          label={
+            index === 0 && (
+              <ResourceFormFieldLabel
+                optional={optional}
+                attribute={attribute}
+              />
+            )
+          }
+          help={<HelperText attribute={attribute} />}
+          error={error && <FormFieldErrorLabel />}
+          info={
+            mustExistAt && (
+              <FormFieldMustExistLabel url={getMustExistAt(inputValue)} />
+            )
+          }
+        >
+          <ResourceDynamicInput
             attribute={attribute}
             inputType={inputType}
-            inputValue={inputValue[index]}
+            inputValue={getAttributeAtIndex(index)}
             unsafeInputValue={unsafeInputValue}
             isMultiple={isMultiple}
-            setAttribute={(attr, indexValue) => {
-              const newValue = [...inputValue]
-              newValue[index] = indexValue
-              setAttribute(attr, newValue)
-            }}
+            setAttribute={getAttributeSetter(index)}
             contactUserOptions={contactUserOptions}
             disabled={disabled}
-            optionalAttributes={optionalAttributes}
           />
-        ))
-      ) : (
-        <AttributeFormField
-          labeled
-          error={error}
-          attribute={attribute}
-          inputType={inputType}
-          inputValue={inputValue}
-          unsafeInputValue={unsafeInputValue}
-          isMultiple={isMultiple}
-          setAttribute={setAttribute}
-          contactUserOptions={contactUserOptions}
-          disabled={disabled}
-          optionalAttributes={optionalAttributes}
-        />
-      )}
+        </FormField>
+      ))}
       {inputType === 'list' && (
         /* -- Button to insert a new element into list type -- */
         <Box direction="row" justify="between">
@@ -94,7 +114,10 @@ export const ResourceFormField = ({
             plain
             label="Add Another"
             onClick={() => {
-              listRef.current = [...listRef.current, `${Date.now()}`]
+              keyRef.current = [
+                ...keyRef.current,
+                `${attribute}-${keyRef.current.length}`
+              ]
               setAttribute(attribute, [...inputValue, ''])
             }}
           />
