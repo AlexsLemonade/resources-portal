@@ -225,7 +225,7 @@ export const getAutoCompleteOptions = (attribute, inputValue = '') => {
     .filter((option) =>
       option.toLowerCase().startsWith(inputValue.toLowerCase())
     )
-    .filter((_, i) => i < 10)
+    .slice(0, 10)
 }
 
 export const isSupportedImportSource = (importSource) => {
