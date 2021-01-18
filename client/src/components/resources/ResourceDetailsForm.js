@@ -27,13 +27,13 @@ export default ({ edit = false }) => {
         </Heading>
       </Box>
       {form.map((formGroup, index) => (
-        <Box key={`section_${Object.keys(formGroup)[0]}`}>
+        <Box key={`section-${Object.keys(formGroup)[0]}`}>
           <Box margin={{ top: index !== 0 ? 'medium' : 'none' }}>
             <HeaderRow label={getReadable(Object.keys(formGroup)[0])} />
           </Box>
           {Object.values(formGroup)[0].map((attribute) => (
             <ResourceFormField
-              key={`${attribute}_field`}
+              key={`field-${attribute}`}
               getAttribute={getAttribute}
               setAttribute={setAttribute}
               attribute={attribute}
