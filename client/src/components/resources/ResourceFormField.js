@@ -88,8 +88,9 @@ export const ResourceFormField = ({
           help={<HelperText attribute={attribute} />}
           error={error && <FormFieldErrorLabel />}
           info={
+            inputValue &&
             mustExistAt && (
-              <FormFieldMustExistLabel url={getMustExistAt(inputValue)} />
+              <FormFieldMustExistLabel url={mustExistAt(inputValue)} />
             )
           }
         >
