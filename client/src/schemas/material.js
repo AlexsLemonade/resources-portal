@@ -192,7 +192,7 @@ const listedCategories = {
     gender: string().required(),
     age: string(),
     diagnosis: string().required(),
-    consent_to_share: boolean().required(),
+    consent_to_share: boolean().nullable().required(),
     ethnicity: string(),
     treatment_drug: string(),
     current_treatment_protocol: string(),
