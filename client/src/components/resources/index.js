@@ -71,7 +71,8 @@ export const attributeInputTypes = {
   is_passage_qa_performed: 'boolean',
   is_strain_immunized: 'boolean',
   is_from_untreated_patient: 'boolean',
-  is_strain_humanized: 'boolean'
+  is_strain_humanized: 'boolean',
+  consent_to_share: 'boolean'
 }
 
 // Some Input Types need a lot more data
