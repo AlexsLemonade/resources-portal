@@ -494,17 +494,31 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
             mta_changed = field_changed(
                 "requester_signed_mta_attachment", original_material_request, material_request
             )
+            payment_changed = field_changed(
+                "payment_method", original_material_request, material_request
+            )
+            payment_notes_changed = field_changed(
+                "payment_notes_method", original_material_request, material_request
+            )
 
             # Don't allow piecemeal uploads of required documents
             # because they make determining the state of the request
             # difficult. If someone is uploading docs, they need to
             # upload everything at once.
-            if irb_changed or mta_changed:
+            if irb_changed or mta_changed or payment_changed or payment_notes_changed:
                 missing_document = False
                 if original_material_request.material.needs_irb and not irb_changed:
                     missing_document = True
                 if original_material_request.material.needs_mta and not mta_changed:
                     missing_document = True
+                if (
+                    original_material_request.material.shipping_requirement
+                    and original_material_request.material.shipping_requirement.needs_payment
+                ):
+                    if not (payment_changed or original_material_request.payment_method) or (
+                        payment_notes_changed or original_material_request.payment_notes_method
+                    ):
+                        missing_document = True
 
                 if missing_document:
                     return Response(
