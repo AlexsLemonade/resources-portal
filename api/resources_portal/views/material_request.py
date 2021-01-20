@@ -498,7 +498,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 "payment_method", original_material_request, material_request
             )
             payment_notes_changed = field_changed(
-                "payment_notes_method", original_material_request, material_request
+                "payment_method_notes", original_material_request, material_request
             )
 
             # Don't allow piecemeal uploads of required documents
@@ -516,7 +516,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     and original_material_request.material.shipping_requirement.needs_payment
                 ):
                     if not (payment_changed or original_material_request.payment_method) or (
-                        payment_notes_changed or original_material_request.payment_notes_method
+                        payment_notes_changed or original_material_request.payment_method_notes
                     ):
                         missing_document = True
 
