@@ -36,7 +36,7 @@ def email_invitation_view(request):
         return Response({"message": "Must specify 'email' in JSON."}, status=400)
 
     body = (
-        f"{request.user.full_name} has invited you to create a CCRR account to help"
+        f"{request.user.full_name} has invited you to create an ALSF CCRR account to help"
         f" them manage sharing resources. Please let them know once you create an account"
         f" so they can add you to the relevant teams."
     )

@@ -19,6 +19,7 @@ EMAIL_SOURCE = (
     else "Resources Portal Mail Robot"
 )
 NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/settings"
+TERMS_OF_USE_URL = f"https://{settings.AWS_SES_DOMAIN}/terms-of-use"
 ALEXS_LOGO_URL = f"https://{settings.AWS_SES_DOMAIN}/alexs-logo.png"
 CCRR_LOGO_URL = f"https://{settings.AWS_SES_DOMAIN}/ccrr-logo.png"
 # The blank line in this footer is intentional:

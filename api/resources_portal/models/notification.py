@@ -16,6 +16,7 @@ from resources_portal.emailer import (
     EMAIL_SOURCE,
     NOTIFICATIONS_URL,
     PLAIN_TEXT_EMAIL_FOOTER,
+    TERMS_OF_USE_URL,
     send_mail,
 )
 from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
@@ -169,6 +170,8 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
             .replace("REPLACE_MAIN_TEXT", body)
             .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
             .replace("REPLACE_CCRR_LOGO", CCRR_LOGO_URL)
+            .replace("REPLACE_NOTIFICATIONS_LINK", NOTIFICATIONS_URL)
+            .replace("REPLACE_TERMS_LINK", TERMS_OF_USE_URL)
         )
         formatted_cta_html = ""
         cta = ""
