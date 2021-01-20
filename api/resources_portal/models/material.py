@@ -86,6 +86,7 @@ class Material(SafeDeleteModel):
 
     is_archived = models.BooleanField(default=False, null=False)
 
+    @property
     def needs_mta(self):
         return not (self.mta_attachment is None)
 
