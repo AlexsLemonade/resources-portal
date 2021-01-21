@@ -1,7 +1,12 @@
 import React from 'react'
 import { Anchor, Box, Select, TextArea, TextInput } from 'grommet'
 import parseValue from 'helpers/parseValue'
-import debounce from 'helpers/debounce'
+import { debouncer } from 'helpers/debounce'
+import {
+  getBooleanValue,
+  getBooleanString,
+  booleanOptions
+} from 'helpers/booleanOptions'
 import { getInputOptions, getAutoCompleteOptions } from '.'
 import SequenceMapsInput from './SequenceMapsInput'
 
@@ -9,14 +14,14 @@ export default ({
   attribute,
   inputType,
   inputValue,
-  unsafeInputValue,
   isMultiple,
   setAttribute,
   contactUserOptions,
   disabled = false
 }) => {
-  const updateRef = React.useRef(debounce(setAttribute, 300))
+  const updateRef = React.useRef(debouncer(250))
   const [localValue, setLocalValue] = React.useState(inputValue)
+  const safeLocalValue = localValue || ''
   const inputOptions = getInputOptions(attribute)
   const onFloatChange = ({ target: { value } }) =>
     setLocalValue(parseValue('float', value, inputValue))
@@ -28,29 +33,21 @@ export default ({
   const onBooleanChange = ({ value }) => setLocalValue(getBooleanValue(value))
   const onSuggestionChange = ({ suggestion }) => setLocalValue(suggestion)
 
-  // This isnt ideal but handling boolean and undefined values
-  // in selects has issues.
-  const booleanOptions = ['Yes', 'No', 'Not Specified']
-  const getBooleanString = (value) => {
-    if (typeof value === 'undefined') return 'Not Specified'
-    if (value.length === 0) return 'Not Specified'
-    return value ? 'Yes' : 'No'
-  }
-  const getBooleanValue = (string) => {
-    if (string === 'Yes') return true
-    if (string === 'No') return false
-    return undefined
-  }
+  const booleanValue = getBooleanString(localValue)
+  const contactUser =
+    typeof safeLocalValue === 'object' ? safeLocalValue : { id: safeLocalValue }
 
   React.useEffect(() => {
-    updateRef.current(attribute, localValue)
+    if (localValue !== inputValue) {
+      updateRef.current(setAttribute, attribute, localValue)
+    }
   }, [localValue])
 
   switch (inputType) {
     case 'textarea':
       return (
         <Box height="100px">
-          <TextArea fill value={localValue} onChange={onInputChange} />
+          <TextArea fill value={safeLocalValue} onChange={onInputChange} />
         </Box>
       )
     case 'select':
@@ -80,7 +77,7 @@ export default ({
             <Select
               plain
               closeOnChange
-              value={localValue}
+              value={safeLocalValue}
               options={inputOptions}
               onChange={onSelectChange}
             />
@@ -98,7 +95,7 @@ export default ({
           closeOnChange
           labelKey={(user) => `${user.full_name} | ${user.email}`}
           valueKey="id"
-          value={{ id: localValue }}
+          value={contactUser}
           options={contactUserOptions}
           onChange={onSelectChange}
         />
@@ -107,20 +104,21 @@ export default ({
       return (
         <Select
           closeOnChange
-          value={getBooleanString(localValue || unsafeInputValue)}
+          placeholder=""
+          value={booleanValue}
           options={booleanOptions}
           onChange={onBooleanChange}
         />
       )
     case 'float':
-      return <TextInput value={localValue} onChange={onFloatChange} />
+      return <TextInput value={safeLocalValue} onChange={onFloatChange} />
     case 'integer':
-      return <TextInput value={localValue} onChange={onIntegerChange} />
+      return <TextInput value={safeLocalValue} onChange={onIntegerChange} />
     default:
       return (
         <TextInput
           disabled={disabled}
-          value={localValue}
+          value={safeLocalValue}
           onChange={onInputChange}
           suggestions={getAutoCompleteOptions(attribute, inputValue)}
           onSelect={onSuggestionChange}
