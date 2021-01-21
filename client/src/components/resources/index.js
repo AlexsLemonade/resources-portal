@@ -72,7 +72,8 @@ export const attributeInputTypes = {
   is_strain_immunized: 'boolean',
   is_from_untreated_patient: 'boolean',
   is_strain_humanized: 'boolean',
-  consent_to_share: 'boolean'
+  is_not_of_ebv_origin: 'boolean',
+  consent_to_share: 'select'
 }
 
 // Some Input Types need a lot more data
@@ -131,7 +132,7 @@ export const attributeOptions = {
   ],
   copy_number: ['High Copy', 'Low Copy', 'Unknown'],
   zygosity: ['Hetrozygous', 'Homozygous'],
-  conset_to_share: ['Yes', 'No']
+  consent_to_share: ['Yes', 'No', 'Available To Academic Centers Only']
 }
 
 export const attributes = [
@@ -212,6 +213,7 @@ export const getImportAttribute = (importSource) => {
 }
 
 export const getAutoCompleteOptions = (attribute, inputValue = '') => {
+  if (inputValue === null) return []
   // don't suggest on open
   if (inputValue.length === 0) return []
   const allOptions = autoCompleteOptions[attribute] || []
