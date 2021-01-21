@@ -6,7 +6,7 @@ import { useUser } from 'hooks/useUser'
 import { HomepageCard } from 'components/HomepageCard'
 
 const HomepageCreateAccount = dynamic(
-  () => import('components/HomePageCreateAccount'),
+  () => import('components/HomepageCreateAccount'),
   { ssr: false }
 )
 
