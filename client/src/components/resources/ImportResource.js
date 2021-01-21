@@ -47,6 +47,10 @@ export default () => {
         </Text>
         {' or '}
         <Text size="small" weight="bold">
+          GSM609241
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
           https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM609241
         </Text>
       </Paragraph>
