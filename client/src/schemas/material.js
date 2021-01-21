@@ -1,5 +1,12 @@
 import { object, string, array, boolean } from 'yup'
 
+// this is a temporary fix until boolean().nullable().required() works
+/* eslint-disable-next-line no-template-curly-in-string */
+const fakeRequiredMessage = '${path} is a required field'
+const nullableBool = boolean()
+  .defined()
+  .oneOf([true, false, null], fakeRequiredMessage)
+
 export const customErrorMessages = {
   contact_user: 'You must select a Contact User for the resource.'
 }
@@ -192,7 +199,7 @@ const listedCategories = {
     gender: string().required(),
     age: string(),
     diagnosis: string().required(),
-    consent_to_share: boolean().nullable().required(),
+    consent_to_share: string().required(),
     ethnicity: string(),
     treatment_drug: string(),
     current_treatment_protocol: string(),
@@ -203,17 +210,17 @@ const listedCategories = {
     tissue_of_origin: string().required(),
     tumor_type: string().required(),
     specimen_tumor_tissue: string().required(),
-    histology: string().required(),
+    tissue_histology: string().required(),
     tumor_grade: string().required(),
     disease_stage: string().required(),
     specific_markers: string().required(),
-    is_from_untreated_patient: boolean().nullable().required(),
+    is_from_untreated_patient: nullableBool,
     tumor_sample_type: string().required(),
     existing_model_explanation: string().required(),
     pdx_id: string().required(),
     model_organism: string().required(),
     model_strain_and_source: string().required(),
-    is_strain_immunized: boolean().nullable().required(),
+    is_strain_immunized: nullableBool,
     type_of_humanization: string().required(),
     tumor_preparation: string().required(),
     injection_type_and_site: string().required(),
@@ -221,8 +228,8 @@ const listedCategories = {
     engraftment_rate: string().required(),
     engraftment_time: string().required(),
     tumor_characterization_technology: string().required(),
-    is_not_of_ebv_origin: string().required(),
-    is_passage_qa_performed: boolean().nullable().required(),
+    is_not_of_ebv_origin: nullableBool,
+    is_passage_qa_performed: nullableBool,
     animal_health_status: string().required(),
     response_to_standard_of_care: string(),
     treatment_passage: string(),
