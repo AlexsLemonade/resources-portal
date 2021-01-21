@@ -101,24 +101,6 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         # Select two resources from PrimaryLab and request them, uploading two signed IRBs
         self.client.force_authenticate(user=requester)
 
-        # Upload IRBs
-        irb_json = {
-            "filename": "irb_attachment",
-            "description": "Institutional Board Review for the research in question.",
-        }
-
-        with open("dev_data/nerd_sniping.png", "rb") as fp:
-            data = {**irb_json, "file": fp}
-            response = self.client.post(reverse("attachment-list"), data, format="multipart")
-
-        irb_1_id = response.data["id"]
-
-        with open("dev_data/nerd_sniping.png", "rb") as fp:
-            data = {**irb_json, "file": fp}
-            response = self.client.post(reverse("attachment-list"), data, format="multipart")
-
-        irb_2_id = response.data["id"]
-
         # POST requests
         material1 = Material.objects.get(pk=chosen_materials_json[0]["id"])
         material2 = Material.objects.get(pk=chosen_materials_json[1]["id"])
@@ -148,27 +130,6 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             2,
         )
 
-        self.client.put(
-            reverse("material-request-detail", args=[request_1_id]), {"irb_attachment": irb_1_id}
-        )
-        self.client.put(
-            reverse("material-request-detail", args=[request_2_id]), {"irb_attachment": irb_2_id}
-        )
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        # Assert that ownership of attachments to the material-requests is shared by the requester and the requested org
-        self.assertEqual(Attachment.objects.get(pk=irb_1_id).owned_by_org, self.primary_lab)
-        self.assertEqual(Attachment.objects.get(pk=irb_2_id).owned_by_org, self.primary_lab)
-
-        self.assertEqual(
-            len(
-                Notification.objects.filter(
-                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
-                )
-            ),
-            4,
-        )
-
         # Postdoc approves the requests
         self.client.force_authenticate(user=self.post_doc)
 
@@ -192,9 +153,28 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
             4,
         )
 
-        # The Requester uploads two signed MTAs
+        # The Requester uploads two IRBs
         self.client.force_authenticate(user=requester)
 
+        # Upload IRBs
+        irb_json = {
+            "filename": "irb_attachment",
+            "description": "Institutional Board Review for the research in question.",
+        }
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**irb_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
+        irb_1_id = response.data["id"]
+
+        with open("dev_data/nerd_sniping.png", "rb") as fp:
+            data = {**irb_json, "file": fp}
+            response = self.client.post(reverse("attachment-list"), data, format="multipart")
+
+        irb_2_id = response.data["id"]
+
+        # And the Requester uploads two signed MTAs
         signed_mta_json = {
             "filename": "signed_mta",
             "description": "Signed transfer agreement for the material.",
@@ -214,12 +194,12 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         response = self.client.put(
             reverse("material-request-detail", args=[request_1_id]),
-            {"requester_signed_mta_attachment": mta_1_id},
+            {"requester_signed_mta_attachment": mta_1_id, "irb_attachment": irb_1_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         response = self.client.put(
             reverse("material-request-detail", args=[request_2_id]),
-            {"requester_signed_mta_attachment": mta_2_id},
+            {"requester_signed_mta_attachment": mta_2_id, "irb_attachment": irb_2_id},
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -234,6 +214,18 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
 
         self.assertEqual(Attachment.objects.get(pk=mta_1_id).owned_by_org, self.primary_lab)
         self.assertEqual(Attachment.objects.get(pk=mta_2_id).owned_by_org, self.primary_lab)
+        self.assertEqual(Attachment.objects.get(pk=irb_1_id).owned_by_org, self.primary_lab)
+        self.assertEqual(Attachment.objects.get(pk=irb_2_id).owned_by_org, self.primary_lab)
+
+        # These should only be sent if the material doesn't require an MTA.
+        self.assertEqual(
+            len(
+                Notification.objects.filter(
+                    notification_type="MATERIAL_REQUEST_SHARER_RECEIVED_INFO"
+                )
+            ),
+            0,
+        )
 
         # Postdoc uploads executed MTA/IRBs
         self.client.force_authenticate(user=self.post_doc)
@@ -312,4 +304,4 @@ class TestMultipleResourcesRequestedAndFulfilled(APITestCase):
         )
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 30)
+        self.assertEqual(len(Notification.objects.all()), 26)
