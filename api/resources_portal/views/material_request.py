@@ -118,7 +118,7 @@ class IsModifyingPermittedFields(BasePermission):
                 # is required and other requirements are provided.
                 elif request.data["status"] == "IN_FULFILLMENT" and (
                     obj.status != "APPROVED"
-                    or obj.material.needs_mta()
+                    or obj.material.needs_mta
                     or obj.get_is_missing_requester_documents(
                         irb_attachment=request.data.get("irb_attachment", None),
                         address=request.data.get("address", None),
@@ -488,7 +488,45 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
         material_request.refresh_from_db()
 
         if request.user == material_request.requester:
-            if field_changed("irb_attachment", original_material_request, material_request):
+            irb_changed = field_changed(
+                "irb_attachment", original_material_request, material_request
+            )
+            mta_changed = field_changed(
+                "requester_signed_mta_attachment", original_material_request, material_request
+            )
+            payment_changed = field_changed(
+                "payment_method", original_material_request, material_request
+            )
+            payment_notes_changed = field_changed(
+                "payment_method_notes", original_material_request, material_request
+            )
+
+            # Don't allow piecemeal uploads of required documents
+            # because they make determining the state of the request
+            # difficult. If someone is uploading docs, they need to
+            # upload everything at once.
+            if irb_changed or mta_changed or payment_changed or payment_notes_changed:
+                missing_document = False
+                if original_material_request.material.needs_irb and not irb_changed:
+                    missing_document = True
+                if original_material_request.material.needs_mta and not mta_changed:
+                    missing_document = True
+                if (
+                    original_material_request.material.shipping_requirement
+                    and original_material_request.material.shipping_requirement.needs_payment
+                ):
+                    if not (payment_changed or original_material_request.payment_method) or (
+                        payment_notes_changed or original_material_request.payment_method_notes
+                    ):
+                        missing_document = True
+
+                if missing_document:
+                    return Response(
+                        data={"reason": "The material request requires an additional document."},
+                        status=400,
+                    )
+
+            if irb_changed:
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["irb_attachment"],
@@ -496,9 +534,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     request.user,
                 )
 
-            if field_changed(
-                "requester_signed_mta_attachment", original_material_request, material_request
-            ):
+            if mta_changed:
                 add_attachment_to_material_request(
                     material_request,
                     serializer.validated_data["requester_signed_mta_attachment"],

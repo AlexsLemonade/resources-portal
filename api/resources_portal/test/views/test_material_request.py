@@ -280,13 +280,24 @@ class TestSingleMaterialRequestTestCase(APITestCase):
             len(MaterialShareEvent.objects.filter(event_type="SHARER_MTA_ADDED")), 1,
         )
 
-    def test_patch_request_from_requester_adds_attachment(self):
+    def test_patch_request_from_requester_adds_attachments(self):
+        # Set up the material request to require both MTA and IRB
+        self.request.material.mta_attachment = AttachmentFactory()
+        self.request.material.needs_irb = True
+        self.request.material.save()
+
         self.client.force_authenticate(user=self.request.requester)
 
         irb_attachment = AttachmentFactory(
             owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
         )
-        material_request_data = {"irb_attachment": irb_attachment.id}
+        mta_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="SIGNED_MTA"
+        )
+        material_request_data = {
+            "irb_attachment": irb_attachment.id,
+            "requester_signed_mta_attachment": mta_attachment.id,
+        }
 
         response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -300,6 +311,38 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(
             len(MaterialShareEvent.objects.filter(event_type="REQUESTER_IRB_ADDED")), 1,
         )
+
+    def test_patch_request_from_requester_fails_without_MTA(self):
+        # Set up the material request to require both MTA and IRB
+        self.request.material.mta_attachment = AttachmentFactory()
+        self.request.material.needs_irb = True
+        self.request.material.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        irb_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
+        )
+        material_request_data = {"irb_attachment": irb_attachment.id}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_patch_request_from_requester_fails_without_IRB(self):
+        # Set up the material request to require both MTA and IRB
+        self.request.material.mta_attachment = AttachmentFactory()
+        self.request.material.needs_irb = True
+        self.request.material.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        mta_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="SIGNED_MTA"
+        )
+        material_request_data = {"requester_signed_mta_attachment": mta_attachment.id}
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_patch_address_triggers_info_notif(self):
         self.client.force_authenticate(user=self.request.requester)
