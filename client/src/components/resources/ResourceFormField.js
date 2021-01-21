@@ -28,7 +28,11 @@ export const ResourceFormField = ({
   const otherAttribute = `${attribute}_other`
 
   const unsafeInputValue = getAttribute(attribute)
-  const inputValue = unsafeInputValue || (inputType === 'list' ? [''] : '')
+  const fallbackValue = inputType === 'list' ? [undefined] : undefined
+  const inputValue =
+    unsafeInputValue || unsafeInputValue === null
+      ? unsafeInputValue
+      : fallbackValue
 
   const otherInputValue = getAttribute(otherAttribute) || ''
 
@@ -49,7 +53,8 @@ export const ResourceFormField = ({
       : [`${attribute}-0`]
   )
 
-  const addAnotherDisabled = inputValue.includes && inputValue.includes('')
+  const addAnotherDisabled =
+    inputValue && inputValue.includes && inputValue.includes('')
   const addAnotherColor = addAnotherDisabled ? 'black-tint-60' : 'brand'
 
   const getAttributeSetter = (index) => (attr, indexValue) => {
@@ -58,7 +63,7 @@ export const ResourceFormField = ({
     return setAttribute(attr, [...inputValue])
   }
 
-  const getAttributeAtIndex = (index) => {
+  const getValueAtIndex = (index) => {
     if (!isList) return inputValue
     return inputValue[index]
   }
@@ -97,8 +102,7 @@ export const ResourceFormField = ({
           <ResourceDynamicInput
             attribute={attribute}
             inputType={inputType}
-            inputValue={getAttributeAtIndex(index)}
-            unsafeInputValue={unsafeInputValue}
+            inputValue={getValueAtIndex(index)}
             isMultiple={isMultiple}
             setAttribute={getAttributeSetter(index)}
             contactUserOptions={contactUserOptions}
