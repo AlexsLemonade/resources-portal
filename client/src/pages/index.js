@@ -1,9 +1,14 @@
 import React from 'react'
+import dynamic from 'next/dynamic'
 import { Box, Button, Paragraph, Stack, Text } from 'grommet'
 import Link from 'next/link'
 import { useUser } from 'hooks/useUser'
-import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
 import { HomepageCard } from 'components/HomepageCard'
+
+const HomepageCreateAccount = dynamic(
+  () => import('components/HomePageCreateAccount'),
+  { ssr: false }
+)
 
 export const Home = () => {
   const heroOverlap = '140px'
@@ -11,7 +16,7 @@ export const Home = () => {
   const { isLoggedIn } = useUser()
 
   return (
-    <>
+    <Box>
       <Box width="fill" pad={{ bottom: heroOverlap }}>
         <Stack anchor="bottom">
           <Box width="fill" background="gradient" pad={{ bottom: '180px' }}>
@@ -280,31 +285,8 @@ export const Home = () => {
           </Box>
         </Box>
       </Box>
-      {!isLoggedIn && (
-        <Box>
-          <Box background="brand" pad={{ vertical: '66px' }}>
-            <Box alignSelf="center" align="center" width={{ max: 'large' }}>
-              <Text size="50px" color="white">
-                Create a CCRR portal account!
-              </Text>
-              <Paragraph color="white" margin={{ top: 'large' }}>
-                You can use your existing ORCID iD to create an CCRR Portal
-                account. If you don’t have an ORCID iD, you can use the button
-                below to create one!
-              </Paragraph>
-              <Paragraph color="white" margin={{ top: 'medium' }}>
-                You can use your CCRR Portal account to request resources, share
-                your resources, and track and manage requests.
-              </Paragraph>
-              <CreateAccountLoginButton
-                title="Create or Connect ORCID iD"
-                buttonLabel="Create or Connect ORCID iD"
-              />
-            </Box>
-          </Box>
-        </Box>
-      )}
-    </>
+      {!isLoggedIn && <HomepageCreateAccount />}
+    </Box>
   )
 }
 
