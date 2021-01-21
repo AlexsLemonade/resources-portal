@@ -41,7 +41,7 @@ export default () => {
   const importSourceHelpers = {
     GEO: (
       <Paragraph size="small" color="black-tint-40">
-        ex:{' '}
+        Examples:{' '}
         <Text size="small" weight="bold">
           GSE24542
         </Text>
@@ -53,7 +53,7 @@ export default () => {
     ),
     SRA: (
       <Paragraph size="small" color="black-tint-40">
-        ex:{' '}
+        Examples:{' '}
         <Text size="small" weight="bold">
           SRR944283
         </Text>
