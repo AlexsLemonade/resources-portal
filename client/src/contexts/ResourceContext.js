@@ -170,7 +170,7 @@ export const ResourceContextProvider = ({
 
   // explicitly destroy local storage
   const clearResourceContext = () => {
-    setResource()
+    setResource({})
     setFetched()
     setExistingRequirementsResource()
   }
