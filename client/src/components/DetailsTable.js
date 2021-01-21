@@ -1,37 +1,43 @@
 import React from 'react'
 import {
-  Box,
   Table,
   TableBody,
   TableCell,
   TableHeader,
   TableRow,
-  Text,
-  Image
+  Text
 } from 'grommet'
 import styled from 'styled-components'
+import PreviewMap from 'components/PreviewSequenceMap'
+import { getBooleanString } from 'helpers/booleanOptions'
+
+const DetailsTableDetail = ({ datum, emptyString = 'Not Specified' }) => {
+  const { value } = datum
+
+  // true false or null should be treated as booleans
+  const bool = getBooleanString(value)
+  if (bool !== undefined) return <Text italic={value === null}>{bool}</Text>
+
+  // check if unset, empty string, or empty array
+  const isEmpty = !value || value.length === 0
+  if (isEmpty) return <Text italic>{emptyString}</Text>
+
+  // check if it is an array of values
+  const isArray = Array.isArray(value)
+  const isFiles = isArray && Object.keys(value[0]).includes('filename')
+  if (isArray)
+    return (
+      <Text>
+        {isFiles
+          ? value.map((map) => <PreviewMap key={map.filename} map={map} />)
+          : value.join(', ')}
+      </Text>
+    )
+
+  return <Text>{value}</Text>
+}
 
 let DetailsTable = ({ data, className }) => {
-  const datumValue = (value) => {
-    if (Array.isArray(value)) {
-      if (value.length === 0) return 'Not Specified'
-      if (Object.keys(value[0]).includes('filename')) {
-        return (
-          <Box>
-            {value.map((attachment) => (
-              <Box key={attachment.filename} width="100px" height="120px">
-                <Image fit="cover" src={attachment.download_url} />
-                <Text truncate>{attachment.filename}</Text>
-              </Box>
-            ))}
-          </Box>
-        )
-      }
-      return value.join(', ')
-    }
-    return value
-  }
-
   return (
     <Table className={className}>
       <TableHeader>
@@ -47,9 +53,7 @@ let DetailsTable = ({ data, className }) => {
               <Text weight="bold">{datum.label}</Text>
             </TableCell>
             <TableCell pad="medium" align="left">
-              <Text italic={!datum.value || datum.value.length === 0}>
-                {datum.value ? datumValue(datum.value) : 'Not specified'}
-              </Text>
+              <DetailsTableDetail datum={datum} />
             </TableCell>
           </TableRow>
         ))}
