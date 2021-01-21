@@ -2,14 +2,9 @@ import React from 'react'
 import {
   isMetadataAttribute,
   isShippingAttribute,
-  isSupportedImportSource,
-  getImportSourceCategory,
-  getImportAttribute
+  getImportSourceCategory
 } from 'components/resources'
-import configs, { formDefaults } from 'components/resources/configs'
-import schema from 'schemas/material'
 import { getToken, getReadable } from 'helpers/readableNames'
-import renamePersonalOrg from 'helpers/renamePersonalOrg'
 import { ResourceContext } from 'contexts/ResourceContext'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import api from 'api'
@@ -30,46 +25,17 @@ export default () => {
     clearResourceContext,
     teamResources,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    config,
+    schema,
+    importAttribute,
+    form,
+    grant,
+    isSupported,
+    organizationOptions,
+    optionalAttributes
   } = React.useContext(ResourceContext)
   const { addAlert } = useAlertsQueue()
-  const config = resource ? configs[resource.category] : undefined
-
-  // support import forms based on source
-  // support a default list form
-  const getForm = () => {
-    if (resource) {
-      const importSource = resource.import_source
-      if (config && importSource) {
-        return [...config.importForm(importSource), ...formDefaults]
-      }
-
-      if (config && resource.category) {
-        return [...config.listForm, ...formDefaults]
-      }
-    }
-
-    return undefined
-  }
-
-  const organizationOptions = [...renamePersonalOrg(user.organizations || [])]
-
-  const grant = resource
-    ? grantOptions.find((g) => g.id === resource.grant_id) || {}
-    : {}
-
-  const isSupported = resource
-    ? isSupportedImportSource(resource.import_source)
-    : undefined
-  const importAttribute = resource
-    ? getImportAttribute(resource.import_source)
-    : undefined
-
-  React.useEffect(() => {
-    if (resource && grantOptions.length === 0 && resource.organization) {
-      didSetOrganization(resource.organization)
-    }
-  }, [resource])
 
   const removeMtaAttachment = async () => {
     const mta = getAttribute('mta_attachment')
@@ -162,7 +128,6 @@ export default () => {
       additional_metadata: {},
       ...resource
     }
-
     if (isShippingAttribute(attribute)) {
       const newShippingRequirement = resource.shipping_requirement || {}
       newShippingRequirement[attribute] = value
@@ -176,7 +141,7 @@ export default () => {
       updatedResource[attribute] = value.id
       didSetOrganization(value.id)
     } else if (attribute === 'contact_user') {
-      updatedResource[attribute] = value.id
+      updatedResource[attribute] = value ? value.id : value
     } else if (attribute === 'category') {
       updatedResource.category = getToken(value)
     } else if (attribute === 'import_source') {
@@ -207,10 +172,11 @@ export default () => {
         resetResource.additional_metadata[importAttribute] =
           updatedResource.additional_metadata[importAttribute]
       }
+
       setResource(resetResource)
       setFetched(false)
     } else {
-      setResource({ ...updatedResource })
+      setResource(updatedResource)
     }
 
     // after validating remove error while entering
@@ -386,7 +352,7 @@ export default () => {
   return {
     user,
     config,
-    form: getForm(),
+    form,
     importAttribute,
     isSupported,
     fetchImport,
@@ -410,6 +376,7 @@ export default () => {
     teamResources,
     existingRequirementsResource,
     setExistingRequirementsResource,
-    isSaved: !!resource.id
+    isSaved: !!resource.id,
+    optionalAttributes
   }
 }

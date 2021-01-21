@@ -13,6 +13,7 @@ import useResourceForm from 'hooks/useResourceForm'
 
 export default ({ defaultStep = -1 }) => {
   const [savedResource, setSavedResource] = React.useState(false)
+  const savedRef = React.useRef(false)
   const [step, setStep] = React.useState(defaultStep)
   const goBack = () => {
     setStep(step - 1)
@@ -49,7 +50,8 @@ export default ({ defaultStep = -1 }) => {
     if (resource && getAttribute('imported') === undefined)
       setAttribute('imported', false)
 
-    if (savedResource) {
+    if (savedResource && !savedRef.current) {
+      savedRef.current = true
       clearResourceContext()
     }
   })

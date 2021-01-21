@@ -1,14 +1,12 @@
 import React from 'react'
 import { Paragraph, Text } from 'grommet'
 import { getReadable } from 'helpers/readableNames'
-import { getIsOptional } from '.'
 
-export default ({ attribute }) => {
-  const isOptional = getIsOptional(attribute)
+export default ({ attribute, optional = false }) => {
   return (
     <Paragraph>
       {getReadable(attribute)}
-      {isOptional && (
+      {optional && (
         <Text color="black-tint-60" italic>
           {' '}
           (Optional)
