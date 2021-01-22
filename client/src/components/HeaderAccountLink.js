@@ -5,7 +5,7 @@ import { useNotifications } from 'hooks/useNotifications'
 import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
 import { useUser } from 'hooks/useUser'
 
-export const HeaderAccountLink = () => {
+export default () => {
   const { isLoggedIn } = useUser()
   const [notificationsFetched, setNotificationsFetched] = React.useState(false)
   const { notificationCount, fetchNewNotifications } = useNotifications()
@@ -51,5 +51,3 @@ export const HeaderAccountLink = () => {
     </Box>
   )
 }
-
-export default HeaderAccountLink
