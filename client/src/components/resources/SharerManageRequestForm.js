@@ -29,12 +29,13 @@ import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import { List, ListItem, NumberMarker } from 'components/List'
 import PreviewIssue from 'components/PreviewIssue'
 import ResourceLink from 'components/ResourceLink'
+import useRequest from 'hooks/useRequest'
 
-export default ({ request: defaultRequest }) => {
+export default () => {
   const { addAlert } = useAlertsQueue()
   const { token } = useUser()
-  const { executed_mta_attachment: defaultExecutedMTA } = defaultRequest
-  const [request, setRequest] = React.useState(defaultRequest)
+  const { request, setRequest } = useRequest()
+  const { executed_mta_attachment: defaultExecutedMTA } = request
   const [showFulfill, setShowFulfill] = React.useState(false)
   const [note, setNote] = React.useState('')
   const [executedMTA, setExecutedMTA] = React.useState(defaultExecutedMTA)
