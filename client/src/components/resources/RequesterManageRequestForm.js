@@ -34,9 +34,11 @@ import getPaymentOptions from 'helpers/getPaymentOptions'
 import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import { Modal } from 'components/Modal'
 import ResourceLink from 'components/ResourceLink'
+import useRequest from 'hooks/useRequest'
 
-export default ({ request: defaultRequest }) => {
-  const [request, setRequest] = React.useState(defaultRequest)
+export default () => {
+  const { request, setRequest } = useRequest()
+
   const hasDocuments = hasRequestDocuments(request.material)
   const { user, token } = useUser()
   const { addAlert } = useAlertsQueue()
