@@ -1,18 +1,18 @@
 import React from 'react'
 import { Box } from 'grommet'
 import { ProgressBar } from 'components/ProgressBar'
-import RequestHero from 'components/RequestHero'
+import RequestResourceContact from 'components/RequestResourceContact'
 import RequestTitle from 'components/RequestTitle'
-import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
-import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditionalDocuments'
-import RequestInFulfillment from 'components/RequestInFulfillment'
 import RequestOpen from 'components/RequestOpen'
-import RequestReportIssue from 'components/RequestReportIssue'
-import RequestCancel from 'components/RequestCancel'
+import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditionalDocuments'
+import RequestAwaitingMta from 'components/RequestAwaitingMta'
+import RequestInFulfillment from 'components/RequestInFulfillment'
 import RequestFulfilled from 'components/RequestFulfilled'
 import RequestFulfilledVerified from 'components/RequestFulfilledVerified'
+import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
 import RequestVerifyFulfillment from 'components/RequestVerifyFulfillment'
-import RequestAwaitingMta from 'components/RequestAwaitingMta'
+import RequestCancel from 'components/RequestCancel'
+import RequestReportIssue from 'components/RequestReportIssue'
 import useRequest from 'hooks/useRequest'
 import hasRequestDocuments from 'helpers/hasRequestDocuments'
 import getRequestStatus, {
@@ -38,7 +38,7 @@ export default () => {
 
   return (
     <Box pad={{ vertical: 'medium' }}>
-      <RequestHero />
+      <RequestResourceContact />
       <Box pad={{ bottom: 'medum' }} margin={{ bottom: 'large' }}>
         <Box margin={{ bottom: 'large' }}>
           <ProgressBar
