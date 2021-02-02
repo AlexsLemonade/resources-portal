@@ -12,7 +12,7 @@ export const allStatuses = [
   'CANCELLED'
 ]
 
-export const getRequestProgressStatuses = (request) => {
+export const getRequestProgressState = (request) => {
   const states = ['OPEN']
   const willWaitIRB = request.material.needs_irb
   const willWaitMTA = request.material.needs_mta
@@ -29,10 +29,18 @@ export const getRequestProgressStatuses = (request) => {
   states.push('IN_FULFILLMENT')
   states.push('FULFILLED')
 
-  return states
+  // TODO: when the progress bar supports a "completed" index
+  // return the index of request.status
+  const currentStatus = getProgressStatus(request).replace('VERIFIED_', '')
+
+  return {
+    progressSteps: states,
+    currentStep: currentStatus,
+    currentIndex: states.indexOf(currentStatus)
+  }
 }
 
-export default (request) => {
+export const getProgressStatus = (request) => {
   if (request.status === 'APPROVED') {
     if (request.requires_action_requester)
       return 'AWAITING_ADDITIONAL_DOCUMENTS'
@@ -41,11 +49,15 @@ export default (request) => {
     // because this should never occur
   }
 
+  return request.status
+}
+
+export default (request) => {
   if (request.status === 'IN_FULFILLMENT') {
     if (request.has_issues) {
       return 'IN_FULFILLMENT_ISSUE_REPORTED'
     }
   }
 
-  return request.status
+  return getProgressStatus(request)
 }

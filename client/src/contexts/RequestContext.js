@@ -28,6 +28,14 @@ export const RequestContextProvider = ({ requestId, children }) => {
     if (!fetchedRef.current) refreshRequest()
   })
 
+  const isRequester = fetchedRef.current
+    ? user.id === request.requester.id
+    : null
+
+  const isSharer = fetchedRef.current
+    ? request.material.organization.members.includes(user.id)
+    : null
+
   return (
     <RequestContext.Provider
       value={{
@@ -35,9 +43,8 @@ export const RequestContextProvider = ({ requestId, children }) => {
         setRequest,
         refreshRequest,
         isFetched: fetchedRef.current,
-        isRequester: fetchedRef.current
-          ? user.id === request.requester.id
-          : null
+        isRequester,
+        isSharer
       }}
     >
       {children}

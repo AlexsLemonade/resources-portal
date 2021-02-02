@@ -2,8 +2,8 @@ import React from 'react'
 import { Anchor, Button, Box, Text, TextArea, FormField } from 'grommet'
 import api from 'api'
 import { getReadable } from 'helpers/readableNames'
-import getRequestState, {
-  getRequestProgressStatuses
+import getRequestStatus, {
+  getRequestProgressState
 } from 'helpers/getRequestStatus'
 import getRequesterWillBeAskedToProvide from 'helpers/getRequesterWillBeAskedToProvide'
 import getRequestRequirements from 'helpers/getRequestRequirements'
@@ -24,7 +24,7 @@ import PreviewAbstract from 'components/PreviewAbstract'
 import PreviewAddress from 'components/PreviewAddress'
 import PreviewPayment from 'components/PreviewPayment'
 import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
-import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditionalDocuments'
+import RequestAwaitingAdditionalDocumentsList from 'components/RequestAwaitingAdditionalDocumentsList'
 import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import { List, ListItem, NumberMarker } from 'components/List'
 import PreviewIssue from 'components/PreviewIssue'
@@ -50,14 +50,9 @@ export default () => {
 
   const hasDocuments = hasRequestDocuments(request.material)
 
-  const state = getRequestState(request)
+  const state = getRequestStatus(request)
   // the states dont represent these special cases
-  const fulfilledState =
-    state === 'IN_FULFILLMENT_ISSUE_REPORTED' ? 'IN_FULFILLMENT' : state
-  const indexState =
-    fulfilledState === 'VERIFIED_FULFILLED' ? 'FULFILLED' : fulfilledState
-  const progressSteps = getRequestProgressStatuses(request)
-  const progressIndex = progressSteps.indexOf(indexState)
+  const { progressSteps, currentIndex } = getRequestProgressState(request)
 
   const setStatus = async (status) => {
     const updateRequest = await api.requests.update(
@@ -163,7 +158,7 @@ export default () => {
         <Box margin={{ bottom: 'large' }}>
           <ProgressBar
             steps={progressSteps.map(getReadable)}
-            index={progressIndex}
+            index={currentIndex}
           />
         </Box>
         <Box direction="row" align="center" gap="small">
@@ -226,7 +221,7 @@ export default () => {
         {state === 'AWAITING_ADDITIONAL_DOCUMENTS' && (
           <Box pad={{ bottom: 'large' }}>
             <Text>Waiting for the requester to provide:</Text>
-            <RequestAwaitingAdditionalDocuments request={request} />
+            <RequestAwaitingAdditionalDocumentsList request={request} />
           </Box>
         )}
         {state === 'AWAITING_MTA' && (
