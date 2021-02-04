@@ -8,33 +8,27 @@ import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditi
 import RequestAwaitingMta from 'components/RequestAwaitingMta'
 import RequestInFulfillment from 'components/RequestInFulfillment'
 import RequestFulfilled from 'components/RequestFulfilled'
-import RequestFulfilledVerified from 'components/RequestFulfilledVerified'
 import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
 import RequestVerifyFulfillment from 'components/RequestVerifyFulfillment'
 import RequestCancel from 'components/RequestCancel'
 import RequestReportIssue from 'components/RequestReportIssue'
 import useRequest from 'hooks/useRequest'
 import hasRequestDocuments from 'helpers/hasRequestDocuments'
-import getRequestStatus, {
-  getRequestProgressState
-} from 'helpers/getRequestStatus'
+import { getRequestProgressState } from 'helpers/getRequestStatus'
 import { getReadable } from 'helpers/readableNames'
 
 export default () => {
   const { request } = useRequest()
-
-  const state = getRequestStatus(request)
   const { progressSteps, currentStep, currentIndex } = getRequestProgressState(
     request
   )
 
   const hasDocuments = hasRequestDocuments(request.material)
-  const canViewAllDocuments = hasDocuments && state !== 'OPEN'
-  const canCancel =
-    request.is_active_requester &&
-    !['IN_FULFILLMENT', 'FULFILLED', 'VERIFIED_FULFILLED'].includes(state)
-  const canVerify = state === 'FULFILLED'
-  const canReportIssue = state === 'FULFILLED'
+  const canViewAllDocuments = hasDocuments && currentStep !== 'OPEN'
+  const canCancelSteps = ['OPEN', 'AWAITING_ADDITIONAL_DOCUMENTS']
+  const canCancel = canCancelSteps.includes(currentStep)
+  const canVerify = request.status === 'FULFILLED'
+  const canReportIssue = request.status === 'FULFILLED'
 
   return (
     <Box pad={{ vertical: 'medium' }}>
@@ -54,7 +48,6 @@ export default () => {
         {currentStep === 'AWAITING_MTA' && <RequestAwaitingMta />}
         {currentStep === 'IN_FULFILLMENT' && <RequestInFulfillment />}
         {currentStep === 'FULFILLED' && <RequestFulfilled />}
-        {currentStep === 'VERIFIED_FULFILLED' && <RequestFulfilledVerified />}
         {canViewAllDocuments && (
           <Box margin={{ vertical: 'large' }}>
             <ViewAllRequestDocuments request={request} />
