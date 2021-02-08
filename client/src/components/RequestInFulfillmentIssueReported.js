@@ -1,11 +1,12 @@
 import React from 'react'
 import { Box, Button, FormField, TextArea, Text } from 'grommet'
-import { HeaderRow } from 'components/HeaderRow'
 import { Modal } from 'components/Modal'
+import { HeaderRow } from 'components/HeaderRow'
+import Icon from 'components/Icon'
 import DownloadAttachment from 'components/DownloadAttachment'
 import PreviewAddress from 'components/PreviewAddress'
 import PreviewPayment from 'components/PreviewPayment'
-import RequestInFulfillmentIssueReported from 'components/RequestInFulfillmentIssueReported'
+import RequestIssuesList from 'components/RequestIssuesList'
 import RequestMakeArrangements from 'components/RequestMakeArrangements'
 import useRequest from 'hooks/useRequest'
 
@@ -24,26 +25,27 @@ export default () => {
   const markFulfilledWithNote = () => markFulfilled(note)
 
   const {
-    has_issues: hasIssues,
     address,
     payment_method: paymentMethod,
     payment_method_notes: paymentNotes,
     executed_mta_attachment: mtaAttachment,
+    requester: { full_name: requesterName, email: requesterEmail },
     material: {
       organization: { name: teamName }
     }
   } = request
 
-  if (hasIssues) return <RequestInFulfillmentIssueReported />
-
   if (isRequester)
     return (
       <Box pad={{ bottom: 'large' }}>
         <Box margin={{ veritcal: 'medium' }}>
+          <Text>{teamName} has been notified of the issue. </Text>
           <Text>
-            {teamName} is working to fulfill your request. Your resource should
-            be on the way soon.
+            They may contact you at {requesterEmail} to resolve this issue.
           </Text>
+          <Box margin={{ veritcal: 'medium' }}>
+            <RequestIssuesList />
+          </Box>
           {paymentMethod === 'REIMBURSEMENT' && <RequestMakeArrangements />}
         </Box>
         {mtaAttachment && (
@@ -59,10 +61,20 @@ export default () => {
   return (
     <Box>
       <Box margin={{ veritcal: 'medium' }}>
-        <Text>
-          Please remember to mark this request as fulfilled after sending your
-          resource.
-        </Text>
+        <Box direction="row" justify="center" align="center" gap="small">
+          <Icon name="Warning" color="warning" />
+          <Text>
+            {requesterName} has reported an issue with sent resources.
+          </Text>
+        </Box>
+        <RequestIssuesList />
+        <Box direction="row" width="full" justify="end">
+          <Button
+            as="a"
+            href={`mailto:${requesterEmail}`}
+            label="Contact Requester"
+          />
+        </Box>
       </Box>
       {paymentMethod === 'REIMBURSEMENT' && <RequestMakeArrangements />}
       {(needsPayment || needsShippingAddress) && (
