@@ -22,6 +22,7 @@ class Grant(SafeDeleteModel):
     updated_at = models.DateTimeField(auto_now=True)
 
     title = models.TextField()
+    funder = models.CharField(max_length=80, default="ALSF")
     funder_id = models.CharField(max_length=80)
 
     user = models.ForeignKey(
