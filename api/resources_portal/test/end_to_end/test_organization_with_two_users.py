@@ -23,7 +23,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
     3. Prof creates organization Lab with grant id.
     4. Prof invites Postdoc to join Lab.
     5. Postdoc accepts invitation to join Lab.
-    6. Prof lists resource under Lab.
+    6. Postdoc lists a resource under Lab on the Prof's behalf
     7. Prof removes all notification settings.
 
     During the test, the following notifications (and no more) will be sent:
