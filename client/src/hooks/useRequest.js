@@ -27,8 +27,8 @@ export default () => {
   const createIssue = async (issue) => {
     const issueRequest = await api.requests.issues.add(request.id, issue, token)
     if (issueRequest.isOk) {
-      addAlert('Issue reported', 'success')
       refreshRequest()
+      return addAlert('Issue reported', 'success')
     }
     addAlert('Error reporting issue', 'error')
     return issueRequest
@@ -40,10 +40,15 @@ export default () => {
       { status },
       token
     )
-    if (updateRequest.isOk) refreshRequest()
-    if (!updateRequest.isOk) addAlert('Unable to update request', 'error')
+
+    if (updateRequest.isOk) {
+      refreshRequest()
+      return addAlert('Updated Request', 'success')
+    }
+    return addAlert('Unable to update request', 'error')
   }
 
+  // TODO: handle partially successful calls intelligently
   const submitAdditionalDocuments = async ({
     irbAttachment,
     requesterMtaAttachment,
@@ -100,7 +105,61 @@ export default () => {
     if (!needsMta) updates.status = 'IN_FULFILLMENT'
 
     const updateRequest = await api.requests.update(request.id, updates, token)
-    if (updateRequest.isOk) refreshRequest()
+    if (updateRequest.isOk) {
+      refreshRequest()
+      return addAlert('Documents successfully updated', 'success')
+    }
+    return addAlert('Unable to update', 'error')
+  }
+
+  const rejectRequestWithReason = async (reason) => {
+    const updates = {
+      rejection_reason: reason,
+      status: 'REJECTED'
+    }
+    const rejectRequest = await api.requests.update(request.id, updates, token)
+    if (rejectRequest.isOk) {
+      refreshRequest()
+      return addAlert('Request Rejected', 'success')
+    }
+    return addAlert('Unable to reject request', 'error')
+  }
+
+  const markFulfilled = async (note) => {
+    const noteRequest = await api.requests.notes.add(request.id, note, token)
+    if (noteRequest.isOk) return updateStatus('FULFILLED')
+    return addAlert('Unable to add fulfillment note', 'error')
+  }
+
+  const submitExecutedMTA = async (executedMTA) => {
+    const updates = {}
+    if (executedMTA) {
+      const { mta_attachment: template } = request.material
+      const filename = `executed-${template.filename}`
+      const mtaRequest = await api.attachments.create(
+        {
+          filename,
+          file: executedMTA,
+          owned_by_org: request.material.organization.id
+        },
+        token
+      )
+      if (mtaRequest.isOk) {
+        updates.executed_mta_attachment = mtaRequest.response.id
+      } else {
+        return addAlert('Unable to upload executed MTA', 'error')
+      }
+    } else {
+      return addAlert('Please add executed MTA', 'error')
+    }
+
+    updates.status = 'IN_FULFILLMENT'
+
+    const updateRequest = await api.requests.update(request.id, updates, token)
+    if (updateRequest.isOk) {
+      refreshRequest()
+      return addAlert('Document successfully updated', 'success')
+    }
     return addAlert('Unable to update', 'error')
   }
 
@@ -113,6 +172,9 @@ export default () => {
     isRequester,
     isSharer,
     submitAdditionalDocuments,
+    submitExecutedMTA,
+    markFulfilled,
+    rejectRequestWithReason,
     createIssue,
     updateStatus
   }
