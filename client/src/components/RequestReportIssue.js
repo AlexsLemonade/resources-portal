@@ -7,7 +7,9 @@ export default () => {
   const {
     createIssue,
     request: {
-      organization: { name: teamName }
+      material: {
+        organization: { name: teamName }
+      }
     }
   } = useRequest()
   const [issue, setIssue] = React.useState('')
