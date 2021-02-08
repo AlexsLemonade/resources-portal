@@ -128,9 +128,8 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         serializer = MaterialSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        if not request.user.has_perm(
-            "add_resources", Organization.objects.get(pk=request.data["organization"])
-        ):
+        organization = Organization.objects.get(pk=request.data["organization"])
+        if not request.user.has_perm("add_resources", organization):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         if serializer.validated_data["imported"]:
@@ -159,6 +158,11 @@ class MaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
         if "id" in response.data:
             material = Material.objects.get(pk=response.data["id"])
+
+            # Associate grants from the organization to the material
+            material.grants.set(organization.grants.all())
+            response.data["grants"] = [grant.id for grant in material.grants.all()]
+
             send_notifications(
                 "MATERIAL_ADDED",
                 request.user,

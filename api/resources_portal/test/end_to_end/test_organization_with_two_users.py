@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from resources_portal.models import Notification, Organization, User
+from resources_portal.models import Material, Notification, Organization, User
 from resources_portal.test.utils import (
     MOCK_EMAIL,
     MOCK_GRANTS,
@@ -76,13 +76,22 @@ class TestOrganizationWithTwoUsers(APITestCase):
             "name": "Lab",
             "description": "My lab's organization.",
             "owner": {"id": prof.id},
-            "grants": [prof.grants.first().id],
         }
 
         response = self.client.post(reverse("organization-list"), organization_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         lab = Organization.objects.get(pk=response.data["id"])
+
+        # Prof associates one of his grants to the org.
+        grant_json = {"id": prof.grants.first().id}
+        response = self.client.post(
+            reverse("organizations-grants-list", args=[lab.id]), grant_json, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_GRANT")), 1
+        )
 
         # Prof invites Postdoc to join Lab
         self.client.force_authenticate(user=prof)
@@ -113,27 +122,7 @@ class TestOrganizationWithTwoUsers(APITestCase):
             len(Notification.objects.filter(notification_type="ORGANIZATION_INVITE")), 1
         )
 
-        # We currently allow adding to orgs without acceptance.
-        # # Postdoc accepts invitation to join Lab
-        # self.client.force_authenticate(user=post_doc)
-
-        # invitation_id = response.data["id"]
-        # response = self.client.patch(
-        #     reverse("invitation-detail", args=[invitation_id]), {"status": "ACCEPTED"}
-        # )
-
-        # self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-        # self.assertEqual(
-        #     len(
-        #         Notification.objects.filter(
-        #             notification_type="ORG_INVITE_ACCEPTED", email=prof.email
-        #         )
-        #     ),
-        #     1,
-        # )
-
-        # Prof lists resource under Lab
+        # Postdoc lists a resource under Lab on the Prof's behalf
         self.client.force_authenticate(user=prof)
 
         self.material_json["contact_user"] = prof.id
@@ -143,6 +132,10 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(len(Notification.objects.filter(notification_type="MATERIAL_ADDED")), 2)
+        self.assertEqual(len(response.json()["grants"]), 1)
+        # Double check that the relationship actually was created in the DB:
+        grants_on_material = Material.objects.get(id=response.json()["id"]).grants.all()
+        self.assertEqual(len(grants_on_material), 1)
 
         # Prof removes all notification settings
         self.client.force_authenticate(user=prof)
@@ -154,4 +147,4 @@ class TestOrganizationWithTwoUsers(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Final checks
-        self.assertEqual(len(Notification.objects.all()), 4)
+        self.assertEqual(len(Notification.objects.all()), 5)
