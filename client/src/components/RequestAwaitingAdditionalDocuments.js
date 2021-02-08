@@ -5,18 +5,26 @@ import RequestAwaitingAdditionalDocumentsForm from 'components/RequestAwaitingAd
 import useRequest from 'hooks/useRequest'
 
 export default () => {
-  const { request } = useRequest()
+  const { isRequester } = useRequest()
+
+  if (isRequester)
+    return (
+      <>
+        <Box pad={{ bottom: 'large' }}>
+          <Text margin={{ bottom: 'medium' }}>
+            Your request has been accepted on the condition that you provide the
+            following materials
+          </Text>
+          <RequestAwaitingAdditionalDocumentsList />
+        </Box>
+        <RequestAwaitingAdditionalDocumentsForm />
+      </>
+    )
 
   return (
-    <>
-      <Box pad={{ bottom: 'large' }}>
-        <Text margin={{ bottom: 'medium' }}>
-          Your request has been accepted on the condition that you provide the
-          following materials
-        </Text>
-        <RequestAwaitingAdditionalDocumentsList request={request} />
-      </Box>
-      <RequestAwaitingAdditionalDocumentsForm />
-    </>
+    <Box pad={{ bottom: 'large' }}>
+      <Text>Waiting for the requester to provide:</Text>
+      <RequestAwaitingAdditionalDocumentsList />
+    </Box>
   )
 }

@@ -1,14 +1,19 @@
 import React from 'react'
 import { Anchor, Text } from 'grommet'
 import { getReadable } from 'helpers/readableNames'
+import useRequest from 'hooks/useRequest'
 
-export default ({ request, requesterView = false }) => {
+export default () => {
   const {
-    requester,
-    material: { contact_user: contactUser }
-  } = request
+    isRequester,
+    request: {
+      payment_method: paymentMethod,
+      requester,
+      material: { contact_user: contactUser }
+    }
+  } = useRequest()
 
-  const reachOutTo = requesterView ? contactUser : requester
+  const reachOutTo = isRequester ? contactUser : requester
 
   return (
     <Text>
@@ -17,8 +22,7 @@ export default ({ request, requesterView = false }) => {
         label={reachOutTo.full_name}
         href={`mailto:${reachOutTo.email}`}
       />{' '}
-      to make arrangements for{' '}
-      {getReadable(request.payment_method).toLowerCase()}.
+      to make arrangements for {getReadable(paymentMethod).toLowerCase()}.
     </Text>
   )
 }

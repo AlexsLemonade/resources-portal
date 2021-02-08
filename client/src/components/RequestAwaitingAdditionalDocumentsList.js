@@ -3,14 +3,18 @@ import { Box, Text } from 'grommet'
 import { List, ListItem } from 'components/List'
 import DownloadAttachment from 'components/DownloadAttachment'
 import getRequestRequirements from 'helpers/getRequestRequirements'
+import useRequest from 'hooks/useRequest'
 
-export default ({ request }) => {
+export default () => {
+  const {
+    request: { material }
+  } = useRequest()
   const {
     needsIrb,
     needsMta,
     mtaAttachment,
     shippingRequirement: { needsPayment }
-  } = getRequestRequirements(request.material)
+  } = getRequestRequirements(material)
 
   return (
     <List margin={{ left: 'large' }}>

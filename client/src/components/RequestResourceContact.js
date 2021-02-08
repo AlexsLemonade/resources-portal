@@ -1,11 +1,12 @@
 import React from 'react'
 import { Anchor, Box, Button, Text } from 'grommet'
 import ResourceLink from 'components/ResourceLink'
+import AssignRequestSelect from 'components/AssignRequestSelect'
 import { ResourceTypeOrganisms } from 'components/resources/ResourceCard'
 import useRequest from 'hooks/useRequest'
 
 export default () => {
-  const { request } = useRequest()
+  const { request, isRequester } = useRequest()
   const {
     status,
     material: {
@@ -13,7 +14,11 @@ export default () => {
     }
   } = request
 
-  const canContact = !['FULFILLED', 'VERIFIED_FULFILLED'].includes(status)
+  const canContactSteps = ['OPEN', 'APPROVED', 'IN_FULFILLMENT']
+  const canContact = isRequester && canContactSteps.includes(status)
+  // TODO: when we figure out how requests from the same org should work
+  // we should revisit this
+  const canAssign = !isRequester
 
   return (
     <Box
@@ -41,6 +46,7 @@ export default () => {
             margin={{ bottom: 'small' }}
           />
         )}
+        {canAssign && <AssignRequestSelect request={request} />}
         <Text italic color="black-tint-40" textAlign="center">
           {request.human_readable_created_at}
         </Text>
