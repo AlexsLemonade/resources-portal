@@ -34,14 +34,14 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["count"], 1)
 
-    def test_get_fails_if_not_owner(self):
+    def test_get_fails_if_not_allowed(self):
         user = UserFactory()
         self.client.force_authenticate(user=user)
         url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 403)
 
-    def test_post_request_associates_a_material(self):
+    def test_post_grant_owner_associates_a_material(self):
         user = self.grant.user
         organization = self.grant.organizations.first()
 
@@ -58,25 +58,25 @@ class GrantMaterialsTestCase(APITestCase):
         self.assertEqual(response.status_code, 201)
         self.assertIn(material, self.grant.materials.all())
 
-    def test_post_fails_if_not_material_owner(self):
-        user = self.grant.user
-        organization = self.grant.organizations.first()
-
-        self.client.force_authenticate(user=user)
-
-        # Organization's owner is a new user by default.
-        material = MaterialFactory(contact_user=user, organization=organization)
-        url = reverse("grants-material-list", args=[self.grant.id])
-        response = self.client.post(url, data=model_to_dict(material))
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_post_fails_if_not_grant_owner(self):
+    def test_post_org_member_associates_a_material(self):
         organization = self.grant.organizations.first()
         self.client.force_authenticate(user=organization.owner)
 
         # Organization's owner is a new user by default.
         material = MaterialFactory(contact_user=organization.owner, organization=organization)
+        url = reverse("grants-material-list", args=[self.grant.id])
+        response = self.client.post(url, data=model_to_dict(material))
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_post_fails_if_user_not_in_org(self):
+        # This is the grant's user, but the user isn't actually in the org.
+        user = self.grant.user
+        organization = self.grant.organizations.first()
+
+        self.client.force_authenticate(user=user)
+
+        material = MaterialFactory(contact_user=user, organization=organization)
         url = reverse("grants-material-list", args=[self.grant.id])
         response = self.client.post(url, data=model_to_dict(material))
 
@@ -95,9 +95,22 @@ class GrantMaterialsTestCase(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_delete_request_disassociates_a_material(self):
+    def test_delete_owner_disassociates_a_material(self):
         self.client.force_authenticate(user=self.grant.user)
         material = self.grant.materials.first()
+        url = reverse("grants-material-detail", args=[self.grant.id, material.id])
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+        self.grant.refresh_from_db()
+        self.assertNotIn(material, self.grant.materials.all())
+        # Verify that the material was not deleted, just its relationship
+        Material.objects.get(pk=material.id)
+
+    def test_delete_org_member_disassociates_a_material(self):
+        material = self.grant.materials.first()
+        material.organization.grants.add(self.grant)
+        self.client.force_authenticate(user=material.organization.members.first())
         url = reverse("grants-material-detail", args=[self.grant.id, material.id])
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)

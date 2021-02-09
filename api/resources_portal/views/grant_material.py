@@ -9,19 +9,29 @@ from resources_portal.models import Grant, GrantMaterialAssociation, Material
 from resources_portal.serializers import MaterialRelationSerializer
 
 
-class CanAccessGrantAndMaterial(BasePermission):
+class CanAccessGrant(BasePermission):
     def has_permission(self, request, view):
         grant = Grant.objects.get(pk=view.kwargs["parent_lookup_grants"])
-        material = Material.objects.get(pk=request.data["id"])
 
-        # Check the grant here instead of with OwnsGrant because we
-        # need to query for the Grant here anyway so we may as well
-        # use it rather than querying for it a second time in
-        # OwnsGrant.
+        if request.user == grant.user:
+            return True
+
+        for organization in grant.organizations.all():
+            if request.user in organization.members.all():
+                return True
+
+        return False
+
+
+class CanAccessGrantAndMaterialOrIsOwner(BasePermission):
+    def has_permission(self, request, view):
+        grant = Grant.objects.get(pk=view.kwargs["parent_lookup_grants"])
+        material = Material.objects.get(pk=view.kwargs["pk"])
+
         return (
             request.user in material.organization.members.all()
             and grant in material.organization.grants.all()
-        )
+        ) or request.user == grant.user
 
 
 class CanAddMaterialToGrant(BasePermission):
@@ -29,10 +39,6 @@ class CanAddMaterialToGrant(BasePermission):
         grant = Grant.objects.get(pk=view.kwargs["parent_lookup_grants"])
         material = Material.objects.get(pk=request.data["id"])
 
-        # Check the grant here instead of with OwnsGrant because we
-        # need to query for the Grant here anyway so we may as well
-        # use it rather than querying for it a second time in
-        # OwnsGrant.
         return (
             request.user in material.organization.members.all()
             and grant in material.organization.grants.all()
@@ -52,10 +58,12 @@ class GrantMaterialViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
         return MaterialRelationSerializer
 
     def get_permissions(self):
-        if self.action == "create":
+        if self.action == "list":
+            permission_classes = [IsAuthenticated, CanAccessGrant]
+        elif self.action == "create":
             permission_classes = [IsAuthenticated, CanAddMaterialToGrant]
         else:
-            permission_classes = [IsAuthenticated, CanAccessGrantAndMaterial]
+            permission_classes = [IsAuthenticated, CanAccessGrantAndMaterialOrIsOwner]
 
         return [permission() for permission in permission_classes]
 
