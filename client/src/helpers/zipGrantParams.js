@@ -12,11 +12,13 @@ export default ({
     Array.isArray(grantYears)
 
   if (areArrays)
-    return grantTitles.map((title, index) => ({
-      title,
-      funder_id: grantFunderIds[index],
-      year: grantYears[index]
-    }))
+    return grantTitles
+      .map((title, index) => ({
+        title,
+        funder_id: grantFunderIds[index],
+        year: grantYears[index]
+      }))
+      .filter(({ title, funder_id: id }) => title && id)
 
   return [{ title: grantTitles, funder_id: grantFunderIds, year: grantYears }]
 }
