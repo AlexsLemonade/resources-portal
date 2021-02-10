@@ -12,11 +12,13 @@ import RequestAwaitingAdditionalDocuments from 'components/RequestAwaitingAdditi
 import RequestAwaitingMta from 'components/RequestAwaitingMta'
 import RequestInFulfillment from 'components/RequestInFulfillment'
 import RequestFulfilled from 'components/RequestFulfilled'
+import RequestInactivePrompt from 'components/RequestInactivePrompt'
 import ViewAllRequestDocuments from 'components/ViewAllRequestDocuments'
 import RequestVerifyFulfillment from 'components/RequestVerifyFulfillment'
 import RequestCancel from 'components/RequestCancel'
 import RequestReportIssue from 'components/RequestReportIssue'
 import useRequest from 'hooks/useRequest'
+import isDaysOld from 'helpers/isDaysOld'
 import hasRequestDocuments from 'helpers/hasRequestDocuments'
 import { getRequestProgressState } from 'helpers/getRequestStatus'
 import { getReadable } from 'helpers/readableNames'
@@ -40,9 +42,17 @@ export default () => {
 
   const { status } = request
 
+  const isStale =
+    isDaysOld(request.updated_at, 1) && currentStep !== 'FULFILLED'
+
   return (
     <Box pad={{ vertical: 'medium' }}>
       <RequestResourceContact />
+      {isStale && (
+        <Box pad={{ bottom: 'large' }} align="center">
+          <RequestInactivePrompt />
+        </Box>
+      )}
       <Box pad={{ bottom: 'medum' }} margin={{ bottom: 'large' }}>
         <Box margin={{ bottom: 'large' }}>
           <ProgressBar
