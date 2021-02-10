@@ -111,6 +111,7 @@ class GrantRelationSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
+            "year",
             "funder_id",
             "user",
             "organizations",
