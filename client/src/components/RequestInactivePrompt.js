@@ -36,6 +36,9 @@ export default () => {
       </InfoCard>
     )
 
+  // sharer doesnt need a warning if the requester has not responded
+  if (requiresActionRequester) return null
+
   return (
     <InfoCard type="Warning">
       <Text>
