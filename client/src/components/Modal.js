@@ -31,6 +31,7 @@ export const Modal = ({
               flex
               overflow="auto"
               height={{ min: 'min-content', max: '100vh' }}
+              width={{ min: '600px', max: '100vw' }}
               pad={{ vertical: 'large', horizontal: 'xlarge' }}
               gap="none"
               align="center"
@@ -41,7 +42,7 @@ export const Modal = ({
                   : undefined
               }
             >
-              <Box height={{ min: 'min-content' }}>
+              <Box width="full" height={{ min: 'min-content' }}>
                 {title && (
                   <Box
                     width="full"
