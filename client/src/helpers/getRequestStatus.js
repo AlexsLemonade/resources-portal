@@ -16,7 +16,7 @@ export const getRequestProgressState = (request) => {
   const states = ['OPEN']
   const willWaitIRB = request.material.needs_irb
   const willWaitMTA = request.material.needs_mta
-  const willWaitShipping = request.shipping_requirements
+  const willWaitShipping = request.material.shipping_requirement
 
   if (willWaitIRB || willWaitMTA || willWaitShipping) {
     states.push('AWAITING_ADDITIONAL_DOCUMENTS')
