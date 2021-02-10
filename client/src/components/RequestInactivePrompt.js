@@ -11,8 +11,6 @@ export default () => {
     requires_action_sharer: requiresActionSharer
   } = request
 
-  // this is the first match becuase when in_fullfillment
-  // both sharer and reqester are considered active
   if (isRequester && requiresActionSharer)
     return (
       <InfoCard>
