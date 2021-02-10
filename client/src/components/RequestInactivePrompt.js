@@ -7,13 +7,13 @@ import useRequest from 'hooks/useRequest'
 export default () => {
   const { request, isRequester } = useRequest()
   const {
-    is_active_requester: isActiveRequester,
-    is_active_sharer: isActiveSharer
+    requires_action_requester: requiresActionRequester,
+    requires_action_sharer: requiresActionSharer
   } = request
 
   // this is the first match becuase when in_fullfillment
   // both sharer and reqester are considered active
-  if (isRequester && isActiveSharer)
+  if (isRequester && requiresActionSharer)
     return (
       <InfoCard>
         <Text>
@@ -28,7 +28,7 @@ export default () => {
       </InfoCard>
     )
 
-  if (isRequester && isActiveRequester)
+  if (isRequester && requiresActionRequester)
     return (
       <InfoCard type="Warning">
         <Text>
