@@ -139,7 +139,11 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
 
     @property
     def frontend_URL(self):
-        return f"https://{settings.AWS_SES_DOMAIN}/account/requests/{self.id}"
+        return f"https://{settings.AWS_SES_DOMAIN}{self.fronted_path}"
+
+    @property
+    def frontend_path(self):
+        return f"/account/requests/{self.id}"
 
     def get_needs_shipping_info(self, address=None, payment_method=None):
         shipping_requirement = self.material.shipping_requirement
