@@ -81,7 +81,7 @@ const Requests = () => {
                   requests={received}
                 />
                 <RequestOverviewCard
-                  label="Acitve Sent Requests"
+                  label="Active Sent Requests"
                   requests={sent}
                 />
                 <RequestOverviewCard

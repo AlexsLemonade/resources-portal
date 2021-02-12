@@ -1,24 +1,16 @@
 import Document, { Head, Main, NextScript } from 'next/document'
 import React from 'react'
-// Import styled components ServerStyleSheet
 import { ServerStyleSheet } from 'styled-components'
 
-// thanks to https://dev.to/aprietof/nextjs--styled-components-the-really-simple-guide----101c
 export default class MyDocument extends Document {
+  // set up styled components
   static getInitialProps({ renderPage }) {
-    // Step 1: Create an instance of ServerStyleSheet
     const sheet = new ServerStyleSheet()
-
-    // Step 2: Retrieve styles from components in the page
     const page = renderPage((App) => (props) =>
       // eslint-disable-next-line react/jsx-props-no-spreading
       sheet.collectStyles(<App {...props} />)
     )
-
-    // Step 3: Extract the styles as <style> tags
     const styleTags = sheet.getStyleElement()
-
-    // Step 4: Pass styleTags as a prop
     return { ...page, styleTags }
   }
 
@@ -27,7 +19,26 @@ export default class MyDocument extends Document {
       <html lang="en-US">
         <Head>
           <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-          {/* Step 5: Output the styles in the head  */}
+          {/* Google Analytics */}
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=G-BYH3X5WS0V"
+          />
+          <script
+            async
+            dangerouslySetInnterHTML={{
+              __html:
+                "window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);} gtag('js', new Date());gtag('config', 'G-BYH3X5WS0V');"
+            }}
+          />
+          {/* Hotjar */}
+          <script
+            async
+            dangerouslySetInnterHTML={{
+              __html:
+                "(function(h,o,t,j,a,r){h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};h._hjSettings={hjid:2241444,hjsv:6};a=o.getElementsByTagName('head')[0];r=o.createElement('script');r.async=1;r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;a.appendChild(r);})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');"
+            }}
+          />
           {this.props.styleTags}
         </Head>
         <body>

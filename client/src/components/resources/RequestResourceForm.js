@@ -19,6 +19,7 @@ import AddressSelect from 'components/AddressSelect'
 import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { addressAttributes } from 'schemas/address'
 import { getReadable } from 'helpers/readableNames'
+import getRequestRequirements from 'helpers/getRequestRequirements'
 
 const SaveAddressCheckBox = styled(CheckBox)`
   margin-left: 0;
@@ -27,13 +28,18 @@ const SaveAddressCheckBox = styled(CheckBox)`
 export default ({ resource }) => {
   const router = useRouter()
   const {
-    mta_attachment: mtaAttachment,
-    needs_abstract: needsAbstract,
-    shipping_requirement: shippingRequirement
-  } = resource
+    mtaAttachment,
+    needsMta,
+    needsIrb,
+    needsAbstract,
+    hasShippingRequirement,
+    shippingRequirement: { restrictions, needsShippingAddress },
+    hasRequirements
+  } = getRequestRequirements(resource)
 
-  const { needs_shipping_address: needsShippingAddress, restrictions } =
-    shippingRequirement || {}
+  const {
+    organization: { name: teamName }
+  } = resource
 
   const {
     setAttribute,
@@ -60,6 +66,12 @@ export default ({ resource }) => {
         background="white"
         pad={{ vertical: 'large', horizontal: 'xlarge' }}
       >
+        {!hasRequirements && (
+          <Text italic color="black-tint-40">
+            {teamName} does not require you to submit any materials to make a
+            request.
+          </Text>
+        )}
         {needsAbstract && (
           <Box margin={{ bottom: 'medium' }}>
             <FormField
@@ -81,7 +93,24 @@ export default ({ resource }) => {
             </FormField>
           </Box>
         )}
-        {mtaAttachment && (
+        {needsIrb && (
+          <Box margin={{ bottom: 'medium' }}>
+            <Text>Internal Review Board Approval (IRB)</Text>
+            <Box
+              direction="row"
+              gap="small"
+              align="center"
+              margin={{ vertical: 'small' }}
+            >
+              <Icon name="Info" color="info" size="16px" />
+              <Text size="small">
+                You will be asked to provide an IRB approval after the request
+                is accepted.
+              </Text>
+            </Box>
+          </Box>
+        )}
+        {needsMta && (
           <Box margin={{ bottom: 'medium' }}>
             <Text>Material Transfer Agreement (MTA)</Text>
             <Box
@@ -93,7 +122,7 @@ export default ({ resource }) => {
               <Icon name="Info" color="info" size="16px" />
               <Text size="small">
                 Please download the MTA and go through it. Once your request is
-                approved, you will be asked to sign the MTA and upload it.
+                accepted, you will be asked to sign the MTA and upload it.
               </Text>
             </Box>
             <Box direction="row" gap="small" align="center">
@@ -106,7 +135,7 @@ export default ({ resource }) => {
             </Box>
           </Box>
         )}
-        {shippingRequirement && (
+        {hasShippingRequirement && (
           <>
             <HeaderRow label="Shipping Information" />
             {restrictions && restrictions.length > 0 && (
