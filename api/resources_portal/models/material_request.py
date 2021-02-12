@@ -139,7 +139,7 @@ class MaterialRequest(SafeDeleteModel, ComputedFieldsModel):
 
     @property
     def frontend_URL(self):
-        return f"https://{settings.AWS_SES_DOMAIN}{self.fronted_path}"
+        return f"https://{settings.AWS_SES_DOMAIN}{self.frontend_path}"
 
     @property
     def frontend_path(self):
