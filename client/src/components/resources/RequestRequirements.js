@@ -1,7 +1,8 @@
 import React from 'react'
 import { Anchor, Box, Text } from 'grommet'
 import Icon from 'components/Icon'
-import { List, ListItem } from '../List'
+import { List, ListItem } from 'components/List'
+import getRequestRequirements from 'helpers/getRequestRequirements'
 
 const ReviewRequestRequirement = ({ title, children }) => {
   return (
@@ -18,23 +19,22 @@ const ReviewRequestRequirement = ({ title, children }) => {
 
 export const ReviewRequestRequirements = ({ resource }) => {
   const {
-    mta_attachment: mtaAttachment,
-    needs_abstract: needsAbstract,
-    needs_irb: needsIRB,
-    shipping_requirement: shippingRequirement
-  } = resource
+    mtaAttachment,
+    needsAbstract,
+    needsIRB,
+    hasShippingRequirement,
+    shippingRequirement: {
+      needsPayment,
+      needsShippingAddress,
+      acceptsShippingCode,
+      acceptsReimbursement,
+      acceptsOtherPaymentMethods,
+      sharerPaysShipping,
+      restrictions
+    }
+  } = getRequestRequirements(resource)
 
-  const {
-    needs_payment: needsPayment,
-    needs_shipping_address: needsShippingAddress,
-    sharer_pays_shipping: sharerPaysShipping,
-    accepts_shipping_code: acceptsShippingCode,
-    accepts_reimbursement: acceptsReimbursement,
-    accepts_other_payment_methods: acceptsOtherPaymentMethods,
-    restrictions
-  } = shippingRequirement || {}
-
-  const hasBeforeRequestRequirements = needsAbstract || !!shippingRequirement
+  const hasBeforeRequestRequirements = needsAbstract || !!hasShippingRequirement
   const hasAfterRequestRequirements =
     !!mtaAttachment || needsIRB || sharerPaysShipping === false
   const hasRequestRequirements =
@@ -57,7 +57,7 @@ export const ReviewRequestRequirements = ({ resource }) => {
       )}
       {needsIRB && <ReviewRequestRequirement title="IRB" />}
       {needsAbstract && <ReviewRequestRequirement title="Abstract" />}
-      {shippingRequirement && (
+      {hasShippingRequirement && (
         <ReviewRequestRequirement title="Shipping Information">
           <Box>
             {needsShippingAddress && (
@@ -112,28 +112,38 @@ export const ReviewRequestRequirements = ({ resource }) => {
 
 export const RequestRequirements = ({ resource, oneSection = false }) => {
   const {
-    mta_attachment: mtaAttachment,
-    needs_abstract: needsAbstract,
-    needs_irb: needsIRB,
-    shipping_requirement: shippingRequirement
+    organization: { name: teamName }
   } = resource
 
   const {
-    needs_payment: needsPayment,
-    needs_shipping_address: needsShippingAddress,
-    sharer_pays_shipping: sharerPaysShipping,
-    accepts_shipping_code: acceptsShippingCode,
-    accepts_reimbursement: acceptsReimbursement,
-    accepts_other_payment_methods: acceptsOtherPaymentMethods,
-    restrictions
-  } = shippingRequirement || {}
+    hasRequirements,
+    mtaAttachment,
+    needsAbstract,
+    needsIRB,
+    hasShippingRequirement,
+    shippingRequirement: {
+      needsPayment,
+      needsShippingAddress,
+      acceptsShippingCode,
+      acceptsReimbursement,
+      acceptsOtherPaymentMethods,
+      sharerPaysShipping,
+      restrictions
+    }
+  } = getRequestRequirements(resource)
 
-  const hasBeforeRequestRequirements = needsAbstract || !!shippingRequirement
+  const hasBeforeRequestRequirements = needsAbstract || !!hasShippingRequirement
   const hasAfterRequestRequirements =
     !!mtaAttachment || needsIRB || sharerPaysShipping === false
 
   return (
     <Box gap="medium">
+      {!hasRequirements && (
+        <Text italic color="black-tint-40">
+          {teamName} does not require you to submit any materials to make a
+          request.
+        </Text>
+      )}
       {hasBeforeRequestRequirements && (
         <>
           {!oneSection && (
@@ -153,7 +163,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
                   text="A brief description of your project."
                 />
               )}
-              {shippingRequirement && (
+              {hasShippingRequirement && (
                 <ListItem title="Shipping Information">
                   <List margin={{ top: '8px' }}>
                     {needsShippingAddress && (
@@ -203,7 +213,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
                   </Box>
                 </ListItem>
               )}
-              {shippingRequirement && (
+              {hasShippingRequirement && (
                 <ListItem title="Shipping Information">
                   <List margin={{ top: '8px' }}>
                     {needsPayment && (
