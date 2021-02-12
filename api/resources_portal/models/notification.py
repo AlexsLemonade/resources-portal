@@ -138,13 +138,16 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         if self.organization:
             props["organization_name"] = self.organization.name
             props["organization_url"] = self.organization.frontend_URL
+            props["organization_path"] = self.organization.frontend_path
             props["organization_owner"] = self.organization.owner.full_name
         if self.material:
             props["material_category"] = self.material.category
             props["material_name"] = self.material.title
             props["material_url"] = self.material.frontend_URL
+            props["material_path"] = self.material.frontend_path
         if self.material_request:
             props["request_url"] = self.material_request.frontend_URL
+            props["request_path"] = self.material_request.frontend_path
             props["requester_name"] = self.material_request.requester.full_name
             props["assigned_to"] = self.material_request.assigned_to.full_name
             props["rejection_reason"] = self.material_request.rejection_reason
