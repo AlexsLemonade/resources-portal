@@ -46,7 +46,7 @@ NOTIFICATION_CONFIGS = {
             "You have been assigned to a new request for {material_category}, "
             " {material_name}.\n\nView request details ({request_url})"
         ),
-        "markdown": "You have been assigned to a new [request]({request_url}) for [{material_name}]({material_url}).",
+        "markdown": "You have been assigned to a new [request]({request_path}) for [{material_name}]({material_path}).",
         "required_associations": [
             "associated_user",
             "material",
@@ -65,8 +65,8 @@ NOTIFICATION_CONFIGS = {
             "\nView request details ({request_url})"
         ),
         "markdown": (
-            "[{organization_name}]({organization_url}) received a"
-            " new [request]({request_url}) for [{material_name}]({material_url})."
+            "[{organization_name}]({organization_path}) received a"
+            " new [request]({request_path}) for [{material_name}]({material_path})."
         ),
         "required_associations": [
             "associated_user",
@@ -87,8 +87,8 @@ NOTIFICATION_CONFIGS = {
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "markdown": (
-            "You have been assigned to a [request]({request_url}) for"
-            " [{material_name}]({material_url}) from {requester_name}."
+            "You have been assigned to a [request]({request_path}) for"
+            " [{material_name}]({material_path}) from {requester_name}."
         ),
         "required_associations": [
             "associated_user",
@@ -107,8 +107,8 @@ NOTIFICATION_CONFIGS = {
             " {material_name} from {requester_name}.\n\nView request details ({request_url})"
         ),
         "markdown": (
-            "{other_name} has been assigned to a [request]({request_url})"
-            " for [{material_name}]({material_url}) from {requester_name}"
+            "{other_name} has been assigned to a [request]({request_path})"
+            " for [{material_name}]({material_path}) from {requester_name}"
         ),
         "required_associations": [
             "associated_user",
@@ -133,8 +133,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details ({request_url})"
         ),
         "markdown": (
-            "{you_or_other_name_upper} accepted a [request]({request_url}) for"
-            " [{material_name}]({material_url}) from {requester_name}.\n\nWaiting"
+            "{you_or_other_name_upper} accepted a [request]({request_path}) for"
+            " [{material_name}]({material_path}) from {requester_name}.\n\nWaiting"
             " for {requester_name} to provide the following information:\n\n{required_info_plain}"
         ),
         "required_associations": [
@@ -159,8 +159,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details ({request_url})"
         ),
         "markdown": (
-            "{you_or_other_name_upper} rejected a [request]({request_url}) for"
-            " [{material_name}]({material_url}) for the below reason:\n\n{rejection_reason}."
+            "{you_or_other_name_upper} rejected a [request]({request_path}) for"
+            " [{material_name}]({material_path}) for the below reason:\n\n{rejection_reason}."
         ),
         "required_associations": [
             "associated_user",
@@ -179,7 +179,7 @@ NOTIFICATION_CONFIGS = {
             "{requester_name} cancelled a request for {material_category},"
             " {material_name}\n\nView request details ({request_url})"
         ),
-        "markdown": "{requester_name} cancelled a [request]({request_url}) for [{material_name}]({material_url}).",
+        "markdown": "{requester_name} cancelled a [request]({request_path}) for [{material_name}]({material_path}).",
         "required_associations": [
             "associated_user",
             "material",
@@ -198,8 +198,8 @@ NOTIFICATION_CONFIGS = {
             " {material_category}, {material_name}:\n{provided_info_plain}\n\nReview items ({request_url})."
         ),
         "markdown": (
-            "{requester_name} provided the following required items for a [request]({request_url})"
-            " for [{material_name}]({material_url}):\n\n{provided_info_plain}"
+            "{requester_name} provided the following required items for a [request]({request_path})"
+            " for [{material_name}]({material_path}):\n\n{provided_info_plain}"
         ),
         "required_associations": [
             "associated_user",
@@ -225,8 +225,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nUpload fully executed MTA. ({request_url})."
         ),
         "markdown": (
-            "{requester_name} provided the following additional documents for a [request]({request_url}) for"
-            " [{material_name}]({material_url})\n\n - MTA signed by {requester_name}."
+            "{requester_name} provided the following additional documents for a [request]({request_path}) for"
+            " [{material_name}]({material_path})\n\n - MTA signed by {requester_name}."
             "\n\nPlease sign and upload the fully executed MTA."
         ),
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
@@ -253,8 +253,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{you_or_other_name_upper} uploaded the fully executed MTA for a [request]({request_url}) for"
-            " [{material_name}]({material_url}) from {requester_name}."
+            "{you_or_other_name_upper} uploaded the fully executed MTA for a [request]({request_path}) for"
+            " [{material_name}]({material_path}) from {requester_name}."
             "\n\nPlease make arrangements to send the {material_category} to {requester_name}."
         ),
         "required_associations": [
@@ -278,8 +278,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details ({request_url})"
         ),
         "markdown": (
-            "{you_or_other_name_upper} accepted a [request]({request_url})"
-            " for [{material_name}]({material_url}) from {requester_name}."
+            "{you_or_other_name_upper} accepted a [request]({request_path})"
+            " for [{material_name}]({material_path}) from {requester_name}."
         ),
         "required_associations": [
             "associated_user",
@@ -303,8 +303,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{you_or_other_name_upper} marked a [request]({request_url}) for"
-            " [{material_name}]({material_url}) from {requester_name} as Fulfilled."
+            "{you_or_other_name_upper} marked a [request]({request_path}) for"
+            " [{material_name}]({material_path}) from {requester_name} as Fulfilled."
         ),
         "required_associations": [
             "associated_user",
@@ -320,7 +320,7 @@ NOTIFICATION_CONFIGS = {
         "CTA": "View Request",
         "CTA_link_field": "material_request",
         "plain_text_email": "{requester_name} confirmed receipt of {material_category}, {material_name}.",
-        "markdown": "{requester_name} confirmed [receipt]({request_url}) of [{material_name}]({material_url}).",
+        "markdown": "{requester_name} confirmed [receipt]({request_path}) of [{material_name}]({material_path}).",
         "required_associations": [
             "associated_user",
             "material",
@@ -343,8 +343,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{requester_name} has reported an issue with a fulfilled [request]({requst_url})"
-            " for [{material_name}]({material_url}).\n\n{issue_description}"
+            "{requester_name} has reported an issue with a fulfilled [request]({requst_path})"
+            " for [{material_name}]({material_path}).\n\n{issue_description}"
         ),
         "required_associations": [
             "associated_user",
@@ -370,8 +370,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nProvide Additional Items. ({request_url})."
         ),
         "markdown": (
-            "{organization_name} has accepted your [request]({request_url}) for"
-            " [{material_name}]({material_url}) on the condition that you provide"
+            "{organization_name} has accepted your [request]({request_path}) for"
+            " [{material_name}]({material_path}) on the condition that you provide"
             " the following items:\n\n{required_info_plain}"
         ),
         "attachments": ["MATERIAL_REQUESTER_SIGNED_MTA"],
@@ -396,8 +396,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{organization_name} has accepted your [request]({request_url}) for"
-            " [{material_name}]({material_url}) and is working to fulfill your request."
+            "{organization_name} has accepted your [request]({request_path}) for"
+            " [{material_name}]({material_path}) and is working to fulfill your request."
         ),
         "required_associations": [
             "associated_user",
@@ -420,8 +420,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{organization_name} has uploaded the fully executed MTA for your [request]({request_url})"
-            " for [{material_name}]({material_url}) and is working to fulfill your request."
+            "{organization_name} has uploaded the fully executed MTA for your [request]({request_path})"
+            " for [{material_name}]({material_path}) and is working to fulfill your request."
         ),
         "attachments": ["MATERIAL_EXECUTED_MTA"],
         "required_associations": [
@@ -445,8 +445,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView fulfillment notes. ({request_url})."
         ),
         "markdown": (
-            "{organization_name} marked your [request]({request_url}) for"
-            " [{material_name}]({material_url}) as fulfilled.\n\nPlease"
+            "{organization_name} marked your [request]({request_path}) for"
+            " [{material_name}]({material_path}) as fulfilled.\n\nPlease"
             " view fulfilment notes for details."
         ),
         "required_associations": [
@@ -470,8 +470,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{organization_name} rejected your [request]({request_url}) for"
-            " [{material_name}]({material_url}) for the below reason:\n\n{rejection_reason}"
+            "{organization_name} rejected your [request]({request_path}) for"
+            " [{material_name}]({material_path}) for the below reason:\n\n{rejection_reason}"
         ),
         "required_associations": [
             "associated_user",
@@ -489,7 +489,7 @@ NOTIFICATION_CONFIGS = {
             "You cancelled your request for {material_category}, {material_name}."
             "\n\nView request details. ({request_url})."
         ),
-        "markdown": "You cancelled your [request]({request_url}) for [{material_name}]({material_url}).",
+        "markdown": "You cancelled your [request]({request_path}) for [{material_name}]({material_path}).",
         "required_associations": [
             "associated_user",
             "material",
@@ -512,8 +512,8 @@ NOTIFICATION_CONFIGS = {
             "Below is the message they received from you for your records.\n\n{message}"
         ),
         "markdown": (
-            "Your [request]({request_url}) for {material_category},"
-            " [{material_name}]({material_url}) has been escalated to the grants team.\n\n"
+            "Your [request]({request_path}) for {material_category},"
+            " [{material_name}]({material_path}) has been escalated to the grants team.\n\n"
             "ALSF Grants team is looking into this and will be in touch with you soon.\n\n"
             "Below is the message they received from you for your records.\n\n{message}"
         ),
@@ -536,8 +536,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView resource. ({material_url})."
         ),
         "markdown": (
-            "{other_name} added a new [{material_name}]({material_url})"
-            " to [{organization_name}]({organization_url})."
+            "{other_name} added a new [{material_name}]({material_path})"
+            " to [{organization_name}]({organization_path})."
         ),
         "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
@@ -554,8 +554,8 @@ NOTIFICATION_CONFIGS = {
             "\n\nView archived resource. ({material_url})."
         ),
         "markdown": (
-            "{other_name} archived [{material_name}]({material_url})"
-            " from [{organization_name}]({organization_url})."
+            "{other_name} archived [{material_name}]({material_path})"
+            " from [{organization_name}]({organization_path})."
         ),
         "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
@@ -574,7 +574,7 @@ NOTIFICATION_CONFIGS = {
         ),
         "markdown": (
             "{other_name} deleted [{material_name}]({material_name})"
-            " from [{organization_name}]({organization_url})."
+            " from [{organization_name}]({organization_path})."
         ),
         "required_associations": ["associated_user", "material", "organization",],
         "send_to_organization": True,
@@ -588,7 +588,7 @@ NOTIFICATION_CONFIGS = {
             "{other_name} was added to {organization_name}."
             "\n\nView members. ({organization_url})."
         ),
-        "markdown": "{other_name} was added to [{organization_name}]({organization_url}).",
+        "markdown": "{other_name} was added to [{organization_name}]({organization_path}).",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
         "send_to_primary_user": False,
@@ -607,7 +607,7 @@ NOTIFICATION_CONFIGS = {
             "\n\nManage team. ({organization_url})."
         ),
         "markdown": (
-            "{other_name} has made you the owner of [{organization_name}]({organization_url})."
+            "{other_name} has made you the owner of [{organization_name}]({organization_path})."
             "\n\nYou can now add new team members and remove members and resources."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -622,7 +622,7 @@ NOTIFICATION_CONFIGS = {
             "{other_name} is now the owner of {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
-        "markdown": "{other_name} is now the owner of [{organization_name}]({organization_url}).",
+        "markdown": "{other_name} is now the owner of [{organization_name}]({organization_path}).",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
         "send_to_associated_user": False,
@@ -631,7 +631,7 @@ NOTIFICATION_CONFIGS = {
         "subject": "{organization_name}: Member left team",
         "body": "{other_name} left {organization_name}.",
         "plain_text_email": "{other_name} left {organization_name}",
-        "markdown": "{other_name} left [{organization_name}]({organization_url}).",
+        "markdown": "{other_name} left [{organization_name}]({organization_path}).",
         "required_associations": ["associated_user", "organization",],
         "send_to_organization": True,
     },
@@ -649,7 +649,7 @@ NOTIFICATION_CONFIGS = {
             "\n\nView team grants. ({organization_url})."
         ),
         "markdown": (
-            "{other_name} linked a new grant {grant_name} with [{organization_name}]({organization_url})."
+            "{other_name} linked a new grant {grant_name} with [{organization_name}]({organization_path})."
             "\n\nTeam members can now add resources associated with the grant."
         ),
         "required_associations": ["associated_user", "organization",],
@@ -664,7 +664,7 @@ NOTIFICATION_CONFIGS = {
             "{organization_owner} has added you to their team, {organization_name}."
             "\n\nView team. ({organization_url})."
         ),
-        "markdown": "{organization_owner} has added you to their team, [{organization_name}]({organization_url}).",
+        "markdown": "{organization_owner} has added you to their team, [{organization_name}]({organization_path}).",
         "required_associations": ["associated_user", "organization",],
         "always_send": True,
     },
