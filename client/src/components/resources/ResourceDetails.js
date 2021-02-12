@@ -3,10 +3,10 @@ import { getReadable } from 'helpers/readableNames'
 import { getResourceData } from 'helpers/getResourceData'
 import { HeaderRow } from 'components/HeaderRow'
 import DetailsTable from 'components/DetailsTable'
-import configs from './configs'
+import { getDetails } from 'components/resources/configs'
 
 export const ResourceDetails = ({ resource }) => {
-  const { details } = configs[resource.category]
+  const details = getDetails(resource)
   return (
     <>
       {details.map((detail) => (

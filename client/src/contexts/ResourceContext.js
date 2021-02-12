@@ -2,7 +2,7 @@ import React from 'react'
 import { useLocalStorage } from 'hooks/useLocalStorage'
 import api from 'api'
 import { useUser } from 'hooks/useUser'
-import configs, { formDefaults } from 'components/resources/configs'
+import configs, { getDetails, formDefaults } from 'components/resources/configs'
 import { getSchema } from 'schemas/material'
 import {
   isSupportedImportSource,
@@ -104,13 +104,8 @@ export const ResourceContextProvider = ({
       (updatedCategory || updatedImported || updatedImportSource) &&
       configRef.current
     ) {
-      if (resource.import_source) {
-        setForm([
-          ...configRef.current.importForm(resource.import_source),
-          ...formDefaults
-        ])
-      } else if (resource.category) {
-        setForm([...configRef.current.listForm, ...formDefaults])
+      if (resource.import_source || resource.category) {
+        setForm([...getDetails(resource), ...formDefaults])
       }
     }
 
