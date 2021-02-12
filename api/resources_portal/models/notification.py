@@ -75,8 +75,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
     email = models.EmailField(blank=False, null=True)
     email_delivered_at = models.DateTimeField(blank=False, null=True)
 
-    @computed(models.TextField(blank=False, null=True))
-    def text_body(self):
+    def markdown(self):
         props = self.get_formatting_props()
         return FRONTEND_NOTIFICATIONS[self.notification_type]["body"].format(**props)
 
