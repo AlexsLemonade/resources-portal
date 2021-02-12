@@ -10,21 +10,23 @@ export const useNotifications = () => {
   )
 
   const fetchNotifications = async () => {
-    if (!isLoggedIn) return {}
+    if (!isLoggedIn) return []
     const notificationRequest = await api.users.notifications.list(
       user.id,
       token
     )
     if (notificationRequest.isOk && notificationRequest.response) {
-      const retrievedNotifications = notificationRequest.response.results
-      return retrievedNotifications
+      const {
+        response: { results: notifications }
+      } = notificationRequest
+      return notifications
     }
 
-    return {}
+    return []
   }
 
   const fetchNewNotifications = async () => {
-    if (!isLoggedIn) return {}
+    if (!isLoggedIn) return []
 
     const firstView = user.viewed_notifications_at === null
 
@@ -38,12 +40,14 @@ export const useNotifications = () => {
         )
 
     if (notificationRequest.isOk && notificationRequest.response) {
-      const retrievedNotifications = notificationRequest.response.results
-      setNotificationCount(retrievedNotifications.length)
-      return retrievedNotifications
+      const {
+        response: { results: notifications }
+      } = notificationRequest
+      setNotificationCount(notifications.length)
+      return notifications
     }
 
-    return {}
+    return []
   }
 
   const getLastNotificationDate = (notifications) => {
