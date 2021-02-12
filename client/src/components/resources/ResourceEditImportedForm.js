@@ -16,7 +16,8 @@ export default () => {
     contactUserOptions,
     attributeHasError,
     fetched,
-    importAttribute
+    importAttribute,
+    optionalAttributes = []
   } = useResourceForm()
 
   return (
@@ -43,6 +44,7 @@ export default () => {
               attribute={attribute}
               contactUserOptions={contactUserOptions}
               error={attributeHasError(attribute)}
+              optionalAttributes={optionalAttributes}
               disabled={disableImportAttribute(attribute, importAttribute)}
             />
           ))}
