@@ -24,7 +24,7 @@ class NotificationSerializer(serializers.ModelSerializer):
             "associated_user",
             "organization",
             "message",
-            "text_body",
+            "markdown",
             "grant",
             "material",
             "material_request",
@@ -35,7 +35,7 @@ class NotificationSerializer(serializers.ModelSerializer):
             "email_delivered_at",
             "created_at",
         )
-        read_only_fields = ("id", "created_by", "created_at", "updated_at")
+        read_only_fields = fields
 
     notified_user = UserRelationSerializer(read_only=True)
     associated_user = UserRelationSerializer(read_only=True)
