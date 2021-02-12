@@ -39,7 +39,7 @@ const importedCategories = {
   CELL_LINE: object({
     cell_line_name: string().required(),
     tissue: string().required(),
-    disease: string().required(),
+    disease: string(),
     age: string(),
     sex: string(),
     ethnicity: string(),
