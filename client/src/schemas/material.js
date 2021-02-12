@@ -53,7 +53,7 @@ const importedCategories = {
     purpose: string(),
     number_of_available_samples: string(),
     gene_insert_name: string().required(),
-    relevant_mutations: string().required(),
+    relevant_mutations: string(),
     additional_info: string()
   }),
   PROTOCOL: object({
