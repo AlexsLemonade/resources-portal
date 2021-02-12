@@ -18,6 +18,7 @@ export default class MyDocument extends Document {
     return (
       <html lang="en-US">
         <Head>
+          <link rel="icon" href="/favicon.ico" type="image/x-icon" />
           {/* Google Analytics */}
           <script
             async
