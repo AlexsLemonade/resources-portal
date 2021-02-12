@@ -19,12 +19,11 @@ from resources_portal.emailer import (
     TERMS_OF_USE_URL,
     send_mail,
 )
-from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
-from resources_portal.models.frontend_notifications_config import FRONTEND_NOTIFICATIONS
 from resources_portal.models.grant import Grant
 from resources_portal.models.material import Material
 from resources_portal.models.material_request import MaterialRequest
 from resources_portal.models.material_request_issue import MaterialRequestIssue
+from resources_portal.models.notifications_config import NOTIFICATION_CONFIGS
 from resources_portal.models.organization import Organization
 from resources_portal.models.user import User
 from resources_portal.utils import pretty_date
@@ -46,7 +45,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         get_latest_by = "created_at"
         ordering = ["created_at", "id"]
 
-    NOTIFICATION_TYPES = tuple((key, key) for key in EMAIL_NOTIFICATIONS.keys())
+    NOTIFICATION_TYPES = tuple((key, key) for key in NOTIFICATION_CONFIGS.keys())
 
     objects = SafeDeleteManager()
     deleted_objects = SafeDeleteDeletedManager()
@@ -77,7 +76,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
 
     def markdown(self):
         props = self.get_formatting_props()
-        return FRONTEND_NOTIFICATIONS[self.notification_type]["body"].format(**props)
+        return NOTIFICATION_CONFIGS[self.notification_type]["markdown"].format(**props)
 
     @computed(models.BooleanField(blank=False, null=True))
     def email_delivered(self):
@@ -103,8 +102,8 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
                 )
             )
             or (
-                "always_send" in EMAIL_NOTIFICATIONS[self.notification_type]
-                and EMAIL_NOTIFICATIONS[self.notification_type]["always_send"]
+                "always_send" in NOTIFICATION_CONFIGS[self.notification_type]
+                and NOTIFICATION_CONFIGS[self.notification_type]["always_send"]
             )
             or (
                 # Special case for this because it's always sent if
@@ -163,7 +162,7 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
     def get_email_dict(self):
         props = self.get_formatting_props()
 
-        notification_config = EMAIL_NOTIFICATIONS[self.notification_type]
+        notification_config = NOTIFICATION_CONFIGS[self.notification_type]
 
         body = notification_config["body"].format(**props)
 
@@ -207,7 +206,7 @@ def validate_associations(sender, instance=None, created=False, **kwargs):
     if not instance.notification_type:
         raise ValidationError("Notifications must have notification_type set.")
 
-    for association in EMAIL_NOTIFICATIONS[instance.notification_type]["required_associations"]:
+    for association in NOTIFICATION_CONFIGS[instance.notification_type]["required_associations"]:
         if not getattr(instance, association):
             raise ValidationError(
                 f"Notifications of type {instance.notification_type} must have {association} set."
