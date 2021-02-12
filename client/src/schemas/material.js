@@ -40,7 +40,6 @@ const importedCategories = {
     cell_line_name: string().required(),
     tissue: string().required(),
     disease: string().required(),
-    number_of_available_cell_lines: string(),
     age: string(),
     sex: string(),
     ethnicity: string(),
