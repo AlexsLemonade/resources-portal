@@ -7,7 +7,7 @@ from resources_portal.models import (
     Organization,
     User,
 )
-from resources_portal.models.email_notifications_config import EMAIL_NOTIFICATIONS
+from resources_portal.models.notifications_config import NOTIFICATION_CONFIGS
 
 
 def send_notifications(
@@ -21,7 +21,7 @@ def send_notifications(
     material_request_issue: MaterialRequestIssue = None,
     grant: Grant = None,
 ):
-    notification_config = EMAIL_NOTIFICATIONS[notification_type]
+    notification_config = NOTIFICATION_CONFIGS[notification_type]
     recipients = set()
 
     # If send_to_associated_user = False, and the primary user is the

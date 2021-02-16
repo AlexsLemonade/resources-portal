@@ -12,7 +12,7 @@ const Notifications = () => {
   const { refreshUser, user, token } = useUser()
   const { getLastNotificationDate, fetchNotifications } = useNotifications()
   const [didUpdateNotifs, setdidUpdateNotifs] = React.useState(false)
-  const [notifications, setNotifications] = React.useState([])
+  const [notifications, setNotifications] = React.useState()
 
   React.useEffect(() => {
     const updateNotifsViewed = async () => {

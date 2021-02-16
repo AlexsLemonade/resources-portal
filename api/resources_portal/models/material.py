@@ -98,15 +98,18 @@ class Material(SafeDeleteModel):
 
     @property
     def frontend_URL(self):
-        return f"https://{settings.AWS_SES_DOMAIN}/resources/{self.id}"
+        return f"https://{settings.AWS_SES_DOMAIN}{self.frontend_path}"
+
+    @property
+    def frontend_path(self):
+        return f"/resources/{self.id}"
 
 
 @receiver(post_save, sender="resources_portal.Material")
 def fix_attachment_organizations(
     sender, instance=None, created=False, update_fields=None, **kwargs
 ):
-    """If the organziation changes, update the attachment.
-    """
+    """If the organziation changes, update the attachment."""
     if created or not instance:
         # Nothing to do during creation.
         return
