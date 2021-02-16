@@ -39,8 +39,7 @@ const importedCategories = {
   CELL_LINE: object({
     cell_line_name: string().required(),
     tissue: string().required(),
-    disease: string().required(),
-    number_of_available_cell_lines: string(),
+    disease: string(),
     age: string(),
     sex: string(),
     ethnicity: string(),
@@ -53,7 +52,7 @@ const importedCategories = {
     purpose: string(),
     number_of_available_samples: string(),
     gene_insert_name: string().required(),
-    relevant_mutations: string().required(),
+    relevant_mutations: string(),
     additional_info: string()
   }),
   PROTOCOL: object({

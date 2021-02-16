@@ -70,7 +70,6 @@ export const importForm = () => [
       'organisms',
       'tissue',
       'disease',
-      'number_of_available_cell_lines',
       'age',
       'sex',
       'ethnicity',
