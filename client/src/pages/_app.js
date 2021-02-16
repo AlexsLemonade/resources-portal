@@ -16,6 +16,10 @@ const LoginRequired = dynamic(() => import('components/LoginRequired'), {
   ssr: false
 })
 
+const Fallback = (sentry) => {
+  return <Error sentry={sentry} />
+}
+
 export default ({ Component, pageProps, router: { pathname } }) => {
   const isHome = pathname === '/'
   const isAccount = pathname.indexOf('/account') === 0
@@ -30,7 +34,7 @@ export default ({ Component, pageProps, router: { pathname } }) => {
   })
 
   return (
-    <Sentry.ErrorBoundary fallback={Error} showDialog>
+    <Sentry.ErrorBoundary fallback={Fallback} showDialog>
       <ResourcesPortalContextProvider>
         <Head>
           <link
