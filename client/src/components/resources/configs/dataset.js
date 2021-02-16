@@ -1,20 +1,5 @@
 export const searchResult = ['accession_code', 'description']
 
-export const details = [
-  {
-    basic_information: [
-      'title',
-      'accession_code',
-      'description',
-      'organisms',
-      'number_of_samples',
-      'technology',
-      'platform',
-      'additional_info'
-    ]
-  }
-]
-
 export const listForm = [
   {
     basic_information: [
@@ -65,7 +50,6 @@ export const importForm = (importSource) => {
 
 export default {
   searchResult,
-  details,
   listForm,
   importForm
 }

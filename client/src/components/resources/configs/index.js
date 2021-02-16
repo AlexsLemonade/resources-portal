@@ -31,4 +31,10 @@ const configs = {
   PROTOCOL: protocol
 }
 
+export const getDetails = (resource) => {
+  const { listForm, importForm } = configs[resource.category]
+  const form = resource.import_source ? importForm : listForm
+  return typeof form === 'function' ? form(resource) : form
+}
+
 export default configs
