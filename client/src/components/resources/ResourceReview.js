@@ -13,7 +13,8 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
   const {
     resource,
     existingRequirementsResource,
-    contactUserOptions
+    contactUserOptions,
+    organizationOptions
   } = useResourceForm()
   const { imported } = resource
   const requirementsResource =
@@ -23,6 +24,10 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
 
   const contactUser = contactUserOptions.find(
     (u) => u.id === resource.contact_user
+  )
+
+  const organization = organizationOptions.find(
+    (o) => o.id === resource.organization
   )
 
   return (
@@ -35,22 +40,22 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
           Review and Publish
         </Text>
       </Box>
-      <Box direction="row" gap="xlarge">
-        <Box>
-          <Text weight="bold" margin={{ vertical: 'medium' }}>
-            Grant ID
-          </Text>
-          {resource.grants.map((grant) => (
-            <Text key={grant.funder_id}>{grant.title}</Text>
-          ))}
-        </Box>
-        <Box>
-          <Text weight="bold" margin={{ vertical: 'medium' }}>
-            Resource Type
-          </Text>
-          <Text>{getReadable(resource.category)}</Text>
-        </Box>
-      </Box>
+      <DetailsTable
+        data={[
+          {
+            label: 'Team Name',
+            value: organization.name
+          },
+          {
+            label: 'Grant ID',
+            value: resource.grants[0].title
+          },
+          {
+            label: 'Resource Type',
+            value: getReadable(resource.category)
+          }
+        ]}
+      />
       <Box>
         <Box
           direction="row"
