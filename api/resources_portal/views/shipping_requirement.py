@@ -17,6 +17,7 @@ class ShippingRequirementSerializer(serializers.ModelSerializer):
             "accepts_shipping_code",
             "accepts_reimbursement",
             "accepts_other_payment_methods",
+            "accepted_payment_details",
             "restrictions",
             "organization",
             "created_at",
