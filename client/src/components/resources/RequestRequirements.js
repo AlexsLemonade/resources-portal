@@ -29,6 +29,7 @@ export const ReviewRequestRequirements = ({ resource }) => {
       acceptsShippingCode,
       acceptsReimbursement,
       acceptsOtherPaymentMethods,
+      acceptedPaymentDetails,
       sharerPaysShipping,
       restrictions
     }
@@ -92,7 +93,15 @@ export const ReviewRequestRequirements = ({ resource }) => {
                   <ListItem
                     margin={{ bottom: 'small' }}
                     marker="ring"
-                    text="Accepts Other Payment Methods"
+                    text="Accepts Other payment methods"
+                  />
+                )}
+                {acceptedPaymentDetails && (
+                  <ListItem
+                    margin={{ bottom: 'small' }}
+                    marker="ring"
+                    title="Accepted Payment Details"
+                    text={acceptedPaymentDetails}
                   />
                 )}
               </>
@@ -127,6 +136,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
       acceptsShippingCode,
       acceptsReimbursement,
       acceptsOtherPaymentMethods,
+      acceptedPaymentDetails,
       sharerPaysShipping,
       restrictions
     }
@@ -234,7 +244,14 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
                     {acceptsOtherPaymentMethods && (
                       <ListItem
                         marker="ring"
-                        title="Accepts Other Payment Methods"
+                        title="Accepts Other payment methods"
+                      />
+                    )}
+                    {acceptedPaymentDetails && (
+                      <ListItem
+                        marker="ring"
+                        title="Accepted Payment Details"
+                        text={acceptedPaymentDetails}
                       />
                     )}
                   </List>

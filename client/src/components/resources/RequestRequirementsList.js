@@ -9,6 +9,7 @@ const ShippingRequirementPopover = ({ shippingRequirement }) => {
     acceptsOtherPaymentMethods,
     acceptsReimbursement,
     acceptsShippingCode,
+    acceptedPaymentDetails,
     needsShippingAddress,
     restrictions
   } = shippingRequirement
@@ -24,11 +25,21 @@ const ShippingRequirementPopover = ({ shippingRequirement }) => {
           {acceptsOtherPaymentMethods && <Text>Other Payment Method</Text>}
           {needsShippingAddress && <Text>Shipping Address</Text>}
         </Box>
-        <Text weight="bold">Restrictions:</Text>
+        {acceptedPaymentDetails && (
+          <>
+            <Text weight="bold">Accepted Payment Details:</Text>
+            <Box pad={{ left: 'small' }}>
+              <Text>{acceptedPaymentDetails}</Text>
+            </Box>
+          </>
+        )}
         {restrictions && (
-          <Box pad={{ left: 'small' }}>
-            <Text>{restrictions}</Text>
-          </Box>
+          <>
+            <Text weight="bold">Restrictions:</Text>
+            <Box pad={{ left: 'small' }}>
+              <Text>{restrictions}</Text>
+            </Box>
+          </>
         )}
       </>
     </Popover>
@@ -66,7 +77,13 @@ export default ({ resource }) => {
   const hasJoin = list.length > 1
   const riList = list.map((component, key) => ({ component, key }))
 
-  if (list.length === 0) return 'Not Available'
+  if (list.length === 0)
+    return (
+      <Text italic color="black-tint-40">
+        There are no request requirements for this resource.
+      </Text>
+    )
+
   return (
     <Text>
       {riList.map((requirement, i) => (
