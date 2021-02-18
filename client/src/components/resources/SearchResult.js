@@ -99,11 +99,14 @@ export const SearchResultDetail = ({
     : data.value
   const formattedValue =
     showEmpty && !joinedValue ? 'Not Specified' : joinedValue
+  const color = showEmpty && !joinedValue ? 'black-tint-40' : 'black'
   return (
     <Box>
       <Text weight="bold">{data.label}</Text>
       <Box margin={margin} direction={direction}>
-        <Text italic={italic}>{formattedValue}</Text>
+        <Text italic={italic} color={color}>
+          {formattedValue}
+        </Text>
         {children}
       </Box>
     </Box>
