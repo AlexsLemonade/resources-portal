@@ -206,6 +206,7 @@ export default ({ defaultStep = -1 }) => {
               gap="large"
               margin={{ vertical: 'large' }}
             >
+              <Button onClick={goBack} label="Back" />
               <Button
                 primary
                 onClick={async () => {
