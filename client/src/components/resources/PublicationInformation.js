@@ -14,11 +14,11 @@ export const PublicationInformation = ({ resource }) => {
           value: resource.publication_title
         },
         {
-          label: 'Pre-print DOI',
+          label: 'Preprint DOI',
           value: resource.pre_print_doi
         },
         {
-          label: 'Pre-print Title',
+          label: 'Preprint Title',
           value: resource.pre_print_title
         },
         { label: 'Citation', value: resource.citation }
