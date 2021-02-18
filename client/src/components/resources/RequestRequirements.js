@@ -93,7 +93,7 @@ export const ReviewRequestRequirements = ({ resource }) => {
                   <ListItem
                     margin={{ bottom: 'small' }}
                     marker="ring"
-                    text="Accepts Other payment methods"
+                    text="Other Payment Methods"
                   />
                 )}
                 {acceptedPaymentDetails && (
@@ -238,13 +238,13 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
                     {acceptsReimbursement && (
                       <ListItem
                         marker="ring"
-                        title="Accepts Reimbursement for shipping costs"
+                        title="Accepts Shipping Costs Reimbursement"
                       />
                     )}
                     {acceptsOtherPaymentMethods && (
                       <ListItem
                         marker="ring"
-                        title="Accepts Other payment methods"
+                        title="Accepts Other Payment Methods"
                       />
                     )}
                     {acceptedPaymentDetails && (
