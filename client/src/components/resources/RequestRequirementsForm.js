@@ -14,6 +14,7 @@ import DropZone from 'components/DropZone'
 import Icon from 'components/Icon'
 import useResourceForm from 'hooks/useResourceForm'
 import getResourceOptions from 'helpers/getResourceOptions'
+import getRequestRequirements from 'helpers/getRequestRequirements'
 import RequirementsLabel from 'components/resources/ResourceRequirementsRadioLabel'
 
 // this overrides the default styles for a RadioButtonGroup
@@ -28,6 +29,7 @@ const ExistingResourcesRadioButtonGroup = styled(RadioButtonGroup)`
 
 export default () => {
   const {
+    resource,
     setAttribute,
     getAttribute,
     setMtaAttachment,
@@ -35,7 +37,8 @@ export default () => {
     teamResources,
     grantOptions,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    isSaved
   } = useResourceForm()
   const onCheckChange = (attribute, { target: { checked } }) =>
     setAttribute(attribute, checked)
@@ -43,12 +46,16 @@ export default () => {
     setAttribute(attribute, value === 'true')
   }
 
-  const [showExisting, setShowExisting] = React.useState(true)
-  const handleSelect = (resource) => {
-    setExistingRequirementsResource(resource)
+  const { hasRequirements } = getRequestRequirements(resource)
+  const hasExisting = teamResources && teamResources.length > 0
+  const iconColor = hasExisting ? 'brand' : 'black-tint-80'
+  const [showExisting, setShowExisting] = React.useState(
+    existingRequirementsResource || (!hasRequirements && hasExisting)
+  )
+  const handleSelect = (requirementsResource) => {
+    setExistingRequirementsResource(requirementsResource)
   }
   const teamResourceOptions = getResourceOptions(teamResources, grantOptions)
-
   const toggleExisting = () => {
     if (showExisting) setExistingRequirementsResource('')
     setShowExisting(!showExisting)
@@ -73,12 +80,13 @@ export default () => {
     }
   }
 
-  const title = showExisting
-    ? 'Use same requirements as'
+  const formTitle = isSaved
+    ? 'Edit Request Requirements'
     : 'Specify New Requirements'
+  const title = showExisting ? 'Use Same Requirements As' : formTitle
   const toggleButtonLabel = showExisting
-    ? 'Specify new requirements'
-    : 'Use Existing Requirements'
+    ? formTitle
+    : 'Copy Requirements from Another Resource'
 
   return (
     <Box width="large" height={{ min: '500px' }}>
@@ -99,7 +107,8 @@ export default () => {
         <Button
           plain
           bold
-          icon={<Icon name="Plus" size="16px" />}
+          disabled={!hasExisting}
+          icon={<Icon name="Plus" size="16px" color={iconColor} />}
           label={toggleButtonLabel}
           onClick={toggleExisting}
         />
@@ -195,46 +204,66 @@ export default () => {
                       ]}
                     />
                     {getAttribute('sharer_pays_shipping') === false && (
-                      <Box pad={{ horizontal: 'large' }}>
-                        <Text
-                          italic
-                          size="small"
-                          color="black-tint-60"
-                          margin={{ bottom: 'small' }}
-                        >
-                          What payment methods do you support? Choose at least
-                          1.
-                        </Text>
-                        <CheckBoxWithInfo
-                          label="Shipping Carrier Code ( ex: UPS, FedEx )"
-                          checked={getAttribute('accepts_shipping_code')}
-                          onChange={(e) => {
-                            onCheckChange('accepts_shipping_code', e)
-                          }}
-                        />
-                        <CheckBoxWithInfo
-                          label="Accept reimbursement for shipping costs"
-                          checked={getAttribute('accepts_reimbursement')}
-                          onChange={(e) => {
-                            onCheckChange('accepts_reimbursement', e)
-                          }}
-                        />
-                        <CheckBoxWithInfo
-                          label="Other"
-                          checked={getAttribute(
-                            'accepts_other_payment_methods'
-                          )}
-                          onChange={(e) => {
-                            onCheckChange('accepts_other_payment_methods', e)
-                          }}
-                        />
-                      </Box>
+                      <>
+                        <Box pad={{ horizontal: 'large' }}>
+                          <Text
+                            italic
+                            size="small"
+                            color="black-tint-60"
+                            margin={{ bottom: 'small' }}
+                          >
+                            What payment methods do you support? Choose at least
+                            1.
+                          </Text>
+                          <CheckBoxWithInfo
+                            label="Shipping Carrier Code ( ex: UPS, FedEx )"
+                            checked={getAttribute('accepts_shipping_code')}
+                            onChange={(e) => {
+                              onCheckChange('accepts_shipping_code', e)
+                            }}
+                          />
+                          <CheckBoxWithInfo
+                            label="Accept reimbursement for shipping costs"
+                            checked={getAttribute('accepts_reimbursement')}
+                            onChange={(e) => {
+                              onCheckChange('accepts_reimbursement', e)
+                            }}
+                          />
+                          <CheckBoxWithInfo
+                            label="Other"
+                            checked={getAttribute(
+                              'accepts_other_payment_methods'
+                            )}
+                            onChange={(e) => {
+                              onCheckChange('accepts_other_payment_methods', e)
+                            }}
+                          />
+                        </Box>
+                        {getAttribute('accepts_other_payment_methods') && (
+                          <Box pad={{ horizontal: 'large' }} animation="fadeIn">
+                            <FormField
+                              label="Accepted Payment Details"
+                              help="Is there a specific shipping service provider which is supported? If you have selected 'Other' above please specify here."
+                            >
+                              <TextArea
+                                value={getAttribute('accepted_payment_details')}
+                                onChange={({ target: { value } }) => {
+                                  setAttribute(
+                                    'accepted_payment_details',
+                                    value
+                                  )
+                                }}
+                              />
+                            </FormField>
+                          </Box>
+                        )}
+                      </>
                     )}
                   </Box>
                 </Box>
                 <FormField
-                  label="Shipping Restriction"
-                  help="What are restrictions imposed on shipping?  Is there a specific shipping service provider which is supported?"
+                  label="Shipping Restrictions"
+                  help="Are there any restrictions imposed on shipping?"
                 >
                   <TextArea
                     value={getAttribute('restrictions')}
@@ -254,15 +283,15 @@ export default () => {
             options={teamResourceOptions}
             name="existing-requirements"
           >
-            {({ resource, ...option }, { hover }) => (
+            {({ resource: existingResource, ...option }, { hover }) => (
               <RadioButton
                 key={option.label}
                 name={option.name}
                 hover={hover}
                 checked={existingRequirementsResource.id === option.value}
                 value={option.value}
-                label={<RequirementsLabel resource={resource} />}
-                onChange={() => handleSelect(resource)}
+                label={<RequirementsLabel resource={existingResource} />}
+                onChange={() => handleSelect(existingResource)}
               />
             )}
           </ExistingResourcesRadioButtonGroup>

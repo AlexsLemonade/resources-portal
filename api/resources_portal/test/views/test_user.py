@@ -71,7 +71,7 @@ class TestUserPostTestCase(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        self.assertEqual(user.personal_organization.name, "My Resources")
+        self.assertEqual(user.personal_organization.name, user.full_name)
 
     @patch("orcid.PublicAPI", side_effect=generate_mock_orcid_record_response)
     @patch("requests.post", side_effect=generate_mock_orcid_authorization_response)
@@ -89,7 +89,7 @@ class TestUserPostTestCase(APITestCase):
 
         response = self.client.post(self.url, self.user_data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
 
 class TestUserDetailTestCase(APITestCase):

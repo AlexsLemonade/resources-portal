@@ -11,6 +11,7 @@ export default (material) => {
   const hasShippingRequirement = Boolean(material.shipping_requirement)
 
   const {
+    accepted_payment_details: acceptedPaymentDetails,
     accepts_other_payment_methods: acceptsOtherPaymentMethods,
     accepts_reimbursement: acceptsReimbursement,
     accepts_shipping_code: acceptsShippingCode,
@@ -20,8 +21,13 @@ export default (material) => {
     sharer_pays_shipping: sharerPaysShipping
   } = material.shipping_requirement || {}
 
+  // checks for mtaAttachment for accuracy before resource is saved
   const hasRequirements =
-    needsMta || needsIrb || needsAbstract || hasShippingRequirement
+    !!mtaAttachment ||
+    needsMta ||
+    needsIrb ||
+    needsAbstract ||
+    hasShippingRequirement
 
   return {
     hasRequirements,
@@ -31,6 +37,7 @@ export default (material) => {
     needsAbstract,
     hasShippingRequirement,
     shippingRequirement: {
+      acceptedPaymentDetails,
       acceptsOtherPaymentMethods,
       acceptsReimbursement,
       acceptsShippingCode,

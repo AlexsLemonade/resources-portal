@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Button, FormField, TextInput, Paragraph } from 'grommet'
+import { Box, Button, FormField, Text, TextInput, Paragraph } from 'grommet'
 import { useRouter } from 'next/router'
 import { InfoCard } from 'components/InfoCard'
 import ResourceImportSourceSelector from 'components/resources/ResourceImportSourceSelector'
@@ -38,6 +38,44 @@ export default () => {
     if (!getAttribute('imported')) setAttribute('imported', true)
   })
 
+  const importSourceHelpers = {
+    GEO: (
+      <Paragraph size="small" color="black-tint-40">
+        Examples:{' '}
+        <Text size="small" weight="bold">
+          GSE24542
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
+          GSM609241
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
+          https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM609241
+        </Text>
+      </Paragraph>
+    ),
+    SRA: (
+      <Paragraph size="small" color="black-tint-40">
+        Examples:{' '}
+        <Text size="small" weight="bold">
+          SRR944283
+        </Text>
+        {' or '}
+        <Text size="small" weight="bold">
+          https://www.ebi.ac.uk/ena/browser/view/SRP003819
+        </Text>
+      </Paragraph>
+    ),
+    PROTOCOLS_IO: (
+      <Paragraph size="small" color="black-tint-40">
+        Please use the following format:{' '}
+        <Text size="small" weight="bold">
+          dx.doi.org/10.17504/protocols.io.bj64krgw
+        </Text>
+      </Paragraph>
+    )
+  }
   return (
     <Box align="center">
       {step === 0 && (
@@ -45,7 +83,11 @@ export default () => {
           <ResourceImportSourceSelector />
           {isSupported && (
             <>
-              <FormField fill label={getReadable(importAttribute)}>
+              <FormField
+                fill
+                label={getReadable(importAttribute)}
+                help={importSourceHelpers[importSource]}
+              >
                 <TextInput
                   value={getAttribute(importAttribute) || ''}
                   onChange={({ target: { value } }) => {

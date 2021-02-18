@@ -4,10 +4,12 @@ import { useUser } from 'hooks/useUser'
 import Icon from 'components/Icon'
 import TableButton from 'components/TableButton'
 import TeamMembersChangeOwner from 'components/TeamMembersChangeOwner'
+import TeamMembersLeaveTeam from 'components/TeamMembersLeaveTeam'
 
 export default ({ team, onDelete, onTransferOwner }) => {
   const { user } = useUser()
   const [showTransferOwner, setShowTransferOwner] = React.useState(false)
+  const [showLeaveTeam, setShowLeaveTeam] = React.useState(false)
   const canTransfer = team.members.length > 1
   const userIsOwner = !team.owner || team.owner.id === user.id
   const memberIsUser = (member) => {
@@ -72,9 +74,28 @@ export default ({ team, onDelete, onTransferOwner }) => {
               </>
             )}
             {memberIsOwner(member) && !userIsOwner && (
-              <Text italic color="black-tint-60">
+              <Text italic color="black-tint-60" margin={{ right: 'medium' }}>
                 (Owner)
               </Text>
+            )}
+            {memberIsUser(member) && !userIsOwner && (
+              <>
+                <TableButton
+                  plain
+                  icon={<Icon name="LeaveTeam" color="error" size="small" />}
+                  label="Leave Team"
+                  color="error"
+                  size="small"
+                  margin={{ right: 'medium' }}
+                  onClick={() => setShowLeaveTeam(true)}
+                />
+                <TeamMembersLeaveTeam
+                  showing={showLeaveTeam}
+                  setShowing={setShowLeaveTeam}
+                  onLeaveTeam={() => onDelete(member)}
+                  team={team}
+                />
+              </>
             )}
           </Box>
         </Box>

@@ -1,16 +1,5 @@
 export const searchResult = ['description']
 
-export const details = [
-  {
-    basic_information: [
-      'resource_type',
-      'title',
-      'description',
-      'additional_info'
-    ]
-  }
-]
-
 export const listForm = [
   {
     basic_information: [
@@ -36,7 +25,6 @@ export const importForm = () => [
 
 export default {
   searchResult,
-  details,
   listForm,
   importForm
 }

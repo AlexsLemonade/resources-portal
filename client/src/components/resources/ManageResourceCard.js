@@ -20,7 +20,8 @@ export const ManageOptions = ({
 }) => {
   const manageLink = `/account/manage-resources/${resource.id}`
   const editLink = `/resources/${resource.id}/edit`
-  const viewResourceLink = `resources/${resource.id}`
+  const viewResourceLink = `/resources/${resource.id}`
+  const archiveButtonLabel = resource.is_archived ? 'Unarchive' : 'Archive'
 
   return (
     <Box direction={direction} gap="medium" pad={pad}>
@@ -55,7 +56,7 @@ export const ManageOptions = ({
         <>
           <Anchor
             icon={<Icon name="Archive" size="small" />}
-            label="Archive"
+            label={archiveButtonLabel}
             onClick={() => {
               setShowArchive(true)
               onModalOpen()
@@ -97,12 +98,15 @@ export const ManageResourceCard = ({
   const { addAlert } = useAlertsQueue()
   const [showDelete, setShowDelete] = React.useState(false)
   const [showArchive, setShowArchive] = React.useState(false)
-  const archiveText = resource.is_archived
-    ? 'Un-Archive Resource'
+  const archiveButtonLabel = resource.is_archived
+    ? 'Unarchive Resource'
     : 'Archive Resource'
   const archivedMessage = resource.is_archived
-    ? 'Resource Un-Archived'
+    ? 'Resource Unarchived'
     : 'Resource Archived'
+  const archivedStatus = resource.is_archived
+    ? 'Archived'
+    : 'Publicly Available'
 
   React.useState(() => {
     const fetchRequests = async () => {
@@ -184,29 +188,16 @@ export const ManageResourceCard = ({
         ) : (
           <Text>0 Open Requests</Text>
         )}
-        {resource.is_archived ? (
-          <>
-            <Box
-              background="brand"
-              round
-              width="8px"
-              height="8px"
-              margin="small"
-            />
-            <Text italic>Archived</Text>
-          </>
-        ) : (
-          <>
-            <Box
-              background="brand"
-              round
-              width="8px"
-              height="8px"
-              margin="small"
-            />
-            <Text>Publicly Available</Text>
-          </>
-        )}
+        <>
+          <Box
+            background="brand"
+            round
+            width="8px"
+            height="8px"
+            margin="small"
+          />
+          <Text italic={resource.is_archived}>{archivedStatus}</Text>
+        </>
       </Box>
       <Modal showing={showArchive} setShowing={setShowArchive}>
         <>
@@ -232,7 +223,7 @@ export const ManageResourceCard = ({
                 <Button label="Cancel" onClick={() => setShowArchive(false)} />
                 <Button
                   primary
-                  label={archiveText}
+                  label={archiveButtonLabel}
                   onClick={async () => {
                     const archiveRequest = await api.resources.update(
                       resource.id,

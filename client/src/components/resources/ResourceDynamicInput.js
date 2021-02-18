@@ -1,5 +1,12 @@
 import React from 'react'
 import { Anchor, Box, Select, TextArea, TextInput } from 'grommet'
+import parseValue from 'helpers/parseValue'
+import { debouncer } from 'helpers/debounce'
+import {
+  getBooleanValue,
+  getBooleanString,
+  booleanOptions
+} from 'helpers/booleanOptions'
 import { getInputOptions, getAutoCompleteOptions } from '.'
 import SequenceMapsInput from './SequenceMapsInput'
 
@@ -12,38 +19,35 @@ export default ({
   contactUserOptions,
   disabled = false
 }) => {
+  const updateRef = React.useRef(debouncer(250))
+  const [localValue, setLocalValue] = React.useState(inputValue)
+  const safeLocalValue = localValue || ''
   const inputOptions = getInputOptions(attribute)
-  const onInputChange = ({ target: { value } }) => {
-    setAttribute(attribute, value)
-  }
-  const parseValue = (type, value, fallback) => {
-    let parsed = NaN
-    if (type === 'float') {
-      parsed = parseFloat(value)
-      if (`${value}`.endsWith('.')) {
-        parsed = `${parsed}.`
-      }
-    }
-    if (type === 'integer') {
-      parsed = parseInt(value, 10)
-    }
-
-    if (value === '') return ''
-
-    if (Number.isNaN(parsed)) return fallback
-
-    return parsed
-  }
   const onFloatChange = ({ target: { value } }) =>
-    setAttribute(attribute, parseValue('float', value, inputValue))
+    setLocalValue(parseValue('float', value, inputValue))
   const onIntegerChange = ({ target: { value } }) =>
-    setAttribute(attribute, parseValue('integer', value, inputValue))
+    setLocalValue(parseValue('integer', value, inputValue))
+  const onInputChange = ({ target: { value } }) => setLocalValue(value)
+  const onSelectChange = ({ value }) => setLocalValue(value)
+  const onUploadChange = (uploads) => setLocalValue(uploads)
+  const onBooleanChange = ({ value }) => setLocalValue(getBooleanValue(value))
+  const onSuggestionChange = ({ suggestion }) => setLocalValue(suggestion)
+
+  const booleanValue = getBooleanString(localValue)
+  const contactUser =
+    typeof safeLocalValue === 'object' ? safeLocalValue : { id: safeLocalValue }
+
+  React.useEffect(() => {
+    if (localValue !== inputValue) {
+      updateRef.current(setAttribute, attribute, localValue)
+    }
+  }, [localValue])
 
   switch (inputType) {
     case 'textarea':
       return (
         <Box height="100px">
-          <TextArea fill value={inputValue} onChange={onInputChange} />
+          <TextArea fill value={safeLocalValue} onChange={onInputChange} />
         </Box>
       )
     case 'select':
@@ -53,17 +57,17 @@ export default ({
           isDrop
           multiple={isMultiple}
           closeOnChange={!isMultiple}
-          value={inputValue}
+          value={localValue}
           options={inputOptions}
-          onChange={({ value }) => setAttribute(attribute, value)}
+          onChange={onSelectChange}
           messages={{ multiple: 'Multiple Options Selected' }}
         />
       )
     case 'sequencemaps':
       return (
         <SequenceMapsInput
-          inputValue={inputValue || []}
-          onDone={(uploads) => setAttribute(attribute, uploads)}
+          inputValue={localValue || []}
+          onDone={onUploadChange}
         />
       )
     case 'biosafety_level':
@@ -73,8 +77,9 @@ export default ({
             <Select
               plain
               closeOnChange
+              value={safeLocalValue}
               options={inputOptions}
-              onChange={({ value }) => setAttribute(attribute, value)}
+              onChange={onSelectChange}
             />
           </Box>
           <Anchor
@@ -90,23 +95,33 @@ export default ({
           closeOnChange
           labelKey={(user) => `${user.full_name} | ${user.email}`}
           valueKey="id"
-          value={{ id: inputValue }}
+          value={contactUser}
           options={contactUserOptions}
-          onChange={({ value }) => setAttribute(attribute, value)}
+          onChange={onSelectChange}
+        />
+      )
+    case 'boolean':
+      return (
+        <Select
+          closeOnChange
+          placeholder=""
+          value={booleanValue}
+          options={booleanOptions}
+          onChange={onBooleanChange}
         />
       )
     case 'float':
-      return <TextInput value={inputValue} onChange={onFloatChange} />
+      return <TextInput value={safeLocalValue} onChange={onFloatChange} />
     case 'integer':
-      return <TextInput value={inputValue} onChange={onIntegerChange} />
+      return <TextInput value={safeLocalValue} onChange={onIntegerChange} />
     default:
       return (
         <TextInput
           disabled={disabled}
-          value={inputValue}
+          value={safeLocalValue}
           onChange={onInputChange}
           suggestions={getAutoCompleteOptions(attribute, inputValue)}
-          onSelect={({ suggestion }) => setAttribute(attribute, suggestion)}
+          onSelect={onSuggestionChange}
         />
       )
   }

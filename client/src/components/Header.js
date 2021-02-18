@@ -1,11 +1,18 @@
 import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
 import Link from 'next/link'
 import React from 'react'
+import dynamic from 'next/dynamic'
 import styled from 'styled-components'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { AlertsWithQueue } from 'components/Alert'
-import { HeaderAccountLink } from 'components/HeaderAccountLink'
 import LogoSvg from '../images/logo.svg'
+
+const HeaderAccountLink = dynamic(
+  () => import('components/HeaderAccountLink'),
+  {
+    ssr: false
+  }
+)
 
 const FixedBox = styled(Box)`
   position: fixed;

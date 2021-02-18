@@ -10,7 +10,7 @@ export default (request) => {
     } = request.material.shipping_requirement
     if (shippingCode) paymentOptions.push('SHIPPING_CODE')
     if (reimbursement) paymentOptions.push('REIMBURSEMENT')
-    if (other) paymentOptions.push('OTHER_PAYMENT_METHOD')
+    if (other) paymentOptions.push('OTHER_PAYMENT_METHODS')
   }
   return paymentOptions.map((value) => ({ value, label: getReadable(value) }))
 }

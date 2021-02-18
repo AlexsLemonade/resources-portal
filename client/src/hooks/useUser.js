@@ -20,6 +20,20 @@ export const useUser = (defaultUser, defaultToken) => {
 
   const isLoggedIn = Boolean(user && token)
 
+  const fetchUserWithOrcidDetails = async (orcidDetails) => {
+    // get token information from orcid details
+    const {
+      isOk: authIsOk,
+      response: authenticated
+    } = await api.users.authenticate(orcidDetails)
+
+    if (authIsOk) {
+      return fetchUserWithNewToken(authenticated.user_id, authenticated.token)
+    }
+
+    return authIsOk
+  }
+
   const fetchUserWithNewToken = async (userId, newToken) => {
     const { response: freshUser, isOk: userIsOk } = await api.users.get(
       userId,
@@ -99,6 +113,7 @@ export const useUser = (defaultUser, defaultToken) => {
     setToken,
     token,
     isLoggedIn,
+    fetchUserWithOrcidDetails,
     fetchUserWithNewToken,
     refreshUser,
     updateEmail,

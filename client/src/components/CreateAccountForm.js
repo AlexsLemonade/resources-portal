@@ -3,19 +3,18 @@ import { Box, Heading } from 'grommet'
 import { useRouter } from 'next/router'
 import {
   CreateAccountStep,
-  EnterEmailStep,
+  EnterDetailsStep,
   NextStepsStep,
   VerifyGrantStep
-} from 'components/CreateAccount'
+} from 'components/CreateAccountFormSteps'
 import { ProgressBar } from 'components/ProgressBar'
 import { useCreateUser } from 'hooks/useCreateUser'
-import getRedirectQueryParam from 'helpers/getRedirectQueryParam'
 
 export default ({ ORCID, clientPath, code, stepName }) => {
   const router = useRouter()
   const { newUser, steps, currentStep, setCurrentStep } = useCreateUser(
     code,
-    getRedirectQueryParam(clientPath)
+    clientPath
   )
 
   React.useEffect(() => {
@@ -40,7 +39,7 @@ export default ({ ORCID, clientPath, code, stepName }) => {
           {currentStep === 'Create an Account' && (
             <CreateAccountStep ORCID={ORCID} />
           )}
-          {currentStep === 'Enter Email' && <EnterEmailStep />}
+          {currentStep === 'Enter Details' && <EnterDetailsStep />}
           {currentStep === 'Verify Grant Information' && <VerifyGrantStep />}
           {currentStep === 'Next Steps' && <NextStepsStep />}
         </Box>

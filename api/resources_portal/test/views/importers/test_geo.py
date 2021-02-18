@@ -93,3 +93,80 @@ class ImportGEOTestCase(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_import_succeeds_with_GSE_URL(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "import_source": "GEO",
+                "accession_code": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE24542",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
+        self.assertEqual(
+            material.additional_metadata["number_of_samples"], 2,
+        )
+
+    def test_import_succeeds_with_GSM_URL(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url,
+            {
+                "import_source": "GEO",
+                "accession_code": "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM609241",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
+        self.assertEqual(
+            material.additional_metadata["number_of_samples"], 2,
+        )
+
+    def test_import_succeeds_with_GSM_accession(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.url, {"import_source": "GEO", "accession_code": "GSM609241"},
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        material_json = response.json()
+        material_json["organization"] = self.org.id
+
+        response = self.client.post(self.create_url, material_json)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        material = Material.objects.get(pk=response.json()["id"])
+
+        self.assertEqual(material.organization, self.org)
+        self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
+        self.assertEqual(
+            material.additional_metadata["number_of_samples"], 2,
+        )

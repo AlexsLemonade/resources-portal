@@ -1,35 +1,30 @@
 import React from 'react'
 import { Box, Text } from 'grommet'
-import { List, ListItem } from 'components/List'
-import DownloadAttachment from 'components/DownloadAttachment'
-import getRequestRequirements from 'helpers/getRequestRequirements'
+import RequestAwaitingAdditionalDocumentsList from 'components/RequestAwaitingAdditionalDocumentsList'
+import RequestAwaitingAdditionalDocumentsForm from 'components/RequestAwaitingAdditionalDocumentsForm'
+import useRequest from 'hooks/useRequest'
 
-export default ({ request }) => {
-  const {
-    needsIrb,
-    needsMta,
-    mtaAttachment,
-    shippingRequirement: { needsPayment }
-  } = getRequestRequirements(request.material)
+export default () => {
+  const { isRequester } = useRequest()
+
+  if (isRequester)
+    return (
+      <>
+        <Box pad={{ bottom: 'large' }}>
+          <Text margin={{ bottom: 'medium' }}>
+            Your request has been accepted on the condition that you provide the
+            following materials
+          </Text>
+          <RequestAwaitingAdditionalDocumentsList />
+        </Box>
+        <RequestAwaitingAdditionalDocumentsForm />
+      </>
+    )
 
   return (
-    <List margin={{ left: 'large' }}>
-      {needsIrb && <ListItem margin={{ bottom: 'medium' }}>IRB</ListItem>}
-      {needsMta && (
-        <ListItem margin={{ bottom: 'medium' }}>
-          <Box>
-            <Text margin={{ bottom: 'medium' }}>
-              Signed Copy of Material Transfer Agreement (MTA)
-            </Text>
-            <DownloadAttachment attachment={mtaAttachment} />
-          </Box>
-        </ListItem>
-      )}
-      {needsPayment && (
-        <ListItem margin={{ bottom: 'medium' }}>
-          Shipping Payment Method
-        </ListItem>
-      )}
-    </List>
+    <Box pad={{ bottom: 'large' }}>
+      <Text>Waiting for the requester to provide:</Text>
+      <RequestAwaitingAdditionalDocumentsList />
+    </Box>
   )
 }

@@ -10,7 +10,9 @@ from resources_portal.emailer import (
     ALEXS_LOGO_URL,
     CCRR_LOGO_URL,
     EMAIL_SOURCE,
+    NOTIFICATIONS_URL,
     PLAIN_TEXT_EMAIL_FOOTER,
+    TERMS_OF_USE_URL,
     send_mail,
 )
 from resources_portal.models import User
@@ -82,9 +84,11 @@ def send_user_weekly_digest(user):
         .replace("REPLACE_NOTIFICATION_LIST", html_body_list)
         .replace("REPLACE_ALEXS_LOGO", ALEXS_LOGO_URL)
         .replace("REPLACE_CCRR_LOGO", CCRR_LOGO_URL)
+        .replace("REPLACE_NOTIFICATIONS_LINK", NOTIFICATIONS_URL)
+        .replace("REPLACE_TERMS_LINK", TERMS_OF_USE_URL)
     )
 
-    subject = "CCRR: Weekly Notification Digest"
+    subject = "ALSF CCRR: Weekly Notification Digest"
 
     send_mail(EMAIL_SOURCE, [user.email], subject, plain_text, html_body)
 

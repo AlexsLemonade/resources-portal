@@ -2,12 +2,8 @@ import React from 'react'
 import {
   isMetadataAttribute,
   isShippingAttribute,
-  isSupportedImportSource,
-  getImportSourceCategory,
-  getImportAttribute
+  getImportSourceCategory
 } from 'components/resources'
-import configs, { formDefaults } from 'components/resources/configs'
-import schema from 'schemas/material'
 import { getToken, getReadable } from 'helpers/readableNames'
 import { ResourceContext } from 'contexts/ResourceContext'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
@@ -29,46 +25,17 @@ export default () => {
     clearResourceContext,
     teamResources,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    config,
+    schema,
+    importAttribute,
+    form,
+    grant,
+    isSupported,
+    organizationOptions,
+    optionalAttributes
   } = React.useContext(ResourceContext)
   const { addAlert } = useAlertsQueue()
-  const config = resource ? configs[resource.category] : undefined
-
-  // support import forms based on source
-  // support a default list form
-  const getForm = () => {
-    if (resource) {
-      const importSource = resource.import_source
-      if (config && importSource) {
-        return [...config.importForm(importSource), ...formDefaults]
-      }
-
-      if (config && resource.category) {
-        return [...config.listForm, ...formDefaults]
-      }
-    }
-
-    return undefined
-  }
-
-  const organizationOptions = [...(user.organizations || [])]
-
-  const grant = resource
-    ? grantOptions.find((g) => g.id === resource.grant_id) || {}
-    : {}
-
-  const isSupported = resource
-    ? isSupportedImportSource(resource.import_source)
-    : undefined
-  const importAttribute = resource
-    ? getImportAttribute(resource.import_source)
-    : undefined
-
-  React.useEffect(() => {
-    if (resource && grantOptions.length === 0 && resource.organization) {
-      didSetOrganization(resource.organization)
-    }
-  }, [resource])
 
   const removeMtaAttachment = async () => {
     const mta = getAttribute('mta_attachment')
@@ -123,17 +90,39 @@ export default () => {
       // should probably also require Restrictions
       // if accepts_other_payment_methods or
       // accepts_shipping_code
-      const mustHaveOne = [
-        getAttribute('accepts_shipping_code'),
-        getAttribute('accepts_reimbursement'),
-        getAttribute('accepts_other_payment_methods')
-      ]
+      const acceptsShippingCode = getAttribute('accepts_shipping_code')
+      const acceptsReimbursement = getAttribute('accepts_reimbursement')
+      const acceptsOtherPaymentMethods = getAttribute(
+        'accepts_other_payment_methods'
+      )
 
-      if (!mustHaveOne.includes(true)) {
-        addAlert('Please enter the payment methods you support', 'error')
+      const acceptedPaymentDetails = getAttribute('accepted_payment_details')
+
+      const hasOne =
+        acceptsShippingCode ||
+        acceptsReimbursement ||
+        acceptsOtherPaymentMethods
+
+      if (!hasOne) {
+        addAlert(
+          'Please select at least one accepted shipping payment methods',
+          'error'
+        )
+        return false
+      }
+
+      const needsSpecification =
+        acceptsShippingCode || acceptsOtherPaymentMethods
+
+      if (needsSpecification && !acceptedPaymentDetails) {
+        addAlert(
+          'Please provide details about accepted shipping payment methods',
+          'error'
+        )
         return false
       }
     }
+
     return true
   }
 
@@ -161,7 +150,6 @@ export default () => {
       additional_metadata: {},
       ...resource
     }
-
     if (isShippingAttribute(attribute)) {
       const newShippingRequirement = resource.shipping_requirement || {}
       newShippingRequirement[attribute] = value
@@ -169,13 +157,14 @@ export default () => {
         newShippingRequirement.accepts_shipping_code = false
         newShippingRequirement.accepts_reimbursement = false
         newShippingRequirement.accepts_other_payment_methods = false
+        delete newShippingRequirement.accepted_payment_details
       }
       updatedResource.shipping_requirement = newShippingRequirement
     } else if (attribute === 'organization') {
       updatedResource[attribute] = value.id
       didSetOrganization(value.id)
     } else if (attribute === 'contact_user') {
-      updatedResource[attribute] = value.id
+      updatedResource[attribute] = value ? value.id : value
     } else if (attribute === 'category') {
       updatedResource.category = getToken(value)
     } else if (attribute === 'import_source') {
@@ -206,10 +195,11 @@ export default () => {
         resetResource.additional_metadata[importAttribute] =
           updatedResource.additional_metadata[importAttribute]
       }
+
       setResource(resetResource)
       setFetched(false)
     } else {
-      setResource({ ...updatedResource })
+      setResource(updatedResource)
     }
 
     // after validating remove error while entering
@@ -385,7 +375,7 @@ export default () => {
   return {
     user,
     config,
-    form: getForm(),
+    form,
     importAttribute,
     isSupported,
     fetchImport,
@@ -408,6 +398,8 @@ export default () => {
     clearResourceContext,
     teamResources,
     existingRequirementsResource,
-    setExistingRequirementsResource
+    setExistingRequirementsResource,
+    isSaved: !!resource.id,
+    optionalAttributes
   }
 }

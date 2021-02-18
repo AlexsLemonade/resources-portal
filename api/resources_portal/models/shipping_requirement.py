@@ -27,6 +27,8 @@ class ShippingRequirement(SafeDeleteModel):
     accepts_reimbursement = models.BooleanField(default=False)
     accepts_other_payment_methods = models.BooleanField(default=False)
 
+    accepted_payment_details = models.TextField(blank=True, null=True)
+
     restrictions = models.TextField(blank=True, null=True)
 
     is_deleted = models.BooleanField(default=False)

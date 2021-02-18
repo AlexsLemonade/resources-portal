@@ -55,7 +55,11 @@ class Organization(SafeDeleteModel):
 
     @property
     def frontend_URL(self):
-        return f"https://{settings.AWS_SES_DOMAIN}/account/teams/{self.id}"
+        return f"https://{settings.AWS_SES_DOMAIN}{self.frontend_path}"
+
+    @property
+    def frontend_path(self):
+        return f"/account/teams/{self.id}"
 
     def assign_owner_perms(self, user):
         for permission in OWNER_PERMISSIONS:
@@ -90,8 +94,7 @@ def create_owner_settings(sender, instance=None, created=False, **kwargs):
 
 @receiver(post_save, sender="resources_portal.Organization")
 def add_owner_to_members(sender, instance=None, created=False, **kwargs):
-    """Ensure the owner is always a member of the organization.
-    """
+    """Ensure the owner is always a member of the organization."""
     if instance and instance.owner:
         if instance.members.filter(id=instance.owner.id).count() < 1:
             instance.members.add(instance.owner)

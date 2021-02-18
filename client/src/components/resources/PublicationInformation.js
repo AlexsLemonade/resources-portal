@@ -21,7 +21,7 @@ export const PublicationInformation = ({ resource }) => {
           label: 'Pre-print Title',
           value: resource.pre_print_title
         },
-        { label: 'Citation', value: resource.additional_metadata.citation }
+        { label: 'Citation', value: resource.citation }
       ]}
     />
   )

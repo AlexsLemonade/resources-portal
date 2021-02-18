@@ -1,3 +1,5 @@
+_Please label your issue with a label to specify its priority: breaking, high, medium, or low._
+
 ### Context
 
 _Explain the conditions that led you to write this issue. If you are proposing a new feature, the context should be your user story. If this relates to a certain page or API endpoint, provide a link._

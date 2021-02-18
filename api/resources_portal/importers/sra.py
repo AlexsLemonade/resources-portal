@@ -99,8 +99,11 @@ def _gather_study_metadata(accession_code: str) -> None:
     for child in study:
         if child.tag == "DESCRIPTOR":
             for grandchild in child:
-                if grandchild.tag == "STUDY_TITLE" or grandchild.tag == "STUDY_ABSTRACT":
-                    metadata[grandchild.tag.lower()] = grandchild.text
+                if grandchild.tag == "STUDY_TITLE":
+                    metadata["study_title"] = grandchild.text
+
+                if grandchild.tag == "STUDY_DESCRIPTION" or grandchild.tag == "STUDY_ABSTRACT":
+                    metadata["study_abstract"] = grandchild.text
         elif child.tag == "STUDY_LINKS":
             for grandchild in child:
                 for ggc in grandchild:
@@ -140,7 +143,65 @@ def _gather_pubmed_metadata(metadata: Dict):
         metadata["publication_title"] = pubmed_title
 
 
+def get_SRP_from_PRJNA(accession_code):
+    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(accession_code)
+    response = requests_retry_session().get(formatted_metadata_URL)
+    experiment_xml = ET.fromstring(response.text)
+
+    for child in experiment_xml:
+        if child.tag != "PROJECT":
+            continue
+
+        for grandchild in child:
+            if grandchild.tag != "IDENTIFIERS":
+                continue
+
+            for identifier in grandchild:
+                if identifier.tag == "SECONDARY_ID":
+                    return identifier.text
+
+
+def get_SRP_from_SRR(accession_code):
+    formatted_metadata_URL = ENA_METADATA_URL_TEMPLATE.format(accession_code)
+    response = requests_retry_session().get(formatted_metadata_URL)
+    experiment_xml = ET.fromstring(response.text)
+
+    for run in experiment_xml:
+        for child in run:
+            if child.tag != "RUN_LINKS":
+                continue
+
+            for grandchild in child:
+                if grandchild.tag != "RUN_LINK":
+                    continue
+
+                for xref_link in grandchild:
+                    if xref_link.tag != "XREF_LINK":
+                        continue
+
+                    for link_item in xref_link:
+                        if link_item.tag == "ID" and link_item.text.startswith("SRP"):
+                            return link_item.text
+
+
 def gather_all_metadata(accession_code):
+    # If we've been given a URL instead of an accession code the
+    # accession code will be trailing the URL. Trailing '/'s break the
+    # URL so we don't have to worry about them.
+    if accession_code.lower().startswith("https://www.ebi.ac.uk"):
+        accession_code = accession_code.split("/")[-1]
+    elif accession_code.lower().startswith("https://trace.ncbi.nlm.nih.gov/"):
+        accession_code = accession_code.split("=")[-1]
+
+    if accession_code.upper().startswith("PRJNA"):
+        accession_code = get_SRP_from_PRJNA(accession_code)
+    elif accession_code.upper().startswith("SRR"):
+        accession_code = get_SRP_from_SRR(accession_code)
+
+    # We failed to convert the accession code.
+    if not accession_code:
+        return {}
+
     metadata = _gather_study_metadata(accession_code)
 
     if metadata != {}:
