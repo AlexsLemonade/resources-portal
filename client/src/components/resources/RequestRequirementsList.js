@@ -58,7 +58,7 @@ export default ({ resource }) => {
 
   const list = [
     needsAbstract && 'Abstract',
-    needsIrb && 'IRB',
+    needsIrb && 'IRB Approval',
     needsMta && (
       <Anchor
         href={mtaAttachment.download_url}

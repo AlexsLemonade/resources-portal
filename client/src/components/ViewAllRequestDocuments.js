@@ -61,7 +61,7 @@ export default ({ request }) => {
                   <DownloadAttachment
                     label="IRB Approval"
                     attachment={request.irb_attachment}
-                    emptyMessage="IRB has not been uploaded."
+                    emptyMessage="IRB Approval has not been uploaded."
                   />
                 </Box>
               )}

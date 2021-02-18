@@ -29,7 +29,7 @@ export default () => {
             <Box margin={{ vertical: 'medium' }}>
               <DownloadAttachment
                 attachment={request.irb_attachment}
-                label="IRB"
+                label="IRB Approval"
               />
             </Box>
           )}

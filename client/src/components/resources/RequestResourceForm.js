@@ -95,7 +95,7 @@ export default ({ resource }) => {
         )}
         {needsIrb && (
           <Box margin={{ bottom: 'medium' }}>
-            <Text>Internal Review Board Approval (IRB)</Text>
+            <Text>Internal Review Board Approval (IRB Approval)</Text>
             <Box
               direction="row"
               gap="small"
@@ -104,7 +104,7 @@ export default ({ resource }) => {
             >
               <Icon name="Info" color="info" size="16px" />
               <Text size="small">
-                You will be asked to provide an IRB approval after the request
+                You will be asked to provide an IRB Approval after the request
                 is accepted.
               </Text>
             </Box>

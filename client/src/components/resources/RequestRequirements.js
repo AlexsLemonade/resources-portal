@@ -209,7 +209,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
               {needsIRB && (
                 <ListItem
                   title="IRB Approval"
-                  text="A copy of your IRB approval."
+                  text="A copy of your IRB Approval."
                 />
               )}
               {mtaAttachment && (

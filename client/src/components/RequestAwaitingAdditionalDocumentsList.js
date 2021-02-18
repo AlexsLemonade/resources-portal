@@ -18,7 +18,9 @@ export default () => {
 
   return (
     <List margin={{ left: 'large' }}>
-      {needsIrb && <ListItem margin={{ bottom: 'medium' }}>IRB</ListItem>}
+      {needsIrb && (
+        <ListItem margin={{ bottom: 'medium' }}>IRB Approval</ListItem>
+      )}
       {needsMta && (
         <ListItem margin={{ bottom: 'medium' }}>
           <Box>
