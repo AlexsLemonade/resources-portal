@@ -157,7 +157,7 @@ export default () => {
             onChange={(e) => onCheckChange('needs_irb', e)}
           />
           <CheckBoxWithInfo
-            label="Abstract"
+            label="Project Abstract"
             value={getAttribute('needs_abstract')}
             onChange={(e) => onCheckChange('needs_abstract', e)}
           />

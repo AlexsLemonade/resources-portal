@@ -75,7 +75,7 @@ export default ({ resource }) => {
         {needsAbstract && (
           <Box margin={{ bottom: 'medium' }}>
             <FormField
-              label="Abstract"
+              label="Project Abstract"
               error={
                 validationErrors.requester_abstract && (
                   <FormFieldErrorLabel

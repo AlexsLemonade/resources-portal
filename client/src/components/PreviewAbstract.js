@@ -6,7 +6,7 @@ export default ({ abstract }) => {
   return (
     <Box margin={{ bottom: 'medium' }}>
       <Text weight="bold" margin={{ bottom: 'small' }}>
-        Abstract
+        Project Abstract
       </Text>
       {paragraphs.map((p) => (
         <Paragraph key={p}>{p}</Paragraph>
