@@ -10,7 +10,7 @@ storiesOf('List', module).add('default', () => {
       <Box pad="xlarge" direction="row">
         <List pad="none">
           <ListItem
-            title="Abstract"
+            title="Project Abstract"
             text="A brief description of your project."
           />
           <ListItem title="IRB Approval" text="A copy of your IRB approval." />
