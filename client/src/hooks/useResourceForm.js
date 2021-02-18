@@ -90,17 +90,39 @@ export default () => {
       // should probably also require Restrictions
       // if accepts_other_payment_methods or
       // accepts_shipping_code
-      const mustHaveOne = [
-        getAttribute('accepts_shipping_code'),
-        getAttribute('accepts_reimbursement'),
-        getAttribute('accepts_other_payment_methods')
-      ]
+      const acceptsShippingCode = getAttribute('accepts_shipping_code')
+      const acceptsReimbursement = getAttribute('accepts_reimbursement')
+      const acceptsOtherPaymentMethods = getAttribute(
+        'accepts_other_payment_methods'
+      )
 
-      if (!mustHaveOne.includes(true)) {
-        addAlert('Please enter the payment methods you support', 'error')
+      const acceptedPaymentDetails = getAttribute('accepted_payment_details')
+
+      const hasOne =
+        acceptsShippingCode ||
+        acceptsReimbursement ||
+        acceptsOtherPaymentMethods
+
+      if (!hasOne) {
+        addAlert(
+          'Please select at least one accepted shipping payment methods',
+          'error'
+        )
+        return false
+      }
+
+      const needsSpecification =
+        acceptsShippingCode || acceptsOtherPaymentMethods
+
+      if (needsSpecification && !acceptedPaymentDetails) {
+        addAlert(
+          'Please provide details about accepted shipping payment methods',
+          'error'
+        )
         return false
       }
     }
+
     return true
   }
 
@@ -135,6 +157,7 @@ export default () => {
         newShippingRequirement.accepts_shipping_code = false
         newShippingRequirement.accepts_reimbursement = false
         newShippingRequirement.accepts_other_payment_methods = false
+        delete newShippingRequirement.accepted_payment_details
       }
       updatedResource.shipping_requirement = newShippingRequirement
     } else if (attribute === 'organization') {

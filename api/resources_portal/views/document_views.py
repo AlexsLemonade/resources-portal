@@ -58,13 +58,13 @@ class MaterialDocumentSerializer(serializers.Serializer):
         return loads(dumps(obj.contact_user.to_dict()))
 
     def get_shipping_requirement(self, obj):
-        return loads(dumps(obj.shipping_requirement.to_dict()))
+        return loads(dumps(obj.shipping_requirement.to_dict() or None))
 
     def get_organization(self, obj):
         return loads(dumps(obj.organization.to_dict()))
 
     def get_mta_attachment(self, obj):
-        return loads(dumps(obj.mta_attachment.to_dict()))
+        return loads(dumps(obj.mta_attachment.to_dict() or None))
 
     def get_additional_metadata(self, obj):
         return loads(obj.additional_metadata)

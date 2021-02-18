@@ -204,46 +204,66 @@ export default () => {
                       ]}
                     />
                     {getAttribute('sharer_pays_shipping') === false && (
-                      <Box pad={{ horizontal: 'large' }}>
-                        <Text
-                          italic
-                          size="small"
-                          color="black-tint-60"
-                          margin={{ bottom: 'small' }}
-                        >
-                          What payment methods do you support? Choose at least
-                          1.
-                        </Text>
-                        <CheckBoxWithInfo
-                          label="Shipping Carrier Code ( ex: UPS, FedEx )"
-                          checked={getAttribute('accepts_shipping_code')}
-                          onChange={(e) => {
-                            onCheckChange('accepts_shipping_code', e)
-                          }}
-                        />
-                        <CheckBoxWithInfo
-                          label="Accept reimbursement for shipping costs"
-                          checked={getAttribute('accepts_reimbursement')}
-                          onChange={(e) => {
-                            onCheckChange('accepts_reimbursement', e)
-                          }}
-                        />
-                        <CheckBoxWithInfo
-                          label="Other"
-                          checked={getAttribute(
-                            'accepts_other_payment_methods'
-                          )}
-                          onChange={(e) => {
-                            onCheckChange('accepts_other_payment_methods', e)
-                          }}
-                        />
-                      </Box>
+                      <>
+                        <Box pad={{ horizontal: 'large' }}>
+                          <Text
+                            italic
+                            size="small"
+                            color="black-tint-60"
+                            margin={{ bottom: 'small' }}
+                          >
+                            What payment methods do you support? Choose at least
+                            1.
+                          </Text>
+                          <CheckBoxWithInfo
+                            label="Shipping Carrier Code ( ex: UPS, FedEx )"
+                            checked={getAttribute('accepts_shipping_code')}
+                            onChange={(e) => {
+                              onCheckChange('accepts_shipping_code', e)
+                            }}
+                          />
+                          <CheckBoxWithInfo
+                            label="Accept reimbursement for shipping costs"
+                            checked={getAttribute('accepts_reimbursement')}
+                            onChange={(e) => {
+                              onCheckChange('accepts_reimbursement', e)
+                            }}
+                          />
+                          <CheckBoxWithInfo
+                            label="Other"
+                            checked={getAttribute(
+                              'accepts_other_payment_methods'
+                            )}
+                            onChange={(e) => {
+                              onCheckChange('accepts_other_payment_methods', e)
+                            }}
+                          />
+                        </Box>
+                        {getAttribute('accepts_other_payment_methods') && (
+                          <Box pad={{ horizontal: 'large' }} animation="fadeIn">
+                            <FormField
+                              label="Accepted Payment Details"
+                              help="Is there a specific shipping service provider which is supported? If you have selected 'Other' above please specify here."
+                            >
+                              <TextArea
+                                value={getAttribute('accepted_payment_details')}
+                                onChange={({ target: { value } }) => {
+                                  setAttribute(
+                                    'accepted_payment_details',
+                                    value
+                                  )
+                                }}
+                              />
+                            </FormField>
+                          </Box>
+                        )}
+                      </>
                     )}
                   </Box>
                 </Box>
                 <FormField
-                  label="Shipping Restriction"
-                  help="What are restrictions imposed on shipping?  Is there a specific shipping service provider which is supported?"
+                  label="Shipping Restrictions"
+                  help="Are there any restrictions imposed on shipping?"
                 >
                   <TextArea
                     value={getAttribute('restrictions')}

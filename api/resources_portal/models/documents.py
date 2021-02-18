@@ -65,6 +65,7 @@ class MaterialDocument(Document):
             "accepts_shipping_code": fields.BooleanField(),
             "accepts_reimbursement": fields.BooleanField(),
             "accepts_other_payment_methods": fields.BooleanField(),
+            "accepted_payment_details": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "restrictions": fields.TextField(fielddata=True, analyzer=no_op_analyzer),
             "created_at": fields.DateField(),
             "updated_at": fields.DateField(),
