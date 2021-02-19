@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Button, Text } from 'grommet'
+import { Box, Text } from 'grommet'
+import Button from 'components/Button'
 import { HeaderRow } from 'components/HeaderRow'
 import Icon from 'components/Icon'
 import DropZone from 'components/DropZone'

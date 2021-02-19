@@ -2,13 +2,13 @@ import React from 'react'
 import {
   Anchor,
   Box,
-  Button,
   CheckBox,
   FormField,
   Text,
   TextArea,
   TextInput
 } from 'grommet'
+import Button from 'components/Button'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { HeaderRow } from 'components/HeaderRow'
@@ -237,7 +237,7 @@ export default ({ resource }) => {
           onClick={async () => {
             const saved = await createResourceRequest()
             if (saved && saved.id) {
-              router.push(`/account/requests/${saved.id}`)
+              await router.push(`/account/requests/${saved.id}`)
             }
           }}
         />

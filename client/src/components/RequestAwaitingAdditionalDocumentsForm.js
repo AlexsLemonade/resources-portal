@@ -1,12 +1,6 @@
 import React from 'react'
-import {
-  Box,
-  Text,
-  Button,
-  FormField,
-  TextArea,
-  RadioButtonGroup
-} from 'grommet'
+import { Box, Text, FormField, TextArea, RadioButtonGroup } from 'grommet'
+import Button from 'components/Button'
 import getPaymentOptions from 'helpers/getPaymentOptions'
 import DropZone from 'components/DropZone'
 import Icon from 'components/Icon'
@@ -136,8 +130,8 @@ export default () => {
         <Button
           primary
           label="Submit"
-          onClick={() => {
-            submitAdditionalDocuments({
+          onClick={async () => {
+            await submitAdditionalDocuments({
               irbAttachment,
               requesterMtaAttachment,
               paymentMethod,

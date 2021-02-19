@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Box, Button } from 'grommet'
+import { Box } from 'grommet'
+import Button from 'components/Button'
 import useResourceForm from 'hooks/useResourceForm'
 import ResourceDetailsForm from 'components/resources/ResourceDetailsForm'
 import RequestRequirementsForm from 'components/resources/RequestRequirementsForm'
@@ -50,7 +51,7 @@ export default () => {
               validate(async () => {
                 if (await save()) {
                   clearResourceContext()
-                  router.push(`/resources/${resource.id}`)
+                  await router.push(`/resources/${resource.id}`)
                 }
               })
             }}

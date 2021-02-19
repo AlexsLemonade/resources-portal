@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Button, Heading, Paragraph, Text } from 'grommet'
+import { Box, Heading, Paragraph, Text } from 'grommet'
+import Button from 'components/Button'
 import ResourceTypeSelector from 'components/resources/ResourceTypeSelector'
 import { ProgressBar } from 'components/ProgressBar'
 import ResourceDetailsForm from 'components/resources/ResourceDetailsForm'
