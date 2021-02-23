@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import api from 'api'
+import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { ResourcesPortalContext } from '../ResourcesPortalContext'
 
 export const useUser = (defaultUser, defaultToken) => {
@@ -9,6 +10,7 @@ export const useUser = (defaultUser, defaultToken) => {
   )
 
   const router = useRouter()
+  const { addAlert } = useAlertsQueue()
 
   React.useEffect(() => {
     if ((!user || !user.id) && token) logOut()
@@ -42,6 +44,7 @@ export const useUser = (defaultUser, defaultToken) => {
     if (userIsOk) {
       setUser(freshUser)
       setToken(newToken)
+      addAlert('Successfully logged in', 'success')
     }
     return userIsOk
   }

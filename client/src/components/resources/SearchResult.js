@@ -131,13 +131,13 @@ export const PublicationDetails = ({ resource }) => {
     )
   }
 
-  // Link To Pre-print
+  // Link To Preprint
   if (resource.pre_print_doi) {
-    const prePrintTitle = resource.pre_print_title || 'Link to Pre-print'
+    const prePrintTitle = resource.pre_print_title || 'Link to Preprint'
     const link = getDOIUrl(resource.pre_print_doi)
 
     return (
-      <SearchResultDetail data={{ label: 'Pre-print Title' }}>
+      <SearchResultDetail data={{ label: 'Preprint Title' }}>
         <Anchor
           href={link}
           rel="noopener noreferrer"

@@ -57,7 +57,7 @@ export default ({ resource }) => {
   } = getRequestRequirements(resource)
 
   const list = [
-    needsAbstract && 'Abstract',
+    needsAbstract && 'Project Abstract',
     needsIrb && 'IRB Approval',
     needsMta && (
       <Anchor
