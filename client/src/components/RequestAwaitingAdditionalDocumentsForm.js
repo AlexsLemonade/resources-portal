@@ -45,7 +45,7 @@ export default () => {
       {needsIrb && (
         <Box margin={{ bottom: 'large' }}>
           <Text weight="bold" margin={{ bottom: 'medium' }}>
-            Upload IRB
+            Upload IRB Approval
           </Text>
           {irbAttachment && (
             <Box direction="row" gap="medium" align="center">

@@ -101,7 +101,7 @@ export const readableNames = {
   model_study: 'Model Study',
   mta_attachment: 'MTA Attachment',
   name: 'Full Name',
-  needs_irb: 'IRB required',
+  needs_irb: 'IRB Approval required',
   needs_mta: 'MTA required',
   number_availible_models: 'Number of Available Models',
   number_of_available_cell_lines: 'Number of Available Cell Lines',

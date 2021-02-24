@@ -152,7 +152,7 @@ export default () => {
             </Box>
           )}
           <CheckBoxWithInfo
-            label="IRB"
+            label="IRB Approval"
             checked={getAttribute('needs_irb')}
             onChange={(e) => onCheckChange('needs_irb', e)}
           />
