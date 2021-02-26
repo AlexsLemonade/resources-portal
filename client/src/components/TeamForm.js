@@ -1,13 +1,6 @@
 import React from 'react'
-import {
-  Box,
-  Button,
-  CheckBox,
-  FormField,
-  TextInput,
-  Text,
-  TextArea
-} from 'grommet'
+import { Box, CheckBox, FormField, TextInput, Text, TextArea } from 'grommet'
+import Button from 'components/Button'
 import Link from 'next/link'
 import { HeaderRow } from 'components/HeaderRow'
 import TeamAddMembers from 'components/TeamAddMembers'
@@ -97,7 +90,7 @@ export default ({ teamId }) => {
           label="Create Team"
           onClick={async () => {
             const saved = await save()
-            if (saved) router.push('/account/teams')
+            if (saved) await router.push(`/account/teams/${saved.id}`)
           }}
         />
       </Box>

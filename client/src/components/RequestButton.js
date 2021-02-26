@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'grommet'
+import Button from 'components/Button'
 import Link from 'next/link'
 import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
 import { useUser } from 'hooks/useUser'

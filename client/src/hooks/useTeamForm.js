@@ -162,11 +162,10 @@ export default () => {
         saveGrants(id),
         ...invites.map(sendEmailInvite)
       ])
-    } else {
-      return false
+      return teamRequest.response
     }
 
-    return true
+    return false
   }
 
   const leaveTeam = async (member) => {
