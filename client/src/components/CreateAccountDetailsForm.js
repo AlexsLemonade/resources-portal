@@ -1,6 +1,7 @@
 import React from 'react'
 import { string } from 'yup'
-import { Box, Button, Text, FormField, TextInput } from 'grommet'
+import { Box, Text, FormField, TextInput } from 'grommet'
+import Button from 'components/Button'
 import { useCreateUser } from 'hooks/useCreateUser'
 import { getReadable } from 'helpers/readableNames'
 
