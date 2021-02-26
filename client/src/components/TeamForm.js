@@ -50,7 +50,7 @@ export default ({ teamId }) => {
       <TeamAddMembers />
       <Box>
         {user.grants.length === 0 && (
-          <Text color="black-tint-60" italic>
+          <Text color="black-tint-40" italic>
             You have no ALSF grants.
           </Text>
         )}
