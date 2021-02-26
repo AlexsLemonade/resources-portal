@@ -4,6 +4,7 @@ import { Modal } from 'components/Modal'
 import { HeaderRow } from 'components/HeaderRow'
 import Icon from 'components/Icon'
 import useTeamForm from 'hooks/useTeamForm'
+import GrantRemoveButton from 'components/GrantRemoveButton'
 
 export default () => {
   const {
@@ -13,7 +14,8 @@ export default () => {
     removeGrant,
     team: { grants, id: teamId }
   } = useTeamForm()
-  const [showGrantsModal, setShowGrantsModal] = React.useState(false)
+  const [showAddGrantsModal, setShowAddGrantsModal] = React.useState(false)
+
   return (
     <Box pad={{ vertical: 'medium' }}>
       {grants.length === 0 && (
@@ -25,9 +27,9 @@ export default () => {
         alignSelf="end"
         primary
         label="Link Grants"
-        onClick={() => setShowGrantsModal(true)}
+        onClick={() => setShowAddGrantsModal(true)}
       />
-      <Modal showing={showGrantsModal} setShowing={setShowGrantsModal}>
+      <Modal showing={showAddGrantsModal} setShowing={setShowAddGrantsModal}>
         <Box width="large">
           <Box border={{ side: 'bottom' }} margin={{ bottom: 'medium' }}>
             <Text serif size="xlarge">
@@ -43,7 +45,11 @@ export default () => {
             Grants awarded to you (choose as many as appropriate)
           </Text>
           {user.grants.length === 0 && (
-            <Paragraph>You have no grants.</Paragraph>
+            <Paragraph>
+              <Text italic color="black-tint-40">
+                You have no grants.
+              </Text>
+            </Paragraph>
           )}
           {user.grants.map((grant) => (
             <CheckBox
@@ -63,7 +69,7 @@ export default () => {
             margin={{ vertical: 'medium' }}
             label="Done"
             onClick={() => {
-              setShowGrantsModal(false)
+              setShowAddGrantsModal(false)
             }}
           />
         </Box>
@@ -71,26 +77,16 @@ export default () => {
       {grants.length > 0 && (
         <>
           <HeaderRow label={`Grants (${grants.length})`} />
-          {grants.map(({ title, funder_id: funderId, id }) => (
-            <Box key={funderId} direction="row" justify="between">
+          {grants.map((grant) => (
+            <Box key={grant.funder_id} direction="row" justify="between">
               <Box direction="row" align="center">
                 <Icon color="plain" name="Grant" />
                 <Box pad={{ left: 'small' }}>
-                  <Paragraph margin="none">{title}</Paragraph>
-                  <Paragraph size="small">Grant ID:{funderId}</Paragraph>
+                  <Paragraph margin="none">{grant.title}</Paragraph>
+                  <Paragraph size="small">Grant ID:{grant.funder_id}</Paragraph>
                 </Box>
               </Box>
-              <Button
-                plain
-                size="small"
-                color="error"
-                icon={<Icon name="Trashcan" color="error" size="small" />}
-                label="Remove"
-                onClick={async () => {
-                  await removeGrant(teamId, id)
-                  fetchTeam(teamId)
-                }}
-              />
+              <GrantRemoveButton grant={grant} />
             </Box>
           ))}
         </>
