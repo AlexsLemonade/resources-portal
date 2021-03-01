@@ -78,7 +78,7 @@ export default () => {
         <>
           <HeaderRow label={`Grants (${grants.length})`} />
           {grants.map((grant) => (
-            <Box key={grant.funder_id} direction="row" justify="between">
+            <Box key={grant.id} direction="row" justify="between">
               <Box direction="row" align="center">
                 <Icon color="plain" name="Grant" />
                 <Box pad={{ left: 'small' }}>
