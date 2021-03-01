@@ -44,10 +44,10 @@ export default ({ grant }) => {
     close()
   }
 
-  const resourcesCount = resources.filter((r) => grant.materials.includes(r.id))
-    .length
-
+  const grantResources = resources.filter((r) => grant.materials.includes(r.id))
+  const resourcesCount = grantResources.length
   const hasGrantResources = resourcesCount > 0
+  const hasManyResources = resourcesCount > 1
 
   return (
     <>
@@ -70,8 +70,8 @@ export default ({ grant }) => {
             <>
               <Box width="large">
                 <Text margin={{ vertical: 'medium' }}>
-                  {name} has {resourcesCount} resources associated with{' '}
-                  {grant.title}.
+                  {name} has {resourcesCount} resource{hasManyResources && 's'}{' '}
+                  associated with {grant.title}.
                 </Text>
                 <RadioButtonGroup
                   value={transfer}
