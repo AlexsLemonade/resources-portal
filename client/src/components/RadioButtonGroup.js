@@ -29,6 +29,7 @@ export default ({ children, onChange, ...props }) => {
       {children ||
         ((option, { checked, hover }) => (
           <RadioButton
+            name={option.label}
             checked={checked}
             hover={hover}
             value={option.value}
