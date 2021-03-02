@@ -146,7 +146,7 @@ export default ({ grant }) => {
               {requestedResources.map((r) => (
                 <ListItem key={r.id}>
                   <Link
-                    href={`/acccount/manage-resources/${r.id}`}
+                    href={`/account/manage-resources/${r.id}?scroll=open-requests`}
                     label={r.title}
                   />
                 </ListItem>
