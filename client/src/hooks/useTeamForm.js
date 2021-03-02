@@ -143,8 +143,8 @@ export default () => {
 
   const addGrant = (teamId, grantId) =>
     api.teams.grants.add(teamId, grantId, token)
-  const removeGrant = (teamId, grantId) =>
-    api.teams.grants.remove(teamId, grantId, token)
+  const removeGrant = (teamId, grantId, query = { transfer: false }) =>
+    api.teams.grants.remove(teamId, grantId, query, token)
 
   const sendEmailInvite = (email) => api.invitations.create(email, token)
 

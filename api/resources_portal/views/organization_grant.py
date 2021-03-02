@@ -95,6 +95,7 @@ class OrganizationGrantViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
 
             for material in organization.materials.filter(grants__id__contains=grant.id):
                 material.organization = personal_organization
+                material.contact_user = personal_organization.owner
                 material.save()
 
         association = GrantOrganizationAssociation.objects.get(
