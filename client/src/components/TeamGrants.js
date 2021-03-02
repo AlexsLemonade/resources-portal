@@ -1,20 +1,15 @@
 import React from 'react'
-import { Box, Button, CheckBox, Paragraph, Text } from 'grommet'
-import { Modal } from 'components/Modal'
+import { Box, Paragraph, Text } from 'grommet'
 import { HeaderRow } from 'components/HeaderRow'
 import Icon from 'components/Icon'
 import useTeamForm from 'hooks/useTeamForm'
 import GrantRemoveButton from 'components/GrantRemoveButton'
+import GrantAddButton from 'components/GrantAddButton'
 
 export default () => {
   const {
-    user,
-    fetchTeam,
-    addGrant,
-    removeGrant,
-    team: { grants, id: teamId }
+    team: { grants }
   } = useTeamForm()
-  const [showAddGrantsModal, setShowAddGrantsModal] = React.useState(false)
 
   return (
     <Box pad={{ vertical: 'medium' }}>
@@ -23,57 +18,7 @@ export default () => {
           You have no linked grants.
         </Text>
       )}
-      <Button
-        alignSelf="end"
-        primary
-        label="Link Grants"
-        onClick={() => setShowAddGrantsModal(true)}
-      />
-      <Modal showing={showAddGrantsModal} setShowing={setShowAddGrantsModal}>
-        <Box width="large">
-          <Box border={{ side: 'bottom' }} margin={{ bottom: 'medium' }}>
-            <Text serif size="xlarge">
-              Link Grants
-            </Text>
-          </Box>
-          <Text>
-            Members of your team may only add resources and manage requests
-            linked with a particular grant. Select the grant(s) below to
-            associate with this team.
-          </Text>
-          <Text weight="bold" margin={{ vertical: 'medium' }}>
-            Grants awarded to you (choose as many as appropriate)
-          </Text>
-          {user.grants.length === 0 && (
-            <Paragraph>
-              <Text italic color="black-tint-40">
-                You have no grants.
-              </Text>
-            </Paragraph>
-          )}
-          {user.grants.map((grant) => (
-            <CheckBox
-              key={grant.id}
-              label={grant.title}
-              checked={grants.map((g) => g.id).includes(grant.id)}
-              onChange={async ({ target: { checked } }) => {
-                if (checked) await addGrant(teamId, grant.id)
-                if (!checked) await removeGrant(teamId, grant.id)
-                fetchTeam(teamId)
-              }}
-            />
-          ))}
-          <Button
-            primary
-            alignSelf="end"
-            margin={{ vertical: 'medium' }}
-            label="Done"
-            onClick={() => {
-              setShowAddGrantsModal(false)
-            }}
-          />
-        </Box>
-      </Modal>
+      <GrantAddButton />
       {grants.length > 0 && (
         <>
           <HeaderRow label={`Grants (${grants.length})`} />
