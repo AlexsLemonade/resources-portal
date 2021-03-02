@@ -6,6 +6,7 @@ import { Modal } from 'components/Modal'
 import { List, ListItem } from 'components/List'
 import { InfoCard } from 'components/InfoCard'
 import Icon from 'components/Icon'
+import Link from 'components/Link'
 import useTeamForm from 'hooks/useTeamForm'
 import { useUser } from 'hooks/useUser'
 import api from 'api'
@@ -74,8 +75,8 @@ export default ({ grant }) => {
       )
 
       // fix any requests that didn't respond correctly
-      // we should probably consider preventing the removing of grants
-      // if this is the case
+      // we should probably consider preventing the
+      // removing of grants if this is the case
       const requestCounts = requestRequests.map((r) =>
         r.isOk ? r.response.count : 0
       )
@@ -98,9 +99,9 @@ export default ({ grant }) => {
         onClick={() => setShowModal(true)}
       />
       <Modal
+        critical
         showing={showModal}
         setShowing={setShowModal}
-        critical
         title="Remove Grant"
       >
         {hasGrantResources && showOptions && (
@@ -138,16 +139,22 @@ export default ({ grant }) => {
                 of these requests are closed before removing the grant.
               </Text>
             </InfoCard>
-            <Text weight="bold" margin={{ top: 'medium' }}>
+            <Text weight="bold" margin={{ vertical: 'medium' }}>
               The following resources have active requests:
             </Text>
             <List>
               {requestedResources.map((r) => (
-                <ListItem key={r.id} text={r.title} />
+                <ListItem key={r.id}>
+                  <Link
+                    href={`/acccount/manage-resources/${r.id}`}
+                    label={r.title}
+                  />
+                </ListItem>
               ))}
             </List>
             <Box direction="row" justify="end" gap="medium">
               <Button label="Back" onClick={() => setShowOptions(true)} />
+              <Button disabled critical label="Remove Grant" />
             </Box>
           </>
         )}
