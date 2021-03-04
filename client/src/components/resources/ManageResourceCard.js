@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Button, DropButton, Text, Anchor } from 'grommet'
-import Link from 'next/link'
+import Link from 'components/Link'
 import { useUser } from 'hooks/useUser'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import api from 'api'
@@ -26,31 +26,25 @@ export const ManageOptions = ({
   return (
     <Box direction={direction} gap="medium" pad={pad}>
       {options.includes('manage') && (
-        <Link href={manageLink}>
-          <Anchor
-            icon={<Icon name="Gear" size="small" />}
-            label="Manage Resource"
-            href={manageLink}
-          />
-        </Link>
+        <Link
+          icon={<Icon name="Gear" size="small" />}
+          label="Manage Resource"
+          href={manageLink}
+        />
       )}
       {options.includes('edit') && (
-        <Link href={editLink}>
-          <Anchor
-            icon={<Icon name="Edit" size="small" />}
-            label="Edit"
-            href={editLink}
-          />
-        </Link>
+        <Link
+          icon={<Icon name="Edit" size="small" />}
+          label="Edit"
+          href={editLink}
+        />
       )}
       {options.includes('view') && (
-        <Link href={viewResourceLink}>
-          <Anchor
-            icon={<Icon name="View" size="12px" />}
-            label="View Resource"
-            href={viewResourceLink}
-          />
-        </Link>
+        <Link
+          icon={<Icon name="View" size="12px" />}
+          label="View Resource"
+          href={viewResourceLink}
+        />
       )}
       {options.includes('archive') && (
         <>
@@ -87,10 +81,9 @@ export const ManageResourceCard = ({
   onChange = () => {}
 }) => {
   const { token, getTeam, isPersonalResource } = useUser()
-  const manageLink = `/account/manage-resources/${resource.id}`
+  const requestsLink = `/account/manage-resources/${resource.id}?scroll=open-requests`
   const team = getTeam(resource.organization)
   const teamLink = `/account/teams/${team.id}`
-  const viewResourceLink = `resources/${resource.id}`
 
   const [openRequests, setOpenRequests] = React.useState()
   const [dropOpen, setDropOpen] = React.useState(false)
@@ -169,9 +162,7 @@ export const ManageResourceCard = ({
       >
         {!isPersonalResource(resource) && (
           <>
-            <Link href={teamLink}>
-              <Anchor href={teamLink} label={team.name} />
-            </Link>
+            <Link href={teamLink} label={team.name} />
             <Box
               background="brand"
               round
@@ -182,9 +173,7 @@ export const ManageResourceCard = ({
           </>
         )}
         {openRequests > 0 ? (
-          <Link href={manageLink}>
-            <Anchor href={manageLink} label={`${openRequests} Open Requests`} />
-          </Link>
+          <Link href={requestsLink} label={`${openRequests} Open Requests`} />
         ) : (
           <Text>0 Open Requests</Text>
         )}
@@ -199,7 +188,11 @@ export const ManageResourceCard = ({
           <Text italic={resource.is_archived}>{archivedStatus}</Text>
         </>
       </Box>
-      <Modal showing={showArchive} setShowing={setShowArchive}>
+      <Modal
+        title="Archive Resource"
+        showing={showArchive}
+        setShowing={setShowArchive}
+      >
         <>
           {openRequests === 0 && (
             <Box>
@@ -243,33 +236,28 @@ export const ManageResourceCard = ({
             </Box>
           )}
           {openRequests !== 0 && (
-            <Box>
-              <Box direction="row">
+            <Box width="medium">
+              <Box direction="row" margin={{ vertical: 'medium' }}>
                 <Icon name="Warning" color="warning" />
                 <Text>Cannot archive resource with open requests.</Text>
               </Box>
-              <Box>
+              <Box margin={{ vertical: 'medium' }}>
                 <Text>
                   Your resource has{' '}
-                  <Link href={viewResourceLink}>
-                    <Anchor
-                      label={`${openRequests} open requests`}
-                      href={viewResourceLink}
-                    />
-                  </Link>
+                  <Link
+                    href={requestsLink}
+                    label={`${openRequests} open requests`}
+                  />
                   {'. '}
                   Please accept or reject those requests before archiving this
                   resource.
                 </Text>
               </Box>
               <Box>
-                <Link href={viewResourceLink}>
-                  <Button
-                    as="a"
-                    label="Show Requests"
-                    href={viewResourceLink}
-                  />
-                </Link>
+                <Link href={requestsLink} as="a" label="Show Requests" />
+              </Box>
+              <Box direction="row" justify="end">
+                <Button label="Close" onClick={() => setShowArchive(false)} />
               </Box>
             </Box>
           )}
@@ -277,7 +265,7 @@ export const ManageResourceCard = ({
       </Modal>
 
       <Modal showing={showDelete} setShowing={setShowDelete}>
-        <>
+        <Box>
           <Box
             border={{
               side: 'bottom',
@@ -315,7 +303,7 @@ export const ManageResourceCard = ({
               </Box>
             </Box>
           </Box>
-        </>
+        </Box>
       </Modal>
     </Box>
   )
