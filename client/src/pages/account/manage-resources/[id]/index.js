@@ -7,14 +7,16 @@ import { ManageResourceCard } from 'components/resources/ManageResourceCard'
 import { RequestRequirements } from 'components/resources/RequestRequirements'
 import ManageRequestsTable from 'components/ManageRequestsTable'
 import { Modal } from 'components/Modal'
+import ScrollTo from 'components/ScrollTo'
 import api from 'api'
 
 const ManageResource = ({ resourceId }) => {
+  const { token } = useUser()
   const [resource, setResource] = React.useState()
   const [openRequests, setOpenRequests] = React.useState([])
   const [closedRequests, setClosedRequests] = React.useState([])
   const [showClosedModal, setShowClosedModal] = React.useState(false)
-  const { token } = useUser()
+
   React.useEffect(() => {
     const fetchData = async () => {
       const resourceRequest = await api.resources.get(resourceId, token)
@@ -55,17 +57,19 @@ const ManageResource = ({ resourceId }) => {
           </Box>
           {!resource.imported && (
             <>
-              <Box>
-                <HeaderRow label={`Open Requests (${openRequests.length})`} />
-                {openRequests.length === 0 && (
-                  <Text textAlign="center" italic color="black-tint-60">
-                    There are no open requests for this resource
-                  </Text>
-                )}
-                {openRequests.length > 0 && (
-                  <ManageRequestsTable requests={openRequests} />
-                )}
-              </Box>
+              <ScrollTo name="open-requests">
+                <Box>
+                  <HeaderRow label={`Open Requests (${openRequests.length})`} />
+                  {openRequests.length === 0 && (
+                    <Text textAlign="center" italic color="black-tint-60">
+                      There are no open requests for this resource
+                    </Text>
+                  )}
+                  {openRequests.length > 0 && (
+                    <ManageRequestsTable requests={openRequests} />
+                  )}
+                </Box>
+              </ScrollTo>
               <Box>
                 <HeaderRow
                   label={`Closed Requests (${closedRequests.length})`}
