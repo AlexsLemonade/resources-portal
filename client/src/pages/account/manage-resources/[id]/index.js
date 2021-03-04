@@ -56,7 +56,7 @@ const ManageResource = ({ resourceId }) => {
             <RequestRequirements resource={resource} oneSection />
           </Box>
           {!resource.imported && (
-            <>
+            <Box height={{ min: '100vh' }}>
               <ScrollTo name="open-requests">
                 <Box>
                   <HeaderRow label={`Open Requests (${openRequests.length})`} />
@@ -94,7 +94,7 @@ const ManageResource = ({ resourceId }) => {
                   </>
                 )}
               </Box>
-            </>
+            </Box>
           )}
         </Box>
       )}
