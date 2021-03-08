@@ -18,8 +18,9 @@ export default ({ name, children }) => {
     if (nameMatch && hasRef && !scrolled) {
       scrolledRef.current = true
       // TODO: this will need to be updated when responsive to account for the
-      // also this is not the best implementation of this feature since the
-      // document height is not set until after the api requests are returned
+      // fixed height of the header. Also this is not the best implementation of
+      // this feature since the document height is not set until after the api
+      // requests are returned
       setTimeout(() => {
         window.scroll(0, ref.current.offsetTop - 83)
       }, 475)
