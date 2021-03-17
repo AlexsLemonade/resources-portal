@@ -74,7 +74,7 @@ export default () => {
         if (irbRequest.isOk) {
           updates.irb_attachment = irbRequest.response.id
         } else {
-          return addAlert('Unable to upload IRB', 'error')
+          return addAlert('Unable to upload IRB Approval', 'error')
         }
       }
       if (needsMta) {

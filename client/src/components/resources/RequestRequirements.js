@@ -57,7 +57,7 @@ export const ReviewRequestRequirements = ({ resource }) => {
         </ReviewRequestRequirement>
       )}
       {needsIRB && <ReviewRequestRequirement title="IRB" />}
-      {needsAbstract && <ReviewRequestRequirement title="Abstract" />}
+      {needsAbstract && <ReviewRequestRequirement title="Project Abstract" />}
       {hasShippingRequirement && (
         <ReviewRequestRequirement title="Shipping Information">
           <Box>
@@ -169,7 +169,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
             <List pad={{ left: 'xlarge' }}>
               {needsAbstract && (
                 <ListItem
-                  title="Abstract"
+                  title="Project Abstract"
                   text="A brief description of your project."
                 />
               )}
@@ -209,7 +209,7 @@ export const RequestRequirements = ({ resource, oneSection = false }) => {
               {needsIRB && (
                 <ListItem
                   title="IRB Approval"
-                  text="A copy of your IRB approval."
+                  text="A copy of your IRB Approval."
                 />
               )}
               {mtaAttachment && (

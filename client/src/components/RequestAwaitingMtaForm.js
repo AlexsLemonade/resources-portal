@@ -1,5 +1,6 @@
 import React from 'react'
-import { Box, Button, Text } from 'grommet'
+import { Box, Text } from 'grommet'
+import Button from 'components/Button'
 import { HeaderRow } from 'components/HeaderRow'
 import Icon from 'components/Icon'
 import DropZone from 'components/DropZone'
@@ -29,7 +30,7 @@ export default () => {
             <Box margin={{ vertical: 'medium' }}>
               <DownloadAttachment
                 attachment={request.irb_attachment}
-                label="IRB"
+                label="IRB Approval"
               />
             </Box>
           )}

@@ -101,7 +101,7 @@ export const SearchResultsFilters = () => {
           )}
           {'has_pre_print' in facets && facets.has_pre_print['1'] && (
             <CheckBox
-              label={`Includes Pre-print (${facets.has_pre_print['1']})`}
+              label={`Includes Preprint (${facets.has_pre_print['1']})`}
               checked={hasFacet('has_pre_print')}
               onChange={({ target: { checked } }) => {
                 toggleFacet(checked, 'has_pre_print')

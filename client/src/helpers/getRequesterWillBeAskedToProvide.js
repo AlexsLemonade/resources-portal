@@ -8,7 +8,7 @@ export default (request) => {
   } = getRequestRequirements(request.material)
 
   const additionalDocuments = []
-  if (needsIrb) additionalDocuments.push('IRB')
+  if (needsIrb) additionalDocuments.push('IRB Approval')
   if (needsMta) additionalDocuments.push('signed MTA')
   if (needsPayment) additionalDocuments.push('shiping payment method')
   const { length } = additionalDocuments

@@ -29,11 +29,14 @@ export default {
         method: 'POST',
         body: JSON.stringify({ id: grantId })
       }),
-    remove: (organizationId, grantId, authorization) =>
-      request(getAPIUrl(`organizations/${organizationId}/grants/${grantId}/`), {
-        authorization,
-        method: 'DELETE'
-      })
+    remove: (organizationId, grantId, query = {}, authorization) =>
+      request(
+        getAPIUrl(`organizations/${organizationId}/grants/${grantId}/`, query),
+        {
+          authorization,
+          method: 'DELETE'
+        }
+      )
   },
   members: {
     invite: (invitation, authorization) =>

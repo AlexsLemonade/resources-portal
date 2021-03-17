@@ -2,13 +2,13 @@ import React from 'react'
 import {
   Anchor,
   Box,
-  Button,
   CheckBox,
   FormField,
   Text,
   TextArea,
   TextInput
 } from 'grommet'
+import Button from 'components/Button'
 import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { HeaderRow } from 'components/HeaderRow'
@@ -75,7 +75,7 @@ export default ({ resource }) => {
         {needsAbstract && (
           <Box margin={{ bottom: 'medium' }}>
             <FormField
-              label="Abstract"
+              label="Project Abstract"
               error={
                 validationErrors.requester_abstract && (
                   <FormFieldErrorLabel
@@ -95,7 +95,7 @@ export default ({ resource }) => {
         )}
         {needsIrb && (
           <Box margin={{ bottom: 'medium' }}>
-            <Text>Internal Review Board Approval (IRB)</Text>
+            <Text>Internal Review Board Approval (IRB Approval)</Text>
             <Box
               direction="row"
               gap="small"
@@ -104,7 +104,7 @@ export default ({ resource }) => {
             >
               <Icon name="Info" color="info" size="16px" />
               <Text size="small">
-                You will be asked to provide an IRB approval after the request
+                You will be asked to provide an IRB Approval after the request
                 is accepted.
               </Text>
             </Box>
@@ -237,7 +237,7 @@ export default ({ resource }) => {
           onClick={async () => {
             const saved = await createResourceRequest()
             if (saved && saved.id) {
-              router.push(`/account/requests/${saved.id}`)
+              await router.push(`/account/requests/${saved.id}`)
             }
           }}
         />

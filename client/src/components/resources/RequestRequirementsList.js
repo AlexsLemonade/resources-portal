@@ -57,8 +57,8 @@ export default ({ resource }) => {
   } = getRequestRequirements(resource)
 
   const list = [
-    needsAbstract && 'Abstract',
-    needsIrb && 'IRB',
+    needsAbstract && 'Project Abstract',
+    needsIrb && 'IRB Approval',
     needsMta && (
       <Anchor
         href={mtaAttachment.download_url}

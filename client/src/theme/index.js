@@ -214,7 +214,7 @@ const theme = {
           `
         ),
         applyWhen(
-          props.critical,
+          props.critical && !props.disabled,
           `
           color: ${normalizeColor('error', props.theme)};
           border-color: ${normalizeColor('error', props.theme)};
@@ -230,14 +230,14 @@ const theme = {
           `
         ),
         applyWhen(
-          props.success,
+          props.success && !props.disabled,
           `
           color: ${normalizeColor('success', props.theme)};
           border-color: ${normalizeColor('success', props.theme)};
           background-color: ${normalizeColor('white', props.theme)};
 
           input {
-            color: ${normalizeColor('error', props.theme)};
+            color: ${normalizeColor('success', props.theme)};
           }
 
           &:hover {
