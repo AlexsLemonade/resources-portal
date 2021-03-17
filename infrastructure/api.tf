@@ -57,6 +57,8 @@ resource "aws_instance" "api_server_1" {
           oauth_url = var.oauth_url
           oauth_client_id = var.oauth_client_id
           oauth_client_secret = var.oauth_client_secret
+          sentry_io_url = var.sentry_io_url
+          sentry_env = var.sentry_env
         })
       start_api_with_migrations = templatefile(
         "api-configuration/start_api_with_migrations.tpl.sh",
