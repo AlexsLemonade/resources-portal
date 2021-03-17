@@ -67,6 +67,10 @@ variable "oauth_client_id" {
   default = "MISSING_VALUE"
 }
 
+variable "sentry_io_url" {
+  default = "MISSING_VALUE"
+}
+
 variable "sentry_env" {
   default = "MISSING_VALUE"
 }
