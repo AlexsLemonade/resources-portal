@@ -67,6 +67,10 @@ variable "oauth_client_id" {
   default = "MISSING_VALUE"
 }
 
+variable "sentry_env" {
+  default = "MISSING_VALUE"
+}
+
 output "environment_variables" {
   value = [
     {name = "DATABASE_NAME"

@@ -14,3 +14,4 @@ AWS_S3_BUCKET_NAME=${aws_s3_bucket_name}
 OAUTH_URL=${oauth_url}
 OAUTH_CLIENT_ID=${oauth_client_id}
 OAUTH_CLIENT_SECRET=${oauth_client_secret}
+SENTRY_ENV=${sentry_env}
