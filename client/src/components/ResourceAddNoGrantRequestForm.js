@@ -11,12 +11,14 @@ import {
 import { useRouter } from 'next/router'
 import Icon from 'components/Icon'
 import Button from 'components/Button'
+import ResourceFormFieldLabel from 'components/resources/ResourceFormFieldLabel'
 import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import useHubspotForm from 'hooks/useHubspotForm'
 import formSchema from 'schemas/resourceAddNoGrantRequest'
 
 export default ({ portalId, formId, onCancel, onSubmit }) => {
+  const anythingElse = 'Is there anything else you would like to add?'
   const { addAlert } = useAlertsQueue()
   const [sent, setSent] = React.useState()
   const router = useRouter()
@@ -147,7 +149,7 @@ export default ({ portalId, formId, onCancel, onSubmit }) => {
           />
         </FormField>
         <FormField
-          label="Is there anything else you would like to add?"
+          label={<ResourceFormFieldLabel optional attribute={anythingElse} />}
           error={getError('additional_info__adding_resources_without_grant_id')}
         >
           <TextArea
