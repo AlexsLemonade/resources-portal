@@ -365,6 +365,47 @@ class TestSingleMaterialRequestTestCase(APITestCase):
             self.organization.members.count(),
         )
 
+    def test_patch_request_from_requester_updates_all_docs(self):
+        # Set up the material request to require both MTA and IRB
+        self.request.material.mta_attachment = AttachmentFactory()
+        self.request.material.needs_irb = True
+        self.request.material.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        mta_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="SIGNED_MTA"
+        )
+
+        irb_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
+        )
+
+        material_request_data = {
+            "payment_method": "REIMBURSEMENT",
+            "payment_method_notes": "You know I'm good for it!",
+            "irb_attachment": irb_attachment.id,
+            "requester_signed_mta_attachment": mta_attachment.id,
+        }
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(
+            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_ADDED")), 1,
+        )
+
+        self.assertEqual(
+            len(
+                MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_NOTES_ADDED")
+            ),
+            1,
+        )
+
+        # Test that this is idempotent. If multiple requests happen they shouldn't be an error.
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_patch_request_from_requester_generates_payment_events(self):
         self.client.force_authenticate(user=self.request.requester)
 
