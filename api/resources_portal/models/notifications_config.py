@@ -343,7 +343,7 @@ NOTIFICATION_CONFIGS = {
             "\n\nView request details. ({request_url})."
         ),
         "markdown": (
-            "{requester_name} has reported an issue with a fulfilled [request]({requst_path})"
+            "{requester_name} has reported an issue with a fulfilled [request]({request_path})"
             " for [{material_name}]({material_path}).\n\n{issue_description}"
         ),
         "required_associations": [
