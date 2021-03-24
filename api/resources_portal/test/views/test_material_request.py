@@ -21,6 +21,7 @@ from resources_portal.test.factories import (
     MaterialRequestFactory,
     MaterialRequestIssueFactory,
     OrganizationFactory,
+    ShippingRequirementFactory,
     UserFactory,
 )
 
@@ -369,7 +370,13 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         # Set up the material request to require both MTA and IRB
         self.request.material.mta_attachment = AttachmentFactory()
         self.request.material.needs_irb = True
+        self.request.material.shipping_requirement = ShippingRequirementFactory(
+            organization=self.organization
+        )
         self.request.material.save()
+        self.request.payment_method = None
+        self.request.payment_method_notes = None
+        self.request.save()
 
         self.client.force_authenticate(user=self.request.requester)
 
@@ -405,6 +412,44 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         # Test that this is idempotent. If multiple requests happen they shouldn't be an error.
         response = self.client.patch(self.url, material_request_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_patch_request_from_requester_missing_payment_fails(self):
+        # Set up the material request to require both MTA and IRB
+        self.request.material.mta_attachment = AttachmentFactory()
+        self.request.material.needs_irb = True
+        self.request.material.shipping_requirement = ShippingRequirementFactory(
+            organization=self.organization
+        )
+        self.request.material.save()
+        self.request.payment_method = None
+        self.request.payment_method_notes = None
+        self.request.irb_attachment = None
+        self.request.requester_signed_mta_attachment = None
+        self.request.save()
+
+        self.client.force_authenticate(user=self.request.requester)
+
+        mta_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="SIGNED_MTA"
+        )
+
+        irb_attachment = AttachmentFactory(
+            owned_by_user=self.request.requester, owned_by_org=None, attachment_type="IRB"
+        )
+
+        material_request_data = {
+            "irb_attachment": irb_attachment.id,
+            "requester_signed_mta_attachment": mta_attachment.id,
+        }
+
+        response = self.client.patch(self.url, material_request_data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        # There was a bug where we were updating the request even
+        # though it was missing docs, so test that it doesn't get
+        # updated.
+        self.request.refresh_from_db()
+        self.assertIsNone(self.request.irb_attachment)
 
     def test_patch_request_from_requester_generates_payment_events(self):
         self.client.force_authenticate(user=self.request.requester)
