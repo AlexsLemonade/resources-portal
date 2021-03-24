@@ -1,10 +1,10 @@
 import copy
 import uuid
 
-from django.db import models
+from django.db import models, transaction
 from django.forms.models import model_to_dict
 from rest_framework import serializers, viewsets
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import APIException, PermissionDenied
 from rest_framework.permissions import BasePermission, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
@@ -30,6 +30,14 @@ from resources_portal.serializers.material import MaterialDetailSerializer
 SHARER_MODIFIABLE_FIELDS = {"status", "executed_mta_attachment"}
 
 REQUESTER_MODIFIABLE_FIELDS = {"irb_attachment", "requester_signed_mta_attachment", "status"}
+
+
+class MissingDocsException(APIException):
+    """It's annoying to have to make a custom exception just for this."""
+
+    status_code = 400
+    default_detail = "The material request requires an additional document."
+    default_code = "missing_docs"
 
 
 class MaterialRequestSerializer(serializers.ModelSerializer):
@@ -477,6 +485,7 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                 "SHARER_MTA_ADDED", material, request.user, new_material_request.assigned_to
             )
 
+    @transaction.atomic
     def update(self, request, *args, **kwargs):
         material_request = self.get_object()
         original_material_request = copy.deepcopy(material_request)
@@ -515,16 +524,13 @@ class MaterialRequestViewSet(viewsets.ModelViewSet):
                     original_material_request.material.shipping_requirement
                     and original_material_request.material.shipping_requirement.needs_payment
                 ):
-                    if not (payment_changed or original_material_request.payment_method) or (
+                    if not (payment_changed or original_material_request.payment_method) or not (
                         payment_notes_changed or original_material_request.payment_method_notes
                     ):
                         missing_document = True
 
                 if missing_document:
-                    return Response(
-                        data={"reason": "The material request requires an additional document."},
-                        status=400,
-                    )
+                    raise MissingDocsException()
 
             if irb_changed:
                 add_attachment_to_material_request(

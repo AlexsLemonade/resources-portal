@@ -125,7 +125,7 @@ class ShippingRequirementFactory(factory.django.DjangoModelFactory):
     restrictions = "North America only."
     needs_shipping_address = True
     needs_payment = True
-    sharer_pays_shipping = True
+    sharer_pays_shipping = False
     accepts_shipping_code = True
     accepts_reimbursement = False
     accepts_other_payment_methods = False
