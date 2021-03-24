@@ -25,7 +25,6 @@ export const importSources = [
   'GEO',
   'SRA',
   'DBGAP',
-  'DATASET',
   'PROTOCOLS_IO',
   'ADDGENE',
   'JACKSON_LABS',
