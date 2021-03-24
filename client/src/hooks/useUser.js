@@ -63,6 +63,9 @@ export const useUser = (defaultUser, defaultToken) => {
   const logOut = () => {
     setUser()
     setToken()
+    // remove all localStorage keys
+    // this will prevent cross contaminating user sessions
+    window.localStorage.clear()
     router.push('/')
   }
 
