@@ -125,7 +125,7 @@ export const useUser = (defaultUser, defaultToken) => {
 
     const hasGrants = grants.length > 0
     // join all the arrays of org grants to one array and check if empty
-    const hasTeamGrants = [].concat(...teams.map((t) => t.g)).length > 0
+    const hasTeamGrants = [].concat(...teams.map((t) => t.grants)).length > 0
 
     return hasGrants || hasTeamGrants
   }
