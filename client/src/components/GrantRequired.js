@@ -24,10 +24,7 @@ export default ({ children }) => {
       <>
         {children}
         <Modal showing nondismissable>
-          <ResourceAddNoGrantRequestForm
-            portalId="5187852"
-            formId="960eaa6e-dc9a-4921-874f-40ba9bae8583"
-          />
+          <ResourceAddNoGrantRequestForm />
         </Modal>
       </>
     )

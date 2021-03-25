@@ -17,11 +17,13 @@ import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import useHubspotForm from 'hooks/useHubspotForm'
 import formSchema from 'schemas/resourceAddNoGrantRequest'
 
-export default ({ portalId, formId, onCancel, onSubmit }) => {
+export default ({ onCancel, onSubmit }) => {
   const anythingElse = 'Is there anything else you would like to add?'
   const { addAlert } = useAlertsQueue()
   const [sent, setSent] = React.useState()
   const router = useRouter()
+  const portalId = process.env.HUBSPOT_PORTAL_ID
+  const formId = process.env.HUBSPOT_NO_GRANT_FORM_ID
   const {
     getAttribute,
     setAttribute,
