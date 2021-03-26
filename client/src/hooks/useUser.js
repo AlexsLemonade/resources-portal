@@ -113,6 +113,26 @@ export const useUser = (defaultUser, defaultToken) => {
     return request.assigned_to.id === user.id
   }
 
+  const isAbleToAddResources = async () => {
+    if (!isLoggedIn) return false
+
+    const { response: freshUser, isOk: userIsOk } = await api.users.get(
+      user.id,
+      token
+    )
+
+    if (!userIsOk) return false
+
+    // user has grants
+    const { grants, organizations: teams } = freshUser
+
+    const hasGrants = grants.length > 0
+    // join all the arrays of org grants to one array and check if empty
+    const hasTeamGrants = [].concat(...teams.map((t) => t.grants)).length > 0
+
+    return hasGrants || hasTeamGrants
+  }
+
   return {
     user,
     setUser,
@@ -127,6 +147,7 @@ export const useUser = (defaultUser, defaultToken) => {
     getTeam,
     isPersonalResource,
     isResourceRequester,
-    isAssignedRequest
+    isAssignedRequest,
+    isAbleToAddResources
   }
 }
