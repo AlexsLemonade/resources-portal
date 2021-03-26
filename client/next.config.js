@@ -21,7 +21,7 @@ module.exports = () => {
     ORCID_URL: process.env.STAGE_ORCID_URL,
     SENTRY_DSN: process.env.STAGE_SENTRY_DSN,
     SENTRY_ENV: process.env.STAGE_SENTRY_ENV,
-    HUBSPOT_PORTAL_ID: process.env.SATGE_HUBSPOT_PORTAL_ID,
+    HUBSPOT_PORTAL_ID: process.env.STAGE_HUBSPOT_PORTAL_ID,
     HUBSPOT_NO_GRANT_FORM_ID: process.env.STAGE_HUBSPOT_NO_GRANT_FORM_ID
   }
 
