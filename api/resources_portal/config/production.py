@@ -4,6 +4,7 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 from resources_portal.config.common import Common
+from resources_portal.config.elasticsearch import AWSHttpConnection
 
 
 class Production(Common):
@@ -54,6 +55,7 @@ class Production(Common):
             "hosts": os.getenv("ELASTICSEARCH_HOST", "elasticsearch"),
             "port": 443,
             "use_ssl": True,
+            "connection_class": AWSHttpConnection,
         }
     }
 

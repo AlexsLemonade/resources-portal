@@ -75,9 +75,12 @@ resource "aws_instance" "api_server_1" {
     })
   key_name = aws_key_pair.resources_portal.key_name
 
-  tags = {
-    Name = "Resources Portal API ${var.user}-${var.stage}"
-  }
+  tags =  merge(
+    var.default_tags,
+    {
+      Name = "Resources Portal API ${var.user}-${var.stage}"
+    }
+  )
 
   # I think these are the defaults provided in terraform examples.
   # They should be removed or revisited.

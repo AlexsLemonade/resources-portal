@@ -21,6 +21,8 @@ resource "aws_iam_role" "resources_portal_instance" {
   ]
 }
 EOF
+
+  tags = var.default_tags
 }
 
 resource "aws_iam_instance_profile" "resources_portal_instance_profile" {
@@ -61,6 +63,8 @@ resource "aws_iam_policy" "resources_portal_cloudwatch" {
     ]
 }
 EOF
+
+  tags = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch" {
@@ -99,6 +103,8 @@ resource "aws_iam_policy" "resources_portal_elasticsearch" {
     ]
 }
 EOF
+
+  tags = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "elasticsearch" {
@@ -126,6 +132,8 @@ resource "aws_iam_policy" "resources_portal_client_policy_ses" {
     ]
 }
 EOF
+
+  tags = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "ses" {
@@ -172,6 +180,8 @@ resource "aws_iam_policy" "s3_access_policy" {
    ]
 }
 EOF
+
+  tags = var.default_tags
 }
 
 resource "aws_iam_role_policy_attachment" "s3" {
