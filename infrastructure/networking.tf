@@ -2,8 +2,15 @@
 # related to networking.
 
 provider "aws" {
-  version = "2.66.0"
+  version = "3.37.0"
   region = var.region
+
+  default_tags {
+    tags = {
+      team = "engineering"
+      project = "Resources Portal"
+    }
+  }
 }
 
 resource "aws_vpc" "resources_portal_vpc" {
@@ -42,9 +49,12 @@ resource "aws_subnet" "resources_portal_1b" {
 resource "aws_internet_gateway" "resources_portal" {
   vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags = {
-    Name = "resources-portal-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-${var.user}-${var.stage}"
+    }
+  )
 }
 
 # Note: this is a insecure practice long term, however it's
@@ -57,9 +67,12 @@ resource "aws_route_table" "resources_portal" {
     gateway_id = aws_internet_gateway.resources_portal.id
   }
 
-  tags = {
-    Name = "resources-portal-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-${var.user}-${var.stage}"
+    }
+  )
 }
 
 resource "aws_route_table_association" "resources_portal_1a" {
@@ -76,18 +89,24 @@ resource "aws_db_subnet_group" "resources_portal" {
   name = "resources-portal-${var.user}-${var.stage}"
   subnet_ids = [aws_subnet.resources_portal_1a.id, aws_subnet.resources_portal_1b.id]
 
-  tags = {
-    Name = "Resources Portal DB Subnet ${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "Resources Portal DB Subnet ${var.user}-${var.stage}"
+    }
+  )
 }
 
 # Get the API a static IP address.
 resource "aws_eip" "resources_portal_api_ip" {
   vpc = true
 
-  tags = {
-    Name = "Resources Portal API Elastic IP ${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "Resources Portal API Elastic IP ${var.user}-${var.stage}"
+    }
+  )
 }
 
 output "elastic_ip_address" {
@@ -118,6 +137,8 @@ resource "aws_lb" "resources_portal_api_load_balancer" {
     subnet_id = aws_subnet.resources_portal_1a.id
     allocation_id = aws_eip.resources_portal_api_ip.id
   }
+
+  tags = var.default_tags
 }
 
 resource "aws_lb_target_group" "api-http" {
@@ -127,8 +148,10 @@ resource "aws_lb_target_group" "api-http" {
   vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness {
     enabled = false
-    type = "lb_cookie"
+    type = "source_ip"
   }
+
+  tags = var.default_tags
 }
 
 resource "aws_lb_listener" "api-http" {
@@ -155,8 +178,10 @@ resource "aws_lb_target_group" "api-https" {
   vpc_id = aws_vpc.resources_portal_vpc.id
   stickiness {
     enabled = false
-    type = "lb_cookie"
+    type = "source_ip"
   }
+
+  tags = var.default_tags
 }
 
 resource "aws_lb_listener" "api-https" {

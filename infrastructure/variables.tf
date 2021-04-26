@@ -3,6 +3,15 @@
 
 data "aws_caller_identity" "current" {}
 
+variable "default_tags" {
+  default = {
+    team = "engineering"
+    project = "Resources Portal"
+  }
+  description = "Default resource tags"
+  type = map(string)
+}
+
 variable "region" {
   default = "us-east-1"
 }
@@ -78,12 +87,12 @@ variable "sentry_env" {
 output "environment_variables" {
   value = [
     {name = "DATABASE_NAME"
-      value = "${aws_db_instance.postgres_db.name}"},
+      value = aws_db_instance.postgres_db.name},
     {name = "DATABASE_HOST"
-      value = "${aws_db_instance.postgres_db.address}"},
+      value = aws_db_instance.postgres_db.address},
     {name = "DATABASE_USER"
-      value = "${aws_db_instance.postgres_db.username}"},
+      value = aws_db_instance.postgres_db.username},
     {name = "DATABASE_PORT"
-      value = "${aws_db_instance.postgres_db.port}"}
+      value = aws_db_instance.postgres_db.port}
   ]
 }

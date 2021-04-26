@@ -30,7 +30,7 @@ Subsequent deploys to the same stack will use the same elastic IP address.
 
 You can destroy an existing stack with:
 ```
-destroy_terraform.py -e dev -u [username]
+python3 destroy_terraform.py -e dev -u [username]
 ```
 
 The username you use to destroy should match the one you supplied to `deploy.py`.

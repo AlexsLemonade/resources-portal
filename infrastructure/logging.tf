@@ -5,9 +5,12 @@
 resource "aws_cloudwatch_log_group" "resources_portal_log_group" {
   name = "resources-portal-log-group-${var.user}-${var.stage}"
 
-  tags = {
-    Name = "resources-portal-log-group-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-log-group-${var.user}-${var.stage}"
+    }
+  )
 }
 
 # Streams
