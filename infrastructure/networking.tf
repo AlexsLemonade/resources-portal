@@ -142,7 +142,7 @@ resource "aws_lb" "resources_portal_api_load_balancer" {
 }
 
 resource "aws_lb_target_group" "api-http" {
-  name = "dr-api-${var.user}-${var.stage}-http"
+  name = "resources-portal-api-${var.user}-${var.stage}-http"
   port = 80
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
@@ -172,7 +172,7 @@ resource "aws_lb_target_group_attachment" "api-http" {
 }
 
 resource "aws_lb_target_group" "api-https" {
-  name = "dr-api-${var.user}-${var.stage}-https"
+  name = "resources-portal-api-${var.user}-${var.stage}-https"
   port = 443
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
