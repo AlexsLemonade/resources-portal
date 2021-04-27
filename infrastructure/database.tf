@@ -1,8 +1,9 @@
 # This terraform file hosts the resources directly related to the
 # postgres RDS instance.
 
-resource "aws_db_parameter_group" "postgres_parameters" {
-  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
+# Currently exists, will be deleted after aws_db_parameter_group.postgres_parameters is in use.
+resource "aws_db_parameter_group" "postgres_parameters_old" {
+  name = "postgres-parameters-${var.user}-${var.stage}"
   description = "Postgres Parameters ${var.user} ${var.stage}"
   family = "postgres9.6"
 
@@ -17,8 +18,8 @@ resource "aws_db_parameter_group" "postgres_parameters" {
   }
 }
 
-resource "aws_db_parameter_group" "postgres_parameters_new" {
-  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}-new"
+resource "aws_db_parameter_group" "postgres_parameters" {
+  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
   description = "Postgres Parameters ${var.user} ${var.stage}"
   family = "postgres9.6"
 
@@ -49,7 +50,7 @@ resource "aws_db_instance" "postgres_db" {
   password = var.database_password
 
   db_subnet_group_name = aws_db_subnet_group.resources_portal.name
-  parameter_group_name = aws_db_parameter_group.postgres_parameters_new.name
+  parameter_group_name = aws_db_parameter_group.postgres_parameters.name
 
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
