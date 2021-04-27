@@ -15,6 +15,22 @@ resource "aws_db_parameter_group" "postgres_parameters" {
     name = "statement_timeout"
     value = "60000" # 60000ms = 60s
   }
+}
+
+resource "aws_db_parameter_group" "postgres_parameters_new" {
+  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}-new"
+  description = "Postgres Parameters ${var.user} ${var.stage}"
+  family = "postgres9.6"
+
+  parameter {
+    name = "deadlock_timeout"
+    value = "60000" # 60000ms = 60s
+  }
+
+  parameter {
+    name = "statement_timeout"
+    value = "60000" # 60000ms = 60s
+  }
 
   tags = var.default_tags
 }
