@@ -141,6 +141,19 @@ resource "aws_lb" "resources_portal_api_load_balancer" {
   tags = var.default_tags
 }
 
+resource "aws_lb_target_group" "api-http-old" {
+  name = "dr-api-${var.user}-${var.stage}-http"
+  port = 80
+  protocol = "TCP"
+  vpc_id = aws_vpc.resources_portal_vpc.id
+  stickiness {
+    enabled = false
+    type = "source_ip"
+  }
+
+  tags = var.default_tags
+}
+
 resource "aws_lb_target_group" "api-http" {
   name = "rp-api-${var.user}-${var.stage}-http"
   port = 80
@@ -169,6 +182,19 @@ resource "aws_lb_target_group_attachment" "api-http" {
   target_group_arn = aws_lb_target_group.api-http.arn
   target_id = aws_instance.api_server_1.id
   port = 80
+}
+
+resource "aws_lb_target_group" "api-https-old" {
+  name = "dr-api-${var.user}-${var.stage}-https"
+  port = 443
+  protocol = "TCP"
+  vpc_id = aws_vpc.resources_portal_vpc.id
+  stickiness {
+    enabled = false
+    type = "source_ip"
+  }
+
+  tags = var.default_tags
 }
 
 resource "aws_lb_target_group" "api-https" {

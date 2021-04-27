@@ -15,6 +15,22 @@ resource "aws_db_parameter_group" "postgres_parameters" {
     name = "statement_timeout"
     value = "60000" # 60000ms = 60s
   }
+}
+
+resource "aws_db_parameter_group" "postgres_parameters_new" {
+  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}-new"
+  description = "Postgres Parameters ${var.user} ${var.stage}"
+  family = "postgres9.6"
+
+  parameter {
+    name = "deadlock_timeout"
+    value = "60000" # 60000ms = 60s
+  }
+
+  parameter {
+    name = "statement_timeout"
+    value = "60000" # 60000ms = 60s
+  }
 
   tags = var.default_tags
 }
@@ -33,7 +49,7 @@ resource "aws_db_instance" "postgres_db" {
   password = var.database_password
 
   db_subnet_group_name = aws_db_subnet_group.resources_portal.name
-  parameter_group_name = aws_db_parameter_group.postgres_parameters.name
+  parameter_group_name = aws_db_parameter_group.postgres_parameters_new.name
 
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
