@@ -141,21 +141,7 @@ resource "aws_lb" "resources_portal_api_load_balancer" {
   tags = var.default_tags
 }
 
-resource "aws_lb_target_group" "api-http-old" {
-  name = "dr-api-${var.user}-${var.stage}-http"
-  port = 80
-  protocol = "TCP"
-  vpc_id = aws_vpc.resources_portal_vpc.id
-  stickiness {
-    enabled = false
-    type = "source_ip"
-  }
-
-  tags = var.default_tags
-}
-
 resource "aws_lb_target_group" "api-http" {
-  name = "rp-api-${var.user}-${var.stage}-http"
   port = 80
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
@@ -164,7 +150,16 @@ resource "aws_lb_target_group" "api-http" {
     type = "source_ip"
   }
 
-  tags = var.default_tags
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "rp-api-${var.user}-${var.stage}-http"
+    }
+  )
 }
 
 resource "aws_lb_listener" "api-http" {
@@ -184,21 +179,7 @@ resource "aws_lb_target_group_attachment" "api-http" {
   port = 80
 }
 
-resource "aws_lb_target_group" "api-https-old" {
-  name = "dr-api-${var.user}-${var.stage}-https"
-  port = 443
-  protocol = "TCP"
-  vpc_id = aws_vpc.resources_portal_vpc.id
-  stickiness {
-    enabled = false
-    type = "source_ip"
-  }
-
-  tags = var.default_tags
-}
-
 resource "aws_lb_target_group" "api-https" {
-  name = "rp-api-${var.user}-${var.stage}-https"
   port = 443
   protocol = "TCP"
   vpc_id = aws_vpc.resources_portal_vpc.id
@@ -207,7 +188,16 @@ resource "aws_lb_target_group" "api-https" {
     type = "source_ip"
   }
 
-  tags = var.default_tags
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "rp-api-${var.user}-${var.stage}-https"
+    }
+  )
 }
 
 resource "aws_lb_listener" "api-https" {
