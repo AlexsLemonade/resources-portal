@@ -49,7 +49,7 @@ resource "aws_db_instance" "postgres_db" {
   password = var.database_password
 
   db_subnet_group_name = aws_db_subnet_group.resources_portal.name
-  parameter_group_name = aws_db_parameter_group.postgres_parameters.name
+  parameter_group_name = aws_db_parameter_group.postgres_parameters_new.name
 
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
