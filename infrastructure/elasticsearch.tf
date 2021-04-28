@@ -13,31 +13,56 @@ resource "aws_elasticsearch_domain" "es" {
     volume_size = 10
   }
 
-  access_policies = <<CONFIG
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "*"
-      },
-      "Action": "es:*",
-      "Resource": "arn:aws:es:us-east-1:${data.aws_caller_identity.current.account_id}:domain/rp-es-${var.user}-${var.stage}/*"
-    }
-  ]
-}
-  CONFIG
+#   access_policies = <<CONFIG
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Principal": {
+#         "AWS": "*"
+#       },
+#       "Action": "es:*",
+#       "Resource": "arn:aws:es:us-east-1:${data.aws_caller_identity.current.account_id}:domain/rp-es-${var.user}-${var.stage}/*"
+#     }
+#   ]
+# }
+#   CONFIG
 
   snapshot_options {
       automated_snapshot_start_hour = 23
   }
 
-  tags = {
+  tags =  merge(
+    var.default_tags,
+    {
       Domain = "resources-portal-es-${var.user}-${var.stage}"
       Name = "resources-portal-es-${var.user}-${var.stage}"
-  }
+    }
+  )
 }
+
+resource "aws_elasticsearch_domain_policy" "main" {
+  domain_name = aws_elasticsearch_domain.es.domain_name
+  depends_on = [aws_iam_role.resources_portal_instance, aws_elasticsearch_domain.es]
+
+  access_policies = <<POLICIES
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "es:*",
+            "Principal":  {
+                "AWS": ["${aws_iam_role.resources_portal_instance.arn}"]
+            },
+            "Effect": "Allow",
+            "Resource": "${aws_elasticsearch_domain.es.arn}/*"
+        }
+    ]
+}
+POLICIES
+}
+
 
 output "elasticsearch_endpoint" {
   value = aws_elasticsearch_domain.es.endpoint

@@ -17,9 +17,12 @@ resource "aws_security_group" "resources_portal_db" {
   description = "resources_portal_db-${var.user}-${var.stage}"
   vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags = {
-    Name = "resources-portal-db-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-db-${var.user}-${var.stage}"
+    }
+  )
 }
 
 resource "aws_security_group_rule" "resources_portal_db_outbound" {
@@ -49,9 +52,12 @@ resource "aws_security_group" "resources_portal_api" {
   description = "resources-portal-api-${var.user}-${var.stage}"
   vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags = {
-    Name = "resources-portal-api-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-api-${var.user}-${var.stage}"
+    }
+  )
 }
 
 resource "aws_security_group_rule" "resources_portal_api_ssh" {
@@ -100,9 +106,12 @@ resource "aws_security_group" "resources_portal_es" {
   description = "resources-portal-es-${var.user}-${var.stage}"
   vpc_id = aws_vpc.resources_portal_vpc.id
 
-  tags = {
-    Name = "resources-portal-es-${var.user}-${var.stage}"
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-es-${var.user}-${var.stage}"
+    }
+  )
 
   # Wide open, but inside inside the VPC
   ingress {

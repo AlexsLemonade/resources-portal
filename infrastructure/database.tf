@@ -1,6 +1,7 @@
 # This terraform file hosts the resources directly related to the
 # postgres RDS instance.
 
+# Currently exists, will be deleted after aws_db_parameter_group.postgres_parameters is in use.
 resource "aws_db_parameter_group" "postgres_parameters" {
   name = "postgres-parameters-${var.user}-${var.stage}"
   description = "Postgres Parameters ${var.user} ${var.stage}"
@@ -17,6 +18,24 @@ resource "aws_db_parameter_group" "postgres_parameters" {
   }
 }
 
+resource "aws_db_parameter_group" "postgres_parameters_new" {
+  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
+  description = "Postgres Parameters ${var.user} ${var.stage}"
+  family = "postgres9.6"
+
+  parameter {
+    name = "deadlock_timeout"
+    value = "60000" # 60000ms = 60s
+  }
+
+  parameter {
+    name = "statement_timeout"
+    value = "60000" # 60000ms = 60s
+  }
+
+  tags = var.default_tags
+}
+
 resource "aws_db_instance" "postgres_db" {
   identifier = "resources-portal-${var.user}-${var.stage}"
   allocated_storage = 100
@@ -31,7 +50,7 @@ resource "aws_db_instance" "postgres_db" {
   password = var.database_password
 
   db_subnet_group_name = aws_db_subnet_group.resources_portal.name
-  parameter_group_name = aws_db_parameter_group.postgres_parameters.name
+  parameter_group_name = aws_db_parameter_group.postgres_parameters_new.name
 
   # TF is broken, but we do want this protection in prod.
   # Related: https://github.com/hashicorp/terraform/issues/5417
@@ -45,4 +64,5 @@ resource "aws_db_instance" "postgres_db" {
 
   backup_retention_period  = var.stage == "prod" ? "7" : "0"
 
+  tags = var.default_tags
 }

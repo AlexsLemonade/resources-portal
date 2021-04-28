@@ -3,8 +3,11 @@ resource "aws_s3_bucket" "resources_portal_bucket" {
   acl = "private"
   force_destroy = var.stage == "prod" ? false : true
 
-  tags = {
-    Name = "resources-portal-${var.user}-${var.stage}"
-    Environment = var.stage
-  }
+  tags = merge(
+    var.default_tags,
+    {
+      Name = "resources-portal-${var.user}-${var.stage}"
+      Environment = var.stage
+    }
+  )
 }
