@@ -1,4 +1,4 @@
-export const searchResult = ['tissue_histology', 'available_quality_fields']
+export const searchResult = ['tissue', 'available_quality_fields']
 
 export const listForm = [
   {
