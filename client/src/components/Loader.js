@@ -14,8 +14,8 @@ export const Loader = () => {
           <LemonWrapper margin={{ bottom: 'medium' }}>
             <Box
               animation={{ type: 'jiggle', size: 'medium', duration: 400 }}
-              background="alexs-lemon"
-              border={{ size: 'xsmall', color: 'alexs-lemon' }}
+              background="alexs-lemonade"
+              border={{ size: 'xsmall', color: 'alexs-lemonade' }}
               round="20px 140px 40px 140px"
               width="60px"
               height="60px"

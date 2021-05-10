@@ -24,7 +24,7 @@ export const SearchResult = ({
       border={
         resource.imported
           ? {
-              color: 'turteal-tint-80',
+              color: 'alexs-light-blue-tint-20',
               size: 'medium',
               side: 'top'
             }

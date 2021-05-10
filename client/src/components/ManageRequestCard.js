@@ -25,7 +25,7 @@ const getRequestConfig = (request) => {
       config.barWidth = '10%'
       break
     case 'AWAITING_ADDITIONAL_DOCUMENTS':
-      config.barColor = 'turteal-tint-60'
+      config.barColor = 'alexs-lemonade-60'
       config.barTextColor = 'black'
       config.barWidth = '35%'
       break

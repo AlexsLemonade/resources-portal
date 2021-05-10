@@ -7,7 +7,7 @@ const types = {
   info: {
     icon: 'Check',
     background: 'brand',
-    multipleBackground: 'turteal-shade-20',
+    multipleBackground: 'alexs-deep-blue-tint-20',
     color: 'white'
   },
   error: {

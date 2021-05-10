@@ -21,7 +21,7 @@ export const DrillDownNav = ({
         border={{
           side: 'bottom',
           size: 'small',
-          color: 'turteal-tint-80'
+          color: 'alexs-light-blue-tint-20'
         }}
         width="full"
         alignContent="between"

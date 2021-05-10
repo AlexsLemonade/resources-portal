@@ -104,7 +104,10 @@ const theme = {
             color: ${normalizeColor('brand', props.theme)};
             &:hover, &:active {
               box-shadow: none;
-              background-color: ${normalizeColor('turteal', props.theme)};
+              background-color: ${normalizeColor(
+                'alexs-deep-blue',
+                props.theme
+              )};
               color: ${normalizeColor('white', props.theme)};
             }
             &:active {
@@ -127,7 +130,7 @@ const theme = {
             &:hover, &:active {
               box-shadow: none;
               background-color: ${normalizeColor(
-                'turteal-shade-20',
+                'alexs-deep-blue-tint-20',
                 props.theme
               )};
             }
@@ -567,28 +570,23 @@ const theme = {
       }
     },
     colors: {
-      gradient: 'linear-gradient(180deg, #FDFDFD 0%, #DCF7FE 100%)',
-      'gradient-reverse': 'linear-gradient(0deg, #FDFDFD 0%, #DCF7FE 100%)',
-      'alexs-navy': '#002F6C',
-      'alexs-navy-tint-20': '#0051BC',
-      'alexs-navy-tint-40': '#0D76FF',
-      'alexs-navy-tint-60': '#5EA4fE',
-      'alexs-navy-tint-80': '#AED1FE',
-      'alexs-navy-tint-90': '#D6E8FF',
-      'alexs-lemon': '#F3E500',
-      'alexs-lemon-tint-40': '#FFF55E',
-      'alexs-lemon-tint-80': '#FFFBC9',
-      'alexs-lemon-shade-10': '#DACE00',
-      'alexs-lemon-shade-20': '#C2B700',
-      'alexs-lemon-shade-30': '#AAA000',
-      turteal: '#017FA3',
-      'turteal-tint-20': '#01B4E7',
-      'turteal-tint-40': '#30D0FD',
-      'turteal-tint-60': '#75DFFE',
-      'turteal-tint-80': '#BAEFFE',
-      'turteal-tint-90': '#DCF7FE',
-      'turteal-shade-20': '#006582',
-      'turteal-shade-40': '#004C61',
+      gradient: 'linear-gradient(180deg, #FDFDFD 0%, #EDF7FD 100%)',
+      'gradient-reverse': 'linear-gradient(0deg, #FDFDFD 0%, #EDF7FD 100%)',
+      'alexs-deep-blue': '#003595',
+      'alexs-deep-blue-tint-20': '#3E58AA',
+      'alexs-deep-blue-tint-40': '#737EBF',
+      'alexs-deep-blue-tint-70': '#B9BCDF',
+      'alexs-light-blue': '#145ECC',
+      'alexs-light-blue-tint-20': '#437ED6',
+      'alexs-light-blue-tint-40': '#729EE0',
+      'alexs-light-blue-tint-60': '#B9CFF0',
+      'alexs-lemonade': '#FFDD00',
+      'alexs-lemonade-tint-20': '#FFE303',
+      'alexs-lemonade-tint-40': '#FFE964',
+      'alexs-lemonade-tint-60': '#FFF09A',
+      'alexs-lemonade-tint-75': '#FFF5C0',
+      'powder-blue': '#C9ECFA',
+      dawn: '#EDF7FD',
       'soda-orange': '#E55517',
       'soda-orange-tint-20': '#ec7643',
       'soda-orange-tint-40': '#F09872',
@@ -615,12 +613,12 @@ const theme = {
       'black-tint-90': '#E5E5E5',
       'black-tint-95': '#F2F2F2',
       white: '#FDFDFD',
-      info: '#002F6C', // alexs-navy-base
+      info: '#003595', // alexs-deep-blue
       success: '#41A36D',
       'success-shade-20': '#348257',
       error: '#DB3B28',
       'error-shade-20': '#A72A1B',
-      warning: '#DACE00', // alexs-lemon-shade-10
+      warning: '#FFDD00', // alexs-lemonade
       'active-background': 'brand',
       'active-text': 'text-strong',
       'background-highlight': '#F2F2F2',
@@ -645,8 +643,8 @@ const theme = {
         light: 'black-tint-80'
       },
       brand: {
-        dark: 'turteal',
-        light: 'turteal'
+        dark: 'alexs-deep-blue',
+        light: 'alexs-deep-blue'
       },
       control: 'brand',
       'graph-0': 'brand',
@@ -714,7 +712,7 @@ const theme = {
       }
     },
     font: {
-      family: 'Lato',
+      family: 'Source Sans Pro',
       height: '24px',
       maxWidth: '192px',
       size: '16px'
@@ -748,11 +746,11 @@ const theme = {
   },
   heading: {
     font: {
-      family: 'Lato',
+      family: 'Source Sans Pro',
       weight: 'bold'
     },
     extend: (props) =>
-      props.serif ? `font-family: 'Arvo'; font-weight: 400` : null,
+      props.serif ? `font-family: 'Zilla Slab'; font-weight: 400` : null,
     level: {
       '1': {
         large: {
@@ -949,7 +947,7 @@ const theme = {
         applyWhen(
           props.serif,
           `
-      font-family: 'Arvo'`
+      font-family: 'Zilla Slab'`
         )
       ),
     large: {

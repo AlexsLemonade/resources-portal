@@ -23,7 +23,7 @@ export default () => {
   return (
     <>
       <Box
-        border={{ side: 'bottom', color: 'turteal-tint-40' }}
+        border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}
         margin={{ bottom: 'medium' }}
       >
         <Heading level={5} weight="normal" margin="none">
