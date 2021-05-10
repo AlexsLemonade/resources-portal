@@ -63,7 +63,9 @@ export default ResourceDetailsPage
 
 const TabHeading = ({ title }) => (
   <Box
-    border={[{ size: 'small', side: 'bottom', color: 'alexs-light-blue-tint-20' }]}
+    border={[
+      { size: 'small', side: 'bottom', color: 'alexs-light-blue-tint-20' }
+    ]}
     margin={{ bottom: 'large' }}
   >
     <Heading level="5" margin={{ bottom: 'small' }}>
