@@ -4,35 +4,30 @@
     <title>invite-sent-modal</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <linearGradient x1="50%" y1="100%" x2="50%" y2="0%" id="invite-sent-modal--linearGradient-1">
-            <stop stop-color="#000000" stop-opacity="0.12" offset="0%"></stop>
-            <stop stop-color="#000000" stop-opacity="0.09" offset="55.135%"></stop>
-            <stop stop-color="#000000" stop-opacity="0.02" offset="100%"></stop>
-        </linearGradient>
-        <linearGradient x1="75.00392%" y1="87.4929731%" x2="17.9211664%" y2="44.1908327%" id="invite-sent-modal--linearGradient-2">
+        <linearGradient x1="75.00392%" y1="87.4929731%" x2="17.9211664%" y2="44.1908327%" id="linearGradient-1">
             <stop stop-color="#808080" stop-opacity="0.25" offset="0%"></stop>
             <stop stop-color="#808080" stop-opacity="0.12" offset="53.514%"></stop>
             <stop stop-color="#808080" stop-opacity="0.1" offset="100%"></stop>
         </linearGradient>
     </defs>
-    <g id="invite-sent-modal--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="invite-sent-modal--illustrations" transform="translate(-814.000000, -91.000000)" fill-rule="nonzero">
-            <g id="invite-sent-modal--invite-sent-modal" transform="translate(814.000000, 91.000000)">
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="16.0427807 52 0 33.9902439 48 0 96 33.9902439 79.7005348 52"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#514ABF" points="16.0427807 52 0 33.9902439 48 0 96 33.9902439 79.7005348 52"></polygon>
-                <rect id="invite-sent-modal--Rectangle" fill="#017FA3" x="0" y="36" width="93" height="41"></rect>
-                <rect id="invite-sent-modal--Rectangle" fill="url(#invite-sent-modal--linearGradient-1)" x="0" y="36" width="93" height="41"></rect>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="96 92 0 92 0 34 48 63.0643016 96 34"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#3AD29F" points="84 14.7935788 73.8079052 7 46.8098388 42.1128732 31.8151385 30.6467235 24 40.8107402 44.0893345 56.1497199 44.0893345 56.1497199 49.2410125 60"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="url(#invite-sent-modal--linearGradient-2)" points="0.375913239 20.818568 0 21 0.0432287585 20.9240285 0.0102383902 20.9345246 0.0565007458 20.9006623 5.11590869 12 7.70217661 14.1799325 9.92087368 16.210546 9.28381829 16.5180557 10 17.7668374"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="8.01435644 15 10 17.0406436 1 22 5.7894802 15.1960258"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#000000" opacity="0.2" points="8.01435644 15 10 17.0406436 1 22 5.7894802 15.1960258"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="5.68865128 13 1 22 8 15.1439256"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="10 17.8238311 1 21 8.52338941 15"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="88.0457681 4.76826837 86 8.45864105 101 11 91.3388965 4"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#000000" opacity="0.2" points="88.0457681 4.76826837 86 8.45864105 101 11 91.3388965 4"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="90.4722597 1 101 11 88 4.93603952"></polygon>
-                <polygon id="invite-sent-modal--Path" fill="#017FA3" points="87 10.7118984 101 11 87.9303295 6"></polygon>
+    <g id="Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="illustrations" transform="translate(-830.000000, -94.000000)" fill-rule="nonzero">
+            <g id="invite-sent-modal" transform="translate(830.000000, 94.000000)">
+                <polygon id="Path" fill="#003595" points="16.0427807 52 0 33.9902439 48 0 96 33.9902439 79.7005348 52"></polygon>
+                <polygon id="Path" fill="#737EBF" points="16.0427807 52 0 33.9902439 48 0 96 33.9902439 79.7005348 52"></polygon>
+                <rect id="Rectangle" fill="#003595" x="0" y="36" width="93" height="41"></rect>
+                <rect id="Rectangle" fill="#3E58AA" x="0" y="36" width="93" height="41"></rect>
+                <polygon id="Path" fill="#003595" points="96 92 0 92 0 34 48 63.0643016 96 34"></polygon>
+                <polygon id="Path" fill="#3AD29F" points="84 14.7935788 73.8079052 7 46.8098388 42.1128732 31.8151385 30.6467235 24 40.8107402 44.0893345 56.1497199 44.0893345 56.1497199 49.2410125 60"></polygon>
+                <polygon id="Path" fill="url(#linearGradient-1)" points="0.375913239 20.818568 0 21 0.0432287585 20.9240285 0.0102383902 20.9345246 0.0565007458 20.9006623 5.11590869 12 7.70217661 14.1799325 9.92087368 16.210546 9.28381829 16.5180557 10 17.7668374"></polygon>
+                <polygon id="Path" fill="#003595" points="8.01435644 15 10 17.0406436 1 22 5.7894802 15.1960258"></polygon>
+                <polygon id="Path" fill="#000000" opacity="0.2" points="8.01435644 15 10 17.0406436 1 22 5.7894802 15.1960258"></polygon>
+                <polygon id="Path" fill="#003595" points="5.68865128 13 1 22 8 15.1439256"></polygon>
+                <polygon id="Path" fill="#003595" points="10 17.8238311 1 21 8.52338941 15"></polygon>
+                <polygon id="Path" fill="#003595" points="88.0457681 4.76826837 86 8.45864105 101 11 91.3388965 4"></polygon>
+                <polygon id="Path" fill="#000000" opacity="0.2" points="88.0457681 4.76826837 86 8.45864105 101 11 91.3388965 4"></polygon>
+                <polygon id="Path" fill="#003595" points="90.4722597 1 101 11 88 4.93603952"></polygon>
+                <polygon id="Path" fill="#003595" points="87 10.7118984 101 11 87.9303295 6"></polygon>
             </g>
         </g>
     </g>
