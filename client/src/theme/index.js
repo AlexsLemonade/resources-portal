@@ -750,7 +750,7 @@ const theme = {
       weight: 'bold'
     },
     extend: (props) =>
-      props.serif ? `font-family: 'Zilla Slab'; font-weight: 400` : null,
+      props.serif ? `font-family: 'Zilla Slab'; font-weight: 500` : null,
     level: {
       '1': {
         large: {
@@ -947,7 +947,9 @@ const theme = {
         applyWhen(
           props.serif,
           `
-      font-family: 'Zilla Slab'`
+          font-family: 'Zilla Slab';
+          font-weight: 500;
+        `
         )
       ),
     large: {
