@@ -6,7 +6,7 @@ import Link from 'next/link'
 import ORCIDSignInButton from 'components/ORCIDSignInButton'
 import { IncorrectGrantModal } from 'components/modals/IncorrectGrantModal'
 import CreateAccountDetailsForm from 'components/CreateAccountDetailsForm'
-import GrantIcon from '../images/grant.svg'
+import GrantIcon from '../images/grant-icon.svg'
 import NextSteps from '../images/join-by-invite-next-steps.svg'
 
 export const CreateAccountStep = ({ ORCID }) => {
