@@ -90,7 +90,7 @@ export default () => {
 
   return (
     <Box width="large" height={{ min: '500px' }}>
-      <Box border={{ side: 'bottom', color: 'turteal-tint-80' }}>
+      <Box border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}>
         <Text size="large">Request Requirements</Text>
         <Text italic color="black-tint-60">
           Specify materials you require from the requester to review and fulfill

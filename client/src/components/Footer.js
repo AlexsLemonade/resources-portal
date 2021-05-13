@@ -31,15 +31,11 @@ export const Footer = () => {
         <Stack anchor="top-right">
           <Box direction="row" justify="between" align="end" width="xxlarge">
             <Box align="start" margin={{ vertical: 'large' }}>
-              <Text color="turteal-shade-40">
-                Alex’s Lemonade Stand Foundation for Childhood Cancer
-              </Text>
-              <Text margin={{ top: 'large' }} color="turteal-shade-40">
+              <Text>Alex’s Lemonade Stand Foundation for Childhood Cancer</Text>
+              <Text margin={{ top: 'large' }}>
                 111 Presidential Blvd., Suite 203, Bala Cynwyd, PA 19004 USA
               </Text>
-              <Text color="turteal-shade-40">
-                Phone: 866.333.1213 • Fax: 610.649.3038
-              </Text>
+              <Text>Phone: 866.333.1213 • Fax: 610.649.3038</Text>
               <Box margin={{ top: 'large' }}>
                 <Button primary label="Donate" />
               </Box>
@@ -51,7 +47,7 @@ export const Footer = () => {
             >
               <Box align="end">
                 <Box>
-                  <Paragraph color="turteal-shade-40" fill>
+                  <Paragraph fill>
                     Sign up to get the latest updates from Alex’s Lemonade Stand
                     Foundation{' '}
                   </Paragraph>

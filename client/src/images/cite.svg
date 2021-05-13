@@ -4,17 +4,17 @@
     <title>icons/cite</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <path d="M14.24,8.62 C16,8.84 19.1,11.08 19.1,14.88 C19.1,17.56 17.54,18.8 15.72,18.8 C13.68,18.8 12.62,17.22 12.62,15.34 C12.62,12.86 14.48,12.24 15.64,12.14 C15.72,11.48 14.88,10.32 13.86,9.66 L14.24,8.62 Z M6.52,8.62 C8.28,8.84 11.38,11.08 11.38,14.88 C11.38,17.56 9.82,18.8 8,18.8 C5.96,18.8 4.9,17.22 4.9,15.34 C4.9,12.86 6.76,12.24 7.92,12.14 C8,11.48 7.16,10.32 6.14,9.66 L6.52,8.62 Z M0,0 L0,20 C0,21.94 1.06,23 3,23 L21,23 C22.94,23 24,21.94 24,20 L24,8 C24,6.06 22.94,5 21,5 L5,5 L0,0 Z" id="icons/cite--path-1"></path>
+        <path d="M14.24,8.62 C16,8.84 19.1,11.08 19.1,14.88 C19.1,17.56 17.54,18.8 15.72,18.8 C13.68,18.8 12.62,17.22 12.62,15.34 C12.62,12.86 14.48,12.24 15.64,12.14 C15.72,11.48 14.88,10.32 13.86,9.66 L14.24,8.62 Z M6.52,8.62 C8.28,8.84 11.38,11.08 11.38,14.88 C11.38,17.56 9.82,18.8 8,18.8 C5.96,18.8 4.9,17.22 4.9,15.34 C4.9,12.86 6.76,12.24 7.92,12.14 C8,11.48 7.16,10.32 6.14,9.66 L6.52,8.62 Z M0,0 L0,20 C0,21.94 1.06,23 3,23 L21,23 C22.94,23 24,21.94 24,20 L24,8 C24,6.06 22.94,5 21,5 L5,5 L0,0 Z" id="path-1"></path>
     </defs>
-    <g id="icons/cite--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="icons/cite--icons-badges-variations" transform="translate(-499.000000, -396.000000)">
-            <g id="icons/cite--icons/cite" transform="translate(499.000000, 396.000000)">
-                <mask id="icons/cite--mask-2" fill="white">
-                    <use xlink:href="#icons/cite--path-1"></use>
+    <g id="Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons-badges-variations" transform="translate(-456.000000, -237.000000)">
+            <g id="icons/cite" transform="translate(456.000000, 237.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
                 </mask>
-                <use id="icons/cite--Shape" fill="#017FA3" fill-rule="nonzero" transform="translate(12.000000, 11.500000) scale(-1, 1) rotate(-180.000000) translate(-12.000000, -11.500000) " xlink:href="#icons/cite--path-1"></use>
-                <g id="icons/cite--color/black-tint/0-000000" mask="url(#icons/cite--mask-2)" fill="#000000" fill-rule="evenodd">
-                    <rect id="icons/cite--gray-70-4A4A4A" x="0" y="0" width="26" height="24"></rect>
+                <use id="Shape" fill="#003595" fill-rule="nonzero" transform="translate(12.000000, 11.500000) scale(-1, 1) rotate(-180.000000) translate(-12.000000, -11.500000) " xlink:href="#path-1"></use>
+                <g id="color/black-tint/0-000000" mask="url(#mask-2)" fill="#000000" fill-rule="evenodd">
+                    <rect id="gray-70-4A4A4A" x="0" y="0" width="26" height="24"></rect>
                 </g>
             </g>
         </g>

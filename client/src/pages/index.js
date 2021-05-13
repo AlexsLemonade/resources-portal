@@ -22,13 +22,13 @@ export const Home = () => {
           <Box width="fill" background="gradient" pad={{ bottom: '180px' }}>
             <Box width="xlarge" alignSelf="center">
               <Box alignSelf="center">
-                <Text color="turteal-shade-40" size="50px">
+                <Text color="alexs-deep-blue-shade-40" size="50px">
                   Childhood Cancer Research Resources Portal
                 </Text>
               </Box>
               <Box align="center" direction="row" justify="between">
                 <Box width={{ min: '320px', max: '540px' }}>
-                  <Text color="turteal-shade-40" size="large">
+                  <Text color="alexs-deep-blue-shade-40" size="large">
                     The Childhood Cancer Research Resources (CCRR) Portal is a
                     platform to enable discovery and sharing of research
                     resources such as datasets, cell lines, PDX models,
@@ -95,7 +95,7 @@ export const Home = () => {
       </Box>
       <Box>
         <Box align="center" pad={{ top: 'xlarge' }}>
-          <Text color="turteal-shade-40" size="50px">
+          <Text color="alexs-deep-blue-shade-40" size="50px">
             Reap the benefits of sharing
           </Text>
           <Box
@@ -110,7 +110,7 @@ export const Home = () => {
               size="large"
               label="More citations"
               imagePath="/cite.png"
-              color="turteal-shade-40"
+              color="alexs-deep-blue-shade-40"
             >
               <Paragraph width="small">
                 Researchers who have data in openly available repositories or
@@ -120,7 +120,7 @@ export const Home = () => {
             <HomepageCard
               size="large"
               label="Accelerate Research"
-              color="turteal-shade-40"
+              color="alexs-deep-blue-shade-40"
               imagePath="/accelerate.png"
             >
               <Paragraph>
@@ -131,7 +131,7 @@ export const Home = () => {
             <HomepageCard
               size="large"
               label="New Collaborations"
-              color="turteal-shade-40"
+              color="alexs-deep-blue-shade-40"
               imagePath="/collaboration.png"
             >
               <Paragraph>

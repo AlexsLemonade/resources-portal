@@ -1,11 +1,11 @@
-import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
-import Link from 'next/link'
 import React from 'react'
+import { Box, Header, Nav, ResponsiveContext } from 'grommet'
 import dynamic from 'next/dynamic'
 import styled from 'styled-components'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { AlertsWithQueue } from 'components/Alert'
-import LogoSvg from '../images/logo.svg'
+import Link from 'components/Link'
+import Logo from 'components/Logo'
 
 const HeaderAccountLink = dynamic(
   () => import('components/HeaderAccountLink'),
@@ -21,10 +21,6 @@ const FixedBox = styled(Box)`
   box-shadow: 0px 2px 5px 5px #fdfdfd;
 `
 
-const Logo = styled(LogoSvg)`
-  margin-bottom: -56px;
-`
-
 export default function ResourcesHeader({ className }) {
   const size = React.useContext(ResponsiveContext)
   const queue = useAlertsQueue()
@@ -35,7 +31,6 @@ export default function ResourcesHeader({ className }) {
         <Header
           className={className}
           background="brand"
-          pad="small"
           border={[{ size: 'medium', side: 'bottom', color: '#F3E502' }]}
           justify="center"
           margin={{ bottom: '2rem' }}
@@ -48,9 +43,7 @@ export default function ResourcesHeader({ className }) {
           >
             <Box direction="row" align="center" gap="small">
               <Link href="/">
-                <Anchor color="white" href="#">
-                  <Logo />
-                </Anchor>
+                <Logo />
               </Link>
             </Box>
             <Nav
@@ -58,13 +51,9 @@ export default function ResourcesHeader({ className }) {
               gap={size === 'large' ? 'xlarge' : 'medium'}
               align="center"
             >
-              <Link href="/search">
-                <Anchor color="white" href="/search" label="Search" />
-              </Link>
-              <Link href="/resources">
-                <Anchor color="white" href="/resources" label="Add Resource" />
-              </Link>
-              <Anchor color="white" href="/help" label="Help" />
+              <Link color="white" href="/search" label="Search" />
+              <Link color="white" href="/resources" label="Add Resource" />
+              <Link color="white" href="/help" label="Help" />
               <HeaderAccountLink />
             </Nav>
           </Box>

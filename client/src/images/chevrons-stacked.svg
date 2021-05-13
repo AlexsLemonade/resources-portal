@@ -4,30 +4,30 @@
     <title>icons/chevrons-stacked</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <path d="M12,10.5822704 L21.4673913,1.87405647e-13 L24,2.88607375 C16.1050725,11.6371219 12.1050725,16.0084266 12,15.9999878 C11.8913043,16.0042072 7.89130435,11.6329025 4.07274858e-14,2.88607375 L2.5326087,1.87405647e-13 L12,10.5822704 Z" id="icons/chevrons-stacked--path-1"></path>
-        <path d="M12,10.5822704 L21.4673913,1.87405647e-13 L24,2.88607375 C16.1050725,11.6371219 12.1050725,16.0084266 12,15.9999878 C11.8913043,16.0042072 7.89130435,11.6329025 4.60565563e-14,2.88607375 L2.5326087,1.87405647e-13 L12,10.5822704 Z" id="icons/chevrons-stacked--path-3"></path>
+        <path d="M12,10.5822704 L21.4673913,1.87405647e-13 L24,2.88607375 C16.1050725,11.6371219 12.1050725,16.0084266 12,15.9999878 C11.8913043,16.0042072 7.89130435,11.6329025 4.07274858e-14,2.88607375 L2.5326087,1.87405647e-13 L12,10.5822704 Z" id="path-1"></path>
+        <path d="M12,10.5822704 L21.4673913,1.87405647e-13 L24,2.88607375 C16.1050725,11.6371219 12.1050725,16.0084266 12,15.9999878 C11.8913043,16.0042072 7.89130435,11.6329025 4.60565563e-14,2.88607375 L2.5326087,1.87405647e-13 L12,10.5822704 Z" id="path-3"></path>
     </defs>
-    <g id="icons/chevrons-stacked--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="icons/chevrons-stacked--icons-badges-variations" transform="translate(-326.000000, -457.000000)">
-            <g id="icons/chevrons-stacked--icons/chevrons-stacked" transform="translate(326.000000, 453.000000)">
-                <rect id="icons/chevrons-stacked--box-down" x="0" y="24" width="24" height="24"></rect>
-                <g id="icons/chevrons-stacked--icons/chevron-down" transform="translate(0.000000, 28.000000)">
-                    <mask id="icons/chevrons-stacked--mask-2" fill="white">
-                        <use xlink:href="#icons/chevrons-stacked--path-1"></use>
+    <g id="Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons-badges-variations" transform="translate(-283.000000, -298.000000)">
+            <g id="icons/chevrons-stacked" transform="translate(283.000000, 294.000000)">
+                <rect id="box-down" x="0" y="24" width="24" height="24"></rect>
+                <g id="icons/chevron-down" transform="translate(0.000000, 28.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
                     </mask>
-                    <use id="icons/chevrons-stacked--Shape" fill="#002F6C" fill-rule="nonzero" xlink:href="#icons/chevrons-stacked--path-1"></use>
-                    <g id="icons/chevrons-stacked--color/black-tint/0-000000" mask="url(#icons/chevrons-stacked--mask-2)" fill="#000000" fill-rule="evenodd">
-                        <rect id="icons/chevrons-stacked--gray-70-4A4A4A" x="0" y="0" width="24" height="16"></rect>
+                    <use id="Shape" fill="#002F6C" fill-rule="nonzero" xlink:href="#path-1"></use>
+                    <g id="color/black-tint/0-000000" mask="url(#mask-2)" fill="#000000" fill-rule="evenodd">
+                        <rect id="gray-70-4A4A4A" x="0" y="0" width="24" height="16"></rect>
                     </g>
                 </g>
-                <rect id="icons/chevrons-stacked--box-up" x="0" y="0" width="24" height="24"></rect>
-                <g id="icons/chevrons-stacked--icons/chevron-up" transform="translate(0.000000, 4.000000)">
-                    <mask id="icons/chevrons-stacked--mask-4" fill="white">
-                        <use xlink:href="#icons/chevrons-stacked--path-3"></use>
+                <rect id="box-up" x="0" y="0" width="24" height="24"></rect>
+                <g id="icons/chevron-up" transform="translate(0.000000, 4.000000)">
+                    <mask id="mask-4" fill="white">
+                        <use xlink:href="#path-3"></use>
                     </mask>
-                    <use id="icons/chevrons-stacked--Shape" fill="#4A4A4A" fill-rule="nonzero" transform="translate(12.000000, 8.000000) scale(1, -1) translate(-12.000000, -8.000000) " xlink:href="#icons/chevrons-stacked--path-3"></use>
-                    <g id="icons/chevrons-stacked--color/black-tint/0-000000" mask="url(#icons/chevrons-stacked--mask-4)" fill="#000000" fill-rule="evenodd">
-                        <rect id="icons/chevrons-stacked--gray-70-4A4A4A" x="0" y="0" width="24" height="16"></rect>
+                    <use id="Shape" fill="#4A4A4A" fill-rule="nonzero" transform="translate(12.000000, 8.000000) scale(1, -1) translate(-12.000000, -8.000000) " xlink:href="#path-3"></use>
+                    <g id="color/black-tint/0-000000" mask="url(#mask-4)" fill="#000000" fill-rule="evenodd">
+                        <rect id="gray-70-4A4A4A" x="0" y="0" width="24" height="16"></rect>
                     </g>
                 </g>
             </g>

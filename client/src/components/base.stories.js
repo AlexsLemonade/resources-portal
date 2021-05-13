@@ -196,7 +196,7 @@ storiesOf('Forms Inputs', module).add('Textboxes', () => {
 })
 
 storiesOf('Headings', module)
-  .add('Lato (for body)', () => {
+  .add('Source Sans Pro (for body)', () => {
     return (
       <Grommet theme={theme}>
         <Box align="center" pad="large">
@@ -209,7 +209,7 @@ storiesOf('Headings', module)
       </Grommet>
     )
   })
-  .add('Arvo (for headers)', () => {
+  .add('Zilla Slab (for headers)', () => {
     return (
       <Grommet theme={theme}>
         <Box align="center" pad="large">

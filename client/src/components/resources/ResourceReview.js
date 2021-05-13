@@ -33,7 +33,7 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
   return (
     <Box width="xlarge">
       <Box
-        border={{ side: 'bottom', color: 'turteal-tint-60' }}
+        border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}
         margin={{ vertical: 'large' }}
       >
         <Text size="large" weight="bold">
@@ -60,7 +60,7 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
         <Box
           direction="row"
           gap="medium"
-          border={{ side: 'bottom', color: 'turteal-tint-60' }}
+          border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}
           margin={{ vertical: 'large' }}
         >
           <Text size="large" margin={{ bottom: 'small' }}>
@@ -96,7 +96,7 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
           <Box
             direction="row"
             gap="medium"
-            border={{ side: 'bottom', color: 'turteal-tint-60' }}
+            border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}
             margin={{ vertical: 'large' }}
           >
             <Text size="large" margin={{ bottom: 'small' }}>
