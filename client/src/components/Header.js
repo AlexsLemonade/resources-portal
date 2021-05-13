@@ -1,10 +1,10 @@
-import { Anchor, Box, Header, Nav, ResponsiveContext } from 'grommet'
-import Link from 'next/link'
+import { Box, Header, Nav, ResponsiveContext } from 'grommet'
 import React from 'react'
 import dynamic from 'next/dynamic'
 import styled from 'styled-components'
 import { useAlertsQueue } from 'hooks/useAlertsQueue'
 import { AlertsWithQueue } from 'components/Alert'
+import Link from 'components/Link'
 import LogoSvg from '../images/logo.svg'
 
 const HeaderAccountLink = dynamic(
@@ -48,9 +48,7 @@ export default function ResourcesHeader({ className }) {
           >
             <Box direction="row" align="center" gap="small">
               <Link href="/">
-                <Anchor color="white" href="#">
-                  <Logo />
-                </Anchor>
+                <Logo />
               </Link>
             </Box>
             <Nav
@@ -58,13 +56,9 @@ export default function ResourcesHeader({ className }) {
               gap={size === 'large' ? 'xlarge' : 'medium'}
               align="center"
             >
-              <Link href="/search">
-                <Anchor color="white" href="/search" label="Search" />
-              </Link>
-              <Link href="/resources">
-                <Anchor color="white" href="/resources" label="Add Resource" />
-              </Link>
-              <Anchor color="white" href="/help" label="Help" />
+              <Link color="white" href="/search" label="Search" />
+              <Link color="white" href="/resources" label="Add Resource" />
+              <Link color="white" href="/help" label="Help" />
               <HeaderAccountLink />
             </Nav>
           </Box>
