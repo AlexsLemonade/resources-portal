@@ -6,6 +6,8 @@ import LogoBlue from '../images/alsf-blue.svg'
 export default () => {
   const [scrolled, setScrolled] = React.useState(false)
   const margin = scrolled ? 0 : 38
+  const height = scrolled ? '74px' : '112px'
+  const background = scrolled ? 'alexs-lemonade' : 'transparent'
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -22,26 +24,24 @@ export default () => {
 
   return (
     <Box
+      height="full"
       direction="row"
       align="center"
       gap="small"
       margin={{ bottom: `-${margin}px` }}
     >
-      <Box width="91px">
-        {!scrolled && (
-          <Box animation={{ type: 'fadeIn', duration: 250 }}>
-            <Logo />
+      <Box
+        width="91px"
+        height={height}
+        justify="center"
+        background={background}
+      >
+        {scrolled ? (
+          <Box pad="small">
+            <LogoBlue margin={{ top: '38px' }} pad="small" />
           </Box>
-        )}
-        {scrolled && (
-          <Box
-            animation={{ type: 'fadeIn', duration: 250 }}
-            background="alexs-lemonade"
-            pad="small"
-            margin={{ vertical: '19px' }}
-          >
-            <LogoBlue />
-          </Box>
+        ) : (
+          <Logo />
         )}
       </Box>
       <Text serif size="large" color="white" margin={{ bottom: `${margin}px` }}>
