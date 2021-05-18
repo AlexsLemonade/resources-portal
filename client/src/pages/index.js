@@ -36,7 +36,7 @@ export const Home = () => {
                   </Text>
                 </Box>
                 <Box pad="large">
-                  <img alt="placeholder" src="/landing-page-hero.svg" />
+                  <img alt="welcome" src="/landing-page-hero.svg" />
                 </Box>
               </Box>
             </Box>
