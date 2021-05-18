@@ -38,11 +38,11 @@ export default () => {
           <Text serif size="large">
             List
           </Text>
-          <Paragraph>
+          <Paragraph margin={{ vertical: 'medium' }}>
             Repository for your resource doesn’t exist? Can’t list your resource
             in a repository yet? List with us.
           </Paragraph>
-          <Paragraph>
+          <Paragraph margin={{ bottom: 'medium' }}>
             When you list a resource, you will be responsible for responding to
             requests that are made through the portal.
           </Paragraph>
