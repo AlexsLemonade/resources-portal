@@ -34,7 +34,7 @@ export default function ListResource() {
       repo: 'Protocols',
       repos: [
         {
-          label: 'Protocols',
+          label: 'protocols.io',
           href: 'https://www.protocols.io/'
         }
       ]
@@ -52,7 +52,7 @@ export default function ListResource() {
       repo: 'Mouse Models*',
       repos: [
         {
-          label: 'Mouse Models*',
+          label: 'Jackson Labratory',
           href:
             'https://www.jax.org/jax-mice-and-services/cryo-and-strain-donation/donate-a-strain'
         }
@@ -62,7 +62,7 @@ export default function ListResource() {
       repo: 'Zebrafish Models*',
       repos: [
         {
-          label: 'Zebrafish Models*',
+          label: 'ZIRC',
           href: 'https://zebrafish.org/home/guide.php'
         }
       ]
