@@ -183,7 +183,10 @@ const theme = {
           `
         ),
         applyWhen(
-          props.plain && !props.role && !props.colorValue,
+          props.plain &&
+            !props.role &&
+            !props.colorValue &&
+            !(props.hoverIndicator === 'background'), // exclude suggestions
           `
           color: ${normalizeColor('brand', props.theme)};
 
