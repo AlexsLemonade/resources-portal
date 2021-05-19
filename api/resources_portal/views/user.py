@@ -92,6 +92,8 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "orcid",
             "viewed_notifications_at",
+            "receive_non_assigned_notifs",
+            "receive_weekly_digest",
             "owned_attachments",
             "material_requests",
             "grants",

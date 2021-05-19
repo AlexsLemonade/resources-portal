@@ -75,6 +75,36 @@ export const useUser = (defaultUser, defaultToken) => {
     return updateRequest.isOk
   }
 
+  const updateReceiveNonAssignedNotifs = async (isNotified) => {
+    const updateRequest = await api.users.update(
+      user.id,
+      { receive_non_assigned_notifs: isNotified },
+      token
+    )
+    if (updateRequest.isOk) {
+      refreshUser()
+      addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
+    }
+    return updateRequest.isOk
+  }
+
+  const updateReceiveWeeklyDigest = async (isNotified) => {
+    const updateRequest = await api.users.update(
+      user.id,
+      { receive_weekly_digest: isNotified },
+      token
+    )
+    if (updateRequest.isOk) {
+      refreshUser()
+      addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
+    }
+    return updateRequest.isOk
+  }
+
   const getTeam = (teamOrId) => {
     const teamId = teamOrId.id || teamOrId
     if (user.organizations) {
@@ -143,6 +173,8 @@ export const useUser = (defaultUser, defaultToken) => {
     fetchUserWithNewToken,
     refreshUser,
     updateEmail,
+    updateReceiveNonAssignedNotifs,
+    updateReceiveWeeklyDigest,
     logOut,
     getTeam,
     isPersonalResource,
