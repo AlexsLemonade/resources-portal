@@ -84,6 +84,8 @@ export const useUser = (defaultUser, defaultToken) => {
     if (updateRequest.isOk) {
       refreshUser()
       addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
     }
     return updateRequest.isOk
   }
@@ -97,6 +99,8 @@ export const useUser = (defaultUser, defaultToken) => {
     if (updateRequest.isOk) {
       refreshUser()
       addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
     }
     return updateRequest.isOk
   }
