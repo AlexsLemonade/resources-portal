@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, Grid, Text } from 'grommet'
 
-import { searchQueryIsEmpty } from 'helpers/searchQueryIsEmpty'
+import isSearchableQuery from 'helpers/isSearchableQuery'
 import api from 'api'
 
 import SearchInput from 'components/SearchInput'
@@ -88,7 +88,7 @@ Search.getInitialProps = async ({ pathname, query }) => {
   const searchQuery = { limit: 10, ...query }
   const props = { pathname, query: searchQuery }
 
-  if (searchQueryIsEmpty(searchQuery)) return { ...props, response: false }
+  if (!isSearchableQuery(query)) return { ...props, response: false }
 
   const apiResponse = await api.search.resources(searchQuery)
 
