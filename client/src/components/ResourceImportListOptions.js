@@ -61,7 +61,7 @@ export default () => {
             weight="bold"
             margin={{ bottom: 'medium' }}
           >
-            Sign in / Create Account to List or Import Resources
+            Sign in / Create Account to Import or List Resources
           </Text>
           <CreateAccountLoginButton
             title="Sign in/ Create Account"
