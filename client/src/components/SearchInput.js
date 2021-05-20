@@ -35,7 +35,9 @@ export default function SearchInput({ onChange, size = 'medium' }) {
     goToSearchResults,
     setSearchTerm
   } = useSearchResources()
-  const [resourceType, setResourceType] = React.useState('ALL')
+  const [resourceType, setResourceType] = React.useState(
+    query.category || 'ALL'
+  )
   const [inputValue, setInputValue] = React.useState(query.search || '')
   const [selectWidth, setSelectWith] = React.useState(
     resourceType === 'ALL' ? '60px' : '156px'
