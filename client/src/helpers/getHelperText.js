@@ -8,7 +8,8 @@ export const helperTexts = {
   purpose: `What does this plasmid do?`,
   relevant_mutations: `Mention any mutations in the gene/insert`,
   sequence_maps: `Upload the full sequence and partial sequence maps. You can generate sequence maps [here](http://wishart.biology.ualberta.ca/PlasMapper/).`,
-  str_profile: `You obtain an STR profile for your cell line [here](https://www.atcc.org/en/Services/Testing_Services.aspx).`
+  str_profile: `You obtain an STR profile for your cell line [here](https://www.atcc.org/en/Services/Testing_Services.aspx).`,
+  url: 'Urls must start with **http**. (ex: https://alexslemonade.org)'
 }
 
 export default (attribute) => {
