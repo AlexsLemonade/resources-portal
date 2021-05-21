@@ -277,6 +277,11 @@ export default () => {
     delete saveResource.sequence_maps
     delete saveResource.grants
 
+    // remove empty organisms
+    if (saveResource.organisms) {
+      saveResource.organisms = saveResource.organisms.filter((o) => Boolean(o))
+    }
+
     if (existingRequirementsResource.id) {
       // apply requirements from existing resource
       saveResource.needs_abstract = existingRequirementsResource.needs_abstract
