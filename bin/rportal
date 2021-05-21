@@ -20,6 +20,7 @@ run_api = f"API_NETWORK={project_folder}_default docker-compose --env-file ./doc
 commands = {
     "up": "docker-compose --env-file ./docker-compose.env up",
     "down": "docker-compose --env-file ./docker-compose.env down",
+    "restart": "docker-compose --env-file ./docker-compose.env restart {}",
     "build": "docker-compose --env-file ./docker-compose.env build",
     "shell": run_api.format('bash -c "./manage.py shell"'),
     "rebuild-index": run_api.format(
