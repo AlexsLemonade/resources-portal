@@ -8,12 +8,12 @@ storiesOf('Help Link', module).add('default', () => {
   return (
     <Grommet theme={theme}>
       <Box pad="medium" direction="row">
-        <HelpLink href="http://alexslemonade.org">
+        <HelpLink href="demo">
           <Paragraph>This is a Paragraph</Paragraph>
         </HelpLink>
       </Box>
       <Box pad="medium">
-        <HelpLink href="http://alexslemonade.org">
+        <HelpLink href="demo">
           <Text>This is a Text</Text>
         </HelpLink>
       </Box>
@@ -23,6 +23,9 @@ storiesOf('Help Link', module).add('default', () => {
             This has no href so it wont render the icon ( for dynamic use )
           </Text>
         </HelpLink>
+      </Box>
+      <Box pad="medium">
+        <HelpLink path="demo" label="Using the label attribute" />
       </Box>
     </Grommet>
   )
