@@ -8,12 +8,12 @@ storiesOf('Help Link', module).add('default', () => {
   return (
     <Grommet theme={theme}>
       <Box pad="medium" direction="row">
-        <HelpLink href="demo">
+        <HelpLink path="demo">
           <Paragraph>This is a Paragraph</Paragraph>
         </HelpLink>
       </Box>
       <Box pad="medium">
-        <HelpLink href="demo">
+        <HelpLink path="demo">
           <Text>This is a Text</Text>
         </HelpLink>
       </Box>
