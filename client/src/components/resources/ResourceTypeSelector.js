@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, FormField, Select } from 'grommet'
+import HelpLink from 'components/HelpLink'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
 import { resourceCategories } from '.'
@@ -31,7 +32,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Grant ID" htmlFor="select2">
+      <FormField label={<HelpLink label="Grant ID" />} htmlFor="select2">
         <Select
           disabled={!organization}
           options={grantOptions || []}
@@ -45,7 +46,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Resource Type" htmlFor="select3">
+      <FormField label={<HelpLink label="Resource Type" />} htmlFor="select3">
         <Select
           disabled={!grant || !organization}
           options={resourceCategories.map(getReadable)}

@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, Button, Text, Paragraph } from 'grommet'
 import Link from 'components/Link'
 import CreateAccountLoginButton from 'components/CreateAccountLoginButton'
+import HelpLink from 'components/HelpLink'
 import { useUser } from 'hooks/useUser'
 
 export default () => {
@@ -11,9 +12,11 @@ export default () => {
     <>
       <Box direction="row" margin={{ vertical: 'large' }}>
         <Box pad={{ vertical: 'medium' }}>
-          <Text serif size="large">
-            Import
-          </Text>
+          <HelpLink>
+            <Text serif size="large">
+              Import
+            </Text>
+          </HelpLink>
           <Paragraph margin={{ vertical: 'medium' }}>
             Import your resource if you have already deposited it to a public
             repository.
@@ -35,9 +38,11 @@ export default () => {
           width="5px"
         />
         <Box pad={{ vertical: 'medium' }}>
-          <Text serif size="large">
-            List
-          </Text>
+          <HelpLink>
+            <Text serif size="large">
+              List
+            </Text>
+          </HelpLink>
           <Paragraph margin={{ vertical: 'medium' }}>
             Repository for your resource doesn’t exist? Can’t list your resource
             in a repository yet? List with us.
