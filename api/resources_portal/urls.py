@@ -40,6 +40,8 @@ from resources_portal.views import (
 )
 
 router = ExtendedSimpleRouter()
+router.trailing_slash = "/?"
+
 router.register(r"users", UserViewSet, basename="user")
 router.register(r"users", UserViewSet, basename="user").register(
     r"organizations",
@@ -54,6 +56,7 @@ router.register(r"users", UserViewSet, basename="user").register(
     r"addresses", AddressViewSet, basename="users-addresses", parents_query_lookups=["user"],
 )
 
+router.register(r"organizations", OrganizationViewSet, basename="organization")
 router.register(r"organizations", OrganizationViewSet, basename="organization").register(
     r"members",
     OrganizationMemberViewSet,
