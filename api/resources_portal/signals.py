@@ -3,9 +3,7 @@ from django.dispatch import receiver
 
 from django_elasticsearch_dsl.registries import registry
 
-from resources_portal.models import Material
 from resources_portal.models.organization import Organization
-from resources_portal.models.user import User
 
 
 @receiver(post_save)
@@ -15,20 +13,8 @@ def update_document(sender, **kwargs):
     model_name = sender._meta.model_name
 
     if app_label == "resources_portal":
-        if model_name == "resources_portal_user":
-            instances = User.objects.all()
-            for _instance in instances:
-                registry.update(_instance)
-
-        if model_name == "organization":
-            instances = Organization.objects.all()
-            for _instance in instances:
-                registry.update(_instance)
-
-        if model_name == "material":
-            instances = Material.objects.all()
-            for _instance in instances:
-                registry.update(_instance)
+        if model_name in ["resources_portal_user", "organization", "material"]:
+            registry.update(kwargs["instance"])
 
 
 @receiver(post_delete)
@@ -38,20 +24,8 @@ def delete_document(sender, **kwargs):
     model_name = sender._meta.model_name
 
     if app_label == "resources_portal":
-        if model_name == "resources_portal_user":
-            instances = User.objects.all()
-            for _instance in instances:
-                registry.delete(_instance, raise_on_error=False)
-
-    if model_name == "organization":
-        instances = Organization.objects.all()
-        for _instance in instances:
-            registry.delete(_instance, raise_on_error=False)
-
-    if model_name == "material":
-        instances = Material.objects.all()
-        for _instance in instances:
-            registry.delete(_instance, raise_on_error=False)
+        if model_name in ["resources_portal_user", "organization", "material"]:
+            registry.delete(kwargs["instance"], raise_on_error=False)
 
 
 @receiver(m2m_changed, sender="resources_portal.OrganizationUserAssociation")
