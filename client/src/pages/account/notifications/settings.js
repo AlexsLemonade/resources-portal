@@ -14,6 +14,7 @@ export const Settings = () => {
     updateReceiveWeeklyDigest
   } = useUser()
 
+  const readyRef = React.useRef(false)
   const [nonAssignedNotifs, setNonAssignedNotifs] = React.useState(
     user.receive_non_assigned_notifs
   )
@@ -22,7 +23,11 @@ export const Settings = () => {
   )
 
   React.useEffect(() => {
-    if (isLoggedIn) refreshUser()
+    const refresh = async () => {
+      await refreshUser()
+      readyRef.current = true
+    }
+    if (isLoggedIn) refresh()
   }, [])
 
   React.useEffect(() => {
@@ -32,7 +37,7 @@ export const Settings = () => {
         setNonAssignedNotifs(user.receive_non_assigned_notifs)
       }
     }
-    if (nonAssignedNotifs !== user.non_assigned_notifs) {
+    if (readyRef.current && nonAssignedNotifs !== user.non_assigned_notifs) {
       asyncUpdate()
     }
   }, [nonAssignedNotifs])
@@ -44,7 +49,7 @@ export const Settings = () => {
         setWeeklyDigest(user.receive_weekly_digest)
       }
     }
-    if (weeklyDigest !== user.receive_weekly_digest) {
+    if (readyRef.current && weeklyDigest !== user.receive_weekly_digest) {
       asyncUpdate()
     }
   }, [weeklyDigest])
