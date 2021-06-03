@@ -5,6 +5,7 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 import getRedirectQueryParam from 'helpers/getRedirectQueryParam'
 import arraysMatch from 'helpers/arraysMatch'
+import { ResourcesPortalContext } from 'ResourcesPortalContext'
 
 export const useCreateUser = (code, clientPath) => {
   const router = useRouter()
@@ -24,6 +25,8 @@ export const useCreateUser = (code, clientPath) => {
     setError,
     clientRedirectUrl
   } = React.useContext(CreateUserContext)
+
+  const { skipAccountRedirectRef } = React.useContext(ResourcesPortalContext)
 
   React.useEffect(() => {
     const asyncGetORCID = async () => {
@@ -58,6 +61,9 @@ export const useCreateUser = (code, clientPath) => {
       clientRedirectUrl &&
       !clientRedirectUrl.includes('create-account')
     ) {
+      // allow this action to take place
+      // by skipping the default account -> basic-information redirect
+      skipAccountRedirectRef.current = true
       router.replace(clientRedirectUrl)
     }
 

@@ -10,6 +10,10 @@ export const ResourcesPortalContextProvider = ({ children }) => {
   const [alertsQueues, setAlertsQueues] = React.useState({})
   const [notificationCount, setNotificationCount] = React.useState(0)
 
+  // used to prevent default redirect after login in pages/account/index.js
+  // updated by useCreateUser login flow
+  const skipAccountRedirectRef = React.useRef(false)
+
   return (
     <ResourcesPortalContext.Provider
       value={{
@@ -22,7 +26,8 @@ export const ResourcesPortalContextProvider = ({ children }) => {
         alertsQueues,
         setAlertsQueues,
         notificationCount,
-        setNotificationCount
+        setNotificationCount,
+        skipAccountRedirectRef
       }}
     >
       {children}
