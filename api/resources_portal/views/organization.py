@@ -5,7 +5,6 @@ from rest_framework.permissions import BasePermission, IsAuthenticated
 
 from resources_portal.models import Organization, User
 from resources_portal.notifier import send_notifications
-from resources_portal.profiling import profile
 from resources_portal.serializers import (
     AttachmentRelationSerializer,
     GrantRelationSerializer,
@@ -108,7 +107,6 @@ class OrganizationViewSet(viewsets.ModelViewSet):
 
         return [permission() for permission in permission_classes]
 
-    @profile("update_organizations_view.prof")
     def update(self, request, *args, **kwargs):
         organization = self.get_object()
         serializer = self.get_serializer(organization, data=request.data)
