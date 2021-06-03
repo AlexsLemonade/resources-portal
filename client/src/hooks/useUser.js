@@ -60,13 +60,13 @@ export const useUser = (defaultUser, defaultToken) => {
     return userIsOk
   }
 
-  const logOut = () => {
+  const logOut = (redirect = '/') => {
     setUser()
     setToken()
     // remove all localStorage keys
     // this will prevent cross contaminating user sessions
     window.localStorage.clear()
-    router.push('/')
+    router.push(redirect)
   }
 
   const updateEmail = async (email) => {
@@ -163,6 +163,14 @@ export const useUser = (defaultUser, defaultToken) => {
     return hasGrants || hasTeamGrants
   }
 
+  const handleLoginError = (
+    message = 'An error occurred. Please try again later',
+    redirect = '/'
+  ) => {
+    addAlert(message, 'error')
+    logOut(redirect)
+  }
+
   return {
     user,
     setUser,
@@ -180,6 +188,7 @@ export const useUser = (defaultUser, defaultToken) => {
     isPersonalResource,
     isResourceRequester,
     isAssignedRequest,
-    isAbleToAddResources
+    isAbleToAddResources,
+    handleLoginError
   }
 }

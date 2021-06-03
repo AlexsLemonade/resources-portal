@@ -9,7 +9,12 @@ import { ResourcesPortalContext } from 'ResourcesPortalContext'
 
 export const useCreateUser = (code, clientPath) => {
   const router = useRouter()
-  const { user, fetchUserWithNewToken, fetchUserWithOrcidDetails } = useUser()
+  const {
+    user,
+    fetchUserWithNewToken,
+    fetchUserWithOrcidDetails,
+    handleLoginError
+  } = useUser()
   const {
     newUser,
     setNewUser,
@@ -110,9 +115,13 @@ export const useCreateUser = (code, clientPath) => {
         }
       }
 
-      // TODO:: SENTRY
-      console.log('error', createUserRequest)
-      return createUserRequest
+      // an error occurred that we dont know how to handle
+      // clear their session and tell them to try again later
+      newUser.access_token = false // prevent firing request again with same creds
+      return handleLoginError(
+        'Unable to create account at this time. Please try again later.',
+        clientRedirectUrl
+      )
     }
 
     const {
@@ -155,6 +164,7 @@ export const useCreateUser = (code, clientPath) => {
     stepForward,
     stepBack,
     getNextStep,
+    requiredRef,
     required,
     setRequired,
     error,
