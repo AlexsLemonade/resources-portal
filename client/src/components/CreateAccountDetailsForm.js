@@ -2,11 +2,12 @@ import React from 'react'
 import { string } from 'yup'
 import { Box, Text, FormField, TextInput } from 'grommet'
 import Button from 'components/Button'
+import { Loader } from 'components/Loader'
 import { useCreateUser } from 'hooks/useCreateUser'
 import { getReadable } from 'helpers/readableNames'
 
 export default ({ onSubmit }) => {
-  const { newUser, setNewUser, required } = useCreateUser()
+  const { newUser, setNewUser, required, requiredRef } = useCreateUser()
   const emailSchema = string().email().required()
   const [valid, setValid] = React.useState(false)
   const [firstName, setFirstName] = React.useState(newUser.first_name)
@@ -56,12 +57,15 @@ export default ({ onSubmit }) => {
 
   return (
     <>
-      <Box>
-        <Text>
-          Below is the information we were unable to extract from ORCID. Please
-          provide the missing information below.
-        </Text>
-      </Box>
+      {!required && !requiredRef.current && <Loader />}
+      {required && (
+        <Box>
+          <Text>
+            Below is the information we were unable to extract from ORCID.
+            Please provide the missing information below.
+          </Text>
+        </Box>
+      )}
       <Box margin={{ bottom: 'medium' }}>
         {required &&
           required.map((attribute) => (
@@ -75,16 +79,18 @@ export default ({ onSubmit }) => {
             </FormField>
           ))}
       </Box>
-      <Box justify="end">
-        <Button
-          alignSelf="end"
-          primary
-          label="Next"
-          onChange={onChange}
-          disabled={!valid}
-          onClick={onClick}
-        />
-      </Box>
+      {required && (
+        <Box justify="end">
+          <Button
+            alignSelf="end"
+            primary
+            label="Next"
+            onChange={onChange}
+            disabled={!valid}
+            onClick={onClick}
+          />
+        </Box>
+      )}
     </>
   )
 }

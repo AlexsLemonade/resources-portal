@@ -155,6 +155,7 @@ export const useCreateUser = (code, clientPath) => {
     stepForward,
     stepBack,
     getNextStep,
+    requiredRef,
     required,
     setRequired,
     error,
