@@ -13,10 +13,14 @@ export default ({
   showHeader = false
 }) => {
   const router = useRouter()
-  const { isLoggedIn } = useUser()
+  const { isLoggedIn, refreshUser } = useUser()
   const hasCode = !!router.query.code
   const isResponsePage = router.pathname === '/account'
   const showLoginModal = hasCode && isResponsePage
+
+  React.useEffect(() => {
+    if (isLoggedIn) refreshUser()
+  }, [])
 
   if (!isLoggedIn) {
     return (
