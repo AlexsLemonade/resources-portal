@@ -12,7 +12,9 @@ export const useSearchResources = (newSearch) => {
   const count = parseInt(search.response.count, 10) || 0
   const offset = parseInt(search.query.offset, 10) || 0
   const limit = parseInt(search.query.limit, 10) || 10
-  const last = count && limit > 0 ? Math.floor(count / limit) * limit : 0
+  const remainder = count % limit
+  const fromEnd = remainder === 0 ? limit : remainder
+  const last = count && limit > 0 ? count - fromEnd : 0
 
   return {
     ...baseSearch,
