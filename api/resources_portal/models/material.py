@@ -94,7 +94,7 @@ class Material(SafeDeleteModel):
         return not (self.pubmed_id == "")
 
     def has_pre_print(self):
-        return not (self.pre_print_doi == "" and self.pre_print_title == "")
+        return bool(self.pre_print_doi and self.pre_print_title)
 
     @property
     def frontend_URL(self):
