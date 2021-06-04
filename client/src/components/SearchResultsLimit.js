@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Select, Paragraph } from 'grommet'
+import { Box, Paragraph, Select, Text } from 'grommet'
 import { useSearchResources } from '../hooks/useSearchResources'
 
 export const limitOptions = ['10', '25', '50', '100']
@@ -9,6 +9,7 @@ export const SearchResultsLimit = () => {
     query: { limit },
     response: { count },
     setLimit,
+    setOffset,
     goToSearchResults
   } = useSearchResources()
 
@@ -25,11 +26,14 @@ export const SearchResultsLimit = () => {
           value={limit || limitOptions[0]}
           onChange={({ option }) => {
             setLimit(option)
+            setOffset(0)
             goToSearchResults()
           }}
         />
       </Box>
-      <Paragraph margin="none">of {count}</Paragraph>
+      <Paragraph margin="none">
+        per page of <Text weight="bold">{count}</Text>
+      </Paragraph>
     </Box>
   )
 }
