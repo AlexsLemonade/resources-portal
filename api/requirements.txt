@@ -62,4 +62,4 @@ orcid==1.0.3
 furl==2.1.0
 
 # API Libaries
-GEOparse==2.0.1
+GEOparse==2.0.3
