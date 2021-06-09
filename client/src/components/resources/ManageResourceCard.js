@@ -110,7 +110,7 @@ export const ManageResourceCard = ({
       )
       if (request.isOk) {
         const nonArchivableRequests = request.response.filter((r) => {
-          return !['FULFILLED', 'FULFILLED_VERIFIED'].includes(r.status)
+          return !['FULFILLED', 'VERIFIED_FULFILLED'].includes(r.status)
         })
         setOpenRequests(nonArchivableRequests.length)
       }
