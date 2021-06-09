@@ -225,7 +225,7 @@ export const ManageResourceCard = ({
                   onClick={async () => {
                     const archiveRequest = await api.resources.update(
                       resource.id,
-                      { ...resource, is_archived: !resource.is_archived },
+                      { id: resource.id, is_archived: !resource.is_archived },
                       token
                     )
                     if (archiveRequest.isOk) {
