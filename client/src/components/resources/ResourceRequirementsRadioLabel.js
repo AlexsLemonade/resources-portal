@@ -12,20 +12,22 @@ export default ({ resource }) => {
         width={{ max: '500px' }}
       >
         <Text weight="bold">{resource.title}</Text>
-        {resource.grants.length > 0 && (
-          <>
-            <Box direction="row" gap="small" margin={{ vertical: 'medium' }}>
-              <Icon color="plain" name="Grant" />
-              {resource.grants.map((g) => (
-                <Text key={g.id}>{g && g.title}</Text>
-              ))}
-            </Box>
-            <Text>
-              <Text weight="bold">Requires:</Text>{' '}
-              <RequestRequirementsList resource={resource} />
-            </Text>
-          </>
-        )}
+        <>
+          <Box direction="row" gap="small" margin={{ vertical: 'medium' }}>
+            {resource.grants.length > 0 && (
+              <>
+                <Icon color="plain" name="Grant" />
+                {resource.grants.map((g) => (
+                  <Text key={g.id}>{g && g.title}</Text>
+                ))}
+              </>
+            )}
+          </Box>
+          <Text>
+            <Text weight="bold">Requires:</Text>{' '}
+            <RequestRequirementsList resource={resource} />
+          </Text>
+        </>
       </Box>
     </Box>
   )
