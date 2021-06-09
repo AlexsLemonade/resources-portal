@@ -105,10 +105,15 @@ export const ManageResourceCard = ({
     const fetchRequests = async () => {
       const request = await api.resources.requests.filter(
         resource.id,
-        { limit: 0 },
+        { limit: 1000 },
         token
       )
-      if (request.isOk) setOpenRequests(request.response.count)
+      if (request.isOk) {
+        const nonArchivableRequests = request.response.filter((r) => {
+          return !['FULFILLED', 'FULFILLED_VERIFIED'].includes(r.status)
+        })
+        setOpenRequests(nonArchivableRequests.length)
+      }
     }
 
     if (!openRequests) fetchRequests()
