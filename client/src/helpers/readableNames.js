@@ -76,6 +76,7 @@ export const readableNames = {
   gene_insert_name: 'Gene Insert Name',
   genetic_background: 'Genetic Background',
   governance_restriction: 'Governance Restriction',
+  grants: 'Grant ID',
   growth_in_bacteria: 'Growth In Bacteria',
   growth_medium: 'Growth Medium',
   growth_strain: 'Growth Strain',

@@ -229,7 +229,7 @@ export const defaultSchema = object({
   }),
   contact_user: string().uuid().required(customErrorMessages.contact_user),
   // organization: object(),
-  // grants: array(),
+  grants: array().min(1),
   /* eslint-disable-next-line react/forbid-prop-types */
   organisms: array().when('category', (category) => {
     // if it is a dataset and not dbgap then require organisms
