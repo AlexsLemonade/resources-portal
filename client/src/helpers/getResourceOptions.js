@@ -6,10 +6,13 @@ import getRequestRequirements from 'helpers/getRequestRequirements'
 export default (resources = [], grantOptions = []) =>
   resources
     .filter((resource) => getRequestRequirements(resource).hasRequirements)
+    .filter((resource) => resource.grants.length > 0)
     .map((resource) => {
-      const grants = resource.grants.map((id) => {
-        return grantOptions.find((g) => g.id === id)
-      })
+      const grants = resource.grants
+        .map((id) => {
+          return grantOptions.find((g) => g.id === id)
+        })
+        .filter((g) => g)
 
       return {
         disabled: false,

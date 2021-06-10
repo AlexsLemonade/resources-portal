@@ -2,6 +2,7 @@ import React from 'react'
 import { Box, FormField, Select } from 'grommet'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
+import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { resourceCategories } from '.'
 
 export default () => {
@@ -15,10 +16,13 @@ export default () => {
   const organization = getAttribute('organization')
   const grants = getAttribute('grants')
   // this will be removed if we support multiple grants
-  const grant = grants ? grants[0] : undefined
+  const grant = grants && grants.length > 0 ? grants[0] : {}
+
+  const showGrantRequired = Object.keys(grant).length === 0 && resource.category
+
   return (
     <Box direction="row" gap="medium">
-      <FormField label="Team" htmlFor="select1">
+      <FormField label="Team">
         <Select
           options={organizationOptions || []}
           labelKey="name"
@@ -31,7 +35,10 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Grant ID" htmlFor="select2">
+      <FormField
+        label="Grant ID"
+        error={showGrantRequired && <FormFieldErrorLabel />}
+      >
         <Select
           disabled={!organization}
           options={grantOptions || []}
@@ -45,7 +52,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Resource Type" htmlFor="select3">
+      <FormField label="Resource Type">
         <Select
           disabled={!grant || !organization}
           options={resourceCategories.map(getReadable)}
