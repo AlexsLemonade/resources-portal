@@ -3,6 +3,7 @@ import { Box, Text, FormField, TextArea, RadioButtonGroup } from 'grommet'
 import Button from 'components/Button'
 import getPaymentOptions from 'helpers/getPaymentOptions'
 import DropZone from 'components/DropZone'
+import { InfoCard } from 'components/InfoCard'
 import Icon from 'components/Icon'
 import DownloadAttachment, {
   PreviewAttachment
@@ -30,7 +31,7 @@ export default () => {
   const {
     needsIrb,
     needsMta,
-    shippingRequirement: { needsPayment },
+    shippingRequirement: { needsPayment, restrictions },
     mtaAttachment
   } = requestRequirements
 
@@ -102,6 +103,14 @@ export default () => {
       )}
       {needsPayment && (
         <Box margin={{ bottom: 'medium' }}>
+          {restrictions && restrictions.length > 0 && (
+            <Box align="center" margin={{ vertical: 'medium' }}>
+              <InfoCard type="Warning" color="warning">
+                <Text weight="bold">Shipping Restrictions</Text>
+                <Text>{restrictions}</Text>
+              </InfoCard>
+            </Box>
+          )}
           <Text weight="bold" margin={{ bottom: 'small' }}>
             Payment Method
           </Text>
