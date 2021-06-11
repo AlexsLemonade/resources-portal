@@ -67,9 +67,9 @@ export const SearchResultsFilters = () => {
             <CheckBox
               key={organism.key}
               label={`${organism.key} (${organism.value})`}
-              checked={hasFacet('organism', organism.key)}
+              checked={hasFacet('organisms', organism.key)}
               onChange={({ target: { checked } }) => {
-                toggleFacet(checked, 'organism', organism.key)
+                toggleFacet(checked, 'organisms', organism.key)
                 goToSearchResults(true)
               }}
             />
