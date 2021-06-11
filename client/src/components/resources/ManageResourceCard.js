@@ -105,10 +105,15 @@ export const ManageResourceCard = ({
     const fetchRequests = async () => {
       const request = await api.resources.requests.filter(
         resource.id,
-        { limit: 0 },
+        { limit: 1000 },
         token
       )
-      if (request.isOk) setOpenRequests(request.response.count)
+      if (request.isOk) {
+        const nonArchivableRequests = request.response.results.filter((r) => {
+          return !['FULFILLED', 'VERIFIED_FULFILLED'].includes(r.status)
+        })
+        setOpenRequests(nonArchivableRequests.length)
+      }
     }
 
     if (!openRequests) fetchRequests()
@@ -220,7 +225,7 @@ export const ManageResourceCard = ({
                   onClick={async () => {
                     const archiveRequest = await api.resources.update(
                       resource.id,
-                      { ...resource, is_archived: !resource.is_archived },
+                      { id: resource.id, is_archived: !resource.is_archived },
                       token
                     )
                     if (archiveRequest.isOk) {

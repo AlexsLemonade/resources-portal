@@ -5,10 +5,16 @@ import { useUser } from 'hooks/useUser'
 import api from 'api'
 import getRedirectQueryParam from 'helpers/getRedirectQueryParam'
 import arraysMatch from 'helpers/arraysMatch'
+import { ResourcesPortalContext } from 'ResourcesPortalContext'
 
 export const useCreateUser = (code, clientPath) => {
   const router = useRouter()
-  const { user, fetchUserWithNewToken, fetchUserWithOrcidDetails } = useUser()
+  const {
+    user,
+    fetchUserWithNewToken,
+    fetchUserWithOrcidDetails,
+    handleLoginError
+  } = useUser()
   const {
     newUser,
     setNewUser,
@@ -24,6 +30,8 @@ export const useCreateUser = (code, clientPath) => {
     setError,
     clientRedirectUrl
   } = React.useContext(CreateUserContext)
+
+  const { skipAccountRedirectRef } = React.useContext(ResourcesPortalContext)
 
   React.useEffect(() => {
     const asyncGetORCID = async () => {
@@ -58,6 +66,9 @@ export const useCreateUser = (code, clientPath) => {
       clientRedirectUrl &&
       !clientRedirectUrl.includes('create-account')
     ) {
+      // allow this action to take place
+      // by skipping the default account -> basic-information redirect
+      skipAccountRedirectRef.current = true
       router.replace(clientRedirectUrl)
     }
 
@@ -104,9 +115,13 @@ export const useCreateUser = (code, clientPath) => {
         }
       }
 
-      // TODO:: SENTRY
-      console.log('error', createUserRequest)
-      return createUserRequest
+      // an error occurred that we dont know how to handle
+      // clear their session and tell them to try again later
+      newUser.access_token = false // prevent firing request again with same creds
+      return handleLoginError(
+        'Unable to create account at this time. Please try again later.',
+        clientRedirectUrl
+      )
     }
 
     const {
@@ -149,6 +164,7 @@ export const useCreateUser = (code, clientPath) => {
     stepForward,
     stepBack,
     getNextStep,
+    requiredRef,
     required,
     setRequired,
     error,

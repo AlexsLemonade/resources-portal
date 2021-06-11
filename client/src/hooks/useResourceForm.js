@@ -162,6 +162,7 @@ export default () => {
       updatedResource.shipping_requirement = newShippingRequirement
     } else if (attribute === 'organization') {
       updatedResource[attribute] = value.id
+      updatedResource.grants = []
       didSetOrganization(value.id)
     } else if (attribute === 'contact_user') {
       updatedResource[attribute] = value ? value.id : value

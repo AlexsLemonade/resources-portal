@@ -15,6 +15,10 @@ export const RequestContextProvider = ({ requestId, children }) => {
     if (requestRequest.isOk) {
       fetchedRef.current = true
       setRequest(requestRequest.response)
+      // scroll to top of page when we refresh the request
+      window.scrollTo({
+        top: 0
+      })
     } else {
       fetchedRef.current = false
       // since requests can never be deleted we should

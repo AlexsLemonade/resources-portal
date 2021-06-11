@@ -44,7 +44,7 @@ export default () => {
       <Box>
         {members.length > 0 && (
           <Box margin={{ bottom: 'medium' }}>
-            <Text weight="bold">Added Memebers</Text>
+            <Text weight="bold">Added Members</Text>
             <TeamMembersTable team={team} onDelete={removeMember} />
           </Box>
         )}
