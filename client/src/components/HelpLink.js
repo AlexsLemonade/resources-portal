@@ -14,7 +14,7 @@ const HelpBox = styled(Box)`
 export default ({ path, knowledgebase = true, label, children }) => {
   if (!path) return children || label
   const href = knowledgebase
-    ? `https://help.resources.alexslemonade.org/knowlege/${path}`
+    ? `https://help.resources.alexslemonade.org/knowledge/${path}`
     : path
   return (
     <Box direction="row" align="baseline">

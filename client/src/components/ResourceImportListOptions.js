@@ -12,7 +12,7 @@ export default () => {
     <>
       <Box direction="row" margin={{ vertical: 'large' }}>
         <Box pad={{ vertical: 'medium' }}>
-          <HelpLink>
+          <HelpLink path="importing-resources">
             <Text serif size="large">
               Import
             </Text>
@@ -38,7 +38,7 @@ export default () => {
           width="5px"
         />
         <Box pad={{ vertical: 'medium' }}>
-          <HelpLink>
+          <HelpLink path="how-do-i-list-a-resource">
             <Text serif size="large">
               List
             </Text>
