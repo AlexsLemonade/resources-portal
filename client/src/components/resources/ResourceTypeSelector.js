@@ -1,9 +1,18 @@
 import React from 'react'
 import { Box, FormField, Select } from 'grommet'
+import HelpLink from 'components/HelpLink'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
 import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { resourceCategories } from '.'
+
+const TeamLabel = () => (
+  <HelpLink label="Team" path="how-do-i-list-a-resource#grant-team-info" />
+)
+
+const GrantIdLabel = () => (
+  <HelpLink label="Grant ID" path="how-do-i-list-a-resource#grant-team-info" />
+)
 
 export default () => {
   const {
@@ -22,7 +31,7 @@ export default () => {
 
   return (
     <Box direction="row" gap="medium">
-      <FormField label="Team">
+      <FormField label={<TeamLabel />}>
         <Select
           options={organizationOptions || []}
           labelKey="name"
@@ -36,7 +45,7 @@ export default () => {
         />
       </FormField>
       <FormField
-        label="Grant ID"
+        label={<GrantIdLabel />}
         error={showGrantRequired && <FormFieldErrorLabel />}
       >
         <Select

@@ -16,7 +16,7 @@ import useResourceForm from 'hooks/useResourceForm'
 import getResourceOptions from 'helpers/getResourceOptions'
 import getRequestRequirements from 'helpers/getRequestRequirements'
 import RequirementsLabel from 'components/resources/ResourceRequirementsRadioLabel'
-
+import HelpLink from 'components/HelpLink'
 // this overrides the default styles for a RadioButtonGroup
 // to allow for full width Box after the radio
 const ExistingResourcesRadioButtonGroup = styled(RadioButtonGroup)`
@@ -91,7 +91,9 @@ export default () => {
   return (
     <Box width="large" height={{ min: '500px' }}>
       <Box border={{ side: 'bottom', color: 'alexs-light-blue-tint-20' }}>
-        <Text size="large">Request Requirements</Text>
+        <HelpLink path="how-do-i-list-a-resource#specify-requirements">
+          <Text size="large">Request Requirements</Text>
+        </HelpLink>
         <Text italic color="black-tint-60">
           Specify materials you require from the requester to review and fulfill
           requests
