@@ -162,6 +162,7 @@ export default () => {
       updatedResource.shipping_requirement = newShippingRequirement
     } else if (attribute === 'organization') {
       updatedResource[attribute] = value.id
+      updatedResource.grants = []
       didSetOrganization(value.id)
     } else if (attribute === 'contact_user') {
       updatedResource[attribute] = value ? value.id : value
@@ -276,6 +277,11 @@ export default () => {
     // these are posted after created
     delete saveResource.sequence_maps
     delete saveResource.grants
+
+    // remove empty organisms
+    if (saveResource.organisms) {
+      saveResource.organisms = saveResource.organisms.filter((o) => Boolean(o))
+    }
 
     if (existingRequirementsResource.id) {
       // apply requirements from existing resource

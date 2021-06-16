@@ -4,17 +4,17 @@
     <title>icons/archive</title>
     <desc>Created with Sketch.</desc>
     <defs>
-        <path d="M22.195122,7 L1.80487805,7 C1.34878049,7 1,7.3453125 1,7.796875 L1,21.875 C1,23.04375 1.96585366,24 3.14634146,24 L20.8536585,24 C22.0341463,24 23,23.04375 23,21.875 L23,7.796875 C23,7.3453125 22.6512195,7 22.195122,7 Z M16.2926829,10.71875 C16.2926829,11.5953125 15.5682927,12.3125 14.6829268,12.3125 L9.31707317,12.3125 C8.43170732,12.3125 7.70731707,11.5953125 7.70731707,10.71875 C7.70731707,9.8421875 8.43170732,9.125 9.31707317,9.125 L14.6829268,9.125 C15.5682927,9.125 16.2926829,9.8421875 16.2926829,10.71875 Z M23.1818182,0 C23.6454545,0 24,0.354545455 24,0.818181818 L24,5.18181818 C24,5.61818182 23.6454545,6 23.1818182,6 L0.818181818,6 C0.354545455,6 0,5.61818182 0,5.18181818 L0,0.818181818 C0,0.354545455 0.354545455,0 0.818181818,0 L23.1818182,0 Z" id="icons/archive--path-1"></path>
+        <path d="M22.195122,7 L1.80487805,7 C1.34878049,7 1,7.3453125 1,7.796875 L1,21.875 C1,23.04375 1.96585366,24 3.14634146,24 L20.8536585,24 C22.0341463,24 23,23.04375 23,21.875 L23,7.796875 C23,7.3453125 22.6512195,7 22.195122,7 Z M16.2926829,10.71875 C16.2926829,11.5953125 15.5682927,12.3125 14.6829268,12.3125 L9.31707317,12.3125 C8.43170732,12.3125 7.70731707,11.5953125 7.70731707,10.71875 C7.70731707,9.8421875 8.43170732,9.125 9.31707317,9.125 L14.6829268,9.125 C15.5682927,9.125 16.2926829,9.8421875 16.2926829,10.71875 Z M23.1818182,0 C23.6454545,0 24,0.354545455 24,0.818181818 L24,5.18181818 C24,5.61818182 23.6454545,6 23.1818182,6 L0.818181818,6 C0.354545455,6 0,5.61818182 0,5.18181818 L0,0.818181818 C0,0.354545455 0.354545455,0 0.818181818,0 L23.1818182,0 Z" id="path-1"></path>
     </defs>
-    <g id="icons/archive--Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="icons/archive--icons-badges-variations" transform="translate(-211.000000, -396.000000)">
-            <g id="icons/archive--icons/archive" transform="translate(211.000000, 396.000000)">
-                <mask id="icons/archive--mask-2" fill="white">
-                    <use xlink:href="#icons/archive--path-1"></use>
+    <g id="Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons-badges-variations" transform="translate(-168.000000, -237.000000)">
+            <g id="icons/archive" transform="translate(168.000000, 237.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
                 </mask>
-                <use id="icons/archive--Shape" fill="#1A1A1A" fill-rule="nonzero" xlink:href="#icons/archive--path-1"></use>
-                <g id="icons/archive--color/black-tint/0-000000" mask="url(#icons/archive--mask-2)" fill="#000000" fill-rule="evenodd">
-                    <rect id="icons/archive--gray-70-4A4A4A" x="0" y="0" width="24" height="24"></rect>
+                <use id="Shape" fill="#1A1A1A" fill-rule="nonzero" xlink:href="#path-1"></use>
+                <g id="color/black-tint/0-000000" mask="url(#mask-2)" fill="#000000" fill-rule="evenodd">
+                    <rect id="gray-70-4A4A4A" x="0" y="0" width="24" height="24"></rect>
                 </g>
             </g>
         </g>

@@ -12,7 +12,7 @@ export default {
   update: (resourceId, resource, authorization) =>
     request(getAPIUrl(`materials/${resourceId}/`), {
       authorization,
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(resource)
     }),
   filter: (query) => request(getAPIUrl('materials/', query)),

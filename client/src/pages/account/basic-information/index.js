@@ -117,7 +117,7 @@ const BasicInformation = () => {
                 label="Cancel"
                 onClick={() => setShowLogOutModal(false)}
               />
-              <Button critical label="Confirm" onClick={logOut} />
+              <Button critical label="Confirm" onClick={() => logOut()} />
             </Box>
           </Box>
         </Modal>

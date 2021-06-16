@@ -1,8 +1,18 @@
 import React from 'react'
 import { Box, FormField, Select } from 'grommet'
+import HelpLink from 'components/HelpLink'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
+import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { resourceCategories } from '.'
+
+const TeamLabel = () => (
+  <HelpLink label="Team" path="how-do-i-list-a-resource#grant-team-info" />
+)
+
+const GrantIdLabel = () => (
+  <HelpLink label="Grant ID" path="how-do-i-list-a-resource#grant-team-info" />
+)
 
 export default () => {
   const {
@@ -15,10 +25,13 @@ export default () => {
   const organization = getAttribute('organization')
   const grants = getAttribute('grants')
   // this will be removed if we support multiple grants
-  const grant = grants ? grants[0] : undefined
+  const grant = grants && grants.length > 0 ? grants[0] : {}
+
+  const showGrantRequired = Object.keys(grant).length === 0 && resource.category
+
   return (
     <Box direction="row" gap="medium">
-      <FormField label="Team" htmlFor="select1">
+      <FormField label={<TeamLabel />}>
         <Select
           options={organizationOptions || []}
           labelKey="name"
@@ -31,7 +44,10 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Grant ID" htmlFor="select2">
+      <FormField
+        label={<GrantIdLabel />}
+        error={showGrantRequired && <FormFieldErrorLabel />}
+      >
         <Select
           disabled={!organization}
           options={grantOptions || []}
@@ -45,7 +61,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Resource Type" htmlFor="select3">
+      <FormField label="Resource Type">
         <Select
           disabled={!grant || !organization}
           options={resourceCategories.map(getReadable)}

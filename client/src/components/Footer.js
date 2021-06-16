@@ -1,18 +1,17 @@
 import React from 'react'
 import {
-  Anchor,
   Box,
   Button,
   FormField,
   Image,
   Nav,
-  Paragraph,
   Stack,
   Text,
   TextInput
 } from 'grommet'
 import styled from 'styled-components'
-import Link from 'next/link'
+import Link from 'components/Link'
+import Icon from 'components/Icon'
 
 const NoTouch = styled(Image)`
   pointer-events: none;
@@ -25,21 +24,17 @@ export const Footer = () => {
       background="gradient-reverse"
       elevation="medium"
       align="center"
-      pad={{ vertical: 'xlarge' }}
+      pad={{ top: '100px', bottom: 'xlarge' }}
     >
       <Box direction="row" justify="between" align="end" width="xxlarge">
         <Stack anchor="top-right">
           <Box direction="row" justify="between" align="end" width="xxlarge">
             <Box align="start" margin={{ vertical: 'large' }}>
-              <Text color="turteal-shade-40">
-                Alex’s Lemonade Stand Foundation for Childhood Cancer
-              </Text>
-              <Text margin={{ top: 'large' }} color="turteal-shade-40">
+              <Text>Alex’s Lemonade Stand Foundation for Childhood Cancer</Text>
+              <Text>
                 111 Presidential Blvd., Suite 203, Bala Cynwyd, PA 19004 USA
               </Text>
-              <Text color="turteal-shade-40">
-                Phone: 866.333.1213 • Fax: 610.649.3038
-              </Text>
+              <Text>Phone: 866.333.1213 • Fax: 610.649.3038</Text>
               <Box margin={{ top: 'large' }}>
                 <Button primary label="Donate" />
               </Box>
@@ -51,10 +46,10 @@ export const Footer = () => {
             >
               <Box align="end">
                 <Box>
-                  <Paragraph color="turteal-shade-40" fill>
+                  <Text weight="600">
                     Sign up to get the latest updates from Alex’s Lemonade Stand
                     Foundation{' '}
-                  </Paragraph>
+                  </Text>
                 </Box>
                 <Box
                   fill
@@ -75,7 +70,7 @@ export const Footer = () => {
             </Box>
           </Box>
           <NoTouch
-            margin={{ top: '-25%', left: '25%' }}
+            margin={{ top: '-45%', left: '25%' }}
             opacity=".1"
             src="/footer-lemon.svg"
           />
@@ -84,17 +79,31 @@ export const Footer = () => {
       <Box direction="row" justify="between" width="xxlarge">
         <Box>
           <Nav direction="row" align="center" gap="large">
-            <Link href="/terms-of-use">
-              <Anchor href="#" label="Terms of Use" />
-            </Link>
-            <Link href="/privacy-policy">
-              <Anchor href="#" label="Privacy Policy" />
-            </Link>
-            <Anchor href="#" label="Contact" />
-            <Anchor href="#" label="Help" />
+            <Link href="/terms-of-use" label="Terms of Use" />
+            <Link href="/privacy-policy" label="Privacy Policy" />
+            <Link
+              href="https://help.resources.alexslemonade.org/knowledge"
+              label="Help"
+            />
           </Nav>
         </Box>
-        <Box>Waiting on Social Icons</Box>
+        <Box
+          direction="row"
+          justify="start"
+          gap="medium"
+          basis="1/3"
+          pad={{ left: 'xlarge' }}
+        >
+          <Link href="https://twitter.com/alexslemonade">
+            <Icon name="Twitter" color="black-tint-40" />
+          </Link>
+          <Link href="http://www.instagram.com/alexslemonade">
+            <Icon name="Instagram" color="black-tint-40" />
+          </Link>
+          <Link href="http://www.facebook.com/alexslemonade">
+            <Icon name="Facebook" color="black-tint-40" />
+          </Link>
+        </Box>
       </Box>
     </Box>
   )

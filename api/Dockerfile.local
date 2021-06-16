@@ -8,6 +8,8 @@ ENV PYTHONUNBUFFERED 1
 RUN groupadd user && useradd --create-home --home-dir /home/user -g user user
 WORKDIR /home/user
 
+RUN python3 -m pip install --upgrade pip
+
 # Allows docker to cache installed dependencies between builds
 COPY ./requirements.txt requirements.txt
 RUN pip install -r requirements.txt

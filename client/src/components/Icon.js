@@ -1,6 +1,7 @@
 import React from 'react'
 import { Blank } from 'grommet-icons'
 import Archive from '../images/archive.svg'
+import Calendar from '../images/calendar.svg'
 import Check from '../images/check.svg'
 import ChevronDown from '../images/chevron-down.svg'
 import ChevronLeft from '../images/chevron-left.svg'
@@ -18,6 +19,8 @@ import Filter from '../images/filter.svg'
 import Gear from '../images/gear.svg'
 import Help from '../images/help.svg'
 import Info from '../images/info.svg'
+import List from '../images/list.svg'
+import Later from '../images/later.svg'
 import LeaveTeam from '../images/leave-team.svg'
 import MoreOptions from '../images/more-options.svg'
 import MTA from '../images/mta.svg'
@@ -27,12 +30,13 @@ import TransferMember from '../images/transfer-member.svg'
 import Trashcan from '../images/trash-can.svg'
 import View from '../images/view.svg'
 import Warning from '../images/warning.svg'
-import Grant from '../images/grant.svg'
-import Organism from '../images/organism.svg'
-import ResourceType from '../images/resource-type.svg'
-import List from '../images/list.svg'
-import Later from '../images/later.svg'
+import Grant from '../images/grant-icon.svg'
+import Organism from '../images/organism-icon.svg'
+import ResourceType from '../images/resource-type-icon.svg'
 import ORCID from '../images/ORCID.svg'
+import Twitter from '../images/Twitter.svg'
+import Facebook from '../images/Facebook.svg'
+import Instagram from '../images/Instagram.svg'
 
 export const SVGs = {
   Archive,
@@ -67,7 +71,11 @@ export const SVGs = {
   ResourceType,
   List,
   Later,
-  ORCID
+  ORCID,
+  Calendar,
+  Twitter,
+  Facebook,
+  Instagram
 }
 
 export default ({ color = 'brand', size = 'medium', name }) => {

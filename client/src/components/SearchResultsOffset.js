@@ -1,15 +1,15 @@
 import React from 'react'
 import { Box, Button, Paragraph, TextInput } from 'grommet'
 import { FormPrevious, FormNext } from 'grommet-icons'
-import { isOnlyNumbers } from '../helpers/isOnlyNumbers'
-import { useSearchResources } from '../hooks/useSearchResources'
+import { isOnlyNumbers } from 'helpers/isOnlyNumbers'
+import { useSearchResources } from 'hooks/useSearchResources'
+import { offsetToPage, pageToOffset } from 'helpers/getPagination'
 
 export const SearchResultsOffset = () => {
   const {
-    query: { limit, offset },
-    response: { count },
     setOffset,
-    goToSearchResults
+    goToSearchResults,
+    pagination: { offset, limit, last }
   } = useSearchResources()
 
   const [enteredPageNumber, setEnteredPageNumber] = React.useState('')
@@ -18,47 +18,45 @@ export const SearchResultsOffset = () => {
     setEnteredPageNumberInRange
   ] = React.useState(false)
 
-  const safeOffset = parseInt(offset, 10) || 0
-  const safeCount = parseInt(count, 10) || 0
-  const parsedLimit = parseInt(limit, 10)
-  const lastOffset =
-    safeCount && parsedLimit > 0 ? Math.floor(safeCount / parsedLimit) : 0
-
-  const getPageButtonOffsets = () => {
-    const allOffsets = [...Array(lastOffset + 1).keys()]
-    // get first 6
-    if (safeOffset <= 2) return allOffsets.slice(0, 6)
-    // get last 5
-    if (lastOffset - safeOffset <= 2) return allOffsets.slice(-5)
-    // get 2 before and 2 after current
-    return allOffsets.slice(safeOffset - 2, safeOffset + 3)
-  }
-
-  // cache the page offsets
-  const pageButtonsOffsets = getPageButtonOffsets()
-
-  const atEnd = safeOffset === lastOffset
-  const atStart = safeOffset === 0
+  const atEnd = offset === last
+  const atStart = offset === 0
 
   const handlePageNumberRequest = ({ target: { value } }) => {
     if (isOnlyNumbers(value)) {
       const pageOffset = parseInt(value, 10) - 1
-      const inRange = pageOffset <= lastOffset && pageOffset >= 0
+      const inRange = pageOffset <= last && offset >= 0
       setEnteredPageNumberInRange(inRange)
       setEnteredPageNumber(value)
     }
     if (value === '') setEnteredPageNumber('')
   }
-
-  const goToOffset = (page) => {
-    setOffset(page)
+  const goToOffset = (newOffset) => {
+    setOffset(newOffset)
     setEnteredPageNumber('')
     goToSearchResults()
+    // scroll to top of page changing page
+    window.scrollTo({
+      top: 0
+    })
   }
 
   const goToOffsetRequest = () => {
-    goToOffset(parseInt(enteredPageNumber, 10) - 1)
+    goToOffset(pageToOffset(parseInt(enteredPageNumber, 10)))
   }
+
+  const getDisplayedOffsets = () => {
+    const page = offsetToPage(offset, limit)
+    const lastPage = offsetToPage(last, limit)
+    const allOffsets = [...Array(lastPage).keys()].map((o) => o * limit)
+    // get first 6
+    if (page <= 2) return allOffsets.slice(0, 6)
+    // get last 5
+    if (lastPage - page <= 2) return allOffsets.slice(-5)
+    // get 2 before and 2 after current
+    return allOffsets.slice(page - 2, page + 3)
+  }
+
+  const buttonOffsets = getDisplayedOffsets()
 
   return (
     <Box
@@ -75,10 +73,10 @@ export const SearchResultsOffset = () => {
           width="small"
           label="Previous"
           icon={<FormPrevious color={atStart ? 'black-tint-60' : 'brand'} />}
-          disabled={!safeOffset}
-          onClick={() => goToOffset(safeOffset - 1)}
+          disabled={!offset}
+          onClick={() => goToOffset(offset - limit)}
         />
-        {!pageButtonsOffsets.includes(0) && [
+        {!buttonOffsets.includes(0) && [
           <Button
             plain
             key="start"
@@ -86,7 +84,7 @@ export const SearchResultsOffset = () => {
             label={1}
             onClick={() => goToOffset(0)}
           />,
-          !pageButtonsOffsets.includes(1) && (
+          !buttonOffsets.includes(1) && (
             <Paragraph
               key="elipse-start"
               size="medium"
@@ -97,12 +95,12 @@ export const SearchResultsOffset = () => {
             </Paragraph>
           )
         ]}
-        {pageButtonsOffsets.map((pageOffset) =>
-          safeOffset !== pageOffset ? (
+        {buttonOffsets.map((pageOffset) =>
+          offset !== pageOffset ? (
             <Button
               key={pageOffset}
               plain
-              label={pageOffset + 1}
+              label={offsetToPage(pageOffset, limit)}
               onClick={() => goToOffset(pageOffset)}
             />
           ) : (
@@ -112,12 +110,12 @@ export const SearchResultsOffset = () => {
               margin="none"
               color="black"
             >
-              {pageOffset + 1}
+              {offsetToPage(pageOffset, limit)}
             </Paragraph>
           )
         )}
-        {!pageButtonsOffsets.includes(lastOffset) && [
-          !pageButtonsOffsets.includes(lastOffset - 1) && (
+        {!buttonOffsets.includes(last) && [
+          !buttonOffsets.includes(last - limit) && (
             <Paragraph
               key="elipse-end"
               size="medium"
@@ -129,10 +127,10 @@ export const SearchResultsOffset = () => {
           ),
           <Button
             plain
-            key={lastOffset}
+            key={last}
             pad="xsmall"
-            label={lastOffset + 1}
-            onClick={() => goToOffset(lastOffset)}
+            label={offsetToPage(last, limit)}
+            onClick={() => goToOffset(last)}
           />
         ]}
         <Button
@@ -143,7 +141,7 @@ export const SearchResultsOffset = () => {
           label="Next"
           icon={<FormNext color={atEnd ? 'black-tint-60' : 'brand'} />}
           disabled={atEnd}
-          onClick={() => goToOffset(safeOffset + 1)}
+          onClick={() => goToOffset(offset + limit)}
         />
       </Box>
       <Box direction="row" align="center" gap="small">

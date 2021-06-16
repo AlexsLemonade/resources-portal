@@ -14,9 +14,9 @@ logging.getLogger("CSSUTILS").setLevel("CRITICAL")
 logger = get_and_configure_logger(__name__)
 
 EMAIL_SOURCE = (
-    f"Resources Portal Mail Robot <no-reply@{settings.AWS_SES_DOMAIN}>"
+    f"CCRR Portal <no-reply@{settings.AWS_SES_DOMAIN}>"
     if settings.AWS_SES_DOMAIN
-    else "Resources Portal Mail Robot"
+    else "CCRR Portal"
 )
 NOTIFICATIONS_URL = f"https://{settings.AWS_SES_DOMAIN}/account/notifications/settings"
 TERMS_OF_USE_URL = f"https://{settings.AWS_SES_DOMAIN}/terms-of-use"

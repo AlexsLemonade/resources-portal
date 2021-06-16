@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>icons/calendar</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M20,20 L16,20 L16,16 L20,16 L20,20 Z M14,10 L10,10 L10,14 L14,14 L14,10 Z M20,10 L16,10 L16,14 L20,14 L20,10 Z M8,16 L4,16 L4,20 L8,20 L8,16 Z M14,16 L10,16 L10,20 L14,20 L14,16 Z M8,10 L4,10 L4,14 L8,14 L8,10 Z M24,2 L24,24 L0,24 L0,2 L3,2 L3,3 C3,4.103 3.897,5 5,5 C6.103,5 7,4.103 7,3 L7,2 L17,2 L17,3 C17,4.103 17.897,5 19,5 C20.103,5 21,4.103 21,3 L21,2 L24,2 Z M22,8 L2,8 L2,22 L22,22 L22,8 Z M20,1 C20,0.448 19.553,0 19,0 C18.447,0 18,0.448 18,1 L18,3 C18,3.552 18.447,4 19,4 C19.553,4 20,3.552 20,3 L20,1 Z M6,3 C6,3.552 5.553,4 5,4 C4.447,4 4,3.552 4,3 L4,1 C4,0.448 4.447,0 5,0 C5.553,0 6,0.448 6,1 L6,3 Z" id="path-1"></path>
+    </defs>
+    <g id="Guidelines" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icons-badges-variations" transform="translate(-366.000000, -237.000000)">
+            <g id="icons/calendar" transform="translate(366.000000, 237.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+                <g id="color/black-tint/0-000000" mask="url(#mask-2)" fill="#000000" fill-rule="evenodd">
+                    <rect id="gray-70-4A4A4A" x="0" y="0" width="24" height="24"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

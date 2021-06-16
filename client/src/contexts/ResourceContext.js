@@ -165,7 +165,10 @@ export const ResourceContextProvider = ({
 
   // explicitly destroy local storage
   const clearResourceContext = () => {
-    setResource({})
+    // setting the resource undefined here messes with
+    // rendered views that are on their way out
+    // so it is best to just delete the local storage directly
+    window.localStorage.removeItem(localStorageName)
     setFetched()
     setExistingRequirementsResource()
   }

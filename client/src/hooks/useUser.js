@@ -60,18 +60,48 @@ export const useUser = (defaultUser, defaultToken) => {
     return userIsOk
   }
 
-  const logOut = () => {
+  const logOut = (redirect = '/') => {
     setUser()
     setToken()
     // remove all localStorage keys
     // this will prevent cross contaminating user sessions
     window.localStorage.clear()
-    router.push('/')
+    router.push(redirect)
   }
 
   const updateEmail = async (email) => {
     const updateRequest = await api.users.update(user.id, { email }, token)
     if (updateRequest.isOk) refreshUser()
+    return updateRequest.isOk
+  }
+
+  const updateReceiveNonAssignedNotifs = async (isNotified) => {
+    const updateRequest = await api.users.update(
+      user.id,
+      { receive_non_assigned_notifs: isNotified },
+      token
+    )
+    if (updateRequest.isOk) {
+      refreshUser()
+      addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
+    }
+    return updateRequest.isOk
+  }
+
+  const updateReceiveWeeklyDigest = async (isNotified) => {
+    const updateRequest = await api.users.update(
+      user.id,
+      { receive_weekly_digest: isNotified },
+      token
+    )
+    if (updateRequest.isOk) {
+      refreshUser()
+      addAlert('Successfully updated', 'success')
+    } else {
+      addAlert('Unable to update at this time', 'error')
+    }
     return updateRequest.isOk
   }
 
@@ -133,6 +163,14 @@ export const useUser = (defaultUser, defaultToken) => {
     return hasGrants || hasTeamGrants
   }
 
+  const handleLoginError = (
+    message = 'An error occurred. Please try again later',
+    redirect = '/'
+  ) => {
+    addAlert(message, 'error')
+    logOut(redirect)
+  }
+
   return {
     user,
     setUser,
@@ -143,11 +181,14 @@ export const useUser = (defaultUser, defaultToken) => {
     fetchUserWithNewToken,
     refreshUser,
     updateEmail,
+    updateReceiveNonAssignedNotifs,
+    updateReceiveWeeklyDigest,
     logOut,
     getTeam,
     isPersonalResource,
     isResourceRequester,
     isAssignedRequest,
-    isAbleToAddResources
+    isAbleToAddResources,
+    handleLoginError
   }
 }
