@@ -53,7 +53,11 @@ export default function ResourcesHeader({ className }) {
             >
               <Link color="white" href="/search" label="Search" />
               <Link color="white" href="/resources" label="Add Resource" />
-              <Link color="white" href="/help" label="Help" />
+              <Link
+                color="white"
+                href="https://help.resources.alexslemonade.org/knowledge"
+                label="Help"
+              />
               <HeaderAccountLink />
             </Nav>
           </Box>
