@@ -3,6 +3,7 @@ from rest_framework import serializers
 from resources_portal.models import Material
 from resources_portal.serializers.relation_serializers import (
     AttachmentRelationSerializer,
+    GrantRelationSerializer,
     OrganizationRelationSerializer,
     ShippingRequirementRelationSerializer,
     UserRelationSerializer,
@@ -73,9 +74,11 @@ class MaterialSerializer(serializers.ModelSerializer):
 class MaterialListSerializer(MaterialSerializer):
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirement = ShippingRequirementRelationSerializer()
+    grants = GrantRelationSerializer()
 
 
 class MaterialDetailSerializer(MaterialListSerializer):
     contact_user = UserRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
     organization = OrganizationRelationSerializer()
+    grants = GrantRelationSerializer()
