@@ -31,7 +31,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Grant ID" htmlFor="select2">
+      <FormField label="Grant" htmlFor="select2">
         <Select
           disabled={!organization}
           options={grantOptions || []}
