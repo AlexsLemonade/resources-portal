@@ -241,7 +241,8 @@ export default () => {
                             }}
                           />
                         </Box>
-                        {getAttribute('accepts_other_payment_methods') && (
+                        {(getAttribute('accepts_shipping_code') ||
+                          getAttribute('accepts_other_payment_methods')) && (
                           <Box pad={{ horizontal: 'large' }} animation="fadeIn">
                             <FormField
                               label="Accepted Payment Details"
