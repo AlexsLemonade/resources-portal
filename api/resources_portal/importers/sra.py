@@ -4,9 +4,8 @@ from typing import Dict
 
 from resources_portal.importers.utils import get_pubmed_publication_title, requests_retry_session
 
-ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}"
-
-ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/data/view/{}?display=xml"
+ENA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/browser/view/{}"
+ENA_METADATA_URL_TEMPLATE = "https://www.ebi.ac.uk/ena/browser/api/xml/{}"
 
 
 class UnsupportedDataTypeError(Exception):
