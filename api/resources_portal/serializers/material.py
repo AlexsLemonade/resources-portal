@@ -51,11 +51,11 @@ class MaterialSerializer(serializers.ModelSerializer):
             "requests",
             "needs_mta",
             "has_publication",
+            "grants",
         )
 
     def validate(self, data):
-        """Only allow materials with no open requests to be archived.
-        """
+        """Only allow materials with no open requests to be archived."""
         # If they aren't setting is_archived=True on an existing
         # material then they're fine.
         if "id" not in data or "is_archived" not in data or not data["is_archived"]:
@@ -74,11 +74,11 @@ class MaterialSerializer(serializers.ModelSerializer):
 class MaterialListSerializer(MaterialSerializer):
     mta_attachment = AttachmentRelationSerializer()
     shipping_requirement = ShippingRequirementRelationSerializer()
-    grants = GrantRelationSerializer()
+    grants = GrantRelationSerializer(many=True)
 
 
 class MaterialDetailSerializer(MaterialListSerializer):
     contact_user = UserRelationSerializer()
     sequence_maps = AttachmentRelationSerializer(many=True)
     organization = OrganizationRelationSerializer()
-    grants = GrantRelationSerializer()
+    grants = GrantRelationSerializer(many=True)
