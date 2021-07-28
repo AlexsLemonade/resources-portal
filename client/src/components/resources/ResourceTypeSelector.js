@@ -11,7 +11,7 @@ const TeamLabel = () => (
 )
 
 const GrantIdLabel = () => (
-  <HelpLink label="Grant ID" path="how-do-i-list-a-resource#grant-team-info" />
+  <HelpLink label="Grant" path="how-do-i-list-a-resource#grant-team-info" />
 )
 
 export default () => {

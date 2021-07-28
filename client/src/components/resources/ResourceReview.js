@@ -47,7 +47,7 @@ export default ({ onEditResourceDetails, onEditResourceRequirements }) => {
             value: organization.name
           },
           {
-            label: 'Grant ID',
+            label: 'Grant',
             value: resource.grants[0].title
           },
           {

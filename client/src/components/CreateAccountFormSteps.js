@@ -113,7 +113,7 @@ export const VerifyGrantStep = () => {
             </Box>
             <Box direction="column">
               <Text>{grant.title}</Text>
-              <Text size="small">Grant ID: {grant.funder_id}</Text>
+              <Text size="small">Grant: {grant.funder_id}</Text>
             </Box>
           </Box>
         ))}

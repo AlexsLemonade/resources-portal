@@ -28,7 +28,7 @@ export default () => {
                 <Icon color="plain" name="Grant" />
                 <Box pad={{ left: 'small' }}>
                   <Paragraph margin="none">{grant.title}</Paragraph>
-                  <Paragraph size="small">Grant ID:{grant.funder_id}</Paragraph>
+                  <Paragraph size="small">Grant: {grant.funder_id}</Paragraph>
                 </Box>
               </Box>
               <GrantRemoveButton grant={grant} />
