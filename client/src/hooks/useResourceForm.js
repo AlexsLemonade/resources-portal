@@ -283,7 +283,7 @@ export default () => {
       saveResource.organisms = saveResource.organisms.filter((o) => Boolean(o))
     }
 
-    if (existingRequirementsResource.id) {
+    if (existingRequirementsResource && existingRequirementsResource.id) {
       // apply requirements from existing resource
       saveResource.needs_abstract = existingRequirementsResource.needs_abstract
       saveResource.needs_irb = existingRequirementsResource.needs_irb
