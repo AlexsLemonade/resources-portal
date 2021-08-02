@@ -6,12 +6,12 @@ import { getReadable, getToken } from 'helpers/readableNames'
 import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
 import { resourceCategories } from '.'
 
-const TeamLabel = () => (
+export const TeamLabel = () => (
   <HelpLink label="Team" path="how-do-i-list-a-resource#grant-team-info" />
 )
 
-const GrantIdLabel = () => (
-  <HelpLink label="Grant ID" path="how-do-i-list-a-resource#grant-team-info" />
+export const GrantIdLabel = () => (
+  <HelpLink label="Grant" path="how-do-i-list-a-resource#grant-team-info" />
 )
 
 export default () => {

@@ -3,11 +3,18 @@ import { Box, Button, Grid, Text } from 'grommet'
 import Link from 'next/link'
 import { DrillDownNav } from 'components/DrillDownNav'
 import { AccountEmptyPage } from 'components/AccountEmptyPage'
+import HelpLink from 'components/HelpLink'
 import Icon from 'components/Icon'
 import { Loader } from 'components/Loader'
 import { useUser } from 'hooks/useUser'
 import api from 'api'
 import EmptyTeams from '../../../images/empty-teams.svg'
+
+// Don't use label attribute here
+// to allow for parent css styles to apply
+const TeamsHelpLink = () => (
+  <HelpLink path="what-are-teams-and-how-do-i-use-them">Teams</HelpLink>
+)
 
 const Teams = () => {
   // get existing teams (organizations)
@@ -31,7 +38,7 @@ const Teams = () => {
   if (!teams) return <Loader />
 
   return (
-    <DrillDownNav title="Teams">
+    <DrillDownNav title={<TeamsHelpLink />}>
       {teams.length === 0 && (
         <AccountEmptyPage
           paragraphs={[

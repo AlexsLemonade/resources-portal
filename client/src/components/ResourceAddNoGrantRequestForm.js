@@ -95,7 +95,7 @@ export default ({ onCancel, onSubmit }) => {
           <Icon name="Warning" color="error" />
         </Text>
         <Text serif size="large">
-          Not Supported - Adding Resource without a Grant ID.
+          Not Supported - Adding Resource without a Grant.
         </Text>
       </Box>
       <Box>

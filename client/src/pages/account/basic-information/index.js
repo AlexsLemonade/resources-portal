@@ -75,7 +75,7 @@ const BasicInformation = () => {
               <Icon color="plain" name="Grant" />
               <Box pad={{ left: 'small' }}>
                 <Paragraph margin="none">{title}</Paragraph>
-                <Paragraph size="small">Grant ID:{funderId}</Paragraph>
+                <Paragraph size="small">Grant: {funderId}</Paragraph>
               </Box>
             </Box>
           ))}

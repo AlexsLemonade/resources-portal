@@ -1,5 +1,9 @@
 import React from 'react'
 import { Box, FormField, Select } from 'grommet'
+import {
+  TeamLabel,
+  GrantIdLabel
+} from 'components/resources/ResourceTypeSelector'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
 import { importSources } from '.'
@@ -18,7 +22,7 @@ export default () => {
   const grant = grants ? grants[0] : undefined
   return (
     <Box direction="row" gap="medium">
-      <FormField label="Team" htmlFor="select1">
+      <FormField label={<TeamLabel />} htmlFor="select1">
         <Select
           options={organizationOptions || []}
           labelKey="name"
@@ -31,7 +35,7 @@ export default () => {
           }}
         />
       </FormField>
-      <FormField label="Grant ID" htmlFor="select2">
+      <FormField label={<GrantIdLabel />} htmlFor="select2">
         <Select
           disabled={!organization}
           options={grantOptions || []}
