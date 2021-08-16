@@ -34,7 +34,8 @@ resource "aws_instance" "api_server_1" {
     aws_db_instance.postgres_db,
     aws_elasticsearch_domain.es,
     aws_security_group_rule.resources_portal_api_http,
-    aws_security_group_rule.resources_portal_api_outbound
+    aws_security_group_rule.resources_portal_api_outbound,
+    aws_key_pair.resources_portal
   ]
 
   user_data = templatefile(
