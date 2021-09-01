@@ -4,6 +4,7 @@ import HelpLink from 'components/HelpLink'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
 import FormFieldErrorLabel from 'components/FormFieldErrorLabel'
+import grantTitleYear from 'helpers/grantTitleYear'
 import { resourceCategories } from '.'
 
 export const TeamLabel = () => (
@@ -51,7 +52,7 @@ export default () => {
         <Select
           disabled={!organization}
           options={grantOptions || []}
-          labelKey={(g) => `${g.title} (${g.year})`}
+          labelKey={grantTitleYear}
           valueKey="id"
           value={grant}
           placeholder="Select Grant"

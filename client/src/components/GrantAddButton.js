@@ -3,6 +3,7 @@ import { Box, CheckBox, Paragraph, Text } from 'grommet'
 import Button from 'components/Button'
 import { Modal } from 'components/Modal'
 import useTeamForm from 'hooks/useTeamForm'
+import grantTitleYear from 'helpers/grantTitleYear'
 
 export default () => {
   const {
@@ -63,7 +64,7 @@ export default () => {
           {userGrants.map((grant) => (
             <CheckBox
               key={grant.id}
-              label={`${grant.title} (${grant.year})`}
+              label={grantTitleYear(grant)}
               disabled={existingGrantIds.includes(grant.id)}
               checked={checkedGrantIds.includes(grant.id)}
               onChange={({ target: { checked } }) => {
