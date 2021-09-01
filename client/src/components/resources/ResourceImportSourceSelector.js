@@ -6,6 +6,7 @@ import {
 } from 'components/resources/ResourceTypeSelector'
 import useResourceForm from 'hooks/useResourceForm'
 import { getReadable, getToken } from 'helpers/readableNames'
+import grantTitleYear from 'helpers/grantTitleYear'
 import { importSources } from '.'
 
 export default () => {
@@ -39,7 +40,7 @@ export default () => {
         <Select
           disabled={!organization}
           options={grantOptions || []}
-          labelKey="title"
+          labelKey={grantTitleYear}
           valueKey="id"
           value={grant}
           placeholder="Select Grant"

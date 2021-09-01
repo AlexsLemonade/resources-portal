@@ -5,6 +5,7 @@ import Icon from 'components/Icon'
 import useTeamForm from 'hooks/useTeamForm'
 import GrantRemoveButton from 'components/GrantRemoveButton'
 import GrantAddButton from 'components/GrantAddButton'
+import grantTitleYear from 'helpers/grantTitleYear'
 
 export default () => {
   const {
@@ -27,7 +28,7 @@ export default () => {
               <Box direction="row" align="center">
                 <Icon color="plain" name="Grant" />
                 <Box pad={{ left: 'small' }}>
-                  <Paragraph margin="none">{grant.title}</Paragraph>
+                  <Paragraph margin="none">{grantTitleYear(grant)}</Paragraph>
                   <Paragraph size="small">Grant: {grant.funder_id}</Paragraph>
                 </Box>
               </Box>
