@@ -63,7 +63,7 @@ export default () => {
           {userGrants.map((grant) => (
             <CheckBox
               key={grant.id}
-              label={grant.title}
+              label={`${grant.title} (${grant.year})`}
               disabled={existingGrantIds.includes(grant.id)}
               checked={checkedGrantIds.includes(grant.id)}
               onChange={({ target: { checked } }) => {

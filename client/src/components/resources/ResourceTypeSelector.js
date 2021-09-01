@@ -51,7 +51,7 @@ export default () => {
         <Select
           disabled={!organization}
           options={grantOptions || []}
-          labelKey="title"
+          labelKey={(g) => `${g.title} (${g.year})`}
           valueKey="id"
           value={grant}
           placeholder="Select Grant"

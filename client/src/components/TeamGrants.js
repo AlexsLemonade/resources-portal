@@ -27,7 +27,9 @@ export default () => {
               <Box direction="row" align="center">
                 <Icon color="plain" name="Grant" />
                 <Box pad={{ left: 'small' }}>
-                  <Paragraph margin="none">{grant.title}</Paragraph>
+                  <Paragraph margin="none">
+                    {grant.title} ({grant.year})
+                  </Paragraph>
                   <Paragraph size="small">Grant: {grant.funder_id}</Paragraph>
                 </Box>
               </Box>

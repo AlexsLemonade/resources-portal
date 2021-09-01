@@ -61,7 +61,7 @@ export default ({ teamId }) => {
             {user.grants.map((grant) => (
               <CheckBox
                 key={grant.id}
-                label={grant.title}
+                label={`${grant.title} (${grant.year})`}
                 checked={getAttribute('grants')
                   .map((g) => g.id)
                   .includes(grant.id)}
