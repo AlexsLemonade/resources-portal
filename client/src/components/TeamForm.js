@@ -6,6 +6,7 @@ import { HeaderRow } from 'components/HeaderRow'
 import TeamAddMembers from 'components/TeamAddMembers'
 import useTeamForm from 'hooks/useTeamForm'
 import { useRouter } from 'next/router'
+import grantTitleYear from 'helpers/grantTitleYear'
 
 export default ({ teamId }) => {
   const { user, setAttribute, getAttribute, fetchTeam, save } = useTeamForm()
@@ -61,7 +62,7 @@ export default ({ teamId }) => {
             {user.grants.map((grant) => (
               <CheckBox
                 key={grant.id}
-                label={grant.title}
+                label={grantTitleYear(grant)}
                 checked={getAttribute('grants')
                   .map((g) => g.id)
                   .includes(grant.id)}
