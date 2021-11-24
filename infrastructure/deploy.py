@@ -144,6 +144,17 @@ def run_terraform(args):
     # Make sure that Terraform is allowed to shut down gracefully.
     try:
         terraform_process = subprocess.Popen(
+            ["terraform", "taint", "aws_instance.api_server_1"], stdout=subprocess.PIPE
+        )
+        output = ""
+        for line in iter(terraform_process.stdout.readline, b""):
+            decoded_line = line.decode("utf-8")
+            print(decoded_line, end="")
+            output += decoded_line
+
+        terraform_process.wait()
+
+        terraform_process = subprocess.Popen(
             ["terraform", "apply", var_file_arg, "-auto-approve"], stdout=subprocess.PIPE
         )
         output = ""
