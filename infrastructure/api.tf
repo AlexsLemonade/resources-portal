@@ -42,6 +42,7 @@ resource "aws_instance" "api_server_1" {
     "api-configuration/api-server-instance-user-data.tpl.sh",
     {
       nginx_config = data.local_file.api_nginx_config.content
+      resources_portal_cert_bucket = aws_s3_bucket.resources_portal_cert_bucket.id
       api_environment = templatefile(
         "api-configuration/environment.tpl",
         {

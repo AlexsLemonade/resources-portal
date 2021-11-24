@@ -164,7 +164,10 @@ resource "aws_iam_policy" "s3_access_policy" {
             "s3:ListBucket",
             "s3:GetBucketLocation"
          ],
-         "Resource":"arn:aws:s3:::resources-portal"
+         "Resource": [
+            "arn:aws:s3:::${aws_s3_bucket.resources_portal_bucket.bucket}",
+            "arn:aws:s3:::${aws_s3_bucket.resources_portal_cert_bucket.bucket}"
+         ]
       },
       {
          "Effect":"Allow",
@@ -174,7 +177,8 @@ resource "aws_iam_policy" "s3_access_policy" {
             "s3:DeleteObject"
          ],
           "Resource": [
-            "arn:aws:s3:::${aws_s3_bucket.resources_portal_bucket.bucket}/*"
+            "arn:aws:s3:::${aws_s3_bucket.resources_portal_bucket.bucket}/*",
+            "arn:aws:s3:::${aws_s3_bucket.resources_portal_cert_bucket.bucket}/*"
           ]
       }
    ]
