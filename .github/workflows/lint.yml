@@ -31,7 +31,6 @@ jobs:
       - name: Run linters
         uses: wearerequired/lint-action@v1
         with:
-          # github_token: ${{ secrets.DOCS_BOT_GITHUB_TOKEN }}
           # Enable linters
           # Temporarily disabled: https://github.com/wearerequired/lint-action/issues/88
           # black: true
