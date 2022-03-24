@@ -1,43 +1,6 @@
 # This terraform file hosts the resources directly related to the
 # postgres RDS instance.
 
-### Start Delete After Upgrade to Postgres 12.5
-# Currently exists, will be deleted after aws_db_parameter_group.postgres_parameters is in use.
-resource "aws_db_parameter_group" "postgres_parameters" {
-  name = "postgres-parameters-${var.user}-${var.stage}"
-  description = "Postgres Parameters ${var.user} ${var.stage}"
-  family = "postgres9.6"
-
-  parameter {
-    name = "deadlock_timeout"
-    value = "60000" # 60000ms = 60s
-  }
-
-  parameter {
-    name = "statement_timeout"
-    value = "60000" # 60000ms = 60s
-  }
-}
-
-resource "aws_db_parameter_group" "postgres_parameters_new" {
-  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
-  description = "Postgres Parameters ${var.user} ${var.stage}"
-  family = "postgres9.6"
-
-  parameter {
-    name = "deadlock_timeout"
-    value = "60000" # 60000ms = 60s
-  }
-
-  parameter {
-    name = "statement_timeout"
-    value = "60000" # 60000ms = 60s
-  }
-
-  tags = var.default_tags
-}
-### End Delete After Upgrade to Postgres 12.5
-
 resource "aws_db_parameter_group" "postgres12_parameters" {
   name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
   description = "Postgres Parameters ${var.user} ${var.stage}"
