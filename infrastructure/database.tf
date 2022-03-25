@@ -41,7 +41,7 @@ resource "aws_db_instance" "postgres_db" {
   allocated_storage = 100
   storage_type = "gp2"
   engine = "postgres"
-  engine_version = "9.6.11"
+  engine_version = "9.6.20"
   auto_minor_version_upgrade = false
   instance_class = var.database_instance_type
   name = "resources_portal"
