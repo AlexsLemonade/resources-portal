@@ -2,7 +2,7 @@
 # postgres RDS instance.
 
 resource "aws_db_parameter_group" "postgres12_parameters" {
-  name = "resources-portal-postgres-parameters-${var.user}-${var.stage}"
+  name = "resources-portal-postgres12-parameters-${var.user}-${var.stage}"
   description = "Postgres Parameters ${var.user} ${var.stage}"
   family = "postgres12"
 
