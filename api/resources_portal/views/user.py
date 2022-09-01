@@ -206,7 +206,10 @@ class UserViewSet(viewsets.ModelViewSet):
             )
             orcid_data = parse_orcid_response(orcid_response)
         except Exception as error:
-            return JsonResponse({"error": error}, status=500,)
+            return JsonResponse(
+                {"error": error},
+                status=500,
+            )
 
         # use request data fallback to parsed orcid data
         user_data = {
@@ -252,5 +255,6 @@ class UserViewSet(viewsets.ModelViewSet):
         is_expired, token = token_expire_handler(existing_token)
 
         return JsonResponse(
-            {"user_id": user.id, "token": token.key, "expires": token.expires}, status=200,
+            {"user_id": user.id, "token": token.key, "expires": token.expires},
+            status=200,
         )

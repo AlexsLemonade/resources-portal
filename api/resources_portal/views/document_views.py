@@ -245,7 +245,10 @@ class MaterialDocumentView(DocumentViewSet):
 
     # Define filtering fields
     filter_fields = {
-        "id": {"field": "_id", "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],},
+        "id": {
+            "field": "_id",
+            "lookups": [LOOKUP_FILTER_RANGE, LOOKUP_QUERY_IN],
+        },
         "organization": {"field": "organization.name"},
         "title": "title",
         "is_archived": "is_archived",

@@ -18,7 +18,12 @@ class UserFactory(factory.django.DjangoModelFactory):
     orcid_refresh_token = "a refresh token"
     orcid_access_token = "a access token"
     password = factory.Faker(
-        "password", length=10, special_chars=True, digits=True, upper_case=True, lower_case=True,
+        "password",
+        length=10,
+        special_chars=True,
+        digits=True,
+        upper_case=True,
+        lower_case=True,
     )
     email = factory.Faker("email")
     first_name = factory.Faker("first_name")

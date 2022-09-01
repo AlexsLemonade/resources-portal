@@ -77,8 +77,7 @@ class Attachment(SafeDeleteModel):
 
     @property
     def download_url(self):
-        """A temporary URL from which the file can be downloaded.
-        """
+        """A temporary URL from which the file can be downloaded."""
         if (
             not self.s3_resource_deleted
             and self.s3_key

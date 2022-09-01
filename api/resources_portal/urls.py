@@ -50,10 +50,16 @@ router.register(r"users", UserViewSet, basename="user").register(
     parents_query_lookups=["user"],
 )
 router.register(r"users", UserViewSet, basename="user").register(
-    r"notifications", NotificationViewSet, basename="notifications", parents_query_lookups=["user"],
+    r"notifications",
+    NotificationViewSet,
+    basename="notifications",
+    parents_query_lookups=["user"],
 )
 router.register(r"users", UserViewSet, basename="user").register(
-    r"addresses", AddressViewSet, basename="users-addresses", parents_query_lookups=["user"],
+    r"addresses",
+    AddressViewSet,
+    basename="users-addresses",
+    parents_query_lookups=["user"],
 )
 
 router.register(r"organizations", OrganizationViewSet, basename="organization")
@@ -139,7 +145,11 @@ urlpatterns.append(
     )
 )
 urlpatterns.append(
-    path("v1/attachments/<int:attachment_id>/copy", attachment_copy_view, name="attachment-copy",)
+    path(
+        "v1/attachments/<int:attachment_id>/copy",
+        attachment_copy_view,
+        name="attachment-copy",
+    )
 )
 
 

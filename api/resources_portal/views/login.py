@@ -32,15 +32,18 @@ class LoginViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         if "orcid" not in request.data:
             return JsonResponse(
-                {"error": "orcid parameter was not found in the request."}, status=400,
+                {"error": "orcid parameter was not found in the request."},
+                status=400,
             )
         if "access_token" not in request.data:
             return JsonResponse(
-                {"error": "access_token parameter was not found in the request."}, status=400,
+                {"error": "access_token parameter was not found in the request."},
+                status=400,
             )
         if "refresh_token" not in request.data:
             return JsonResponse(
-                {"error": "refresh_token parameter was not found in the request."}, status=400,
+                {"error": "refresh_token parameter was not found in the request."},
+                status=400,
             )
         if not User.objects.filter(orcid=request.data["orcid"]).exists():
             return JsonResponse(
@@ -73,5 +76,6 @@ class LoginViewSet(viewsets.ViewSet):
         is_expired, token = token_expire_handler(token)
 
         return JsonResponse(
-            {"user_id": user.id, "token": token.key, "expires": token.expires}, status=200,
+            {"user_id": user.id, "token": token.key, "expires": token.expires},
+            status=200,
         )

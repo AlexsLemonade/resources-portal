@@ -30,7 +30,10 @@ class ImportSRATestCase(APITestCase):
 
         response = self.client.post(
             self.url,
-            {"import_source": "SRA", "accession_code": self.test_accession_with_pubmed_id,},
+            {
+                "import_source": "SRA",
+                "accession_code": self.test_accession_with_pubmed_id,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -57,7 +60,10 @@ class ImportSRATestCase(APITestCase):
 
         response = self.client.post(
             self.url,
-            {"import_source": "SRA", "accession_code": self.test_accession_without_pubmed_id,},
+            {
+                "import_source": "SRA",
+                "accession_code": self.test_accession_without_pubmed_id,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -83,7 +89,10 @@ class ImportSRATestCase(APITestCase):
     def test_import_from_unauthenticated_fails(self):
         response = self.client.post(
             self.url,
-            {"import_source": "SRA", "accession_code": self.test_accession_with_pubmed_id,},
+            {
+                "import_source": "SRA",
+                "accession_code": self.test_accession_with_pubmed_id,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -119,7 +128,8 @@ class ImportSRATestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(
-            self.url, {"import_source": "SRA", "accession_code": "PRJNA168994"},
+            self.url,
+            {"import_source": "SRA", "accession_code": "PRJNA168994"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -193,7 +203,8 @@ class ImportSRATestCase(APITestCase):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(
-            self.url, {"import_source": "SRA", "accession_code": "SRR013547"},
+            self.url,
+            {"import_source": "SRA", "accession_code": "SRR013547"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)

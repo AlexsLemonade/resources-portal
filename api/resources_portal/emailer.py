@@ -37,7 +37,11 @@ Alex's Lemonade Stand Foundation
 
 
 def create_multipart_message(
-    sender: str, recipients: list, title: str, text: str = None, html: str = None,
+    sender: str,
+    recipients: list,
+    title: str,
+    text: str = None,
+    html: str = None,
 ) -> MIMEMultipart:
     """
     Creates a MIME multipart message object.
@@ -69,7 +73,11 @@ def create_multipart_message(
 
 
 def send_mail(
-    source: str, recipients: list, title: str, text: str = None, html: str = None,
+    source: str,
+    recipients: list,
+    title: str,
+    text: str = None,
+    html: str = None,
 ) -> dict:
     """
     Send email to recipients. Sends one mail to all recipients.

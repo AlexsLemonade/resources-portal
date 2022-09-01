@@ -130,7 +130,8 @@ class TestSingleOrganizationTestCase(APITestCase):
         self.assertNotIn(new_member, self.organization.members.all())
 
         self.assertEqual(
-            len(Notification.objects.filter(notification_type="ORGANIZATION_BECAME_OWNER")), 1,
+            len(Notification.objects.filter(notification_type="ORGANIZATION_BECAME_OWNER")),
+            1,
         )
         self.assertEqual(
             len(Notification.objects.filter(notification_type="ORGANIZATION_NEW_OWNER")),

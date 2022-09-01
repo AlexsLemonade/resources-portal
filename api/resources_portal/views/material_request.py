@@ -271,7 +271,7 @@ def field_changed(field_name, old_material_request, new_material_request):
 
 
 def add_attachment_to_material_request(material_request, attachment, attachment_type, user):
-    """"Adds an attachment to a material request.
+    """ "Adds an attachment to a material request.
 
     Checks that the current user is in the org that uploaded the
     attachment.
