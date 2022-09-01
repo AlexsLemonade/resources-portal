@@ -55,7 +55,11 @@ def email_invitation_view(request):
 
     logger.info(f"Sending an email invitation to {email}.")
     send_mail(
-        EMAIL_SOURCE, [email], subject, plain_text_email, formatted_html,
+        EMAIL_SOURCE,
+        [email],
+        subject,
+        plain_text_email,
+        formatted_html,
     )
 
     return Response(status=status.HTTP_201_CREATED)

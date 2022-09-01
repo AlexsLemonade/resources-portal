@@ -11,7 +11,9 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RenameField(
-            model_name="materialrequest", old_name="is_active", new_name="is_active_requester",
+            model_name="materialrequest",
+            old_name="is_active",
+            new_name="is_active_requester",
         ),
         migrations.AddField(
             model_name="materialrequest",

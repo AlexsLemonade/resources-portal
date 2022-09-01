@@ -112,10 +112,16 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         material = material_request.material
 
         if material.is_archived:
-            return Response(data={"reason": MATERIAL_ARCHIVED_ERROR}, status=400,)
+            return Response(
+                data={"reason": MATERIAL_ARCHIVED_ERROR},
+                status=400,
+            )
 
         if material_request.status not in ["FULFILLED", "VERIFIED_FULFILLED"]:
-            return Response(data={"reason": REQUEST_UNFULFILLED_ERROR}, status=400,)
+            return Response(
+                data={"reason": REQUEST_UNFULFILLED_ERROR},
+                status=400,
+            )
 
         serializer.validated_data["material_request_id"] = material_request.id
         material_request_issue = MaterialRequestIssue(**serializer.validated_data)
@@ -149,7 +155,10 @@ class MaterialRequestIssueViewSet(viewsets.ModelViewSet):
         material_request_issue = self.get_object()
 
         if material_request_issue.status == "CLOSED":
-            return Response(data={"reason": "Cannot update closed issues."}, status=400,)
+            return Response(
+                data={"reason": "Cannot update closed issues."},
+                status=400,
+            )
 
         material_request = material_request_issue.material_request
 

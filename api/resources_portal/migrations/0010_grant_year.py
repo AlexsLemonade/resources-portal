@@ -11,6 +11,8 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name="grant", name="year", field=models.PositiveSmallIntegerField(null=True),
+            model_name="grant",
+            name="year",
+            field=models.PositiveSmallIntegerField(null=True),
         ),
     ]

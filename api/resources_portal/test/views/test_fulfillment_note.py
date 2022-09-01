@@ -40,7 +40,8 @@ class FulfillmentNoteListTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLMENT_NOTE_ADDED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLMENT_NOTE_ADDED")),
+            1,
         )
 
     def test_post_request_may_not_specify_user(self):

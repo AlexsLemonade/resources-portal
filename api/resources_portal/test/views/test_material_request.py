@@ -79,7 +79,8 @@ class TestMaterialRequestListTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_OPENED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_OPENED")),
+            1,
         )
 
     def test_post_request_with_address_succeeds(self):
@@ -110,7 +111,8 @@ class TestMaterialRequestListTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_OPENED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_OPENED")),
+            1,
         )
 
         created_request = MaterialRequest.objects.get(id=response.json()["id"])
@@ -249,11 +251,13 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(issue.status, "CLOSED")
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_FULFILLED")),
+            1,
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")),
+            1,
         )
 
     def test_put_request_from_sharer_updates_a_material_request(self):
@@ -275,10 +279,12 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(material_request.status, "APPROVED")
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_APPROVED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_APPROVED")),
+            1,
         )
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="SHARER_MTA_ADDED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="SHARER_MTA_ADDED")),
+            1,
         )
 
     def test_patch_request_from_requester_adds_attachments(self):
@@ -310,7 +316,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_IRB_ADDED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_IRB_ADDED")),
+            1,
         )
 
     def test_patch_request_from_requester_fails_without_MTA(self):
@@ -399,7 +406,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_ADDED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_ADDED")),
+            1,
         )
 
         self.assertEqual(
@@ -463,7 +471,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_ADDED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUESTER_PAYMENT_METHOD_ADDED")),
+            1,
         )
 
         self.assertEqual(
@@ -489,7 +498,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         self.assertEqual(material_request.status, "VERIFIED_FULFILLED")
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_VERIFIED_FULFILLED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_VERIFIED_FULFILLED")),
+            1,
         )
 
     def test_put_request_from_sharer_does_not_verify_request(self):
@@ -537,7 +547,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_REASSIGNED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_REASSIGNED")),
+            1,
         )
 
     def test_put_request_from_requester_does_not_update_assigned_to(self):
@@ -588,7 +599,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_CANCELLED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_CANCELLED")),
+            1,
         )
 
     def test_patch_can_move_to_in_fulfillment(self):
@@ -621,7 +633,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_IN_FULFILLMENT")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_IN_FULFILLMENT")),
+            1,
         )
 
     def test_patch_requester_can_move_to_in_fulfillment(self):
@@ -658,7 +671,8 @@ class TestSingleMaterialRequestTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_IN_FULFILLMENT")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_IN_FULFILLMENT")),
+            1,
         )
 
     def test_patch_requester_cannot_move_to_in_fulfillment(self):

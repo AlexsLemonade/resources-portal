@@ -10,7 +10,11 @@ def get_temp_path(accession_code):
 
 
 def get_GSE_from_GSM(accession_code):
-    gsm = GEOparse.get_GEO(accession_code, destdir=get_temp_path(accession_code), silent=True,)
+    gsm = GEOparse.get_GEO(
+        accession_code,
+        destdir=get_temp_path(accession_code),
+        silent=True,
+    )
 
     if "series_id" in gsm.metadata:
         return gsm.metadata["series_id"][0]
@@ -27,7 +31,11 @@ def gather_all_metadata(accession_code):
         # We failed to find an experiment accession code.
         return {}
 
-    gse = GEOparse.get_GEO(accession_code, destdir=get_temp_path(accession_code), silent=True,)
+    gse = GEOparse.get_GEO(
+        accession_code,
+        destdir=get_temp_path(accession_code),
+        silent=True,
+    )
 
     # Sometimes title or pubmed_id is a list for some reason.
     title = (

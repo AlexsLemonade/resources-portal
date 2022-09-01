@@ -5,7 +5,7 @@ from safedelete.models import SOFT_DELETE, SafeDeleteModel
 
 
 class OrganizationUserSetting(SafeDeleteModel):
-    """ This model will store individual settings for each user and organization """
+    """This model will store individual settings for each user and organization"""
 
     class Meta:
         db_table = "organization_user_setting"

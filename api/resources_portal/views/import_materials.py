@@ -100,7 +100,7 @@ def import_protocol(protocol_doi, user):
 
 
 class ImportViewSet(viewsets.ViewSet):
-    """ A viewset used to import all availible material data from a specified source."""
+    """A viewset used to import all availible material data from a specified source."""
 
     http_method_names = ["post"]
 

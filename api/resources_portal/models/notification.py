@@ -58,7 +58,11 @@ class Notification(SafeDeleteModel, ComputedFieldsModel):
         User, blank=False, null=False, on_delete=models.CASCADE, related_name="notifications"
     )
     associated_user = models.ForeignKey(
-        User, blank=False, null=True, on_delete=models.CASCADE, related_name="+",
+        User,
+        blank=False,
+        null=True,
+        on_delete=models.CASCADE,
+        related_name="+",
     )
     organization = models.ForeignKey(Organization, blank=False, null=True, on_delete=models.CASCADE)
     grant = models.ForeignKey(Grant, blank=False, null=True, on_delete=models.CASCADE)
