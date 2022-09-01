@@ -7,7 +7,9 @@ data "local_file" "api_nginx_config" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-  owners = ["190047108236"]
+  # specifying owners makes this throw an error
+  # https://github.com/hashicorp/terraform-provider-aws/issues/5996#issuecomment-424816078
+  # owners = ["190047108236"]
 
   filter {
     name   = "name"
