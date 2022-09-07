@@ -17,7 +17,7 @@ cat <<"EOF" > nginx.conf
 ${nginx_config}
 EOF
 apt-get update -y
-apt-get install nginx awscli zip -y
+apt-get install nginx awscli zip docker-ce -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
