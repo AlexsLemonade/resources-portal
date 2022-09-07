@@ -17,9 +17,13 @@ cat <<"EOF" > nginx.conf
 ${nginx_config}
 EOF
 apt-get update -y
-apt-get install nginx awscli zip docker-ce -y
+apt-get install nginx awscli zip -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
+
+# install and run docker
+apt-get install docker-ce -y
+service docker restart
 
 if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
     # Check here for the cert in S3, if present install, if not run certbot.
