@@ -21,50 +21,54 @@ apt-get install nginx awscli zip -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
+# install and run docker
+apt-get install docker-ce -y
+service docker restart
+
 if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
     # Check here for the cert in S3, if present install, if not run certbot.
     if [[ $(aws s3 ls "${resources_portal_cert_bucket}" | wc -l) == "0" ]]; then
-	# Create and install SSL Certificate for the API.
-	# Only necessary on staging and prod.
-	# We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
-	apt-get install -y software-properties-common
-	add-apt-repository ppa:certbot/certbot
-	apt-get update
-	apt-get install -y python-certbot-nginx
+        # Create and install SSL Certificate for the API.
+        # Only necessary on staging and prod.
+        # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
+        apt-get install -y software-properties-common
+        add-apt-repository ppa:certbot/certbot
+        apt-get update
+        apt-get install -y python-certbot-nginx
 
-	# g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
-	# have configured to forward mail to the #teamcontact channel in
-	# slack. Certbot will use it for "important account
-	# notifications".
+        # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
+        # have configured to forward mail to the #teamcontact channel in
+        # slack. Certbot will use it for "important account
+        # notifications".
 
-	# The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
-	sleep 180
-	BASE_URL="resources.alexslemonade.org"
-	if [[ ${stage} == "staging" ]]; then
+        # The certbot challenge cannot be completed until the aws_lb_target_group_attachment resources are created.
+        sleep 180
+        BASE_URL="resources.alexslemonade.org"
+        if [[ ${stage} == "staging" ]]; then
             certbot --nginx -d api.staging.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-	elif [[ ${stage} == "prod" ]]; then
+        elif [[ ${stage} == "prod" ]]; then
             certbot --nginx -d api.$BASE_URL -n --agree-tos --redirect -m g3w4k4t5n3s7p7v8@alexslemonade.slack.com
-	fi
+        fi
 
-	# Add the nginx.conf file that certbot setup to the zip dir.
-	cp /etc/nginx/nginx.conf /etc/letsencrypt/
+        # Add the nginx.conf file that certbot setup to the zip dir.
+        cp /etc/nginx/nginx.conf /etc/letsencrypt/
 
-	cd /etc/letsencrypt/ || exit
-	sudo zip -r ../letsencryptdir.zip "../$(basename "$PWD")"
+        cd /etc/letsencrypt/ || exit
+        sudo zip -r ../letsencryptdir.zip "../$(basename "$PWD")"
 
-	# And then cleanup the extra copy.
-	rm /etc/letsencrypt/nginx.conf
+        # And then cleanup the extra copy.
+        rm /etc/letsencrypt/nginx.conf
 
-	cd - || exit
-	mv /etc/letsencryptdir.zip .
-	aws s3 cp letsencryptdir.zip "s3://${resources_portal_cert_bucket}/"
-	rm letsencryptdir.zip
+        cd - || exit
+        mv /etc/letsencryptdir.zip .
+        aws s3 cp letsencryptdir.zip "s3://${resources_portal_cert_bucket}/"
+        rm letsencryptdir.zip
     else
-	zip_filename=$(aws s3 ls "${resources_portal_cert_bucket}" | head -1 | awk '{print $4}')
-	aws s3 cp "s3://${resources_portal_cert_bucket}/$zip_filename" letsencryptdir.zip
-	unzip letsencryptdir.zip -d /etc/
-	mv /etc/letsencrypt/nginx.conf /etc/nginx/
-	service nginx restart
+        zip_filename=$(aws s3 ls "${resources_portal_cert_bucket}" | head -1 | awk '{print $4}')
+        aws s3 cp "s3://${resources_portal_cert_bucket}/$zip_filename" letsencryptdir.zip
+        unzip letsencryptdir.zip -d /etc/
+        mv /etc/letsencrypt/nginx.conf /etc/nginx/
+        service nginx restart
     fi
 fi
 
