@@ -11,8 +11,7 @@ data "aws_ami" "ubuntu" {
 
   filter {
     name   = "name"
-    # This is a HVM, EBS backed SSD Ubuntu LTS AMI with Docker version 17.12.0 on it in the US,
-    # the stock Ubuntu cloud image in the EU.
+    # This is a HVM, EBS backed SSD Ubuntu LTS AMI
     values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22*amd64-server*"]
   }
 
