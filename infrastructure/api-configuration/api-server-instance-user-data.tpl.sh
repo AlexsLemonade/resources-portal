@@ -22,8 +22,10 @@ cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
 # install and run docker
-apt-get install docker-ce -y
-service docker restart
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable" -y
+apt-get install docker-ce docker-ce-cli -y
 
 if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
     # Check here for the cert in S3, if present install, if not run certbot.
