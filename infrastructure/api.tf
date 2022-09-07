@@ -7,15 +7,13 @@ data "local_file" "api_nginx_config" {
 
 data "aws_ami" "ubuntu" {
   most_recent = true
-  # specifying owners makes this throw an error
-  # https://github.com/hashicorp/terraform-provider-aws/issues/5996#issuecomment-424816078
-  # owners = ["190047108236"]
+  owners = ["099720109477"]
 
   filter {
     name   = "name"
     # This is a HVM, EBS backed SSD Ubuntu LTS AMI with Docker version 17.12.0 on it in the US,
     # the stock Ubuntu cloud image in the EU.
-    values = ["ubuntu-18-04-docker2"]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22*amd64-server*"]
   }
 
   filter {
