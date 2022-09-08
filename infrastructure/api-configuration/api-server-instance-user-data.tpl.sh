@@ -24,7 +24,7 @@ service nginx restart
 # install and run docker
 apt-get install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu jammy stable" -y
+add-apt-repository "deb [arch=$(uname -m)] https://download.docker.com/linux/ubuntu jammy stable" -y
 apt-get install docker-ce docker-ce-cli -y
 
 if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
