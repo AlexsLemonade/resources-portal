@@ -16,16 +16,19 @@ cd /home/ubuntu
 cat <<"EOF" > nginx.conf
 ${nginx_config}
 EOF
-apt-get update -y
-apt-get install nginx awscli zip -y
+
+apt update -y
+apt install nginx awscli zip -y
 cp nginx.conf /etc/nginx/nginx.conf
 service nginx restart
 
 # install and run docker
-apt-get install apt-transport-https ca-certificates curl software-properties-common -y
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=$(uname -m)] https://download.docker.com/linux/ubuntu jammy stable" -y
-apt-get install docker-ce docker-ce-cli -y
+apt install apt-transport-https ca-certificates curl software-properties-common -y
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker.gpg
+echo "deb [arch=$(uname -m) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable" | \
+  tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt update -y
+apt install docker-ce docker-ce-cli -y
 
 if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
     # Check here for the cert in S3, if present install, if not run certbot.
@@ -33,10 +36,8 @@ if [[ ${stage} == "staging" || ${stage} == "prod" ]]; then
         # Create and install SSL Certificate for the API.
         # Only necessary on staging and prod.
         # We cannot use ACM for this because *.bio is not a Top Level Domain that Route53 supports.
-        apt-get install -y software-properties-common
-        add-apt-repository ppa:certbot/certbot
-        apt-get update
-        apt-get install -y python-certbot-nginx
+        apt update
+        apt install certbot python3-certbot-nginx -y
 
         # g3w4k4t5n3s7p7v8@alexslemonade.slack.com is the email address we
         # have configured to forward mail to the #teamcontact channel in
