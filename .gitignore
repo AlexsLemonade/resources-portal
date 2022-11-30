@@ -135,6 +135,7 @@ client/build
 # misc
 .DS_Store
 client/.env*
+*.pem
 
 # debug
 client/npm-debug.log*
