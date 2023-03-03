@@ -103,7 +103,10 @@ export default ({ onCancel, onSubmit }) => {
           We currently only support adding a resource with an{' '}
           <Text weight="bold">ALSF Grant</Text>. If you have an ALSF grant,
           please reach out to the{' '}
-          <Anchor label="Grants Team" href="mailto:grants@alexslemonade.org" />{' '}
+          <Anchor
+            label="Grants Team"
+            href="mailto:grants@alexslemonade.org?subject=CCRR:%20Invite%20Link%20Request"
+          />{' '}
           for an invite.
         </Paragraph>
       </Box>
