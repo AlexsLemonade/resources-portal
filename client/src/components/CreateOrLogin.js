@@ -21,7 +21,7 @@ export default ({ title, showSignIn = true }) => {
           <Paragraph>
             <Text weight="bold">ALSF Grantees:</Text> Please contact the{' '}
             <Link
-              href="mailto:grants@alexslemonade.org?subject=CCRR:%20Invite%20Link%20Request"
+              href="mailto:grants@alexslemonade.org?subject=CCRR%20Portal:%20Invite%20Link%20Request"
               label="ALSF Grants team"
             />{' '}
             for an invite link to sign up. Using the invite link ensures that
