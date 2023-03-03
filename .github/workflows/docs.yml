@@ -15,7 +15,7 @@ jobs:
 
       - uses: actions/setup-node@v1
         with:
-          node-version: '10.16.0'
+          node-version: 16
       - run: cd client && yarn install && yarn run build-storybook -c storybook -o ../docs/storybook
 
       - name: Deploy docs
