@@ -105,7 +105,7 @@ export default ({ onCancel, onSubmit }) => {
           please reach out to the{' '}
           <Anchor
             label="Grants Team"
-            href="mailto:grants@alexslemonade.org?subject=CCRR%20Portal:%20Invite%20Link%20Request"
+            href="mailto:grants@alexslemonade.org?subject=CCRR:%20Invite%20Link%20Request"
           />{' '}
           for an invite.
         </Paragraph>
