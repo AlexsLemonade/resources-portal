@@ -38,7 +38,7 @@ def get_request_issue_report_email(request, message, material_request):
         f"  Organizations:{organizations_text}\n"
     )
 
-    subject = f"CCRR: {request.user.full_name} is reporting an issue with a resource request"
+    subject = f"CCRR Portal: {request.user.full_name} is reporting an issue with a resource request"
     return {"body": body, "subject": subject}
 
 
@@ -55,7 +55,7 @@ def get_general_issue_report_email(request, message):
         f"  Organizations:{organizations_text}\n"
     )
 
-    subject = f"CCRR: {request.user.full_name} is reporting an issue"
+    subject = f"CCRR Portal: {request.user.full_name} is reporting an issue"
     return {"body": body, "subject": subject}
 
 
