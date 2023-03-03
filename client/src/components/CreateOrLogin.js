@@ -1,6 +1,8 @@
 import React from 'react'
-import { Anchor, Box, Heading, Text } from 'grommet'
+import { Anchor, Box, Heading, Paragraph, Text } from 'grommet'
 import ORCIDSignInButton from 'components/ORCIDSignInButton'
+import { InfoCard } from 'components/InfoCard'
+import Link from 'components/Link'
 
 export default ({ title, showSignIn = true }) => {
   return (
@@ -13,6 +15,19 @@ export default ({ title, showSignIn = true }) => {
         <Heading serif margin={{ top: 'none', bottom: 'small' }} level="5">
           {title}
         </Heading>
+      </Box>
+      <Box>
+        <InfoCard elevation="none">
+          <Paragraph>
+            <Text weight="bold">ALSF Grantees:</Text> Please contact the{' '}
+            <Link
+              href="mailto:grants@alexslemonade.org?subject=CCRR:%20Invite%20Link%20Request"
+              label="ALSF Grants team"
+            />{' '}
+            for an invite link to sign up. Using the invite link ensures that
+            your grants are correctly linked to your account.
+          </Paragraph>
+        </InfoCard>
       </Box>
       <Box direction="row">
         {showSignIn && (
