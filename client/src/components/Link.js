@@ -17,7 +17,7 @@ export default ({ href, label, icon, as, children = '', color = 'brand' }) => {
       {children}
     </Anchor>
   ) : (
-    <Link href={href} prefetch>
+    <Link href={href}>
       <Anchor color={color} href={href} label={label} icon={icon} as={as}>
         {children}
       </Anchor>
