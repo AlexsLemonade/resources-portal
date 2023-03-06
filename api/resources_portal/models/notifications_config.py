@@ -539,7 +539,11 @@ NOTIFICATION_CONFIGS = {
             "{other_name} added a new [{material_name}]({material_path})"
             " to [{organization_name}]({organization_path})."
         ),
-        "required_associations": ["associated_user", "material", "organization",],
+        "required_associations": [
+            "associated_user",
+            "material",
+            "organization",
+        ],
         "send_to_organization": True,
     },
     "MATERIAL_ARCHIVED": {
@@ -557,7 +561,11 @@ NOTIFICATION_CONFIGS = {
             "{other_name} archived [{material_name}]({material_path})"
             " from [{organization_name}]({organization_path})."
         ),
-        "required_associations": ["associated_user", "material", "organization",],
+        "required_associations": [
+            "associated_user",
+            "material",
+            "organization",
+        ],
         "send_to_organization": True,
     },
     "MATERIAL_DELETED": {
@@ -576,7 +584,11 @@ NOTIFICATION_CONFIGS = {
             "{other_name} deleted [{material_name}]({material_name})"
             " from [{organization_name}]({organization_path})."
         ),
-        "required_associations": ["associated_user", "material", "organization",],
+        "required_associations": [
+            "associated_user",
+            "material",
+            "organization",
+        ],
         "send_to_organization": True,
     },
     "ORGANIZATION_NEW_MEMBER": {
@@ -589,7 +601,10 @@ NOTIFICATION_CONFIGS = {
             "\n\nView members. ({organization_url})."
         ),
         "markdown": "{other_name} was added to [{organization_name}]({organization_path}).",
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "send_to_organization": True,
         "send_to_primary_user": False,
     },
@@ -610,7 +625,10 @@ NOTIFICATION_CONFIGS = {
             "{other_name} has made you the owner of [{organization_name}]({organization_path})."
             "\n\nYou can now add new team members and remove members and resources."
         ),
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "always_send": True,
     },
     "ORGANIZATION_NEW_OWNER": {
@@ -623,7 +641,10 @@ NOTIFICATION_CONFIGS = {
             "\n\nView team. ({organization_url})."
         ),
         "markdown": "{other_name} is now the owner of [{organization_name}]({organization_path}).",
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "send_to_organization": True,
         "send_to_associated_user": False,
     },
@@ -632,7 +653,10 @@ NOTIFICATION_CONFIGS = {
         "body": "{other_name} left {organization_name}.",
         "plain_text_email": "{other_name} left {organization_name}",
         "markdown": "{other_name} left [{organization_name}]({organization_path}).",
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "send_to_organization": True,
     },
     "ORGANIZATION_NEW_GRANT": {
@@ -652,7 +676,10 @@ NOTIFICATION_CONFIGS = {
             "{other_name} linked a new grant {grant_name} with [{organization_name}]({organization_path})."
             "\n\nTeam members can now add resources associated with the grant."
         ),
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "send_to_organization": True,
     },
     "ORGANIZATION_INVITE": {
@@ -665,7 +692,10 @@ NOTIFICATION_CONFIGS = {
             "\n\nView team. ({organization_url})."
         ),
         "markdown": "{organization_owner} has added you to their team, [{organization_name}]({organization_path}).",
-        "required_associations": ["associated_user", "organization",],
+        "required_associations": [
+            "associated_user",
+            "organization",
+        ],
         "always_send": True,
     },
     "REPORT_TO_GRANTS_TEAM": {

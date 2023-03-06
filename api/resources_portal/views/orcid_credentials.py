@@ -29,7 +29,8 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
     def create(self, request, *args, **kwargs):
         if "code" not in request.data:
             return JsonResponse(
-                {"error": "Code parameter was not found in the request."}, status=400,
+                {"error": "Code parameter was not found in the request."},
+                status=400,
             )
         elif "origin_url" not in request.data:
             return JsonResponse(
@@ -55,7 +56,10 @@ class ORCIDCredentialsViewSet(viewsets.ViewSet):
             response = requests.post(OAUTH_URL, data=data, headers={"accept": "application/json"})
             response_json = response.json()
         except Exception as error:
-            return JsonResponse({"error": error}, status=500,)
+            return JsonResponse(
+                {"error": error},
+                status=500,
+            )
 
         if "orcid" not in response_json:
             return JsonResponse(response_json, status=400)

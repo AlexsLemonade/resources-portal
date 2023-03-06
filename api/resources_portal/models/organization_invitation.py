@@ -8,7 +8,7 @@ from resources_portal.models.user import User
 
 
 class OrganizationInvitation(SafeDeleteModel):
-    """ This model will store information on invitations to join an organization and requests to join an organization """
+    """This model will store information on invitations to join an organization and requests to join an organization"""
 
     class Meta:
         db_table = "organization_invitations"

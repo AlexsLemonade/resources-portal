@@ -79,7 +79,8 @@ class TestMaterialRequestIssueListTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_OPENED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_OPENED")),
+            1,
         )
 
     def test_post_request_unfulfilled_error(self):
@@ -219,7 +220,8 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")),
+            1,
         )
 
     def test_put_request_from_requester_updates_a_material_request(self):
@@ -246,7 +248,8 @@ class TestSingleMaterialRequestIssueTestCase(APITestCase):
         )
 
         self.assertEqual(
-            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")), 1,
+            len(MaterialShareEvent.objects.filter(event_type="REQUEST_ISSUE_CLOSED")),
+            1,
         )
 
     def test_put_request_without_permission_forbidden(self):

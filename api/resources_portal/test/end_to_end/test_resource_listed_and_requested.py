@@ -233,7 +233,8 @@ class TestResourceListedAndRequested(APITestCase):
             "material_request": request_id,
         }
         fulfillment_note_response = self.client.post(
-            reverse("material-requests-notes-list", args=[request_id]), fulfillment_note_json,
+            reverse("material-requests-notes-list", args=[request_id]),
+            fulfillment_note_json,
         )
         self.assertEqual(fulfillment_note_response.status_code, status.HTTP_201_CREATED)
 

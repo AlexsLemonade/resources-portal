@@ -78,8 +78,7 @@ def get_mock_auth_data(grants):
 
 
 def clean_test_file_uploads():
-    """Cleanup the attachments test directory so there's no from previous tests
-    """
+    """Cleanup the attachments test directory so there's no from previous tests"""
     for directory_name in os.listdir(settings.LOCAL_FILE_DIRECTORY):
         directory_path = os.path.join(settings.LOCAL_FILE_DIRECTORY, directory_name)
         shutil.rmtree(directory_path, ignore_errors=True)

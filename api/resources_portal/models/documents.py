@@ -21,10 +21,16 @@ html_strip = analyzer(
 )
 
 string_analyzer = analyzer(
-    "string_analyzer", tokenizer="keyword", filter=["lowercase", "stop", "snowball"],
+    "string_analyzer",
+    tokenizer="keyword",
+    filter=["lowercase", "stop", "snowball"],
 )
 
-no_op_analyzer = analyzer("no_op_analyzer", tokenizer="keyword", filter=[],)
+no_op_analyzer = analyzer(
+    "no_op_analyzer",
+    tokenizer="keyword",
+    filter=[],
+)
 
 
 # Document for materials. Interprets material data from the model so that it can be indexed into elasticsearch.

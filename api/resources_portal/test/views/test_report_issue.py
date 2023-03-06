@@ -52,7 +52,11 @@ class ReportIssueTestCase(APITestCase):
 
     def test_post_general_issue(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.url, {"message": "How do I even?"}, format="json",)
+        response = self.client.post(
+            self.url,
+            {"message": "How do I even?"},
+            format="json",
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertEqual(Notification.objects.all().count(), 1)

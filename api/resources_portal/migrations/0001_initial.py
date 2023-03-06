@@ -110,8 +110,13 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"ordering": ["created_at"], "get_latest_by": "created_at",},
-            managers=[("objects", resources_portal.models.user.NonDeletedObjectsManager()),],
+            options={
+                "ordering": ["created_at"],
+                "get_latest_by": "created_at",
+            },
+            managers=[
+                ("objects", resources_portal.models.user.NonDeletedObjectsManager()),
+            ],
         ),
         migrations.CreateModel(
             name="Address",
@@ -231,7 +236,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "grant_material_associations",},
+            options={
+                "db_table": "grant_material_associations",
+            },
         ),
         migrations.CreateModel(
             name="GrantOrganizationAssociation",
@@ -250,7 +257,9 @@ class Migration(migrations.Migration):
                     ),
                 ),
             ],
-            options={"db_table": "grant_organization_associations",},
+            options={
+                "db_table": "grant_organization_associations",
+            },
         ),
         migrations.CreateModel(
             name="Material",
@@ -1104,9 +1113,11 @@ class Migration(migrations.Migration):
             ),
         ),
         migrations.AlterUniqueTogether(
-            name="grantorganizationassociation", unique_together={("grant", "organization")},
+            name="grantorganizationassociation",
+            unique_together={("grant", "organization")},
         ),
         migrations.AlterUniqueTogether(
-            name="grantmaterialassociation", unique_together={("grant", "material")},
+            name="grantmaterialassociation",
+            unique_together={("grant", "material")},
         ),
     ]

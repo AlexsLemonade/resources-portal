@@ -31,7 +31,10 @@ class ImportGEOTestCase(APITestCase):
 
         response = self.client.post(
             self.url,
-            {"import_source": "GEO", "accession_code": self.test_accession_with_pubmed_id,},
+            {
+                "import_source": "GEO",
+                "accession_code": self.test_accession_with_pubmed_id,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -58,7 +61,11 @@ class ImportGEOTestCase(APITestCase):
 
         url = reverse("materials-import")
         response = self.client.post(
-            url, {"import_source": "GEO", "accession_code": self.test_accession_without_pubmed_id,},
+            url,
+            {
+                "import_source": "GEO",
+                "accession_code": self.test_accession_without_pubmed_id,
+            },
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -118,7 +125,8 @@ class ImportGEOTestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
         self.assertEqual(
-            material.additional_metadata["number_of_samples"], 2,
+            material.additional_metadata["number_of_samples"],
+            2,
         )
 
     def test_import_succeeds_with_GSM_URL(self):
@@ -145,14 +153,16 @@ class ImportGEOTestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
         self.assertEqual(
-            material.additional_metadata["number_of_samples"], 2,
+            material.additional_metadata["number_of_samples"],
+            2,
         )
 
     def test_import_succeeds_with_GSM_accession(self):
         self.client.force_authenticate(user=self.user)
 
         response = self.client.post(
-            self.url, {"import_source": "GEO", "accession_code": "GSM609241"},
+            self.url,
+            {"import_source": "GEO", "accession_code": "GSM609241"},
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -168,5 +178,6 @@ class ImportGEOTestCase(APITestCase):
         self.assertEqual(material.organization, self.org)
         self.assertEqual(material.additional_metadata["accession_code"], "GSE24542")
         self.assertEqual(
-            material.additional_metadata["number_of_samples"], 2,
+            material.additional_metadata["number_of_samples"],
+            2,
         )
