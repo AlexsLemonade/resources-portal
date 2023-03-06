@@ -13,7 +13,7 @@ import { useSearchResources } from 'hooks/useSearchResources'
 import EmptySearch from '../images/empty-search.svg'
 import SearchNoResults from '../images/search-no-results.svg'
 
-const Search = (search) => {
+const Search = ({ search }) => {
   const { response } = useSearchResources(search)
   const hasNoSearch = !response
   const hasNoResults = response && response.count === 0
