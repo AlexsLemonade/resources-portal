@@ -46,7 +46,7 @@ export const Footer = () => {
             >
               <Box align="end">
                 <Box>
-                  <Text weight="600">
+                  <Text weight={600}>
                     Sign up to get the latest updates from Alex’s Lemonade Stand
                     Foundation{' '}
                   </Text>
