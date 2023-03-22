@@ -2,10 +2,10 @@
 
 
 # This is the SSH key that can be used to ssh onto instances for
-# debugging. Long term we may want to remove this entirely.
+# debugging. It is managed through 1Password.
 resource "aws_key_pair" "resources_portal" {
   key_name = "resources-portal-key-${var.user}-${var.stage}"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCwLG06Xh+l4WYXSspdPeMAXDN5Mu3Ngs0hZruLwvsbeewMiZbGvIcE0Qw4pulmcOb3OcXig0eqG5nb7dUZPfpbqoJ4R+KzjRknIbMLNMng+UjmmXHEXmb4pT9ZVXUyq2QuS51Oba+VBA6cbZiIL8bYyFM5XTIemaM90NDMd7E4WotV2JUmUFQD29lFSb9PFnbnytq4VPuDqHcpTGBcAnxaMjSLlpWKEwDGustybMIUaaXglFyRjy8nVatuNpoJPHdxVRXak7m7TFQ7IR0+7ZQPv9/vf99NsKjqFcN8+EDVB8qrj5X1zvnvwD/O5g1CijYiEuSUMGAcpQSstOeh9FVyP/nX8QMls5gE5Vd+Xh6NZJve+hXstciz8j/WFdGuT3UknjKBLBaHwYqrSoYRMfuxi6grgAWMwHEGOhfM80xFj27OzS7hTB3tTRZuBzhS6rfCTAyLTn8x4/pRG7wQM7kz9vGFCHEbrr+FjhPfM82rVrA+7uCzObAHTPhxEvoovupbMpVu6o/8k3zXg3NweO6evqIzebsqEpts6dzSPFzSribxulJVbonq/5QCIFefH1Z3dqsQfFKGSCilo/w0/cdRB2UX+IccbGBbXLkySmM5Dxj23xxwW7X/0BufNv9+tPt9Y322wNG/4gHHm9O8QtP19svIG+esg7C5bafh3uOlkQ=="
+  public_key = var.ssh_public_key
 }
 
 ##

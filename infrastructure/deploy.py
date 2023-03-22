@@ -134,6 +134,7 @@ def load_env_vars(args):
     os.environ["TF_VAR_oauth_client_secret"] = os.environ["OAUTH_CLIENT_SECRET"]
     os.environ["TF_VAR_sentry_dsn"] = os.environ["SENTRY_DSN"]
     os.environ["TF_VAR_sentry_env"] = os.environ["SENTRY_ENV"]
+    os.environ["TF_VAR_ssh_public_key"] = os.environ["SSH_PUBLIC_KEY"]
 
     # This isn't a secret, so include it here to be explicit.
     if args.env == "dev" or args.env == "staging":
@@ -246,7 +247,7 @@ if __name__ == "__main__":
     # Create a key file from env var
     if args.env != "dev":
         with open(KEY_FILE_PATH, "w") as key_file:
-            key_file.write(os.environ["API_SSH_KEY"])
+            key_file.write(os.environ["SSH_PRIVATE_KEY"])
 
         os.chmod(KEY_FILE_PATH, 0o600)
 
