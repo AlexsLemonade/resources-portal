@@ -2,7 +2,7 @@
 
 
 # This is the SSH key that can be used to ssh onto instances for
-# debugging. It is managed through 1Password.
+# debugging. This key is managed through 1Password.
 resource "aws_key_pair" "resources_portal" {
   key_name = "resources-portal-key-${var.user}-${var.stage}"
   public_key = var.ssh_public_key
