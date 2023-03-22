@@ -13,6 +13,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Load 1Password Secrets
+        id: 1password
+        uses: 1password/load-steps.1password.outputs-action@v1
+        with:
+          export-env: false
+        env:
+          OP_CONNECT_HOST: "${{ secrets.OP_CONNECT_HOST }}"
+          OP_CONNECT_TOKEN: "${{ secrets.OP_CONNECT_TOKEN }}"
+          DATABASE_PASSWORD: "${{ OP_PRODUCTION_DATABASE_PASSWORD }}"
+          DJANGO_SECRET_KEY: "${{ OP_PRODUCTION_DJANGO_SECRET_KEY }}"
+          DOCKER_ID: "${{ OP_DOCKER_ID }}"
+          DOCKER_PASSWORD: "${{ OP_DOCKER_PASSWORD }}"
+          AWS_ACCESS_KEY_ID: "${{ OP_AWS_ACCESS_KEY_ID }}"
+          AWS_SECRET_ACCESS_KEY: "${{ OP_AWS_SECRET_ACCESS_KEY }}"
+          SSH_PRIVATE_KEY: "${{ OP_SSH_PRIVATE_KEY }}"
+          SSH_PUBLIC_KEY: "${{ OP_SSH_PUBLIC_KEY }}"
+          OAUTH_URL: "${{ OP_PRODUCTION_OAUTH_URL }}"
+          OAUTH_CLIENT_ID: "${{ OP_PRODUCTION_OAUTH_CLIENT_ID }}"
+          OAUTH_CLIENT_SECRET: "${{ OP_PRODUCTION_OAUTH_CLIENT_SECRET }}"
+          SENTRY_DSN: "${{ OP_SENTRY_DSN }}"
+
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
