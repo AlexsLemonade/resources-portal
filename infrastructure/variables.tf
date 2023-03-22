@@ -76,7 +76,7 @@ variable "oauth_client_id" {
   default = "MISSING_VALUE"
 }
 
-variable "sentry_io_url" {
+variable "sentry_dsn" {
   default = "MISSING_VALUE"
 }
 

@@ -132,7 +132,7 @@ def load_env_vars(args):
     os.environ["TF_VAR_oauth_url"] = os.environ["OAUTH_URL"]
     os.environ["TF_VAR_oauth_client_id"] = os.environ["OAUTH_CLIENT_ID"]
     os.environ["TF_VAR_oauth_client_secret"] = os.environ["OAUTH_CLIENT_SECRET"]
-    os.environ["TF_VAR_sentry_io_url"] = os.environ["SENTRY_IO_URL"]
+    os.environ["TF_VAR_sentry_dsn"] = os.environ["SENTRY_DSN"]
     os.environ["TF_VAR_sentry_env"] = os.environ["SENTRY_ENV"]
 
     # This isn't a secret, so include it here to be explicit.
