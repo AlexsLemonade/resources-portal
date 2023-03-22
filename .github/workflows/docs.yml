@@ -22,7 +22,7 @@ jobs:
         env:
           OP_CONNECT_HOST: "${{ secrets.OP_CONNECT_HOST }}"
           OP_CONNECT_TOKEN: "${{ secrets.OP_CONNECT_TOKEN }}"
-          DOCS_BOT_GITHUB_TOKEN: "${{ OP_DOCS_BOT_GITHUB_TOKEN }}"
+          DOCS_BOT_GITHUB_TOKEN: "${{ secrets.OP_DOCS_BOT_GITHUB_TOKEN }}"
 
 
       - uses: actions/setup-node@v1
