@@ -76,11 +76,15 @@ variable "oauth_client_id" {
   default = "MISSING_VALUE"
 }
 
-variable "sentry_io_url" {
+variable "sentry_dsn" {
   default = "MISSING_VALUE"
 }
 
 variable "sentry_env" {
+  default = "MISSING_VALUE"
+}
+
+variable "ssh_public_key" {
   default = "MISSING_VALUE"
 }
 
