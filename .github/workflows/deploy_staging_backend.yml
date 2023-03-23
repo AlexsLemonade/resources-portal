@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Load 1Password Secrets
-        id: 1password
-        uses: 1password/load-steps.1password.outputs-action@v1
+        id: op-load-secrets
+        uses: 1password/load-secrets-action@v1
         with:
           export-env: false
         env:
@@ -42,16 +42,16 @@ jobs:
       - name: Deploy
         run: cd infrastructure && python3 deploy.py -e staging -u deployer -d ccdlstaging -v $(git rev-parse HEAD)
         env:
-          DATABASE_PASSWORD: ${{ steps.1password.outputs.DATABASE_PASSWORD }}
-          DJANGO_SECRET_KEY: ${{ steps.1password.outputs.DJANGO_SECRET_KEY }}
-          DOCKER_ID: ${{ steps.1password.outputs.DOCKER_ID }}
-          DOCKER_PASSWORD: ${{ steps.1password.outputs.DOCKER_PASSWORD }}
-          AWS_ACCESS_KEY_ID: ${{ steps.1password.outputs.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ steps.1password.outputs.AWS_SECRET_ACCESS_KEY }}
-          SSH_PRIVATE_KEY: ${{ steps.1password.outputs.SSH_PRIVATE_KEY }}
-          SSH_PUBLIC_KEY: ${{ steps.1password.outputs.SSH_PUBLIC_KEY }}
-          OAUTH_URL: ${{ steps.1password.outputs.OAUTH_URL }}
-          OAUTH_CLIENT_ID: ${{ steps.1password.outputs.OAUTH_CLIENT_ID }}
-          OAUTH_CLIENT_SECRET: ${{ steps.1password.outputs.OAUTH_CLIENT_SECRET }}
-          SENTRY_DSN: ${{ steps.1password.outputs.SENTRY_DSN }}
+          DATABASE_PASSWORD: ${{ steps.op-load-secrets.outputs.DATABASE_PASSWORD }}
+          DJANGO_SECRET_KEY: ${{ steps.op-load-secrets.outputs.DJANGO_SECRET_KEY }}
+          DOCKER_ID: ${{ steps.op-load-secrets.outputs.DOCKER_ID }}
+          DOCKER_PASSWORD: ${{ steps.op-load-secrets.outputs.DOCKER_PASSWORD }}
+          AWS_ACCESS_KEY_ID: ${{ steps.op-load-secrets.outputs.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ steps.op-load-secrets.outputs.AWS_SECRET_ACCESS_KEY }}
+          SSH_PRIVATE_KEY: ${{ steps.op-load-secrets.outputs.SSH_PRIVATE_KEY }}
+          SSH_PUBLIC_KEY: ${{ steps.op-load-secrets.outputs.SSH_PUBLIC_KEY }}
+          OAUTH_URL: ${{ steps.op-load-secrets.outputs.OAUTH_URL }}
+          OAUTH_CLIENT_ID: ${{ steps.op-load-secrets.outputs.OAUTH_CLIENT_ID }}
+          OAUTH_CLIENT_SECRET: ${{ steps.op-load-secrets.outputs.OAUTH_CLIENT_SECRET }}
+          SENTRY_DSN: ${{ steps.op-load-secrets.outputs.SENTRY_DSN }}
           SENTRY_ENV: staging-api
