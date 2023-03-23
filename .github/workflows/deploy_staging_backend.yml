@@ -23,7 +23,7 @@ jobs:
           OP_CONNECT_TOKEN: "${{ secrets.OP_CONNECT_TOKEN }}"
           DATABASE_PASSWORD: "${{ secrets.OP_STAGING_DATABASE_PASSWORD }}"
           DJANGO_SECRET_KEY: "${{ secrets.OP_STAGING_DJANGO_SECRET_KEY }}"
-          DOCKER_ID: "${{ secrets.OP_DOCKER_ID }}"
+          DOCKER_USERNAME: "${{ secrets.OP_DOCKER_USERNAME }}"
           DOCKER_PASSWORD: "${{ secrets.OP_DOCKER_PASSWORD }}"
           AWS_ACCESS_KEY_ID: "${{ secrets.OP_AWS_ACCESS_KEY_ID }}"
           AWS_SECRET_ACCESS_KEY: "${{ secrets.OP_AWS_SECRET_ACCESS_KEY }}"
@@ -44,7 +44,7 @@ jobs:
         env:
           DATABASE_PASSWORD: ${{ steps.op-load-secrets.outputs.DATABASE_PASSWORD }}
           DJANGO_SECRET_KEY: ${{ steps.op-load-secrets.outputs.DJANGO_SECRET_KEY }}
-          DOCKER_ID: ${{ steps.op-load-secrets.outputs.DOCKER_ID }}
+          DOCKER_USERNAME: ${{ steps.op-load-secrets.outputs.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ steps.op-load-secrets.outputs.DOCKER_PASSWORD }}
           AWS_ACCESS_KEY_ID: ${{ steps.op-load-secrets.outputs.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ steps.op-load-secrets.outputs.AWS_SECRET_ACCESS_KEY }}
