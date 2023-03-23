@@ -15,8 +15,8 @@ jobs:
 
 
       - name: Load 1Password Secrets
-        id: 1password
-        uses: 1password/load-steps.1password.outputs-action@v1
+        id: op-load-secrets
+        uses: 1password/load-secrets-action@v1
         with:
           export-env: false
         env:
@@ -33,4 +33,4 @@ jobs:
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
         env:
-          GITHUB_TOKEN: ${{ steps.1password.outputs.DOCS_BOT_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.op-load-secrets.outputs.DOCS_BOT_GITHUB_TOKEN }}
