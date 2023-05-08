@@ -13,12 +13,23 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v1
 
+
       - uses: actions/setup-node@v1
         with:
           node-version: 16
       - run: cd client && yarn install && yarn run build-storybook -c storybook -o ../docs/storybook
 
+
+      - name: Load 1Password Secrets
+        id: op-load-secrets
+        uses: 1password/load-secrets-action@v1
+        with:
+          export-env: true
+        env:
+          OP_CONNECT_HOST: "${{ secrets.OP_CONNECT_HOST }}"
+          OP_CONNECT_TOKEN: "${{ secrets.OP_CONNECT_TOKEN }}"
+          GITHUB_TOKEN: "${{ secrets.OP_DOCS_BOT_GITHUB_TOKEN }}"
+
+
       - name: Deploy docs
         uses: mhausenblas/mkdocs-deploy-gh-pages@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.DOCS_BOT_GITHUB_TOKEN }}
