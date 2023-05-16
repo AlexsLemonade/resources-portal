@@ -55,8 +55,8 @@ See the [README for the test data](api/dev_data/test_data_readme.md) for a descr
 ## Account Creation
 
 Users can create accounts by signing in through ORCID using the button in the website's header.
-Accounts with associated grants can also be created by passing URL parameters to the /create-account endpoint, as documented in the [account creation README](client/ACCOUNT_CREATION_README.md).
+Accounts with associated grants can also be created by passing URL parameters to the /create-account endpoint, as documented in the [account creation README](ACCOUNT_CREATION_README.md).
 
 ## ORCID OAUTH
 
-Resources Portal uses ORCID OAUTH to create accounts and sign in users. You can find documentation for it in the [OAUTH README](api/resources-portal/OAUTH_README.md).
+Resources Portal uses ORCID OAUTH to create accounts and sign in users. You can find documentation for it in the [OAUTH README](OAUTH_README.md).
