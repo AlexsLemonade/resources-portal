@@ -30,10 +30,10 @@ def import_dataset(import_source, accession_code, user):
             "number_of_samples": metadata["number_of_samples"],
         }
 
-        if type(additional_metadata["technology"]) == list:
+        if isinstance(additional_metadata["technology"], list):
             additional_metadata["technology"] = ", ".join(additional_metadata["technology"])
 
-        if type(additional_metadata["platform"]) == list:
+        if isinstance(additional_metadata["platform"], list):
             additional_metadata["platform"] = ", ".join(additional_metadata["platform"])
 
         human_readable_organisms = []
