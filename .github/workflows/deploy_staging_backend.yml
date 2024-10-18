@@ -20,8 +20,7 @@ jobs:
         with:
           export-env: true
         env:
-          OP_CONNECT_HOST: "${{ secrets.OP_CONNECT_HOST }}"
-          OP_CONNECT_TOKEN: "${{ secrets.OP_CONNECT_TOKEN }}"
+          OP_SERVICE_ACCOUNT_TOKEN: "${{ secrets.OP_ENGINEERING_AUTH_TOKEN }}"
           DATABASE_PASSWORD: "${{ secrets.OP_STAGING_DATABASE_PASSWORD }}"
           DJANGO_SECRET_KEY: "${{ secrets.OP_STAGING_DJANGO_SECRET_KEY }}"
           DOCKER_USERNAME: "${{ secrets.OP_DOCKER_USERNAME }}"
