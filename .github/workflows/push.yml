@@ -18,6 +18,6 @@ jobs:
       - name: Set perms
         run: chmod -R a+rw api
       - name: Build the stack
-        run: docker-compose --env-file ./docker-compose.env build
+        run: docker compose --env-file ./docker-compose.env build
       - name: Test
-        run: docker-compose --env-file ./docker-compose.env run --rm api ./run_tests.sh
+        run: docker compose --env-file ./docker-compose.env run --rm api ./run_tests.sh
