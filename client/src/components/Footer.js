@@ -12,6 +12,7 @@ import {
 import styled from 'styled-components'
 import Link from 'components/Link'
 import Icon from 'components/Icon'
+import { config } from 'config'
 
 const NoTouch = styled(Image)`
   pointer-events: none;
@@ -36,7 +37,12 @@ export const Footer = () => {
               </Text>
               <Text>Phone: 866.333.1213 • Fax: 610.649.3038</Text>
               <Box margin={{ top: 'large' }}>
-                <Button primary label="Donate" />
+                <Button
+                  primary
+                  label="Donate"
+                  href={config.links.donate}
+                  target="_blank"
+                />
               </Box>
             </Box>
             <Box
@@ -81,10 +87,7 @@ export const Footer = () => {
           <Nav direction="row" align="center" gap="large">
             <Link href="/terms-of-use" label="Terms of Use" />
             <Link href="/privacy-policy" label="Privacy Policy" />
-            <Link
-              href="https://help.resources.alexslemonade.org/knowledge"
-              label="Help"
-            />
+            <Link href={config.links.portal_help} label="Help" />
           </Nav>
         </Box>
         <Box
@@ -94,13 +97,13 @@ export const Footer = () => {
           basis="1/3"
           pad={{ left: 'xlarge' }}
         >
-          <Link href="https://twitter.com/alexslemonade">
+          <Link href={config.links.alsfTwitter}>
             <Icon name="Twitter" color="black-tint-40" />
           </Link>
-          <Link href="http://www.instagram.com/alexslemonade">
+          <Link href={config.links.alsfInstagram}>
             <Icon name="Instagram" color="black-tint-40" />
           </Link>
-          <Link href="http://www.facebook.com/alexslemonade">
+          <Link href={config.links.alsfFacebook}>
             <Icon name="Facebook" color="black-tint-40" />
           </Link>
         </Box>
