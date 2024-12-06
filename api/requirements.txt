@@ -43,7 +43,7 @@ coverage==5.0.3
 # Static and Media Storage
 django-storages==1.8.0
 boto3==1.28.0
-uwsgi==2.0.21
+uwsgi==2.0.22
 premailer==3.7.0
 
 # ElasticSearch
